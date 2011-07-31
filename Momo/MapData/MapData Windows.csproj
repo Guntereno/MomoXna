@@ -135,12 +135,6 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{92C8205D-7EEE-4BA0-8657-78F0370B40F6}</Project>
-      <Name>Utils</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--
