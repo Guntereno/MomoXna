@@ -14,8 +14,9 @@ using Momo.Debug;
 
 using Momo.Core.Nodes.Cameras;
 using Momo.Core.Spatial;
+using Momo.Core.Graphics;
 
-
+using TestGame.Systems;
 
 namespace TestGame
 {
@@ -33,9 +34,12 @@ namespace TestGame
         WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
         DebugRenderer m_debugRenderer = new DebugRenderer();
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
+        CameraController m_cameraController = new CameraController();
 
         Bin m_bin = new Bin(25, 25, 1000, 1000, 100);
 
+        Map.Map m_map = null;
+        MapRenderer m_mapRenderer = new MapRenderer();
 
 
         public TestGame()
@@ -46,6 +50,9 @@ namespace TestGame
 
             m_camera.ViewWidth = kBackBufferWidth;
             m_camera.ViewHeight = kBackBufferHeight;
+            m_camera.LocalTranslation = new Vector3(0.0f, 0.0f, 10.0f);
+
+            m_cameraController.Camera = m_camera;
 
             Content.RootDirectory = "Content";
         }
@@ -69,6 +76,9 @@ namespace TestGame
 
             // TODO: use this.Content to load your game content here
             m_worldManager.LoadWorld("TestWorld");
+
+            m_map = Content.Load<Map.Map>("maps/1_living_quarters/1_living_quarters");
+            m_mapRenderer.Init(m_map, GraphicsDevice);
         }
 
 
@@ -81,11 +91,15 @@ namespace TestGame
 
         protected override void Update(GameTime gameTime)
         {
+            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
             m_worldManager.Update(gameTime.ElapsedGameTime.Seconds);
+
+            m_cameraController.Update(gamePadState);
 
             base.Update(gameTime);
         }
@@ -93,10 +107,9 @@ namespace TestGame
 
         protected override void Draw(GameTime gameTime)
         {
-            m_camera.LocalTranslation = new Vector3(0.0f, 0.0f, 10.0f);
             m_camera.PreRenderUpdate();
 
-            GraphicsDevice.Clear(Color.OldLace);
+            GraphicsDevice.Clear(Color.SteelBlue);
 
             m_debugRenderer.Clear();
 
@@ -159,8 +172,9 @@ namespace TestGame
 
             m_bin.DebugRender(m_debugRenderer, 6);
 
-
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);
+
+            m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);
 
             base.Draw(gameTime);
         }

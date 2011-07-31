@@ -110,6 +110,7 @@
     <Compile Include="Entities\AiEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Systems\CameraController.cs" />
     <Compile Include="TestGame.cs" />
     <Compile Include="TestWorld.cs" />
   </ItemGroup>
@@ -125,6 +126,10 @@
     <ProjectReference Include="..\..\Debug\Debug.csproj">
       <Project>{347E5A57-7F1B-49A5-A637-D49BE71F6F1C}</Project>
       <Name>Debug</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MapData\MapData Windows.csproj">
+      <Project>{2A9FB9C8-0CD3-42F3-9343-6DABE152E5C2}</Project>
+      <Name>MapData Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WorldManager\WorldManager.csproj">
       <Project>{93E06FCE-346B-4333-AC66-22C8651E226B}</Project>

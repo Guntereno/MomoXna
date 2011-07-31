@@ -57,7 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="maps\1_living_quaters\1_living_quarters.tmx">
+    <Compile Include="maps\1_living_quarters\1_living_quarters.tmx">
       <Name>1_living_quarters</Name>
       <Processor>TmxProcessor</Processor>
       <Importer>TmxImporter</Importer>
