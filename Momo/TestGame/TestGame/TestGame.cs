@@ -78,7 +78,7 @@ namespace TestGame
             m_worldManager.LoadWorld("TestWorld");
 
             m_map = Content.Load<Map.Map>("maps/1_living_quarters/1_living_quarters");
-            m_mapRenderer.Init(m_map, GraphicsDevice);
+            m_mapRenderer.Init(m_map, GraphicsDevice, 8);
         }
 
 

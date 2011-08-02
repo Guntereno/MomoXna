@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 
 namespace Momo.Core.Graphics
 {
-    using VFormat = VertexPositionColorTexture;
+    using VFormat = VertexPositionTexture;
 
     public class MapRenderer
     {
@@ -17,29 +18,50 @@ namespace Momo.Core.Graphics
         // --------------------------------------------------------------------
         bool m_inited = false;
         Map.Map m_map = null;
-
-
-
-        VFormat[] m_vertices;
-        int m_currentVert = 0;
-
+        
         BasicEffect m_effect = null;
+
+        int m_patchSize = 8;
+        List<Patch>[] m_layers;
 
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public void Init(Map.Map map, GraphicsDevice graphicsDevice)
+        public void Init(Map.Map map, GraphicsDevice graphicsDevice, int patchSize)
         {
             m_map = map;
+            m_patchSize = patchSize;
             m_inited = true;
-
-            m_vertices = new VFormat[m_map.Dimensions.X * m_map.Dimensions.Y * 6];
 
             m_effect = new BasicEffect(graphicsDevice);
             m_effect.TextureEnabled = true;
             m_effect.LightingEnabled = false;
-            m_effect.VertexColorEnabled = true;
+            m_effect.VertexColorEnabled = false;
+
+            // Build the patches
+            // Each layer consists of a list of patches
+            int numLayers = m_map.TileLayers.Length;
+            m_layers = new List<Patch>[numLayers];
+            for (int layerIdx = 0; layerIdx < numLayers; ++layerIdx)
+            {
+                m_layers[layerIdx] = new List<Patch>();
+                Map.TileLayer tileLayer = m_map.TileLayers[layerIdx];
+
+                int patchCountX = tileLayer.Dimensions.X / m_patchSize;
+                for (int patchX = 0; patchX < patchCountX; ++patchX)
+                {
+                    int patchCountY = tileLayer.Dimensions.Y / m_patchSize;
+                    for (int patchY = 0; patchY < patchCountX; ++patchY)
+                    {
+                        Patch patch = BuildPatch(tileLayer, patchX * m_patchSize, patchY * m_patchSize);
+                        if (patch != null)
+                        {
+                            m_layers[layerIdx].Add(patch);
+                        }
+                    }
+                }
+            }
         }
 
         public void Render(Matrix viewMatrix, Matrix projMatrix, GraphicsDevice graphicsDevice)
@@ -55,9 +77,12 @@ namespace Momo.Core.Graphics
             graphicsDevice.DepthStencilState = DepthStencilState.None;
             graphicsDevice.RasterizerState = RasterizerState.CullNone;
 
-            for (int layerIndex = 0; layerIndex < m_map.TileLayers.Length; layerIndex++)
+            for (int layerIdx = 0; layerIdx < m_map.TileLayers.Length; ++layerIdx)
             {
-                RenderLayer(m_map.TileLayers[layerIndex], graphicsDevice);
+                for (int patchIdx = 0; patchIdx < m_layers[layerIdx].Count; ++patchIdx)
+                {
+                    m_layers[layerIdx][patchIdx].Render(m_effect, graphicsDevice);
+                }
             }
 
             graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
@@ -65,89 +90,173 @@ namespace Momo.Core.Graphics
             graphicsDevice.BlendState = BlendState.Opaque;
         }
 
-        private void RenderLayer(Map.TileLayer tileLayer, GraphicsDevice graphicsDevice)
+
+        // --------------------------------------------------------------------
+        // -- Public Methods
+        // --------------------------------------------------------------------
+        private struct TileInfo
         {
-            // Render tiles from each tileset separately
-            for (int t = 0; t < m_map.Tilesets.Length; ++t)
+            public TileInfo(Map.Tile tile, int x, int y)
             {
+                m_tile = tile;
+                m_x = x;
+                m_y = y;
+            }
 
-                Map.Tileset tileset = m_map.Tilesets[t];
-                Texture2D texture = tileset.DiffuseMap;
+            public Map.Tile m_tile;
+            public int m_x;
+            public int m_y;
+        };
 
-                // Begin from the start of the vertex buffer
-                m_currentVert = 0;
+        private Patch BuildPatch(Map.TileLayer tileLayer, int xMin, int yMin)
+        {
+            // Create a dictionary of all neccessary tile info
+            // indexed by the texture
+            Dictionary<Texture2D, List<TileInfo>> tileDict = new Dictionary<Texture2D, List<TileInfo>>(); 
+            for (int x = xMin; x < (xMin + m_patchSize); ++x)
+            {
+                System.Diagnostics.Debug.Assert(x < m_map.Dimensions.X);
 
-                for (int x = 0; x < m_map.Dimensions.X; ++x)
+                for (int y = yMin; y < (yMin + m_patchSize); ++y)
                 {
-                    for (int y = 0; y < m_map.Dimensions.Y; ++y)
+                    System.Diagnostics.Debug.Assert(x < m_map.Dimensions.Y);
+
+                    Map.Tile tile = m_map.Tiles[tileLayer.Indices[x + (y * tileLayer.Dimensions.X)]];
+
+                    if (tile == null)
+                        continue;
+
+                    if(!tileDict.ContainsKey(tile.DiffuseMap))
                     {
-                        Map.Tile tile = m_map.Tiles[tileLayer.Indices[x + (y * tileLayer.Dimensions.X)]];
-
-                        if (tile == null)
-                            continue;
-
-                        if (tile.DiffuseMap == texture)
-                        {
-
-                            float left = (x * m_map.TileDimensions.X);
-                            float right = ((x + 1) * m_map.TileDimensions.X);
-                            float top = (y * m_map.TileDimensions.Y);
-                            float bottom = ((y + 1) * m_map.TileDimensions.Y);
-
-                            float texLeft = ((float)tile.Source.Left / (float)texture.Width);
-                            float texRight = ((float)tile.Source.Right / (float)texture.Width);
-                            float texTop = ((float)tile.Source.Top / (float)texture.Height);
-                            float texBottom = ((float)tile.Source.Bottom / (float)texture.Height);
-
-                            m_vertices[m_currentVert].Position = new Vector3(left, top, 0.0f);
-                            m_vertices[m_currentVert].TextureCoordinate = new Vector2(texLeft, texTop);
-                            m_vertices[m_currentVert].Color = Color.White;
-                            ++m_currentVert;
-
-                            m_vertices[m_currentVert].Position = new Vector3(right, top, 0.0f);
-                            m_vertices[m_currentVert].TextureCoordinate = new Vector2(texRight, texTop);
-                            m_vertices[m_currentVert].Color = Color.White;
-                            ++m_currentVert;
-
-                            m_vertices[m_currentVert].Position = new Vector3(left, bottom, 0.0f);
-                            m_vertices[m_currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
-                            m_vertices[m_currentVert].Color = Color.White;
-                            ++m_currentVert;
-
-
-                            m_vertices[m_currentVert].Position = new Vector3(left, bottom, 0.0f);
-                            m_vertices[m_currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
-                            m_vertices[m_currentVert].Color = Color.White;
-                            ++m_currentVert;
-
-                            m_vertices[m_currentVert].Position = new Vector3(right, top, 0.0f);
-                            m_vertices[m_currentVert].TextureCoordinate = new Vector2(texRight, texTop);
-                            m_vertices[m_currentVert].Color = Color.White;
-                            ++m_currentVert;
-
-                            m_vertices[m_currentVert].Position = new Vector3(right, bottom, 0.0f);
-                            m_vertices[m_currentVert].TextureCoordinate = new Vector2(texRight, texBottom);
-                            m_vertices[m_currentVert].Color = Color.White;
-                            ++m_currentVert;
-                        }
-
+                        tileDict.Add(tile.DiffuseMap, new List<TileInfo>());
                     }
+                    tileDict[tile.DiffuseMap].Add(new TileInfo(tile, x, y));
+                }
+            }
+
+            if(tileDict.Count > 0)
+            {
+                Patch patch = new Patch();
+
+                // Now iterate the dictionary, building a mesh for each texture
+                foreach (Texture2D texture in tileDict.Keys)
+                {
+                    List<TileInfo> tileList = tileDict[texture];
+
+                    int numVerts = tileList.Count * 6;
+                    VFormat[] vertList = new VFormat[numVerts];
+                    int currentVert=0;
+
+                    for(int i=0; i<tileList.Count; ++i)
+                    {
+                        TileInfo tileInfo = tileList[i];
+
+                        float left = (tileInfo.m_x * m_map.TileDimensions.X);
+                        float right = ((tileInfo.m_x + 1) * m_map.TileDimensions.X);
+                        float top = (tileInfo.m_y * m_map.TileDimensions.Y);
+                        float bottom = ((tileInfo.m_y + 1) * m_map.TileDimensions.Y);
+
+                        float texLeft = ((float)tileInfo.m_tile.Source.Left / (float)texture.Width);
+                        float texRight = ((float)tileInfo.m_tile.Source.Right / (float)texture.Width);
+                        float texTop = ((float)tileInfo.m_tile.Source.Top / (float)texture.Height);
+                        float texBottom = ((float)tileInfo.m_tile.Source.Bottom / (float)texture.Height);
+
+                        vertList[currentVert].Position = new Vector3(left, top, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texTop);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+                        vertList[currentVert].Position = new Vector3(right, top, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+                        vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+
+                        vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+                        vertList[currentVert].Position = new Vector3(right, top, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+                        vertList[currentVert].Position = new Vector3(right, bottom, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texRight, texBottom);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+                    }
+
+                    patch.AddMesh(texture, vertList);
                 }
 
-                if (m_currentVert > 0)
-                {
-                    m_effect.Texture = texture;
+                return patch;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-                    for (int p = 0; p < m_effect.CurrentTechnique.Passes.Count; p++)
+        // --------------------------------------------------------------------
+        // -- Private Classes
+        // --------------------------------------------------------------------
+        private class Patch
+        {
+            public Patch()
+            {
+            }
+
+            public void AddMesh(Texture2D texture, VFormat[] vertices)
+            {
+                m_meshes.Add(new Mesh(texture, vertices));
+            }
+
+            public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
+            {
+                for(int i=0; i<m_meshes.Count; ++i)
+                {
+                    m_meshes[i].Render(effect, graphicsDevice);
+                }
+            }
+
+
+            private class Mesh
+            {
+                public Mesh(Texture2D texture, VFormat[] vertices)
+                {
+                    System.Diagnostics.Debug.Assert(texture != null);
+                    System.Diagnostics.Debug.Assert(vertices.Length > 0);
+
+                    m_texture = texture;
+                    m_vertices = vertices;
+                }
+
+                public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
+                {
+                    effect.Texture = m_texture;
+
+                    for (int p = 0; p < effect.CurrentTechnique.Passes.Count; p++)
                     {
-                        EffectPass pass = m_effect.CurrentTechnique.Passes[p];
+                        EffectPass pass = effect.CurrentTechnique.Passes[p];
                         pass.Apply();
 
-                        graphicsDevice.DrawUserPrimitives<VFormat>(PrimitiveType.TriangleList, m_vertices, 0, m_currentVert / 3);
+                        graphicsDevice.DrawUserPrimitives<VFormat>(PrimitiveType.TriangleList, m_vertices, 0, m_vertices.Length / 3);
                     }
                 }
 
+
+                private Texture2D m_texture = null;
+                private VFormat[] m_vertices = null;
             }
+
+            List<Mesh> m_meshes = new List<Mesh>();
         }
     }
 }
