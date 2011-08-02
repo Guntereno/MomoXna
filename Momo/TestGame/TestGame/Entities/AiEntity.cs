@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 
 using Momo.Core;
-using Momo.Core.GameEntiies;
+using Momo.Core.GameEntities;
 using Momo.Core.Primitives2D;
 using Momo.Core.Spatial;
 using Momo.Debug;

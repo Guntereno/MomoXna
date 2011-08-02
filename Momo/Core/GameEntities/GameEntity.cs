@@ -9,7 +9,7 @@ using Momo.Debug;
 
 
 
-namespace Momo.Core.GameEntiies
+namespace Momo.Core.GameEntities
 {
     public abstract class GameEntity : BinItem
     {

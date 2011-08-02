@@ -4,7 +4,7 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 
-using Momo.Core.GameEntiies;
+using Momo.Core.GameEntities;
 using Momo.Debug;
 
 

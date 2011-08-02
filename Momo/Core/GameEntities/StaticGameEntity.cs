@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 
 
-namespace Momo.Core.GameEntiies
+namespace Momo.Core.GameEntities
 {
     public class StaticGameEntity : GameEntity
     {
