@@ -69,9 +69,14 @@ namespace Momo.Core.Graphics
             if (!m_inited)
                 return;
 
-            m_effect.World = Matrix.CreateScale(1.0f, -1.0f, 1.0f);
+            Matrix modelMatrix = Matrix.CreateScale(1.0f, -1.0f, 1.0f);
+
+            m_effect.World = modelMatrix;
             m_effect.View = viewMatrix;
             m_effect.Projection = projMatrix;
+
+            // Create a view frustrum for culling
+            BoundingFrustum viewFrustum = new BoundingFrustum(modelMatrix * viewMatrix * projMatrix);
 
             graphicsDevice.BlendState = BlendState.AlphaBlend;
             graphicsDevice.DepthStencilState = DepthStencilState.None;
@@ -81,7 +86,11 @@ namespace Momo.Core.Graphics
             {
                 for (int patchIdx = 0; patchIdx < m_layers[layerIdx].Count; ++patchIdx)
                 {
-                    m_layers[layerIdx][patchIdx].Render(m_effect, graphicsDevice);
+                    Patch patch = m_layers[layerIdx][patchIdx];
+                    if(viewFrustum.Intersects(patch.GetBoundingBox()))
+                    {
+                        patch.Render(m_effect, graphicsDevice);
+                    }
                 }
             }
 
@@ -213,9 +222,15 @@ namespace Momo.Core.Graphics
             {
             }
 
+            public BoundingBox GetBoundingBox()
+            {
+                return m_boundingBox;
+            }
+
             public void AddMesh(Texture2D texture, VFormat[] vertices)
             {
                 m_meshes.Add(new Mesh(texture, vertices));
+                RecalculateBoundingBox();
             }
 
             public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
@@ -226,6 +241,32 @@ namespace Momo.Core.Graphics
                 }
             }
 
+            private void RecalculateBoundingBox()
+            {
+                Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+                Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+                for (int i = 0; i < m_meshes.Count; ++i)
+                {
+                    Mesh mesh = m_meshes[i];
+                    BoundingBox boundingBox = mesh.GetBoundingBox();
+
+                    if (boundingBox.Min.X < min.X)
+                        min.X = boundingBox.Min.X;
+                    if (boundingBox.Min.Y < min.Y)
+                        min.Y = boundingBox.Min.Y;
+                    if (boundingBox.Min.Z < min.Z)
+                        min.Z = boundingBox.Min.Z;
+
+                    if (boundingBox.Max.X > max.X)
+                        max.X = boundingBox.Max.X;
+                    if (boundingBox.Max.Y > max.Y)
+                        max.Y = boundingBox.Max.Y;
+                    if (boundingBox.Max.Z > max.Z)
+                        max.Z = boundingBox.Max.Z;
+
+                    m_boundingBox = new BoundingBox(min, max);
+                }
+            }
 
             private class Mesh
             {
@@ -236,6 +277,13 @@ namespace Momo.Core.Graphics
 
                     m_texture = texture;
                     m_vertices = vertices;
+
+                    CalculateBoundingBox();
+                }
+
+                public BoundingBox GetBoundingBox()
+                {
+                    return m_boundingBox;
                 }
 
                 public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
@@ -251,12 +299,37 @@ namespace Momo.Core.Graphics
                     }
                 }
 
+                private void CalculateBoundingBox()
+                {
+                    Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+                    Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+                    for (int i = 0; i < m_vertices.Length; ++i)
+                    {
+                        if (m_vertices[i].Position.X < min.X)
+                            min.X = m_vertices[i].Position.X;
+                        if (m_vertices[i].Position.Y < min.Y)
+                            min.Y = m_vertices[i].Position.Y;
+                        if (m_vertices[i].Position.Z < min.Z)
+                            min.Z = m_vertices[i].Position.Z;
+
+                        if (m_vertices[i].Position.X > max.X)
+                            max.X = m_vertices[i].Position.X;
+                        if (m_vertices[i].Position.Y > max.Y)
+                            max.Y = m_vertices[i].Position.Y;
+                        if (m_vertices[i].Position.Z > max.Z)
+                            max.Z = m_vertices[i].Position.Z;
+
+                        m_boundingBox = new BoundingBox(min, max);
+                    }
+                }
 
                 private Texture2D m_texture = null;
                 private VFormat[] m_vertices = null;
+                BoundingBox m_boundingBox;
             }
 
             List<Mesh> m_meshes = new List<Mesh>();
+            BoundingBox m_boundingBox;
         }
     }
 }
