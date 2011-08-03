@@ -36,7 +36,7 @@ namespace TestGame
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
         CameraController m_cameraController = new CameraController();
 
-        Bin m_bin = new Bin(25, 25, 1000, 1000, 100);
+        Bin m_bin = new Bin(25, 25, 1000, 1000, 5000, 5000);
 
         Map.Map m_map = null;
         MapRenderer m_mapRenderer = new MapRenderer();
@@ -118,56 +118,56 @@ namespace TestGame
             // 3D
             //m_debugRenderer.DrawCircle(new Vector3(0.0f, 0.0f, 0.0f), 30.0f, Color.Red, Color.Black, 10.0f, new Vector3(1.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), 64);
 
-            // 2D
-            float y = 250.0f;
-            float x = 230.0f;
-            m_debugRenderer.DrawCircle(new Vector2(x + 0.0f, y), 30.0f, Color.Red, Color.Black, true, 0.0f, 64);
-            m_debugRenderer.DrawCircle(new Vector2(x + 60.0f, y), 30.0f, Color.Red, Color.Black, true, 10.0f, 64);
-            m_debugRenderer.DrawCircle(new Vector2(x + 120.0f, y), 30.0f, Color.Red, Color.Black, true, 20.0f, 64);
+            //// 2D
+            //float y = 250.0f;
+            //float x = 230.0f;
+            //m_debugRenderer.DrawCircle(new Vector2(x + 0.0f, y), 30.0f, Color.Red, Color.Black, true, 0.0f, 64);
+            //m_debugRenderer.DrawCircle(new Vector2(x + 60.0f, y), 30.0f, Color.Red, Color.Black, true, 10.0f, 64);
+            //m_debugRenderer.DrawCircle(new Vector2(x + 120.0f, y), 30.0f, Color.Red, Color.Black, true, 20.0f, 64);
 
-            y -= 60;
-            m_debugRenderer.DrawOutlineCircle(new Vector2(x + 0.0f, y), 30.0f, Color.Black, 0.0f);
-            m_debugRenderer.DrawOutlineCircle(new Vector2(x + 60.0f, y), 30.0f, Color.Black, 10.0f);
-            m_debugRenderer.DrawOutlineCircle(new Vector2(x + 120.0f, y), 30.0f, Color.Black, 20.0f);
+            //y -= 60;
+            //m_debugRenderer.DrawOutlineCircle(new Vector2(x + 0.0f, y), 30.0f, Color.Black, 0.0f);
+            //m_debugRenderer.DrawOutlineCircle(new Vector2(x + 60.0f, y), 30.0f, Color.Black, 10.0f);
+            //m_debugRenderer.DrawOutlineCircle(new Vector2(x + 120.0f, y), 30.0f, Color.Black, 20.0f);
 
-            y -= 60;
-            m_debugRenderer.DrawFilledCircle(new Vector2(x + 0.0f, y), 30.0f, Color.Red);
-            m_debugRenderer.DrawFilledCircle(new Vector2(x + 60.0f, y), 30.0f, Color.Red);
-            m_debugRenderer.DrawFilledCircle(new Vector2(x + 120.0f, y), 30.0f, Color.Red);
-
-
-            // 2D
-            Vector2 p1 = new Vector2(-300.0f, 30.0f);
-            Vector2 p2 = new Vector2(-200.0f, 0.0f);
-            Vector2 p3 = new Vector2(-220.0f, -30.0f);
-            Vector2 p4 = new Vector2(-330.0f, -50.0f);
-
-            Vector2 offset = new Vector2(0.0f, -70.0f);
-            m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 30.0f);
-            offset = new Vector2(150.0f, -70.0f);
-            m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 10.0f);
+            //y -= 60;
+            //m_debugRenderer.DrawFilledCircle(new Vector2(x + 0.0f, y), 30.0f, Color.Red);
+            //m_debugRenderer.DrawFilledCircle(new Vector2(x + 60.0f, y), 30.0f, Color.Red);
+            //m_debugRenderer.DrawFilledCircle(new Vector2(x + 120.0f, y), 30.0f, Color.Red);
 
 
-            p1 = new Vector2(-300.0f, -100.0f);
-            p2 = new Vector2(-180.0f, -100.0f);
-            p3 = new Vector2(-180.0f, -200.0f);
-            p4 = new Vector2(-300.0f, -200.0f);
+            //// 2D
+            //Vector2 p1 = new Vector2(-300.0f, 30.0f);
+            //Vector2 p2 = new Vector2(-200.0f, 0.0f);
+            //Vector2 p3 = new Vector2(-220.0f, -30.0f);
+            //Vector2 p4 = new Vector2(-330.0f, -50.0f);
 
-            offset = new Vector2(-20.0f, -50.0f);
-            m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 30.0f);
-            offset = new Vector2(120.0f, -50.0f);
-            m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 10.0f);
+            //Vector2 offset = new Vector2(0.0f, -70.0f);
+            //m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 30.0f);
+            //offset = new Vector2(150.0f, -70.0f);
+            //m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 10.0f);
 
 
-            y = 270.0f;
-            m_debugRenderer.DrawFilledLineWithCaps(new Vector2(-350.0f, y - 0.0f), new Vector2(0.0f, y - 0.0f), Color.Black, 13.0f, 4);
-            m_debugRenderer.DrawFilledLineWithCaps(new Vector2(-350.0f, y - 30.0f), new Vector2(0.0f, y - 30.0f), Color.Black, 23.0f, 5);
-            m_debugRenderer.DrawFilledLineWithCaps(new Vector2(-350.0f, y - 85.0f), new Vector2(0.0f, y - 85.0f), Color.Black, 51.0f, 32);
+            //p1 = new Vector2(-300.0f, -100.0f);
+            //p2 = new Vector2(-180.0f, -100.0f);
+            //p3 = new Vector2(-180.0f, -200.0f);
+            //p4 = new Vector2(-300.0f, -200.0f);
 
-            y -= 140.0f;
-            m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 0.0f), new Vector2(0.0f, y - 0.0f), Color.Black, 13.0f);
-            m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 30.0f), new Vector2(0.0f, y - 30.0f), Color.Black, 23.0f);
-            m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 85.0f), new Vector2(0.0f, y - 85.0f), Color.Black, 51.0f);
+            //offset = new Vector2(-20.0f, -50.0f);
+            //m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 30.0f);
+            //offset = new Vector2(120.0f, -50.0f);
+            //m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 10.0f);
+
+
+            //y = 270.0f;
+            //m_debugRenderer.DrawFilledLineWithCaps(new Vector2(-350.0f, y - 0.0f), new Vector2(0.0f, y - 0.0f), Color.Black, 13.0f, 4);
+            //m_debugRenderer.DrawFilledLineWithCaps(new Vector2(-350.0f, y - 30.0f), new Vector2(0.0f, y - 30.0f), Color.Black, 23.0f, 5);
+            //m_debugRenderer.DrawFilledLineWithCaps(new Vector2(-350.0f, y - 85.0f), new Vector2(0.0f, y - 85.0f), Color.Black, 51.0f, 32);
+
+            //y -= 140.0f;
+            //m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 0.0f), new Vector2(0.0f, y - 0.0f), Color.Black, 13.0f);
+            //m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 30.0f), new Vector2(0.0f, y - 30.0f), Color.Black, 23.0f);
+            //m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 85.0f), new Vector2(0.0f, y - 85.0f), Color.Black, 51.0f);
 
 
             m_bin.DebugRender(m_debugRenderer, 6);

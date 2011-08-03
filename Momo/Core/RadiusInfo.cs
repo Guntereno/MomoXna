@@ -1,32 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+
 
 
 namespace Momo.Core
 {
-    public struct FrameTime
+    public struct RadiusInfo
     {
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private float m_dt;
+        private float m_radius;
+        private float m_radiusSq;
 
 
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public float Dt
+        public float Radius
         {
-            get { return m_dt; }
+            get { return m_radius; }
+            set
+            {
+                m_radius = value;
+                m_radiusSq = m_radius * m_radius;
+            }
+        }
+
+        public float RadiusSq
+        {
+            get { return m_radiusSq; }
         }
 
 
-        public FrameTime(float dt)
+
+        public RadiusInfo(float radius)
         {
-            m_dt = dt;
+            m_radius = radius;
+            m_radiusSq = m_radius * m_radius;
         }
     }
 }

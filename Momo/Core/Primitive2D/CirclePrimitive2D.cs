@@ -5,18 +5,17 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 
-using Momo.Core.Maths;
 
 
-namespace Momo.Core.Primitives2D
+namespace Momo.Core.Primitive2D
 {
     public class CirclePrimitive2D : Primitive2D
     {
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private RadiusInfo mRadiusInfo;
-        private Vector2 mCentre = Vector2.Zero;
+        private RadiusInfo m_radiusInfo;
+        private Vector2 m_centre = Vector2.Zero;
 
 
         // --------------------------------------------------------------------
@@ -24,35 +23,41 @@ namespace Momo.Core.Primitives2D
         // --------------------------------------------------------------------
         public float Radius
         {
-            get { return mRadiusInfo.Radius; }
-            set { mRadiusInfo.Radius = value; }
+            get { return m_radiusInfo.Radius; }
+            set { m_radiusInfo.Radius = value; }
         }
 
 
         public float RadiusSq
         {
-            get { return mRadiusInfo.RadiusSq; }
+            get { return m_radiusInfo.RadiusSq; }
+        }
+
+
+        public RadiusInfo RadiusInfo
+        {
+            get { return m_radiusInfo; }
         }
 
 
         public Vector2 Centre
         {
-            get { return mCentre; }
-            set { mCentre = value; }
+            get { return m_centre; }
+            set { m_centre = value; }
         }
 
 
 
         public CirclePrimitive2D(float radius)
         {
-            mRadiusInfo = new RadiusInfo(radius);
+            m_radiusInfo = new RadiusInfo(radius);
         }
 
 
         public CirclePrimitive2D(float radius, Vector2 centre)
         {
-            mRadiusInfo = new RadiusInfo(radius);
-            mCentre = centre;
+            m_radiusInfo = new RadiusInfo(radius);
+            m_centre = centre;
         }
     }
 }

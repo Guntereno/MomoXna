@@ -20,31 +20,50 @@ namespace Momo.Core.Spatial
         private int m_binCountY = 0;
         private int m_binCount = 0;
 
-        private Vector2 m_binDimension = Vector2.Zero;
+        private int m_binEntryPoolCapacity = 0;
+        private int m_binEntryPoolFreeCount = 0;
 
-        // Optimisation
+        private Vector2 m_binDimension = Vector2.Zero;
         private Vector2 m_invBinDimension = Vector2.Zero;
 
-        private BinItem[] m_binItems = null;
-        private BinItem m_startBinItemSentital = new BinItem();
-        
+        private BinEntry[] m_binEntryPool = null;
+        private BinEntry[] m_binEntries = null;
+
         private BinQueryResults m_queryResults = null;
 
 
 
-        public Bin(int binCountX, int binCountY, float areaWidth, float areaHeight, int queryResultsCapacity)
+        public Bin(int binCountX, int binCountY, float areaWidth, float areaHeight, int itemCapacity, int queryResultsCapacity)
         {
             m_binCountX = binCountX;
             m_binCountY = binCountY;
             m_binCount = m_binCountX * m_binCountY;
 
+            m_binEntryPoolCapacity = itemCapacity;
+            m_binEntryPoolFreeCount = itemCapacity;
+
             m_binDimension.X = areaWidth / (float)m_binCountX;
             m_binDimension.Y = areaHeight / (float)m_binCountY;
             m_invBinDimension = Vector2.One / m_binDimension;
 
-            m_binItems = new BinItem[m_binCount];
-
             m_queryResults = new BinQueryResults(queryResultsCapacity);
+
+
+            m_binEntryPool = new BinEntry[itemCapacity];
+            m_binEntries = new BinEntry[m_binCount];
+
+            // Fill pool
+            for (int i = 0; i < itemCapacity; ++i)
+            {
+                m_binEntryPool[i] = new BinEntry();
+            }
+
+            // Add sentitals
+            for (int i = 0; i < m_binCount; ++i)
+            {
+                m_binEntries[i] = new BinEntry();
+            }
+
 
             Clear();
         }
@@ -52,100 +71,125 @@ namespace Momo.Core.Spatial
 
         public void Clear()
         {
+            m_binEntryPoolFreeCount = m_binEntryPoolCapacity;
+
             for (int i = 0; i < m_binCount; ++i)
             {
-                m_binItems[i] = m_startBinItemSentital;
+                m_binEntries[i].m_nextEntry = null;
             }
         }
 
 
         public void AddBinItem(BinItem item)
         {
-            AddBinItem(item, ref item.m_binRegion);
+            AddBinItem(item, ref item.m_region);
         }
 
 
-        public void AddBinItem(BinItem item, ref BinRegion region)
+        public void AddBinItem(BinItem item, ref BinRegionUniform region)
         {
-            int binY = region.m_cornerLocation1.m_y;
+            int y = region.m_minLocation.m_y;
 
             do
             {
-                int binIdx = GetBinIndex(region.m_cornerLocation1.m_x, binY);
+                int binIdx = GetBinIndex(region.m_minLocation.m_x, y);
 
-                for (int x = region.m_cornerLocation1.m_x; x < region.m_cornerLocation2.m_x; ++x)
+                for (int x = region.m_minLocation.m_x; x <= region.m_maxLocation.m_x; ++x)
                 {
-                    BinItem startBinItem = m_binItems[binIdx];
-                    item.m_nextEntry = startBinItem.m_nextEntry;
-                    startBinItem.m_nextEntry = item;
+                    BinEntry startBinEntry = m_binEntries[binIdx];
+                    BinEntry freeBinEntry = GetFreeBinEntry();
+                    freeBinEntry.m_item = item;
+                    freeBinEntry.m_nextEntry = startBinEntry.m_nextEntry;
+                    startBinEntry.m_nextEntry = freeBinEntry;
 
                     ++binIdx;
                 }
 
-                ++binY;
+                ++y;
 
-            } while (binY < region.m_cornerLocation2.m_y);
+            } while (y <= region.m_maxLocation.m_y);
         }
 
 
         public void RemoveBinItem(BinItem item)
         {
-            RemoveBinItem(item, ref item.m_binRegion);
+            RemoveBinItem(item, ref item.m_region);
         }
 
 
-        public void RemoveBinItem(BinItem item, ref BinRegion region)
+        public void RemoveBinItem(BinItem item, ref BinRegionUniform region)
         {
-            int binY = region.m_cornerLocation1.m_y;
+            int y = region.m_minLocation.m_y;
 
             do
             {
-                int binIdx = GetBinIndex(region.m_cornerLocation1.m_x, binY);
+                int binIdx = GetBinIndex(region.m_minLocation.m_x, y);
 
-                for (int x = region.m_cornerLocation1.m_x; x < region.m_cornerLocation2.m_x; ++x)
+                for (int x = region.m_minLocation.m_x; x <= region.m_maxLocation.m_x; ++x)
                 {
-                    RemoveBinItem(item, m_binItems[binIdx]);
+                    RemoveBinItem(item, m_binEntries[binIdx]);
 
                     ++binIdx;
                 }
 
-                ++binY;
+                ++y;
 
-            } while (binY < region.m_cornerLocation2.m_y);
+            } while (y <= region.m_maxLocation.m_y);
         }
 
 
-        public void RemoveBinItem(BinItem item, BinItem startItem)
+        public void RemoveBinItem(BinItem item, BinEntry startEntry)
         {
-            BinItem previousBinItem = startItem;
-            BinItem currentBinItem = startItem.m_nextEntry;
+            BinEntry previousBinEntry = startEntry;
+            BinEntry currentBinEntry = startEntry.m_nextEntry;
 
-            while (currentBinItem != null)
+            while (currentBinEntry != null)
             {
-                if (currentBinItem == item)
+                if (currentBinEntry.m_item == item)
                 {
-                    previousBinItem.m_nextEntry = currentBinItem.m_nextEntry;
-                    //startItem.m_prevEntry.m_nextEntry = startItem.m_nextEntry;
-                    //startItem.m_nextEntry.m_prevEntry = startItem.m_prevEntry;
+                    previousBinEntry.m_nextEntry = currentBinEntry.m_nextEntry;
+                    m_binEntryPool[m_binEntryPoolFreeCount] = currentBinEntry;
+                    ++m_binEntryPoolFreeCount;
                     return;
                 }
 
-                previousBinItem = currentBinItem;
-                currentBinItem = currentBinItem.m_nextEntry;
+                previousBinEntry = currentBinEntry;
+                currentBinEntry = currentBinEntry.m_nextEntry;
             }
         }
 
 
-        public int CountBinItemList(BinItem startItem)
+        public void UpdateBinItemRegion(BinItem item, ref BinRegionUniform prevRegion, ref BinRegionUniform newRegion)
         {
-            BinItem currentBinItem = startItem.m_nextEntry;
+            // Skip update if they are the same.
+            if (prevRegion.IsEqual(ref newRegion))
+                return;
+
+
+            RemoveBinItem(item, ref prevRegion);
+            AddBinItem(item, ref newRegion);
+
+            item.m_region = newRegion;
+        }
+
+
+        public void UpdateBinItemRegion(BinItem item, ref BinRegionUniform newRegion)
+        {
+            AddBinItem(item, ref newRegion);
+
+            item.m_region = newRegion;
+        }
+
+
+        public int CountBinList(BinEntry startEntry)
+        {
             int itemCnt = 0;
+            BinEntry currentBinEntry = startEntry.m_nextEntry;
 
-
-            while (currentBinItem != null)
+            while (currentBinEntry != null)
             {
                 ++itemCnt;
-                currentBinItem = currentBinItem.m_nextEntry;
+                currentBinEntry = currentBinEntry.m_nextEntry;
             }
 
             return itemCnt;
@@ -158,28 +202,35 @@ namespace Momo.Core.Spatial
         }
 
 
-        // Does not properly support multiple queries between clears. Could get duplicate lists.
-        public void Query(BinRegion region)
+        public void Query(BinRegionUniform region)
         {
-            int binY = region.m_cornerLocation1.m_y;
+            int itemCnt = m_queryResults.BinItemCount;
+
+            int y = region.m_minLocation.m_y;
 
             do
             {
-                int binIdx = GetBinIndex(region.m_cornerLocation1.m_x, binY);
+                int binIdx = GetBinIndex(region.m_minLocation.m_x, y);
 
-                for (int x = region.m_cornerLocation1.m_x; x < region.m_cornerLocation2.m_x; ++x)
+                for (int x = region.m_minLocation.m_x; x <= region.m_maxLocation.m_x; ++x)
                 {
-                    // Add the first item in the linked list to the query results (dont add sentital).
-                    if (m_binItems[binIdx].m_nextEntry != null)
+                    int lastBinCnt = itemCnt;
+
+                    // Dont add sentital.
+                    BinEntry entry = m_binEntries[binIdx].m_nextEntry;
+                    while (entry != null)
                     {
-                        m_queryResults.AddBinItem(m_binItems[binIdx].m_nextEntry);
+                        itemCnt = m_queryResults.AddBinItem(entry.m_item, lastBinCnt);
+
+                        entry = entry.m_nextEntry;
                     }
+
                     ++binIdx;
                 }
 
-                ++binY;
+                ++y;
 
-            } while (binY < region.m_cornerLocation2.m_y);
+            } while (y <= region.m_maxLocation.m_y);
         }
 
 
@@ -201,14 +252,26 @@ namespace Momo.Core.Spatial
         }
 
 
-        public void GetBinArea(Vector2 centre, Vector2 dimension, ref BinRegion outBinArea)
+        public void GetBinRegionCorners(Vector2 minCorner, Vector2 maxCorner, ref BinRegionUniform outBinRegion)
         {
-            Vector2 halfDimension = dimension * 0.5f;
-            Vector2 negativeCorner = centre - halfDimension;
-            Vector2 positiveCorner = centre - halfDimension;
+            GetBinLocation(minCorner, ref outBinRegion.m_minLocation);
+            GetBinLocation(maxCorner, ref outBinRegion.m_maxLocation);
+        }
 
-            GetBinLocation(negativeCorner, ref outBinArea.m_cornerLocation1);
-            GetBinLocation(positiveCorner, ref outBinArea.m_cornerLocation2);
+
+        public void GetBinRegionFromCentre(Vector2 centre, Vector2 halfDimension, ref BinRegionUniform outBinRegion)
+        {
+            Vector2 minCorner = centre - halfDimension;
+            Vector2 maxCorner = centre + halfDimension;
+
+            GetBinRegionCorners(minCorner, maxCorner, ref outBinRegion);
+        }
+
+
+        public void GetBinRegionFromCentre(Vector2 centre, float radius, ref BinRegionUniform outBinRegion)
+        {
+            Vector2 halfDimension = new Vector2(radius, radius);
+            GetBinRegionFromCentre(centre, halfDimension, ref outBinRegion);
         }
 
 
@@ -227,30 +290,31 @@ namespace Momo.Core.Spatial
         }
 
 
-        public void GetBinDimension(Vector2 dimension, ref BinDimension outBinDimension)
-        {
-            Vector2 binDimension = GetBinDimension(dimension);
+        //public void GetBinDimension(Vector2 dimension, ref BinDimension outBinDimension)
+        //{
+        //    Vector2 binDimension = GetBinDimension(dimension);
 
-            outBinDimension.m_width = (short)binDimension.X;
-            outBinDimension.m_height = (short)binDimension.Y;
-        }
-
-
-        public Vector2 GetBinDimension(Vector2 dimension)
-        {
-            return dimension * m_invBinDimension;
-        }
+        //    outBinDimension.m_width = (short)binDimension.X;
+        //    outBinDimension.m_height = (short)binDimension.Y;
+        //}
 
 
-        public void GetBinDimension(BinLocation negativeCornerLocation, BinLocation positiveCornerLocation, ref BinDimension outBinDimension)
-        {
-            outBinDimension.m_width = (short)(negativeCornerLocation.m_x - positiveCornerLocation.m_x + 1);
-            outBinDimension.m_height = (short)(negativeCornerLocation.m_y - positiveCornerLocation.m_y + 1);
-        }
+        //public Vector2 GetBinDimension(Vector2 dimension)
+        //{
+        //    return dimension * m_invBinDimension;
+        //}
+
+
+        //public void GetBinDimension(BinLocation negativeCornerLocation, BinLocation positiveCornerLocation, ref BinDimension outBinDimension)
+        //{
+        //    outBinDimension.m_width = (short)(negativeCornerLocation.m_x - positiveCornerLocation.m_x + 1);
+        //    outBinDimension.m_height = (short)(negativeCornerLocation.m_y - positiveCornerLocation.m_y + 1);
+        //}
 
 
         public void DebugRender(DebugRenderer debugRenderer, int maxColourCount)
         {
+            float binAlpha = 0.5f;
             int binIdx = 0;
 
 
@@ -266,33 +330,43 @@ namespace Momo.Core.Spatial
 
                 for (int x = 0; x < m_binCountX; ++x)
                 {
-                    int itemCnt = CountBinItemList(m_binItems[binIdx]);
-                    float binColourMod = (float)itemCnt / (float)maxColourCount;
+                    int entryCnt = CountBinList(m_binEntries[binIdx]);
+
+                    float binColourMod = (float)entryCnt / (float)maxColourCount;
                     if(binColourMod > 1.0f)
                         binColourMod = 1.0f;
 
-                    Color binColour = new Color(binColourMod * 2.0f, 1.0f, 0.0f, 0.25f);
+                    Color binColour = new Color(binColourMod * 2.0f, 1.0f, 0.0f, binAlpha);
 
                     if( binColourMod > 0.5f)
                     {
                         binColourMod = (binColourMod - 0.5f) / 0.5f;
-                        binColour = new Color(1.0f, 1.0f - binColourMod, 0.0f, 0.25f);
-
+                        binColour = new Color(1.0f, 1.0f - binColourMod, 0.0f, binAlpha);
                     }
 
 
-                    debugRenderer.DrawQuad(p1, p2, p3, p4, binColour, new Color(0.0f, 0.0f, 0.0f, 0.5f), true, 3.0f);
+                    debugRenderer.DrawQuad(p1, p2, p3, p4, binColour, new Color(0.0f, 0.0f, 0.0f, binAlpha), true, 0.0f);
 
 
                     p1 = p2;
                     p4 = p3;
 
-                    p2.X = (float)(x + 1) * m_binDimension.X;
+                    p2.X = (float)(x + 2) * m_binDimension.X;
                     p3.X = p2.X;
+
+                    ++binIdx;
                 }
 
-                binIdx = m_binCountX * y;
+                binIdx = m_binCountX * (y + 1);
             }
+        }
+
+
+        private BinEntry GetFreeBinEntry()
+        {
+            --m_binEntryPoolFreeCount;
+
+            return m_binEntryPool[m_binEntryPoolFreeCount];
         }
     }
 }

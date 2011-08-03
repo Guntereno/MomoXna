@@ -4,37 +4,85 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 
+using Momo.Core.Spatial;
+using Momo.Core.Collision2D;
+
 
 
 namespace Momo.Core.GameEntities
 {
-    public class DynamicGameEntity : GameEntity
+    public class DynamicGameEntity : GameEntity, IDynamicCollidable
     {
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private Vector2 mVelocity = Vector2.Zero;
+        private Vector2 m_velocity = Vector2.Zero;
+        private Vector2 m_force = Vector2.Zero;
+
+        private MassInfo m_massInfo = new MassInfo(1.0f);
+
 
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public override bool IsMoveable()
+        public override void SetPosition(Vector2 position)
         {
-            return true;
+            base.SetPosition(position);
         }
 
-
-        // Replace with proper check.
-        public override bool GetMovedSinceLastUpdate()
+        public void SetVelocity(Vector2 velocity)
         {
-            return true;
+            m_velocity = velocity;
         }
-
 
         public override Vector2 GetVelocity()
         {
-            return mVelocity;
+            return m_velocity;
+        }
+
+        public void SetForce(Vector2 force)
+        {
+            m_force = force;
+        }
+
+        public Vector2 GetForce()
+        {
+            return m_force;
+        }
+
+        public Vector2 GetLastFramesAcceleration()
+        {
+            return Vector2.Zero;
+        }
+
+        public void SetMass(float mass)
+        {
+            m_massInfo.Mass = mass;
+        }
+
+
+        public float GetMass()
+        {
+            return m_massInfo.Mass;
+        }
+
+
+        public float GetInverseMass()
+        {
+            return m_massInfo.InverseMass;
+        }
+
+
+        public override void Update(ref FrameTime frameTime)
+        {
+            base.Update(ref frameTime);
+        }
+
+
+        public override void PostUpdate()
+        {
+
         }
     }
 }

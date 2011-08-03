@@ -4,9 +4,10 @@ using System.Text;
 
 
 
-namespace Momo.Core.Primitives2D
+namespace Momo.Core.Primitive2D
 {
     public class Primitive2D
     {
+
     }
 }

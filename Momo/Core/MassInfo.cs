@@ -1,45 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 
 
-namespace Momo.Core.Maths
+namespace Momo.Core
 {
-    struct RadiusInfo
+    public struct MassInfo
     {
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private float mRadius;
-        private float mRadiusSq;
+        private float m_mass;
+        private float m_invMass;
 
 
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public float Radius
+        public float Mass
         {
-            get { return mRadius; }
+            get { return m_mass; }
             set
             {
-                mRadius = value;
-                mRadiusSq = mRadius * mRadius;
+                m_mass = value;
+                m_invMass = 1.0f / m_mass;
             }
         }
 
-        public float RadiusSq
+        public float InverseMass
         {
-            get { return mRadiusSq; }
+            get { return m_invMass; }
         }
 
 
 
-        public RadiusInfo(float radius)
+        public MassInfo(float mass)
         {
-            mRadius = radius;
-            mRadiusSq = (float)Math.Sqrt(radius);
+            m_mass = mass;
+            m_invMass = 1.0f / m_mass;
         }
     }
 }

@@ -7,8 +7,22 @@ namespace Momo.Core.Spatial
 {
     public class BinItem
     {
-        internal BinRegion m_binRegion;
+        internal BinRegionUniform m_region;
 
-        internal BinItem m_nextEntry = null;
+
+
+        // --------------------------------------------------------------------
+        // -- Public Methods
+        // --------------------------------------------------------------------
+        public void GetBinRegion(ref BinRegionUniform region)
+        {
+            region = m_region;
+        }
+
+
+        public void SetBinRegion(BinRegionUniform region)
+        {
+            m_region = region;
+        }
     }
 }

@@ -13,18 +13,6 @@ namespace Momo.Core.GameEntities
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public override bool IsMoveable()
-        {
-            return false;
-        }
-
-
-        public override bool GetMovedSinceLastUpdate()
-        {
-            return false;
-        }
-
-
         public override Vector2 GetVelocity()
         {
             return Vector2.Zero;

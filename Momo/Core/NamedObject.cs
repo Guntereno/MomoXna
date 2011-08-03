@@ -10,7 +10,7 @@ namespace Momo.Core
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private string mName = null;
+        private string m_name = null;
 
 
         // --------------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace Momo.Core
         // --------------------------------------------------------------------
         public string Name
         {
-            get { return mName; }
+            get { return m_name; }
         }
 
 
@@ -30,7 +30,7 @@ namespace Momo.Core
 
         public NamedObject(string name)
         {
-            mName = name;
+            m_name = name;
         }
 
     }

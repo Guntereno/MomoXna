@@ -16,24 +16,35 @@ namespace Momo.Core.GameEntities
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private Vector2 mPosition = Vector2.Zero;
+        private Vector2 m_position = Vector2.Zero;
 
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public abstract bool IsMoveable();
-        public abstract bool GetMovedSinceLastUpdate();
         public abstract Vector2 GetVelocity();
+
+
+
+        public virtual void SetPosition(Vector2 position)
+        {
+            m_position = position;
+        }
 
 
         public Vector2 GetPosition()
         {
-            return mPosition;
+            return m_position;
         }
 
 
         public virtual void Update(ref FrameTime frameTime)
+        {
+
+        }
+
+
+        public virtual void PostUpdate()
         {
 
         }
