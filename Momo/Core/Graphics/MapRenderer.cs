@@ -24,6 +24,7 @@ namespace Momo.Core.Graphics
         int m_patchSize = 8;
         List<Patch>[] m_layers;
 
+        SamplerState m_samplerState;
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -62,6 +63,15 @@ namespace Momo.Core.Graphics
                     }
                 }
             }
+
+            m_samplerState = new SamplerState();
+            m_samplerState.AddressU = TextureAddressMode.Clamp;
+            m_samplerState.AddressV = TextureAddressMode.Clamp;
+            m_samplerState.AddressW = TextureAddressMode.Clamp;
+            m_samplerState.Filter = TextureFilter.Point;
+            m_samplerState.MaxAnisotropy = 0;
+            m_samplerState.MaxMipLevel = 0;
+            m_samplerState.MipMapLevelOfDetailBias = 0;
         }
 
         public void Render(Matrix viewMatrix, Matrix projMatrix, GraphicsDevice graphicsDevice)
@@ -81,6 +91,7 @@ namespace Momo.Core.Graphics
             graphicsDevice.BlendState = BlendState.AlphaBlend;
             graphicsDevice.DepthStencilState = DepthStencilState.None;
             graphicsDevice.RasterizerState = RasterizerState.CullNone;
+            graphicsDevice.SamplerStates[0] = m_samplerState;
 
             for (int layerIdx = 0; layerIdx < m_map.TileLayers.Length; ++layerIdx)
             {
@@ -97,6 +108,7 @@ namespace Momo.Core.Graphics
             graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
             graphicsDevice.BlendState = BlendState.Opaque;
+            graphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
         }
 
 
@@ -165,10 +177,11 @@ namespace Momo.Core.Graphics
                         float top = (tileInfo.m_y * m_map.TileDimensions.Y);
                         float bottom = ((tileInfo.m_y + 1) * m_map.TileDimensions.Y);
 
-                        float texLeft = ((float)tileInfo.m_tile.Source.Left / (float)texture.Width);
-                        float texRight = ((float)tileInfo.m_tile.Source.Right / (float)texture.Width);
-                        float texTop = ((float)tileInfo.m_tile.Source.Top / (float)texture.Height);
-                        float texBottom = ((float)tileInfo.m_tile.Source.Bottom / (float)texture.Height);
+                        const float kEpsilon = 0.0f; // used to prevent colour bleeding
+                        float texLeft = (((float)tileInfo.m_tile.Source.Left + kEpsilon) / (float)texture.Width);
+                        float texRight = (((float)tileInfo.m_tile.Source.Right - kEpsilon) / (float)texture.Width);
+                        float texTop = (((float)tileInfo.m_tile.Source.Top + kEpsilon) / (float)texture.Height);
+                        float texBottom = (((float)tileInfo.m_tile.Source.Bottom - kEpsilon) / (float)texture.Height);
 
                         vertList[currentVert].Position = new Vector3(left, top, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texTop);
