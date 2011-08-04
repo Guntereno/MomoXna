@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lighting>
+ <templates>
+  <template name="CeilingLight" type="PointLight">
+   <properties>
+    <property name="ConstantAttenuation" value="0.0"/>
+    <property name="LinearAttenuation" value="0.004"/>
+    <property name="QuadraticAttenuation" value="0.00005"/>
+    <property name="Colour" value="254,249,200"/>
+    <property name="Strength" value="1"/>
+    <property name="Height" value="200"/>
+    <property name="Radius" value="220.0"/>
+   </properties>
+  </template>
+  <template name="GroundLight" type="PointLight">
+   <properties>
+    <property name="ConstantAttenuation" value="0.5"/>
+    <property name="LinearAttenuation" value="0.004"/>
+    <property name="QuadraticAttenuation" value="0.00005"/>
+    <property name="Colour" value="219,248,255"/>
+    <property name="Strength" value="0.3"/>
+    <property name="Height" value="90"/>
+    <property name="Radius" value="65"/>
+   </properties>
+  </template>
+  <template name="DoorLightOpen" type="PointLight">
+   <properties>
+    <property name="ConstantAttenuation" value="0.5"/>
+    <property name="LinearAttenuation" value="0.004"/>
+    <property name="QuadraticAttenuation" value="0.00005"/>
+    <property name="Colour" value="150,255,50"/>
+    <property name="Strength" value="0.5"/>
+    <property name="Height" value="90"/>
+    <property name="Radius" value="65"/>
+   </properties>
+  </template>
+  <template name="DoorLightLocked" type="PointLight">
+   <properties>
+    <property name="ConstantAttenuation" value="0.5"/>
+    <property name="LinearAttenuation" value="0.004"/>
+    <property name="QuadraticAttenuation" value="0.00005"/>
+    <property name="Colour" value="255,50,50"/>
+    <property name="Strength" value="0.5"/>
+    <property name="Height" value="90"/>
+    <property name="Radius" value="65"/>
+   </properties>
+  </template>
+   <template name="External_Light" type="PointLight">
+     <properties>
+       <property name="ConstantAttenuation" value="0.3"/>
+       <property name="LinearAttenuation" value="0.000"/>
+       <property name="QuadraticAttenuation" value="0.00009"/>
+       <property name="Colour" value="200,200,225"/>
+       <property name="Strength" value="0.5"/>
+       <property name="Height" value="255"/>
+       <property name="Radius" value="500"/>
+     </properties>
+   </template>
+ </templates>
+</lighting>
