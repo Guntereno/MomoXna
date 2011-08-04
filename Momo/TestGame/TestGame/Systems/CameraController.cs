@@ -19,7 +19,7 @@ namespace TestGame.Systems
 
         }
 
-        public void Update(GamePadState currentGamePadState)
+        public void Update(GamePadState currentGamePadState, KeyboardState currentKeyboardState)
         {
             if (Camera != null)
             {
@@ -31,19 +31,45 @@ namespace TestGame.Systems
 
                 float kMaxSpeed = 20.0f;
                 const float kCamAccel = 5.0f;
-                float xLeftStick = currentGamePadState.ThumbSticks.Left.X;
+                float xAmount = currentGamePadState.ThumbSticks.Left.X;
 
-                if(Math.Abs(xLeftStick) > kAnalogDeadzone)
+                bool leftKey = currentKeyboardState.IsKeyDown(Keys.Left);
+                bool rightKey = currentKeyboardState.IsKeyDown(Keys.Right);
+                if (leftKey && !rightKey)
                 {
-                    if (Math.Abs(m_cameraSpeed.X) < kMaxSpeed)
-                        m_cameraSpeed.X += (kCamAccel * xLeftStick);
+                    xAmount = -1.0f;
+                }
+                else if(rightKey && !leftKey)
+                {
+                    xAmount = 1.0f;
                 }
 
-                float yLeftStick = currentGamePadState.ThumbSticks.Left.Y;
-                if ( Math.Abs(yLeftStick) > kAnalogDeadzone)
+                if(Math.Abs(xAmount) > kAnalogDeadzone)
+                {
+                    if (Math.Abs(m_cameraSpeed.X) < kMaxSpeed)
+                        m_cameraSpeed.X += (kCamAccel * xAmount);
+                }
+
+
+
+
+                float yAmount = currentGamePadState.ThumbSticks.Left.Y;
+
+                bool upKey = currentKeyboardState.IsKeyDown(Keys.Up);
+                bool downKey = currentKeyboardState.IsKeyDown(Keys.Down);
+                if (upKey && !downKey)
+                {
+                    yAmount = 1.0f;
+                }
+                else if (downKey && !upKey)
+                {
+                    yAmount = -1.0f;
+                }
+
+                if ( Math.Abs(yAmount) > kAnalogDeadzone)
                 {
                     if (Math.Abs(m_cameraSpeed.Y) < kMaxSpeed)
-                        m_cameraSpeed.Y += (kCamAccel * yLeftStick);
+                        m_cameraSpeed.Y += (kCamAccel * yAmount);
                 }
 
                 const float kDampeningFactor = 0.85f;

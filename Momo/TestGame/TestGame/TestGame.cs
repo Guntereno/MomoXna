@@ -92,6 +92,7 @@ namespace TestGame
         protected override void Update(GameTime gameTime)
         {
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            KeyboardState keyboardState = Keyboard.GetState();
 
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -99,7 +100,7 @@ namespace TestGame
 
             m_worldManager.Update(gameTime.ElapsedGameTime.Seconds);
 
-            m_cameraController.Update(gamePadState);
+            m_cameraController.Update(gamePadState, keyboardState);
 
             base.Update(gameTime);
         }
