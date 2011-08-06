@@ -275,7 +275,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer name="Ceiling" width="256" height="256">
+ <layer name="Walls" width="256" height="256">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -1058,397 +1058,397 @@
  <objectgroup name="Lights" width="64" height="64">
   <object name="CeilingLight1" type="PointLight" x="320" y="450">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight2" type="PointLight" x="897" y="736">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight3" type="PointLight" x="638" y="734">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight4" type="PointLight" x="1216" y="257">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight5" type="PointLight" x="1342" y="450">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight6" type="PointLight" x="1761" y="257">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight7" type="PointLight" x="1761" y="1023">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight8" type="PointLight" x="1345" y="1025">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight9" type="PointLight" x="1215" y="1027">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight10" type="PointLight" x="864" y="1025">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight12" type="PointLight" x="319" y="1025">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="319" y="617">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight2" type="PointLight" x="577" y="617">
    <properties>
-    <property name="Template" value="GroundLight"/>
+	<property name="Template" value="GroundLight"/>
    </properties>
   </object>
   <object name="GroundLight3" type="PointLight" x="831" y="616">
    <properties>
-    <property name="Template" value="GroundLight"/>
+	<property name="Template" value="GroundLight"/>
    </properties>
   </object>
   <object name="GroundLight4" type="PointLight" x="1089" y="617">
    <properties>
-    <property name="Template" value="GroundLight"/>
+	<property name="Template" value="GroundLight"/>
    </properties>
   </object>
   <object name="GroundLight5" type="PointLight" x="1345" y="618">
    <properties>
-    <property name="Template" value="DoorLightLocked"/>
+	<property name="Template" value="DoorLightLocked"/>
    </properties>
   </object>
   <object name="GroundLight6" type="PointLight" x="1601" y="627">
    <properties>
-    <property name="Template" value="GroundLight"/>
+	<property name="Template" value="GroundLight"/>
    </properties>
   </object>
   <object name="GroundLight7" type="PointLight" x="448" y="857">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight8" type="PointLight" x="703" y="856">
    <properties>
-    <property name="Template" value="GroundLight"/>
+	<property name="Template" value="GroundLight"/>
    </properties>
   </object>
   <object name="GroundLight9" type="PointLight" x="959" y="856">
    <properties>
-    <property name="Template" value="GroundLight"/>
+	<property name="Template" value="GroundLight"/>
    </properties>
   </object>
   <object name="GroundLight10" type="PointLight" x="1215" y="857">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight11" type="PointLight" x="1473" y="854">
    <properties>
-    <property name="Template" value="GroundLight"/>
+	<property name="Template" value="GroundLight"/>
    </properties>
   </object>
   <object name="NewLight_001" type="PointLight" x="1151" y="737">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight3" type="PointLight" x="383" y="736">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="GroundLight7" type="PointLight" x="321" y="857">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="CeilingLight3" type="PointLight" x="129" y="737">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight12" type="PointLight" x="576" y="1025">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight12" type="PointLight" x="577" y="1217">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight12" type="PointLight" x="319" y="1218">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight12" type="PointLight" x="448" y="1025">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight12" type="PointLight" x="449" y="1218">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="GroundLight7" type="PointLight" x="446" y="905">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight7" type="PointLight" x="319" y="904">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="CeilingLight10" type="PointLight" x="864" y="1217">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight8" type="PointLight" x="1472" y="1024">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight8" type="PointLight" x="1473" y="1215">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight8" type="PointLight" x="1344" y="1215">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight8" type="PointLight" x="1216" y="1216">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="GroundLight10" type="PointLight" x="1340" y="857">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight10" type="PointLight" x="1339" y="903">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight10" type="PointLight" x="1216" y="904">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="CeilingLight7" type="PointLight" x="1759" y="1216">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="320" y="568">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="445" y="569">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="442" y="617">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="CeilingLight1" type="PointLight" x="575" y="450">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight1" type="PointLight" x="449" y="450">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight1" type="PointLight" x="576" y="257">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight1" type="PointLight" x="320" y="256">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight1" type="PointLight" x="447" y="256">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="GroundLight5" type="PointLight" x="1344" y="570">
    <properties>
-    <property name="Template" value="DoorLightLocked"/>
+	<property name="Template" value="DoorLightLocked"/>
    </properties>
   </object>
   <object name="GroundLight5" type="PointLight" x="1217" y="569">
    <properties>
-    <property name="Template" value="DoorLightLocked"/>
+	<property name="Template" value="DoorLightLocked"/>
    </properties>
   </object>
   <object name="GroundLight5" type="PointLight" x="1218" y="617">
    <properties>
-    <property name="Template" value="DoorLightLocked"/>
+	<property name="Template" value="DoorLightLocked"/>
    </properties>
   </object>
   <object name="CeilingLight4" type="PointLight" x="1345" y="257">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight4" type="PointLight" x="1472" y="256">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight4" type="PointLight" x="1471" y="450">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight5" type="PointLight" x="1217" y="449">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="NewLight_001" type="PointLight" x="1409" y="736">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="NewLight_001" type="PointLight" x="1665" y="737">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="GroundLight11" type="PointLight" x="1727" y="856">
    <properties>
-    <property name="Template" value="GroundLight"/>
+	<property name="Template" value="GroundLight"/>
    </properties>
   </object>
   <object name="GroundLight7" type="PointLight" x="745" y="970">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight7" type="PointLight" x="694" y="970">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight7" type="PointLight" x="694" y="1082">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight7" type="PointLight" x="745" y="1082">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight10" type="PointLight" x="1591" y="970">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight10" type="PointLight" x="1641" y="971">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight10" type="PointLight" x="1641" y="1082">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight10" type="PointLight" x="1591" y="1081">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="CeilingLight5" type="PointLight" x="863" y="451">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="CeilingLight5" type="PointLight" x="863" y="258">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="745" y="312">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="694" y="312">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="695" y="199">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="742" y="200">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="1591" y="312">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="CeilingLight6" type="PointLight" x="1760" y="449">
    <properties>
-    <property name="Template" value="CeilingLight"/>
+	<property name="Template" value="CeilingLight"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="1641" y="311">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="1641" y="200">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
   <object name="GroundLight1" type="PointLight" x="1591" y="199">
    <properties>
-    <property name="Template" value="DoorLightOpen"/>
+	<property name="Template" value="DoorLightOpen"/>
    </properties>
   </object>
  </objectgroup>

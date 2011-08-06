@@ -9,78 +9,78 @@ using Momo.Core.Nodes.Cameras;
 
 namespace TestGame.Systems
 {
-    class CameraController
-    {
-        public OrthographicCameraNode Camera { get; set; }
-        Vector3 m_cameraSpeed = Vector3.Zero;
-        Vector3 m_position = Vector3.Zero;
+	class CameraController
+	{
+		public OrthographicCameraNode Camera { get; set; }
+		Vector3 m_cameraSpeed = Vector3.Zero;
+		Vector3 m_position = Vector3.Zero;
 
-        public CameraController()
-        {
-            m_position.Z = 10.0f;
-        }
+		public CameraController()
+		{
+			m_position.Z = 10.0f;
+		}
 
-        public void Update(GamePadState currentGamePadState, KeyboardState currentKeyboardState)
-        {
-            if (Camera != null)
-            {
-                m_position += m_cameraSpeed;
+		public void Update(GamePadState currentGamePadState, KeyboardState currentKeyboardState)
+		{
+			if (Camera != null)
+			{
+				m_position += m_cameraSpeed;
 
-                Vector3 newPos = new Vector3(
-                    (float)Math.Floor(m_position.X),
-                    (float)Math.Floor(m_position.Y),
-                    (float)Math.Floor(m_position.Z));
+				Vector3 newPos = new Vector3(
+					(float)Math.Floor(m_position.X),
+					(float)Math.Floor(m_position.Y),
+					(float)Math.Floor(m_position.Z));
 
-                Camera.LocalTranslation = newPos;
+				Camera.LocalTranslation = newPos;
 
-                const float kAnalogDeadzone = 0.3f;
+				const float kAnalogDeadzone = 0.3f;
 
-                float kMaxSpeed = 20.0f;
-                const float kCamAccel = 5.0f;
-                float xAmount = currentGamePadState.ThumbSticks.Left.X;
+				float kMaxSpeed = 20.0f;
+				const float kCamAccel = 5.0f;
+				float xAmount = currentGamePadState.ThumbSticks.Left.X;
 
-                bool leftKey = currentKeyboardState.IsKeyDown(Keys.Left);
-                bool rightKey = currentKeyboardState.IsKeyDown(Keys.Right);
-                if (leftKey && !rightKey)
-                {
-                    xAmount = -1.0f;
-                }
-                else if(rightKey && !leftKey)
-                {
-                    xAmount = 1.0f;
-                }
+				bool leftKey = currentKeyboardState.IsKeyDown(Keys.Left);
+				bool rightKey = currentKeyboardState.IsKeyDown(Keys.Right);
+				if (leftKey && !rightKey)
+				{
+					xAmount = -1.0f;
+				}
+				else if(rightKey && !leftKey)
+				{
+					xAmount = 1.0f;
+				}
 
-                if(Math.Abs(xAmount) > kAnalogDeadzone)
-                {
-                    if (Math.Abs(m_cameraSpeed.X) < kMaxSpeed)
-                        m_cameraSpeed.X += (kCamAccel * xAmount);
-                }
-
-
+				if(Math.Abs(xAmount) > kAnalogDeadzone)
+				{
+					if (Math.Abs(m_cameraSpeed.X) < kMaxSpeed)
+						m_cameraSpeed.X += (kCamAccel * xAmount);
+				}
 
 
-                float yAmount = currentGamePadState.ThumbSticks.Left.Y;
 
-                bool upKey = currentKeyboardState.IsKeyDown(Keys.Up);
-                bool downKey = currentKeyboardState.IsKeyDown(Keys.Down);
-                if (upKey && !downKey)
-                {
-                    yAmount = 1.0f;
-                }
-                else if (downKey && !upKey)
-                {
-                    yAmount = -1.0f;
-                }
 
-                if ( Math.Abs(yAmount) > kAnalogDeadzone)
-                {
-                    if (Math.Abs(m_cameraSpeed.Y) < kMaxSpeed)
-                        m_cameraSpeed.Y += (kCamAccel * yAmount);
-                }
+				float yAmount = currentGamePadState.ThumbSticks.Left.Y;
 
-                const float kDampeningFactor = 0.85f;
-                m_cameraSpeed *= kDampeningFactor;
-            }
-        }
-    }
+				bool upKey = currentKeyboardState.IsKeyDown(Keys.Up);
+				bool downKey = currentKeyboardState.IsKeyDown(Keys.Down);
+				if (upKey && !downKey)
+				{
+					yAmount = 1.0f;
+				}
+				else if (downKey && !upKey)
+				{
+					yAmount = -1.0f;
+				}
+
+				if ( Math.Abs(yAmount) > kAnalogDeadzone)
+				{
+					if (Math.Abs(m_cameraSpeed.Y) < kMaxSpeed)
+						m_cameraSpeed.Y += (kCamAccel * yAmount);
+				}
+
+				const float kDampeningFactor = 0.85f;
+				m_cameraSpeed *= kDampeningFactor;
+			}
+		}
+	}
 }

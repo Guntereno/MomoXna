@@ -61,6 +61,7 @@
       <Name>1_living_quarters</Name>
       <Processor>TmxProcessor</Processor>
       <Importer>TmxImporter</Importer>
+      <SubType>Designer</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

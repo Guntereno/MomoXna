@@ -14,84 +14,84 @@ using Momo.Debug;
 
 namespace Momo.Core.GameEntities
 {
-    public class BoundaryEntity : GameEntity
-    {
-        // --------------------------------------------------------------------
-        // -- Private Members
-        // --------------------------------------------------------------------
-        private LineStripPrimitive2D m_collisionPrimitive = null;
-        private BinRegionUniform [] m_collisionLineBinRegions = null;
+	public class BoundaryEntity : GameEntity
+	{
+		// --------------------------------------------------------------------
+		// -- Private Members
+		// --------------------------------------------------------------------
+		private LineStripPrimitive2D m_collisionPrimitive = null;
+		private BinRegionUniform [] m_collisionLineBinRegions = null;
 
 
 
-        // --------------------------------------------------------------------
-        // -- Public Methods
-        // --------------------------------------------------------------------
-        public LineStripPrimitive2D CollisionPrimitive
-        {
-            get { return m_collisionPrimitive; }
-        }
+		// --------------------------------------------------------------------
+		// -- Public Methods
+		// --------------------------------------------------------------------
+		public LineStripPrimitive2D CollisionPrimitive
+		{
+			get { return m_collisionPrimitive; }
+		}
 
-        public BinRegionUniform [] CollisionLineBinRegions
-        {
-            get { return m_collisionLineBinRegions; }
-        }
-
-
-        public override Vector2 GetVelocity()
-        {
-            return Vector2.Zero;
-        }
+		public BinRegionUniform [] CollisionLineBinRegions
+		{
+			get { return m_collisionLineBinRegions; }
+		}
 
 
-        public BoundaryEntity(LineStripPrimitive2D collisionPrimitive)
-        {
-            m_collisionPrimitive = collisionPrimitive;
-
-            m_collisionLineBinRegions = new BinRegionUniform[m_collisionPrimitive.LineCount];
-        }
+		public override Vector2 GetVelocity()
+		{
+			return Vector2.Zero;
+		}
 
 
-        public void RecalculateBinRegion(Bin bin)
-        {
-            Vector2 minCorner;
-            Vector2 maxCorner;
-            BinRegionUniform binRegion = new BinRegionUniform();
+		public BoundaryEntity(LineStripPrimitive2D collisionPrimitive)
+		{
+			m_collisionPrimitive = collisionPrimitive;
 
-            m_collisionPrimitive.CalculateBoundingArea(out minCorner, out maxCorner);
-
-            bin.GetBinRegionCorners(minCorner, maxCorner, ref binRegion);
-
-            SetBinRegion(binRegion);
-
-            for (int i = 0; i < m_collisionPrimitive.LineCount; ++i)
-            {
-                Vector2 min;
-                Vector2 max;
-
-                m_collisionPrimitive.LineList[i].CalculateMinMax(out min, out max);
-
-                bin.GetBinRegionCorners(min, max, ref m_collisionLineBinRegions[i]);
-            }
-        }
+			m_collisionLineBinRegions = new BinRegionUniform[m_collisionPrimitive.LineCount];
+		}
 
 
-        public override void DebugRender(DebugRenderer debugRenderer)
-        {
-            System.Diagnostics.Debug.Assert(m_collisionPrimitive != null);
+		public void RecalculateBinRegion(Bin bin)
+		{
+			Vector2 minCorner;
+			Vector2 maxCorner;
+			BinRegionUniform binRegion = new BinRegionUniform();
 
-            Vector2 lastPoint = m_collisionPrimitive.LineList[0].m_point;
+			m_collisionPrimitive.CalculateBoundingArea(out minCorner, out maxCorner);
 
-            for (int i = 1; i < m_collisionPrimitive.PointCount; ++i)
-            {
-                Vector2 point = m_collisionPrimitive.LineList[i].m_point;
+			bin.GetBinRegionCorners(minCorner, maxCorner, ref binRegion);
 
-                debugRenderer.DrawFilledLine(point, lastPoint, new Color(0.0f, 0.0f, 0.0f, 0.5f), 5.0f);
+			SetBinRegion(binRegion);
 
-                lastPoint = point;
-            }
+			for (int i = 0; i < m_collisionPrimitive.LineCount; ++i)
+			{
+				Vector2 min;
+				Vector2 max;
 
-            
-        }
-    }
+				m_collisionPrimitive.LineList[i].CalculateMinMax(out min, out max);
+
+				bin.GetBinRegionCorners(min, max, ref m_collisionLineBinRegions[i]);
+			}
+		}
+
+
+		public override void DebugRender(DebugRenderer debugRenderer)
+		{
+			System.Diagnostics.Debug.Assert(m_collisionPrimitive != null);
+
+			Vector2 lastPoint = m_collisionPrimitive.LineList[0].m_point;
+
+			for (int i = 1; i < m_collisionPrimitive.PointCount; ++i)
+			{
+				Vector2 point = m_collisionPrimitive.LineList[i].m_point;
+
+				debugRenderer.DrawFilledLineWithCaps(point, lastPoint, new Color(0.0f, 1.0f, 0.0f, 0.5f), 3.0f);
+
+				lastPoint = point;
+			}
+
+			
+		}
+	}
 }

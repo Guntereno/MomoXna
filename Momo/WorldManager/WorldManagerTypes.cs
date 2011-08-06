@@ -5,23 +5,23 @@ using System.Text;
 
 namespace WorldManager
 {
-    // --------------------------------------------------------------------
-    // -- Public Enum
-    // --------------------------------------------------------------------
-    public enum WorldState
-    {
-        kIdle,
-        kLoading,
-        kLoaded,
-        kActive,
-        kFlushing,
-        kFlushed,
-    }
+	// --------------------------------------------------------------------
+	// -- Public Enum
+	// --------------------------------------------------------------------
+	public enum WorldState
+	{
+		kIdle,
+		kLoading,
+		kLoaded,
+		kActive,
+		kFlushing,
+		kFlushed,
+	}
 
 
-    // --------------------------------------------------------------------
-    // --- Public Delegate Definitions
-    // --------------------------------------------------------------------
-    public delegate World WorldCreator();
+	// --------------------------------------------------------------------
+	// --- Public Delegate Definitions
+	// --------------------------------------------------------------------
+	public delegate World WorldCreator();
 
 }

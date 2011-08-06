@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Momo.Core.Spatial
 {
-    public struct BinSelectionRegion
-    {
-        //internal int [] m_binIndices = null;
-    }
+	public struct BinSelectionRegion
+	{
+		//internal int [] m_binIndices = null;
+	}
 }

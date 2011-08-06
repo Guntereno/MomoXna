@@ -8,73 +8,73 @@ using Momo.Core.GameEntities;
 
 namespace Momo.Core.Spatial
 {
-    public class BinQueryResults
-    {
-        private int m_binItemCount = 0;
-        private BinItem[] m_binItemQueryResults;
+	public class BinQueryResults
+	{
+		private int m_binItemCount = 0;
+		private BinItem[] m_binItemQueryResults;
 
 
 
-        // --------------------------------------------------------------------
-        // -- Public Methods
-        // --------------------------------------------------------------------
-        public int BinItemCount
-        {
-            get { return m_binItemCount; }
-        }
+		// --------------------------------------------------------------------
+		// -- Public Methods
+		// --------------------------------------------------------------------
+		public int BinItemCount
+		{
+			get { return m_binItemCount; }
+		}
 
-        public BinItem[] BinItemQueryResults
-        {
-            get { return m_binItemQueryResults; }
-        }
-
-
-
-        public BinQueryResults(int queryResultsCapacity)
-        {
-            m_binItemQueryResults = new BinItem[queryResultsCapacity];
-        }
+		public BinItem[] BinItemQueryResults
+		{
+			get { return m_binItemQueryResults; }
+		}
 
 
-        public void Clear()
-        {
-            m_binItemCount = 0;
-        }
+
+		public BinQueryResults(int queryResultsCapacity)
+		{
+			m_binItemQueryResults = new BinItem[queryResultsCapacity];
+		}
 
 
-        public int AddBinItem(BinItem item)
-        {
-            m_binItemQueryResults[m_binItemCount] = item;
-            ++m_binItemCount;
-
-            return m_binItemCount;
-        }
+		public void Clear()
+		{
+			m_binItemCount = 0;
+		}
 
 
-        public int AddBinItem(BinItem item, int checkToIndex)
-        {
-            bool itemInList = IsItemInList(item, checkToIndex);
+		public int AddBinItem(BinItem item)
+		{
+			m_binItemQueryResults[m_binItemCount] = item;
+			++m_binItemCount;
 
-            if (itemInList == false)
-            {
-                m_binItemQueryResults[m_binItemCount] = item;
-                ++m_binItemCount;
-            }
-
-            return m_binItemCount;
-        }
+			return m_binItemCount;
+		}
 
 
-        public bool IsItemInList(BinItem item, int checkToIndex)
-        {
-            for (int i = 0; i < checkToIndex; ++i)
-            {
-                if (m_binItemQueryResults[i] == item)
-                    return true;
-            }
+		public int AddBinItem(BinItem item, int checkToIndex)
+		{
+			bool itemInList = IsItemInList(item, checkToIndex);
 
-            return false;
-        }
+			if (itemInList == false)
+			{
+				m_binItemQueryResults[m_binItemCount] = item;
+				++m_binItemCount;
+			}
 
-    }
+			return m_binItemCount;
+		}
+
+
+		public bool IsItemInList(BinItem item, int checkToIndex)
+		{
+			for (int i = 0; i < checkToIndex; ++i)
+			{
+				if (m_binItemQueryResults[i] == item)
+					return true;
+			}
+
+			return false;
+		}
+
+	}
 }
