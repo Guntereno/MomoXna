@@ -209,8 +209,8 @@ namespace TmxProcessorLib.Content
 
 		private struct Edge
 		{
-			public Point Point1{ get{ return m_point1; } }
-			public Point Point2{ get { return m_point2; } }
+			public Point Point1 { get { return m_point1; } set{ m_point1 = value;} }
+			public Point Point2 { get { return m_point2; } set { m_point2 = value; } }
 
 			public Edge(Point point1, Point point2)
 			{
@@ -354,7 +354,57 @@ namespace TmxProcessorLib.Content
 					}
 				}
 
-				//// Now optimise the list
+
+
+				// Now optimise the list
+				CollisionBoundaries = new List<Point[]>();
+				for (int stripIdx = 0; stripIdx < edgeLoops.Count; ++stripIdx)
+				{
+					List<Edge> currentStrip = edgeLoops[stripIdx];
+					List<Edge> optimised = new List<Edge>();
+
+					int currentIndex = 0;
+					Edge newEdge = currentStrip[currentIndex];
+					Point delta = new Point(
+						currentStrip[currentIndex].Point2.X - currentStrip[currentIndex].Point1.X,
+						currentStrip[currentIndex].Point2.Y - currentStrip[currentIndex].Point1.Y);
+
+					while (currentIndex < currentStrip.Count)
+					{
+						Edge currentEdge;
+						Point currentDelta;
+						do
+						{
+							currentIndex++;
+
+							if (currentIndex == currentStrip.Count)
+							{
+								optimised.Add(newEdge);
+								break;
+							}
+
+							currentEdge = currentStrip[currentIndex];
+							currentDelta = new Point(
+								currentEdge.Point2.X - currentEdge.Point1.X,
+								currentEdge.Point2.Y - currentEdge.Point1.Y);
+
+							if (delta == currentDelta)
+							{
+								newEdge.Point2 = currentEdge.Point2;
+							}
+							else
+							{
+								delta = currentDelta;
+								optimised.Add(newEdge);
+								newEdge = currentEdge;
+							}
+						}
+						while (true);
+					}
+
+					edgeLoops[stripIdx] = optimised;
+				}
+
 				//{
 				//	int currentIdx = 0;
 				//	Edge current = edgeLoop[currentIdx];

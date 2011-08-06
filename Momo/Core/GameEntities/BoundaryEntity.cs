@@ -86,12 +86,11 @@ namespace Momo.Core.GameEntities
 			{
 				Vector2 point = m_collisionPrimitive.LineList[i].m_point;
 
-				debugRenderer.DrawFilledLineWithCaps(point, lastPoint, new Color(0.0f, 1.0f, 0.0f, 0.5f), 3.0f);
+				debugRenderer.DrawFilledLineWithCaps(point, lastPoint, new Color(0.0f, 1.0f, 0.0f, 0.5f), 2.0f);
 
 				lastPoint = point;
 			}
 
-			
 		}
 	}
 }
