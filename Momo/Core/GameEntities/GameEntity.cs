@@ -18,6 +18,8 @@ namespace Momo.Core.GameEntities
 		// --------------------------------------------------------------------
 		private Vector2 m_position = Vector2.Zero;
 
+        private int m_flags = 0;  // Use to mark up who owns this etc. int.MaxInt flag indicates it needs destroying.
+
 
 		// --------------------------------------------------------------------
 		// -- Public Methods
@@ -25,6 +27,16 @@ namespace Momo.Core.GameEntities
 		public abstract Vector2 GetVelocity();
 
 
+        public bool NeedsDestorying()
+        {
+            return (m_flags == int.MaxValue);
+        }
+
+
+        public void SetFlags(int flag)
+        {
+            m_flags = flag;
+        }
 
 		public virtual void SetPosition(Vector2 position)
 		{

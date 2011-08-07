@@ -15,6 +15,7 @@ using Momo.Debug;
 
 using TestGame.Systems;
 using TestGame.Entities;
+using TestGame.Objects;
 
 
 
@@ -48,6 +49,7 @@ namespace TestGame
         List<AiEntity> m_ais = new List<AiEntity>(2000);
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
         List<BulletEntity> m_bullets = new List<BulletEntity>(2000);
+        List<Explosion> m_explosions = new List<Explosion>(100);
 
 
 		public TestGame()
@@ -91,7 +93,7 @@ namespace TestGame
             for (int i = 0; i < 200; ++i)
             {
                 AiEntity ai = new AiEntity();
-                Vector2 pos = new Vector2(100.0f + ((float)ms_random.NextDouble() * 3300.0f),
+                Vector2 pos = new Vector2(150.0f + ((float)ms_random.NextDouble() * 3300.0f),
                                             725.0f + ((float)ms_random.NextDouble() * 65.0f));
 
                 ai.SetPosition(pos);
@@ -162,20 +164,29 @@ namespace TestGame
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime((float)gameTime.ElapsedGameTime.TotalSeconds);
 
+            m_explosions.Clear();
 
             m_worldManager.Update(frameTime.Dt);
 
 
-            //if(ms_random.NextDouble() < 0.1f)
+            if (ms_random.NextDouble() < 0.1f)
+            {
+                BulletEntity bullet = new BulletEntity();
+                bullet.SetPosition(new Vector2(100.0f, 750.0f));
+
+                Vector2 velocity = new Vector2(1.0f, ((float)ms_random.NextDouble() - 0.5f) * 0.05f);
+                velocity.Normalize();
+                bullet.SetVelocity(velocity * 500.0f);
+
+                bullet.AddToBin(m_bin);
+                m_bullets.Add(bullet);
+            }
+
+            // Works for the debug rendering is hard on the eye.
+            //if (ms_random.NextDouble() < 0.02f)
             //{
-            //    BulletEntity bullet = new BulletEntity();
-            //    bullet.SetPosition(new Vector2(100.0f, 750.0f));
-
-            //    Vector2 velocity = new Vector2(1.0f, ((float)ms_random.NextDouble() - 0.5f) * 0.05f);
-            //    velocity.Normalize();
-            //    bullet.SetVelocity(velocity * 500.0f);
-
-            //    m_bullets.Add(bullet);
+            //    Explosion explosion = new Explosion(new Vector2(350.0f, 750.0f), 150.0f, 25000.0f);
+            //    m_explosions.Add(explosion);
             //}
 
 
@@ -193,12 +204,25 @@ namespace TestGame
 
             m_contactList.StartAddingContacts();
 
-            GameHelpers.GenerateContacts(m_ais, m_bin, m_contactList);
-            GameHelpers.GenerateContacts(m_ais, m_boundaries, m_bin, m_contactList);
+            CollisionHelpers.GenerateContacts(m_ais, m_bin, m_contactList);
+            CollisionHelpers.GenerateContacts(m_ais, m_boundaries, m_bin, m_contactList);
+            CollisionHelpers.UpdateBulletContacts(m_ais, m_bullets, m_bin);
+            CollisionHelpers.UpdateExplosions(m_ais, m_explosions, m_bin);
 
             m_contactList.EndAddingContacts();
 
             m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
+
+            // Destroying dead entities/objects
+            for (int i = 0; i < m_bullets.Count; ++i)
+            {
+                if (m_bullets[i].NeedsDestorying())
+                {
+                    m_bullets[i].RemoveFromBin(m_bin);
+                    m_bullets.RemoveAt(i);
+                    --i;
+                }
+            }
 
 
 			m_cameraController.Update(gamePadState, keyboardState);
@@ -287,6 +311,11 @@ namespace TestGame
             for (int i = 0; i < m_bullets.Count; ++i)
             {
                 m_bullets[i].DebugRender(m_debugRenderer);
+            }
+
+            for (int i = 0; i < m_explosions.Count; ++i)
+            {
+                m_explosions[i].DebugRender(m_debugRenderer);
             }
 
 			m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);

@@ -92,8 +92,11 @@ namespace Momo.Core.GameEntities
 
             m_lastFrameAcceleration = (m_force * frameTime.Dt);
             m_velocity = m_velocity + m_lastFrameAcceleration;
+            m_velocity *= 0.90f;
+
             m_force = Vector2.Zero;
 
+    
             SetPosition(newPosition);
 		}
 
@@ -104,10 +107,7 @@ namespace Momo.Core.GameEntities
 		}
 
 
-        // --------------------------------------------------------------------
-        // -- Private Methods
-        // --------------------------------------------------------------------
-        public void OnCollisionEvent(ref IDynamicCollidable collidable)
+        public virtual void OnCollisionEvent(ref IDynamicCollidable collidable)
         {
 
         }

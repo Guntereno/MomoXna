@@ -20,6 +20,7 @@ namespace TestGame.Entities
         // -- Private Members
         // --------------------------------------------------------------------
 
+
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
@@ -37,17 +38,43 @@ namespace TestGame.Entities
 
         public override void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - GetVelocity() * 0.10f, new Color(0.0f, 1.0f, 1.0f, 0.6f), 5.0f);
+            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - GetVelocity() * 0.08f, new Color(0.0f, 1.0f, 1.0f, 0.6f), 3.0f);
+        }
+
+
+        public void AddToBin(Bin bin)
+        {
+            BinRegionUniform curBinRegion = new BinRegionUniform();
+
+            bin.GetBinRegionFromUnsortedCorners(GetLastFramePosition(), GetPosition(), ref curBinRegion);
+
+            SetBinRegion(curBinRegion);
+        }
+
+
+        public void RemoveFromBin(Bin bin)
+        {
+            bin.RemoveBinItem(this, 2);
         }
 
 
         public void UpdateBinEntry(Bin bin)
         {
-            BinRegionUniform binRegion = new BinRegionUniform();
+            BinRegionUniform prevBinRegion = new BinRegionUniform();
+            BinRegionUniform curBinRegion = new BinRegionUniform();
 
-            bin.GetBinRegionFromUnsortedCorners(GetLastFramePosition(), GetPosition(), ref binRegion);
+            GetBinRegion(ref prevBinRegion);
+            bin.GetBinRegionFromUnsortedCorners(GetLastFramePosition(), GetPosition(), ref curBinRegion);
 
-            SetBinRegion(binRegion);
+            bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 2);
+
+            SetBinRegion(curBinRegion);
+        }
+
+
+        public void OnCollisionEvent(ref AiEntity entity)
+        {
+            SetFlags(int.MaxValue);
         }
     }
 }

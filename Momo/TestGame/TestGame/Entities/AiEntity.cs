@@ -10,6 +10,10 @@ using Momo.Core.Primitive2D;
 using Momo.Core.Spatial;
 using Momo.Debug;
 
+using Momo.Core.Collision2D;
+
+using TestGame.Objects;
+
 
 
 namespace TestGame.Entities
@@ -90,6 +94,25 @@ namespace TestGame.Entities
             bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 0);
 
             SetBinRegion(curBinRegion);
+        }
+
+
+
+        public override void OnCollisionEvent(ref IDynamicCollidable collidable)
+        {
+
+        }
+
+
+        public void OnCollisionEvent(ref BulletEntity bullet)
+        {
+            SetForce(bullet.GetVelocity() * 10.0f);
+        }
+
+
+        public void OnExplosionEvent(ref Explosion explosion, Vector2 force)
+        {
+            SetForce(force);
         }
     }
 }
