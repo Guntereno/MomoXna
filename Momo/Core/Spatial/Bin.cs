@@ -270,11 +270,11 @@ namespace Momo.Core.Spatial
 		}
 
 
-		public void GetBinRegionFromCentre(Vector2 centre, float radius, ref BinRegionUniform outBinRegion)
-		{
-			Vector2 halfDimension = new Vector2(radius, radius);
-			GetBinRegionFromCentre(centre, halfDimension, ref outBinRegion);
-		}
+        public void GetBinRegionFromCentre(Vector2 centre, float radius, ref BinRegionUniform outBinRegion)
+        {
+            Vector2 halfDimension = new Vector2(radius, radius);
+            GetBinRegionFromCentre(centre, halfDimension, ref outBinRegion);
+        }
 
 
 		public void GetBinLocation(Vector2 position, ref BinLocation outBinLocation)

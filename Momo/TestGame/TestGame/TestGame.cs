@@ -86,7 +86,7 @@ namespace TestGame
 
 
             Random random = new Random();
-            for (int i = 0; i < 100; ++i)
+            for (int i = 0; i < 200; ++i)
             {
                 AiEntity ai = new AiEntity();
                 Vector2 pos = new Vector2(100.0f + ((float)random.NextDouble() * 3300.0f),

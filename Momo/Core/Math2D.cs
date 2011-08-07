@@ -41,12 +41,12 @@ namespace Momo.Core
 
 	public class Math2D
 	{
-		public static bool DoesIntersect(Vector2 centre1, RadiusInfo radiusInfo1, Vector2 centre2, RadiusInfo radiusInfo2, ref IntersectInfo2D outIntersectInfo)
+		public static bool DoesIntersect(Vector2 centre1, float radius1, Vector2 centre2, float radius2, ref IntersectInfo2D outIntersectInfo)
 		{
 			Vector2 dCentre = centre1 - centre2;
 			float distSq = dCentre.LengthSquared();
 
-			float resolveDist = radiusInfo1.Radius + radiusInfo2.Radius;
+            float resolveDist = radius1 + radius2;
 
 			if (distSq > resolveDist * resolveDist)
 				return false;
@@ -61,7 +61,7 @@ namespace Momo.Core
 		}
 
 
-		public static bool DoesIntersect(Vector2 centre, RadiusInfo radiusInfo, Vector2 linePoint1, Vector2 linePoint2, Vector2 dLinePoints, float lineLengthSq, ref IntersectInfo2D outIntersectInfo)
+		public static bool DoesIntersect(Vector2 centre, float radius, float radiusSq, Vector2 linePoint1, Vector2 linePoint2, Vector2 dLinePoints, float lineLengthSq, ref IntersectInfo2D outIntersectInfo)
 		{
 			Vector2 diffFromEnd = centre - linePoint1;
 			float dot = Vector2.Dot(diffFromEnd, dLinePoints);
@@ -82,7 +82,7 @@ namespace Momo.Core
 
 
 			// Do we have a collision?
-			if (penerationSqrd > radiusInfo.RadiusSq)
+            if (penerationSqrd > radiusSq)
 				return false;
 
 
@@ -90,7 +90,7 @@ namespace Momo.Core
 
 			outIntersectInfo.PositionDifference = diff;
 			outIntersectInfo.PositionDistance = overlap;
-			outIntersectInfo.ResolveDistance = radiusInfo.Radius - overlap;
+            outIntersectInfo.ResolveDistance = radius;
 
 			return true;
 		}

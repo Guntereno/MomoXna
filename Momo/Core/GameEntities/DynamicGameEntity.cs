@@ -13,6 +13,12 @@ namespace Momo.Core.GameEntities
 {
 	public class DynamicGameEntity : GameEntity, IDynamicCollidable
 	{
+        // --------------------------------------------------------------------
+        // -- Private Static Members
+        // --------------------------------------------------------------------
+        private static float ms_contactDimensionPadding = 1.0f;
+
+
 		// --------------------------------------------------------------------
 		// -- Private Members
 		// --------------------------------------------------------------------
@@ -21,6 +27,14 @@ namespace Momo.Core.GameEntities
 
 		private MassInfo m_massInfo = new MassInfo(1.0f);
 
+
+        // --------------------------------------------------------------------
+        // -- Public Static Methods
+        // --------------------------------------------------------------------
+        public static float GetContactDimensionPadding()
+        {
+            return ms_contactDimensionPadding;
+        }
 
 
 		// --------------------------------------------------------------------
