@@ -54,6 +54,7 @@ namespace TestGame
         List<BulletEntity> m_bullets = new List<BulletEntity>(2000);
         List<Explosion> m_explosions = new List<Explosion>(100);
 
+		PlayerEntity m_player = new PlayerEntity();
 
 		public TestGame()
 		{
@@ -106,6 +107,7 @@ namespace TestGame
                 m_ais.Add(ai);
             }
 
+			m_player.SetPosition(new Vector2(416.0f, 320.0f));
 
             PathRegion[] regions = new PathRegion[2];
             regions[0] = new PathRegion(new Vector2(100.0f, 650.0f), new Vector2(900.0f, 800.0f));
@@ -117,6 +119,8 @@ namespace TestGame
             m_pathIsland.SetRegions(regions);
 
 
+
+			m_cameraController.TargetEntity = m_player;
 
 			BuildCollisionBoundaries();
 
@@ -215,6 +219,10 @@ namespace TestGame
                 m_bullets[i].UpdateBinEntry(m_bin);
             }
 
+
+			m_player.UpdateInput(ref gamePadState, ref keyboardState);
+			m_player.Update(ref frameTime);
+
             m_contactList.StartAddingContacts();
 
             CollisionHelpers.GenerateContacts(m_ais, m_bin, m_contactList);
@@ -229,7 +237,7 @@ namespace TestGame
             // Destroying dead entities/objects
             for (int i = 0; i < m_bullets.Count; ++i)
             {
-                if (m_bullets[i].NeedsDestorying())
+                if (m_bullets[i].NeedsDestroying())
                 {
                     m_bullets[i].RemoveFromBin(m_bin);
                     m_bullets.RemoveAt(i);
@@ -277,6 +285,8 @@ namespace TestGame
 
             m_pathIsland.DebugRender(m_debugRenderer);
 
+
+			m_player.DebugRender(m_debugRenderer);
 
 			m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);
 			m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);

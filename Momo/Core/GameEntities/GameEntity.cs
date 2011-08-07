@@ -27,7 +27,7 @@ namespace Momo.Core.GameEntities
 		public abstract Vector2 GetVelocity();
 
 
-        public bool NeedsDestorying()
+        public bool NeedsDestroying()
         {
             return (m_flags == int.MaxValue);
         }

@@ -405,36 +405,6 @@ namespace TmxProcessorLib.Content
 					edgeLoops[stripIdx] = optimised;
 				}
 
-				//{
-				//	int currentIdx = 0;
-				//	Edge current = edgeLoop[currentIdx];
-				//	if (current.Points[0].X == current.Points[1].X)
-				//	{
-				//		Edge newEdge = new Edge();
-				//		newEdge.Points[0].X = newEdge.Points[1].X = current.Points[0].X;
-				//		newEdge.Points[0].Y = current.Points[0].Y;
-
-				//		int delta = current.Points[1].Y - current.Points[0].Y;
-				//		int count = 0;
-				//		int start = currentIdx;
-				//		while (current.Points[1].X == newEdge.Points[0].X)
-				//		{
-				//			++count;
-				//			++currentIdx;
-				//			current = edgeLoop[currentIdx];
-				//		}
-				//		newEdge.Points[1].Y = current.Points[1].Y;
-
-				//		// Remove the old edges
-				//		edgeLoop.Remove(start
-
-				//	}
-				//	else
-				//	{
-
-				//	}
-				//}
-
 				CollisionBoundaries = new List<Point[]>();
 				foreach (List<Edge> currentStrip in edgeLoops)
 				{
