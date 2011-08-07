@@ -17,7 +17,7 @@ using TestGame.Entities;
 
 namespace TestGame
 {
-    public class GameHelpers
+    public class CollisionHelpers
     {
         public static void GenerateContacts(List<AiEntity> entities, Bin bin, ContactList contactList)
         {
