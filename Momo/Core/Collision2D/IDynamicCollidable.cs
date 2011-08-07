@@ -21,7 +21,7 @@ namespace Momo.Core.Collision2D
 
 		void SetForce(Vector2 force);
 		Vector2 GetForce();
-		Vector2 GetLastFramesAcceleration();
+		Vector2 GetLastFrameAcceleration();
 
 
 		void SetMass(float mass);

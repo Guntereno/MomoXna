@@ -47,6 +47,10 @@ namespace TestGame.Entities
 
         public override void Update(ref FrameTime frameTime)
         {
+            base.Update(ref frameTime);
+
+            SetForce(new Vector2(10.0f, 0.0f));
+
             m_turnVelocity += ((float)ms_random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
             m_turnVelocity = MathHelper.Clamp(m_turnVelocity, -1.0f, 1.0f);
             m_facingAngle += m_turnVelocity * frameTime.Dt;

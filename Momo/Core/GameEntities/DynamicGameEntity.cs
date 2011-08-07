@@ -24,6 +24,7 @@ namespace Momo.Core.GameEntities
 		// --------------------------------------------------------------------
 		private Vector2 m_velocity = Vector2.Zero;
 		private Vector2 m_force = Vector2.Zero;
+        private Vector2 m_lastFrameAcceleration = Vector2.Zero;
 
 		private MassInfo m_massInfo = new MassInfo(1.0f);
 
@@ -65,9 +66,9 @@ namespace Momo.Core.GameEntities
 			return m_force;
 		}
 
-		public Vector2 GetLastFramesAcceleration()
+		public Vector2 GetLastFrameAcceleration()
 		{
-			return Vector2.Zero;
+            return m_lastFrameAcceleration;
 		}
 
 		public void SetMass(float mass)
@@ -91,6 +92,14 @@ namespace Momo.Core.GameEntities
 		public override void Update(ref FrameTime frameTime)
 		{
 			base.Update(ref frameTime);
+
+            Vector2 newPosition = GetPosition() + (m_velocity * frameTime.Dt);
+
+            m_lastFrameAcceleration = (m_force * frameTime.Dt);
+            m_velocity = m_velocity + m_lastFrameAcceleration;
+            m_force = Vector2.Zero;
+
+            SetPosition(newPosition);
 		}
 
 

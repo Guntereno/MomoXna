@@ -117,9 +117,9 @@ namespace Momo.Core.Collision2D
 			float newSeperatingVelocity = -m_seperatingVelocity * m_restitution;
 
 
-			Vector2 accCausedVelocity = m_object1.GetLastFramesAcceleration();
+			Vector2 accCausedVelocity = m_object1.GetLastFrameAcceleration();
 			if (m_object2 != null)
-				accCausedVelocity -= m_object2.GetLastFramesAcceleration();
+				accCausedVelocity -= m_object2.GetLastFrameAcceleration();
 
 			float accCausedSeperatingVelocity = Vector2.Dot(accCausedVelocity, m_contactNormal) * dt;
 

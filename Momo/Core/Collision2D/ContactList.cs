@@ -78,15 +78,15 @@ namespace Momo.Core.Collision2D
 		}
 
 
-		public void AddContact(IDynamicCollidable collidable1, IDynamicCollidable collidable2, Vector2 normal, float penetration)
+		public void AddContact(IDynamicCollidable collidable1, IDynamicCollidable collidable2, Vector2 normal, float penetration, float friction, float restitution)
 		{
 			Contact contact = m_contacts[m_contactCnt];
 			contact.m_object1 = collidable1;
 			contact.m_object2 = collidable2;
 			contact.m_penetration = penetration;
-			contact.m_friction = 0.5f;
+            contact.m_friction = friction;
 			contact.m_contactNormal = normal;
-			contact.m_restitution = 0.5f;
+            contact.m_restitution = restitution;
 
 			++m_contactCnt;
 		}
