@@ -31,7 +31,13 @@ namespace TestGame.Systems
 					(float)Math.Floor(m_position.Y),
 					(float)Math.Floor(m_position.Z));
 
-				Camera.LocalTranslation = newPos;
+                Matrix cameraMatrix = Matrix.Identity;
+                // Lets rotate the camera 180 in the z so that the map world renders nicely.
+                cameraMatrix.Right = new Vector3(1.0f, 0.0f, 0.0f);
+                cameraMatrix.Up = new Vector3(0.0f, -1.0f, 0.0f);
+                cameraMatrix.Translation = newPos;
+
+                Camera.Matrix = cameraMatrix;
 
 				const float kAnalogDeadzone = 0.3f;
 
@@ -65,11 +71,11 @@ namespace TestGame.Systems
 				bool downKey = currentKeyboardState.IsKeyDown(Keys.Down);
 				if (upKey && !downKey)
 				{
-					yAmount = 1.0f;
+					yAmount = -1.0f;
 				}
 				else if (downKey && !upKey)
 				{
-					yAmount = -1.0f;
+					yAmount = 1.0f;
 				}
 
 				if ( Math.Abs(yAmount) > kAnalogDeadzone)

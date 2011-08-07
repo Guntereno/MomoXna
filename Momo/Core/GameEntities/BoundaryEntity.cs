@@ -78,7 +78,11 @@ namespace Momo.Core.GameEntities
 
 		public override void DebugRender(DebugRenderer debugRenderer)
 		{
-			System.Diagnostics.Debug.Assert(m_collisionPrimitive != null);
+            Color kBoundaryColour1 = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+            //Color kBoundaryColour2 = new Color(0.0f, 0.5f, 0.0f, 0.5f);
+
+            
+            System.Diagnostics.Debug.Assert(m_collisionPrimitive != null);
 
 			Vector2 lastPoint = m_collisionPrimitive.LineList[0].m_point;
 
@@ -86,7 +90,10 @@ namespace Momo.Core.GameEntities
 			{
 				Vector2 point = m_collisionPrimitive.LineList[i].m_point;
 
-				debugRenderer.DrawFilledLineWithCaps(point, lastPoint, new Color(0.0f, 1.0f, 0.0f, 0.5f), 2.0f);
+                //if (i % 2 == 0)
+                    debugRenderer.DrawFilledLineWithCaps(point, lastPoint, kBoundaryColour1, 2.0f);
+                //else
+                //    debugRenderer.DrawFilledLineWithCaps(point, lastPoint, kBoundaryColour2, 2.0f);
 
 				lastPoint = point;
 			}

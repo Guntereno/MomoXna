@@ -175,9 +175,11 @@ namespace Momo.Core.Nodes.Cameras
 		// --------------------------------------------------------------------
 		private void RecalculateUnscaledGlobalMatrix( )
 		{
-			float xScale = m_globalMatrix.Left.Length();
-			float yScale = m_globalMatrix.Up.Length();
-			float zScale = m_globalMatrix.Forward.Length();
+            m_unscaledGlobalMatrix = m_globalMatrix;
+
+            float xScale = m_unscaledGlobalMatrix.Left.Length();
+            float yScale = m_unscaledGlobalMatrix.Up.Length();
+            float zScale = m_unscaledGlobalMatrix.Forward.Length();
 
 			m_unscaledGlobalMatrix.Left /= xScale;
 			m_unscaledGlobalMatrix.Up /= yScale;

@@ -1,13 +1,22 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using Momo.Core;
 using Momo.Core.Graphics;
 using Momo.Core.Nodes.Cameras;
 using Momo.Core.Spatial;
-using Momo.Debug;
-using TestGame.Systems;
+using Momo.Core.Collision2D;
 using Momo.Core.Primitive2D;
 using Momo.Core.GameEntities;
+using Momo.Debug;
+
+using TestGame.Systems;
+using TestGame.Entities;
+
+
 
 namespace TestGame
 {
@@ -16,8 +25,8 @@ namespace TestGame
 	/// </summary>
 	public class TestGame : Microsoft.Xna.Framework.Game
 	{
-		const int kBackBufferWidth = 1000;
-		const int kBackBufferHeight = 800;
+		const int kBackBufferWidth = 1200;
+		const int kBackBufferHeight = 900;
 
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
@@ -27,12 +36,16 @@ namespace TestGame
 		OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
 		CameraController m_cameraController = new CameraController();
 
-		Bin m_bin = new Bin(25, 25, 1000, 1000, 5000, 5000);
+		Bin m_bin = new Bin(50, 20, 5000, 2000, 5000, 5000);
+        ContactList m_contactList = new ContactList(4000);
+        ContactResolver m_contactResolver = new ContactResolver();
 
 		Map.Map m_map = null;
 		MapRenderer m_mapRenderer = new MapRenderer();
 
-		BoundaryEntity[] m_boundries;
+        List<AiEntity> m_ais = new List<AiEntity>(2000);
+        List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
+
 
 		public TestGame()
 		{
@@ -71,6 +84,23 @@ namespace TestGame
 
 			m_map = Content.Load<Map.Map>("maps/1_living_quarters/1_living_quarters");
 
+
+            Random random = new Random();
+            for (int i = 0; i < 100; ++i)
+            {
+                AiEntity ai = new AiEntity();
+                Vector2 pos = new Vector2(100.0f + ((float)random.NextDouble() * 3300.0f),
+                                            725.0f + ((float)random.NextDouble() * 65.0f));
+
+
+                ai.SetPosition(pos);
+
+                ai.AddToBin(m_bin);
+
+                m_ais.Add(ai);
+            }
+
+
 			BuildCollisionBoundaries();
 
 			m_mapRenderer.Init(m_map, GraphicsDevice, 16);
@@ -79,7 +109,7 @@ namespace TestGame
 		private void BuildCollisionBoundaries()
 		{
 			int numBoundries = m_map.CollisionBoundaries.Length;
-			m_boundries = new BoundaryEntity[numBoundries];
+
 			for (int boundryIdx = 0; boundryIdx < numBoundries; ++boundryIdx)
 			{
 				int numNodes = m_map.CollisionBoundaries[boundryIdx].Length;
@@ -89,12 +119,14 @@ namespace TestGame
 				{
 					Vector2 pos = new Vector2(
 						(float)(m_map.CollisionBoundaries[boundryIdx][nodeIdx].X),
-						-(float)(m_map.CollisionBoundaries[boundryIdx][nodeIdx].Y) // negate the y to convert map space to world space
+						(float)(m_map.CollisionBoundaries[boundryIdx][nodeIdx].Y)
 					);
 					lineStrip.AddPoint(pos);
 				}
 				lineStrip.EndAddingPoints();
-				m_boundries[boundryIdx] = new BoundaryEntity(lineStrip);
+                BoundaryEntity boundaryEntity = new BoundaryEntity(lineStrip);
+                boundaryEntity.RecalculateBinRegion(m_bin);
+                m_boundaries.Add(boundaryEntity);
 			}
 		}
 
@@ -115,7 +147,28 @@ namespace TestGame
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
 				this.Exit();
 
-			m_worldManager.Update(gameTime.ElapsedGameTime.Seconds);
+            // More time related numbers will eventually be added to the FrameTime structure. Its worth passing
+            // it about instead of just dt, so we can easily refactor.
+            FrameTime frameTime = new FrameTime((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+
+            m_worldManager.Update(frameTime.Dt);
+
+            for (int i = 0; i < m_ais.Count; ++i)
+            {
+                m_ais[i].Update(ref frameTime);
+                m_ais[i].UpdateBinEntry(m_bin);
+            }
+
+            m_contactList.StartAddingContacts();
+
+            GameHelpers.GenerateContacts(m_ais, m_bin, m_contactList);
+            GameHelpers.GenerateContacts(m_ais, m_boundaries, m_bin, m_contactList);
+
+            m_contactList.EndAddingContacts();
+
+            m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
+
 
 			m_cameraController.Update(gamePadState, keyboardState);
 
@@ -190,10 +243,15 @@ namespace TestGame
 
 			m_bin.DebugRender(m_debugRenderer, 6);
 
-			for (int i = 0; i < m_boundries.Length; ++i)
+            for (int i = 0; i < m_boundaries.Count; ++i)
 			{
-				m_boundries[i].DebugRender(m_debugRenderer);
+                m_boundaries[i].DebugRender(m_debugRenderer);
 			}
+
+            for (int i = 0; i < m_ais.Count; ++i)
+            {
+                m_ais[i].DebugRender(m_debugRenderer);
+            }
 
 			m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);
 			m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);

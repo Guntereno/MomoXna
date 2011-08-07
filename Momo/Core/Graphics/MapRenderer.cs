@@ -79,7 +79,7 @@ namespace Momo.Core.Graphics
 			if (!m_inited)
 				return;
 
-			Matrix modelMatrix = Matrix.CreateScale(1.0f, -1.0f, 1.0f);
+			Matrix modelMatrix = Matrix.CreateScale(1.0f, 1.0f, 1.0f);
 
 			m_effect.World = modelMatrix;
 			m_effect.View = viewMatrix;

@@ -474,7 +474,7 @@ namespace Momo.Debug
 			m_effect.View = viewMatrix;
 			m_effect.Projection = projMatrix;
 
-			graphicsDevice.BlendState = BlendState.AlphaBlend;
+			graphicsDevice.BlendState = BlendState.NonPremultiplied;
 			graphicsDevice.DepthStencilState = DepthStencilState.None;
 			graphicsDevice.RasterizerState = RasterizerState.CullNone;
 

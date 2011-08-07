@@ -23,6 +23,7 @@ namespace Momo.Core.Spatial
 		private int m_binEntryPoolCapacity = 0;
 		private int m_binEntryPoolFreeCount = 0;
 
+        private Vector2 m_areaDimension = Vector2.Zero;
 		private Vector2 m_binDimension = Vector2.Zero;
 		private Vector2 m_invBinDimension = Vector2.Zero;
 
@@ -42,6 +43,7 @@ namespace Momo.Core.Spatial
 			m_binEntryPoolCapacity = itemCapacity;
 			m_binEntryPoolFreeCount = itemCapacity;
 
+            m_areaDimension = new Vector2(areaWidth, areaHeight);
 			m_binDimension.X = areaWidth / (float)m_binCountX;
 			m_binDimension.Y = areaHeight / (float)m_binCountY;
 			m_invBinDimension = Vector2.One / m_binDimension;
@@ -314,7 +316,7 @@ namespace Momo.Core.Spatial
 
 		public void DebugRender(DebugRenderer debugRenderer, int maxColourCount)
 		{
-			float binAlpha = 0.5f;
+			const float kBinAlpha = 0.15f;
 			int binIdx = 0;
 
 
@@ -336,16 +338,10 @@ namespace Momo.Core.Spatial
 					if(binColourMod > 1.0f)
 						binColourMod = 1.0f;
 
-					Color binColour = new Color(binColourMod * 2.0f, 1.0f, 0.0f, binAlpha);
-
-					if( binColourMod > 0.5f)
-					{
-						binColourMod = (binColourMod - 0.5f) / 0.5f;
-						binColour = new Color(1.0f, 1.0f - binColourMod, 0.0f, binAlpha);
-					}
+                    Color binColour = new Color(binColourMod * 2.0f, 1.0f, 0.0f, kBinAlpha * binColourMod);
 
 
-					debugRenderer.DrawQuad(p1, p2, p3, p4, binColour, new Color(0.0f, 0.0f, 0.0f, binAlpha), true, 0.0f);
+                    debugRenderer.DrawQuad(p1, p2, p3, p4, binColour, Color.Black, true, 0.0f);
 
 
 					p1 = p2;
@@ -359,6 +355,10 @@ namespace Momo.Core.Spatial
 
 				binIdx = m_binCountX * (y + 1);
 			}
+
+
+            debugRenderer.DrawQuad(new Vector2(0.0f, 0.0f), m_areaDimension, new Color(0.0f, 1.0f, 0.0f, 0.5f), new Color(0.0f, 1.0f, 0.0f, 0.5f), false, 10.0f);
+
 		}
 
 
