@@ -38,43 +38,41 @@ namespace TestGame.Entities
 		public void UpdateInput(ref GamePadState currentGamePadState, ref KeyboardState currentKeyboardState)
 		{
 			const float kAnalogDeadzone = 0.3f;
+			const float kAnalogDeadzoneSq = kAnalogDeadzone * kAnalogDeadzone;
 
 			m_inputVector = Vector2.Zero;
 
-			float xAmount = currentGamePadState.ThumbSticks.Left.X;
+
+			Vector2 padVector = new Vector2(
+									currentGamePadState.ThumbSticks.Left.X,
+									currentGamePadState.ThumbSticks.Left.Y);
+
+			if (padVector.LengthSquared() > kAnalogDeadzoneSq)
+			{
+				m_inputVector = padVector;
+				m_inputVector.Y *= -1.0f;
+			}
+
 			bool leftKey = currentKeyboardState.IsKeyDown(Keys.Left);
 			bool rightKey = currentKeyboardState.IsKeyDown(Keys.Right);
 			if (leftKey && !rightKey)
 			{
-				xAmount = -1.0f;
+				m_inputVector.X = -1.0f;
 			}
 			else if (rightKey && !leftKey)
 			{
-				xAmount = 1.0f;
+				m_inputVector.X = 1.0f;
 			}
-
-			if (Math.Abs(xAmount) > kAnalogDeadzone)
-			{
-				m_inputVector.X = xAmount;
-			}
-
-
-			float yAmount = -currentGamePadState.ThumbSticks.Left.Y;
 
 			bool upKey = currentKeyboardState.IsKeyDown(Keys.Up);
 			bool downKey = currentKeyboardState.IsKeyDown(Keys.Down);
 			if (upKey && !downKey)
 			{
-				yAmount = -1.0f;
+				m_inputVector.Y = -1.0f;
 			}
 			else if (downKey && !upKey)
 			{
-				yAmount = 1.0f;
-			}
-
-			if (Math.Abs(yAmount) > kAnalogDeadzone)
-			{
-				m_inputVector.Y = yAmount;
+				m_inputVector.Y = 1.0f;
 			}
 		}
 
