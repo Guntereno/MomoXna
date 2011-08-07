@@ -49,8 +49,6 @@ namespace TestGame.Entities
         {
             base.Update(ref frameTime);
 
-            SetForce(new Vector2(10.0f, 0.0f));
-
             m_turnVelocity += ((float)ms_random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
             m_turnVelocity = MathHelper.Clamp(m_turnVelocity, -1.0f, 1.0f);
             m_facingAngle += m_turnVelocity * frameTime.Dt;
@@ -65,7 +63,7 @@ namespace TestGame.Entities
 
         public override void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawCircle(GetPosition(), m_contactRadiusInfo.Radius, new Color(1.0f, 0.0f, 0.0f, 0.5f), new Color(0.0f, 0.0f, 0.0f, 0.75f), true, 2, 8);
+            debugRenderer.DrawCircle(GetPosition(), m_contactRadiusInfo.Radius, new Color(1.0f, 0.0f, 0.0f, 0.4f), new Color(0.2f, 0.0f, 0.0f, 0.75f), true, 2, 8);
         }
 
 
@@ -75,7 +73,9 @@ namespace TestGame.Entities
             BinRegionUniform curBinRegion = new BinRegionUniform();
             bin.GetBinRegionFromCentre(GetPosition(), m_contactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
 
-            bin.UpdateBinItemRegion(this, ref curBinRegion);
+            bin.UpdateBinItem(this, ref curBinRegion, 0);
+
+            SetBinRegion(curBinRegion);
         }
 
 
@@ -87,7 +87,9 @@ namespace TestGame.Entities
             GetBinRegion(ref prevBinRegion);
             bin.GetBinRegionFromCentre(GetPosition(), m_contactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
 
-            bin.UpdateBinItemRegion(this, ref prevBinRegion, ref curBinRegion);
+            bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 0);
+
+            SetBinRegion(curBinRegion);
         }
     }
 }

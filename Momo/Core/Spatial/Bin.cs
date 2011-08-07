@@ -13,12 +13,11 @@ namespace Momo.Core.Spatial
 {
 	public class Bin
 	{
-		// Add sential 1 wide border
-
-
 		private int m_binCountX = 0;
 		private int m_binCountY = 0;
 		private int m_binCount = 0;
+
+        private int m_binLayerCount = 0;
 
 		private int m_binEntryPoolCapacity = 0;
 		private int m_binEntryPoolFreeCount = 0;
@@ -28,17 +27,20 @@ namespace Momo.Core.Spatial
 		private Vector2 m_invBinDimension = Vector2.Zero;
 
 		private BinEntry[] m_binEntryPool = null;
-		private BinEntry[] m_binEntries = null;
+		private BinEntry[,] m_binEntries = null;
 
 		private BinQueryResults m_queryResults = null;
+        private BinRegionSelection m_binRegionSelectionBuffer; // Temporary buffer for region selection calculations.
 
 
 
-		public Bin(int binCountX, int binCountY, float areaWidth, float areaHeight, int itemCapacity, int queryResultsCapacity)
+		public Bin(int binCountX, int binCountY, float areaWidth, float areaHeight, int layerCount, int itemCapacity, int queryResultsCapacity, int regionSelectionCapacity)
 		{
 			m_binCountX = binCountX;
 			m_binCountY = binCountY;
 			m_binCount = m_binCountX * m_binCountY;
+
+            m_binLayerCount = layerCount;
 
 			m_binEntryPoolCapacity = itemCapacity;
 			m_binEntryPoolFreeCount = itemCapacity;
@@ -49,10 +51,10 @@ namespace Momo.Core.Spatial
 			m_invBinDimension = Vector2.One / m_binDimension;
 
 			m_queryResults = new BinQueryResults(queryResultsCapacity);
-
+            m_binRegionSelectionBuffer = new BinRegionSelection(regionSelectionCapacity);
 
 			m_binEntryPool = new BinEntry[itemCapacity];
-			m_binEntries = new BinEntry[m_binCount];
+            m_binEntries = new BinEntry[layerCount, m_binCount];
 
 			// Fill pool
 			for (int i = 0; i < itemCapacity; ++i)
@@ -61,10 +63,13 @@ namespace Momo.Core.Spatial
 			}
 
 			// Add sentitals
-			for (int i = 0; i < m_binCount; ++i)
-			{
-				m_binEntries[i] = new BinEntry();
-			}
+            for (int i = 0; i < m_binLayerCount; ++i)
+            {
+                for (int j = 0; j < m_binCount; ++j)
+                {
+                    m_binEntries[i, j] = new BinEntry();
+                }
+            }
 
 
 			Clear();
@@ -75,20 +80,23 @@ namespace Momo.Core.Spatial
 		{
 			m_binEntryPoolFreeCount = m_binEntryPoolCapacity;
 
-			for (int i = 0; i < m_binCount; ++i)
-			{
-				m_binEntries[i].m_nextEntry = null;
-			}
+            for (int i = 0; i < m_binLayerCount; ++i)
+            {
+                for (int j = 0; j < m_binCount; ++j)
+                {
+                    m_binEntries[i, j].m_nextEntry = null;
+                }
+            }
 		}
 
 
-		public void AddBinItem(BinItem item)
+        public void AddBinItem(BinItem item, int layerIdx)
 		{
-			AddBinItem(item, ref item.m_region);
+            AddBinItem(item, ref item.m_region, layerIdx);
 		}
 
 
-		public void AddBinItem(BinItem item, ref BinRegionUniform region)
+		public void AddBinItem(BinItem item, ref BinRegionUniform region, int layerIdx)
 		{
 			int y = region.m_minLocation.m_y;
 
@@ -98,7 +106,7 @@ namespace Momo.Core.Spatial
 
 				for (int x = region.m_minLocation.m_x; x <= region.m_maxLocation.m_x; ++x)
 				{
-					BinEntry startBinEntry = m_binEntries[binIdx];
+                    BinEntry startBinEntry = m_binEntries[layerIdx, binIdx];
 					BinEntry freeBinEntry = GetFreeBinEntry();
 					freeBinEntry.m_item = item;
 					freeBinEntry.m_nextEntry = startBinEntry.m_nextEntry;
@@ -113,13 +121,26 @@ namespace Momo.Core.Spatial
 		}
 
 
-		public void RemoveBinItem(BinItem item)
+        public void AddBinItem(BinItem item, ref BinRegionSelection region, int layerIdx)
+        {
+            for (int i = 0; i < region.m_binIndices.Length; ++i)
+            {
+                BinEntry startBinEntry = m_binEntries[layerIdx, region.m_binIndices[i].m_index];
+                BinEntry freeBinEntry = GetFreeBinEntry();
+                freeBinEntry.m_item = item;
+                freeBinEntry.m_nextEntry = startBinEntry.m_nextEntry;
+                startBinEntry.m_nextEntry = freeBinEntry;
+            }
+        }
+
+
+        public void RemoveBinItem(BinItem item, int layerIdx)
 		{
-			RemoveBinItem(item, ref item.m_region);
+            RemoveBinItem(item, ref item.m_region, layerIdx);
 		}
 
 
-		public void RemoveBinItem(BinItem item, ref BinRegionUniform region)
+        public void RemoveBinItem(BinItem item, ref BinRegionUniform region, int layerIdx)
 		{
 			int y = region.m_minLocation.m_y;
 
@@ -129,7 +150,7 @@ namespace Momo.Core.Spatial
 
 				for (int x = region.m_minLocation.m_x; x <= region.m_maxLocation.m_x; ++x)
 				{
-					RemoveBinItem(item, m_binEntries[binIdx]);
+                    RemoveBinItem(item, m_binEntries[layerIdx, binIdx]);
 
 					++binIdx;
 				}
@@ -138,6 +159,15 @@ namespace Momo.Core.Spatial
 
 			} while (y <= region.m_maxLocation.m_y);
 		}
+
+
+        public void RemoveBinItem(BinItem item, ref BinRegionSelection region, int layerIdx)
+        {
+            for (int i = 0; i < region.m_binIndices.Length; ++i)
+            {
+                RemoveBinItem(item, m_binEntries[layerIdx, region.m_binIndices[i].m_index]);
+            }
+        }
 
 
 		public void RemoveBinItem(BinItem item, BinEntry startEntry)
@@ -161,26 +191,34 @@ namespace Momo.Core.Spatial
 		}
 
 
-		public void UpdateBinItemRegion(BinItem item, ref BinRegionUniform prevRegion, ref BinRegionUniform newRegion)
+		public void UpdateBinItem(BinItem item, ref BinRegionUniform prevRegion, ref BinRegionUniform newRegion, int layerIdx)
 		{
 			// Skip update if they are the same.
 			if (prevRegion.IsEqual(ref newRegion))
 				return;
 
-
-			RemoveBinItem(item, ref prevRegion);
-			AddBinItem(item, ref newRegion);
-
-			item.m_region = newRegion;
+            RemoveBinItem(item, ref prevRegion, layerIdx);
+            AddBinItem(item, ref newRegion, layerIdx);
 		}
 
 
-		public void UpdateBinItemRegion(BinItem item, ref BinRegionUniform newRegion)
-		{
-			AddBinItem(item, ref newRegion);
+        public void UpdateBinItem(BinItem item, ref BinRegionUniform newRegion, int layerIdx)
+        {
+            AddBinItem(item, ref newRegion, layerIdx);
+        }
 
-			item.m_region = newRegion;
-		}
+
+        public void UpdateBinItem(BinItem item, ref BinRegionSelection newRegion, int layerIdx)
+        {
+            AddBinItem(item, ref newRegion, layerIdx);
+        }
+
+
+        public void UpdateBinItem(BinItem item, ref BinRegionSelection prevRegion, ref BinRegionSelection newRegion, int layerIdx)
+        {
+            RemoveBinItem(item, ref prevRegion, layerIdx);
+            AddBinItem(item, ref newRegion, layerIdx);
+        }
 
 
 		public int CountBinList(BinEntry startEntry)
@@ -204,7 +242,7 @@ namespace Momo.Core.Spatial
 		}
 
 
-		public void Query(BinRegionUniform region)
+		public void Query(BinRegionUniform region, int layerIdx)
 		{
 			int itemCnt = m_queryResults.BinItemCount;
 
@@ -219,7 +257,7 @@ namespace Momo.Core.Spatial
 					int lastBinCnt = itemCnt;
 
 					// Dont add sentital.
-					BinEntry entry = m_binEntries[binIdx].m_nextEntry;
+                    BinEntry entry = m_binEntries[layerIdx, binIdx].m_nextEntry;
 					while (entry != null)
 					{
 						itemCnt = m_queryResults.AddBinItem(entry.m_item, lastBinCnt);
@@ -250,15 +288,42 @@ namespace Momo.Core.Spatial
 
 		public int GetBinIndex(int binLocationX, int binLocationY)
 		{
-			return (binLocationY * m_binCountX) + binLocationX;
+			return (short)((binLocationY * m_binCountX) + binLocationX);
 		}
 
 
-		public void GetBinRegionCorners(Vector2 minCorner, Vector2 maxCorner, ref BinRegionUniform outBinRegion)
+        public int GetBinIndex(Vector2 binLocation)
+        {
+            return (((int)binLocation.Y * m_binCountX) + (int)binLocation.X);
+        }
+
+
+		public void GetBinRegionFromCorners(Vector2 minCorner, Vector2 maxCorner, ref BinRegionUniform outBinRegion)
 		{
 			GetBinLocation(minCorner, ref outBinRegion.m_minLocation);
 			GetBinLocation(maxCorner, ref outBinRegion.m_maxLocation);
 		}
+
+        public void GetBinRegionFromUnsortedCorners(Vector2 corner1, Vector2 corner2, ref BinRegionUniform outBinRegion)
+        {
+            Vector2 min = corner1;
+            Vector2 max = corner2;
+
+            if (min.X > max.X)
+            {
+                min.X = corner2.X;
+                max.X = corner1.X;
+            }
+
+            if (min.Y > max.Y)
+            {
+                min.Y = corner2.Y;
+                max.Y = corner1.Y;
+            }
+
+            GetBinLocation(min, ref outBinRegion.m_minLocation);
+            GetBinLocation(max, ref outBinRegion.m_maxLocation);
+        }
 
 
 		public void GetBinRegionFromCentre(Vector2 centre, Vector2 halfDimension, ref BinRegionUniform outBinRegion)
@@ -266,7 +331,7 @@ namespace Momo.Core.Spatial
 			Vector2 minCorner = centre - halfDimension;
 			Vector2 maxCorner = centre + halfDimension;
 
-			GetBinRegionCorners(minCorner, maxCorner, ref outBinRegion);
+			GetBinRegionFromCorners(minCorner, maxCorner, ref outBinRegion);
 		}
 
 
@@ -274,6 +339,73 @@ namespace Momo.Core.Spatial
         {
             Vector2 halfDimension = new Vector2(radius, radius);
             GetBinRegionFromCentre(centre, halfDimension, ref outBinRegion);
+        }
+
+
+        public void GetBinRegionFromLine(Vector2 p1, Vector2 diff, out BinRegionSelection outBinRegion)
+        {
+            int binCnt = 0;
+
+            BinLocation binLocation = new BinLocation();
+            GetBinLocation(p1, ref binLocation);
+
+            Vector2 p1BinSpace = p1 / m_binDimension;
+            Vector2 diffBinSpace = diff / m_binDimension;
+
+            short binMoveX = 1;
+            short binMoveY = 1;
+            short binBaseX = 1;
+            short binBaseY = 1;
+
+            if (diffBinSpace.X < 0.0f)
+            {
+                binMoveX = -1;
+                binBaseX = 0;
+            }
+
+            if (diffBinSpace.Y < 0.0f)
+            {
+                binMoveY = -1;
+                binBaseY = 0;
+            }
+
+
+            // Stop divide by 0.
+            if (diffBinSpace.X == 0.0f)
+                diffBinSpace.X = float.MaxValue;
+            else if (diffBinSpace.Y == 0.0f)
+                diffBinSpace.Y = float.MaxValue;
+
+
+
+            m_binRegionSelectionBuffer.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
+
+
+            // The one will have to change based on -/+ direction of y.
+            float tX = ((float)binBaseX - p1BinSpace.X) / diffBinSpace.X;
+            float tY = ((float)binBaseY - p1BinSpace.Y) / diffBinSpace.Y;
+
+
+            while (tX < 1.0f || tY < 1.0f)
+            {
+                // Y boundary hit first (up or down it goes).
+                if (tY < tX)
+                {
+                    binLocation.m_y += binMoveY;
+                    m_binRegionSelectionBuffer.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
+
+                    tY = ((float)(binLocation.m_y + binBaseY) - p1BinSpace.Y) / diffBinSpace.Y;
+                }
+                else
+                {
+                    binLocation.m_x += binMoveX;
+                    m_binRegionSelectionBuffer.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
+
+                    tX = ((float)(binLocation.m_x + binBaseX) - p1BinSpace.X) / diffBinSpace.X;
+                }
+            }
+
+            outBinRegion = new BinRegionSelection(ref m_binRegionSelectionBuffer);
         }
 
 
@@ -292,31 +424,9 @@ namespace Momo.Core.Spatial
 		}
 
 
-		//public void GetBinDimension(Vector2 dimension, ref BinDimension outBinDimension)
-		//{
-		//	Vector2 binDimension = GetBinDimension(dimension);
-
-		//	outBinDimension.m_width = (short)binDimension.X;
-		//	outBinDimension.m_height = (short)binDimension.Y;
-		//}
-
-
-		//public Vector2 GetBinDimension(Vector2 dimension)
-		//{
-		//	return dimension * m_invBinDimension;
-		//}
-
-
-		//public void GetBinDimension(BinLocation negativeCornerLocation, BinLocation positiveCornerLocation, ref BinDimension outBinDimension)
-		//{
-		//	outBinDimension.m_width = (short)(negativeCornerLocation.m_x - positiveCornerLocation.m_x + 1);
-		//	outBinDimension.m_height = (short)(negativeCornerLocation.m_y - positiveCornerLocation.m_y + 1);
-		//}
-
-
-		public void DebugRender(DebugRenderer debugRenderer, int maxColourCount)
+		public void DebugRender(DebugRenderer debugRenderer, int maxColourCount, int layerIdx)
 		{
-			const float kBinAlpha = 0.15f;
+			const float kBinAlpha = 0.25f;
 			int binIdx = 0;
 
 
@@ -332,17 +442,19 @@ namespace Momo.Core.Spatial
 
 				for (int x = 0; x < m_binCountX; ++x)
 				{
-					int entryCnt = CountBinList(m_binEntries[binIdx]);
+                    int entryCnt = CountBinList(m_binEntries[layerIdx, binIdx]);
 
-					float binColourMod = (float)entryCnt / (float)maxColourCount;
-					if(binColourMod > 1.0f)
-						binColourMod = 1.0f;
+                    if (entryCnt > 0)
+                    {
+                        float binColourMod = (float)entryCnt / (float)maxColourCount;
+                        if (binColourMod > 1.0f)
+                            binColourMod = 1.0f;
 
-                    Color binColour = new Color(binColourMod * 2.0f, 1.0f, 0.0f, kBinAlpha * binColourMod);
 
+                        Color binColour = new Color(binColourMod, 1.0f, 0.0f, kBinAlpha * binColourMod);
 
-                    debugRenderer.DrawQuad(p1, p2, p3, p4, binColour, Color.Black, true, 0.0f);
-
+                        debugRenderer.DrawQuad(p1, p2, p3, p4, binColour, Color.Black, true, 0.0f);
+                    }
 
 					p1 = p2;
 					p4 = p3;

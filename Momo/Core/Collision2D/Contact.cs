@@ -191,15 +191,17 @@ namespace Momo.Core.Collision2D
 
 			m_resolutionMovement1 = movePerIMass * m_object1.GetInverseMass();
 			m_object1.SetPosition(m_object1.GetPosition() + m_resolutionMovement1);
-			//m_penetration -= Vector2.Dot(m_resolutionMovement1, m_contactNormal);
 			m_penetration -= penerationPerIMass * m_object1.GetInverseMass();
+
+            m_object1.OnCollisionEvent(ref m_object2);
 
 			if (m_object2 != null)
 			{
 				m_resolutionMovement2 = movePerIMass * -m_object2.GetInverseMass();
 				m_object2.SetPosition(m_object2.GetPosition() + m_resolutionMovement2);
-				//m_penetration += Vector2.Dot(m_resolutionMovement2, m_contactNormal);
 				m_penetration += penerationPerIMass * -m_object2.GetInverseMass();
+
+                m_object2.OnCollisionEvent(ref m_object1);
 			}
 			else
 			{

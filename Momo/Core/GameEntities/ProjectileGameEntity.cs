@@ -11,7 +11,7 @@ using Momo.Core.Collision2D;
 
 namespace Momo.Core.GameEntities
 {
-	public class DynamicGameEntity : GameEntity, IDynamicCollidable
+	public class ProjectileGameEntity : GameEntity
 	{
         // --------------------------------------------------------------------
         // -- Private Static Members
@@ -23,10 +23,8 @@ namespace Momo.Core.GameEntities
 		// -- Private Members
 		// --------------------------------------------------------------------
 		private Vector2 m_velocity = Vector2.Zero;
-		private Vector2 m_force = Vector2.Zero;
-        private Vector2 m_lastFrameAcceleration = Vector2.Zero;
+        private Vector2 m_lastFramePosition = Vector2.Zero;
 
-		private MassInfo m_massInfo = new MassInfo(1.0f);
 
 
         // --------------------------------------------------------------------
@@ -41,60 +39,33 @@ namespace Momo.Core.GameEntities
 		// --------------------------------------------------------------------
 		// -- Public Methods
 		// --------------------------------------------------------------------
-		public void SetVelocity(Vector2 velocity)
-		{
-			m_velocity = velocity;
-		}
+        public void SetVelocity(Vector2 velocity)
+        {
+            m_velocity = velocity;
+        }
 
-		public override Vector2 GetVelocity()
-		{
-			return m_velocity;
-		}
+        public override Vector2 GetVelocity()
+        {
+            return m_velocity;
+        }
 
-		public void SetForce(Vector2 force)
-		{
-			m_force = force;
-		}
+        public Vector2 GetLastFramePosition()
+        {
+            return m_lastFramePosition;
+        }
 
-		public Vector2 GetForce()
-		{
-			return m_force;
-		}
-
-		public Vector2 GetLastFrameAcceleration()
-		{
-            return m_lastFrameAcceleration;
-		}
-
-		public void SetMass(float mass)
-		{
-			m_massInfo.Mass = mass;
-		}
-
-
-		public float GetMass()
-		{
-			return m_massInfo.Mass;
-		}
-
-
-		public float GetInverseMass()
-		{
-			return m_massInfo.InverseMass;
-		}
 
 
 		public override void Update(ref FrameTime frameTime)
 		{
 			base.Update(ref frameTime);
 
-            Vector2 newPosition = GetPosition() + (m_velocity * frameTime.Dt);
+            Vector2 position = GetPosition();
+            m_lastFramePosition = position;
 
-            m_lastFrameAcceleration = (m_force * frameTime.Dt);
-            m_velocity = m_velocity + m_lastFrameAcceleration;
-            m_force = Vector2.Zero;
+            position = position + (m_velocity * frameTime.Dt);
 
-            SetPosition(newPosition);
+            SetPosition(position);
 		}
 
 
@@ -107,9 +78,5 @@ namespace Momo.Core.GameEntities
         // --------------------------------------------------------------------
         // -- Private Methods
         // --------------------------------------------------------------------
-        public void OnCollisionEvent(ref IDynamicCollidable collidable)
-        {
-
-        }
 	}
 }

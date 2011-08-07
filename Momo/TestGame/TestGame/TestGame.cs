@@ -30,13 +30,15 @@ namespace TestGame
 
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
+        
+        static Random ms_random = new Random();
 
 		WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
 		DebugRenderer m_debugRenderer = new DebugRenderer();
 		OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
 		CameraController m_cameraController = new CameraController();
 
-		Bin m_bin = new Bin(50, 20, 5000, 2000, 5000, 5000);
+		Bin m_bin = new Bin(100, 100, 10000, 10000, 3, 10000, 5000, 1000);
         ContactList m_contactList = new ContactList(4000);
         ContactResolver m_contactResolver = new ContactResolver();
 
@@ -45,6 +47,7 @@ namespace TestGame
 
         List<AiEntity> m_ais = new List<AiEntity>(2000);
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
+        List<BulletEntity> m_bullets = new List<BulletEntity>(2000);
 
 
 		public TestGame()
@@ -85,13 +88,11 @@ namespace TestGame
 			m_map = Content.Load<Map.Map>("maps/1_living_quarters/1_living_quarters");
 
 
-            Random random = new Random();
             for (int i = 0; i < 200; ++i)
             {
                 AiEntity ai = new AiEntity();
-                Vector2 pos = new Vector2(100.0f + ((float)random.NextDouble() * 3300.0f),
-                                            725.0f + ((float)random.NextDouble() * 65.0f));
-
+                Vector2 pos = new Vector2(100.0f + ((float)ms_random.NextDouble() * 3300.0f),
+                                            725.0f + ((float)ms_random.NextDouble() * 65.0f));
 
                 ai.SetPosition(pos);
 
@@ -101,10 +102,12 @@ namespace TestGame
             }
 
 
+
 			BuildCollisionBoundaries();
 
 			m_mapRenderer.Init(m_map, GraphicsDevice, 16);
 		}
+
 
 		private void BuildCollisionBoundaries()
 		{
@@ -113,20 +116,28 @@ namespace TestGame
 			for (int boundryIdx = 0; boundryIdx < numBoundries; ++boundryIdx)
 			{
 				int numNodes = m_map.CollisionBoundaries[boundryIdx].Length;
-				LineStripPrimitive2D lineStrip = new LineStripPrimitive2D(numNodes);
-				lineStrip.StartAddingPoints();
-				for (int nodeIdx = 0; nodeIdx < numNodes; ++nodeIdx)
+
+                Vector2 lastPoint = new Vector2(
+						                (float)(m_map.CollisionBoundaries[boundryIdx][0].X),
+						                (float)(m_map.CollisionBoundaries[boundryIdx][0].Y));
+
+				for (int nodeIdx = 1; nodeIdx < numNodes; ++nodeIdx)
 				{
 					Vector2 pos = new Vector2(
 						(float)(m_map.CollisionBoundaries[boundryIdx][nodeIdx].X),
-						(float)(m_map.CollisionBoundaries[boundryIdx][nodeIdx].Y)
-					);
-					lineStrip.AddPoint(pos);
+						(float)(m_map.CollisionBoundaries[boundryIdx][nodeIdx].Y));
+
+
+                    LinePrimitive2D lineStrip = new LinePrimitive2D(lastPoint, pos);
+                    BoundaryEntity boundaryEntity = new BoundaryEntity(lineStrip);
+                    boundaryEntity.AddToBin(m_bin);
+                    m_boundaries.Add(boundaryEntity);
+
+                    lastPoint = pos;
 				}
-				lineStrip.EndAddingPoints();
-                BoundaryEntity boundaryEntity = new BoundaryEntity(lineStrip);
-                boundaryEntity.RecalculateBinRegion(m_bin);
-                m_boundaries.Add(boundaryEntity);
+
+
+
 			}
 		}
 
@@ -154,10 +165,30 @@ namespace TestGame
 
             m_worldManager.Update(frameTime.Dt);
 
+
+            //if(ms_random.NextDouble() < 0.1f)
+            //{
+            //    BulletEntity bullet = new BulletEntity();
+            //    bullet.SetPosition(new Vector2(100.0f, 750.0f));
+
+            //    Vector2 velocity = new Vector2(1.0f, ((float)ms_random.NextDouble() - 0.5f) * 0.05f);
+            //    velocity.Normalize();
+            //    bullet.SetVelocity(velocity * 500.0f);
+
+            //    m_bullets.Add(bullet);
+            //}
+
+
             for (int i = 0; i < m_ais.Count; ++i)
             {
                 m_ais[i].Update(ref frameTime);
                 m_ais[i].UpdateBinEntry(m_bin);
+            }
+
+            for (int i = 0; i < m_bullets.Count; ++i)
+            {
+                m_bullets[i].Update(ref frameTime);
+                m_bullets[i].UpdateBinEntry(m_bin);
             }
 
             m_contactList.StartAddingContacts();
@@ -240,8 +271,8 @@ namespace TestGame
 			//m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 30.0f), new Vector2(0.0f, y - 30.0f), Color.Black, 23.0f);
 			//m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 85.0f), new Vector2(0.0f, y - 85.0f), Color.Black, 51.0f);
 
-
-			m_bin.DebugRender(m_debugRenderer, 6);
+            //m_bin.DebugRender(m_debugRenderer, 6, 0);
+			//m_bin.DebugRender(m_debugRenderer, 1, 1);
 
             for (int i = 0; i < m_boundaries.Count; ++i)
 			{
@@ -251,6 +282,11 @@ namespace TestGame
             for (int i = 0; i < m_ais.Count; ++i)
             {
                 m_ais[i].DebugRender(m_debugRenderer);
+            }
+
+            for (int i = 0; i < m_bullets.Count; ++i)
+            {
+                m_bullets[i].DebugRender(m_debugRenderer);
             }
 
 			m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);

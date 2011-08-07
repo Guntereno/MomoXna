@@ -36,7 +36,7 @@ namespace TestGame
                 entity.GetBinRegion(ref entityRegion);
 
                 bin.StartQuery();
-                bin.Query(entityRegion);
+                bin.Query(entityRegion, 0);
                 BinQueryResults queryResults = bin.EndQuery();
 
 
@@ -85,40 +85,39 @@ namespace TestGame
                 // TODO: Pad the bin region slightly so that we generate near by contact pairs.
                 entity.GetBinRegion(ref entityRegion);
 
+                bin.StartQuery();
+                bin.Query(entityRegion, 1);
+                BinQueryResults queryResults = bin.EndQuery();
 
-                for (int j = 0; j < boundaries.Count; ++j)
+
+                for (int j = 0; j < queryResults.BinItemCount; ++j)
                 {
-                    BoundaryEntity checkBoundary = boundaries[j];
+                    BoundaryEntity checkBoundary = (BoundaryEntity)queryResults.BinItemQueryResults[j];
                     checkBoundary.GetBinRegion(ref boundaryRegion);
 
-                    // Is the entity within the overall boundary entity
+
+                    // TODO: Add BinRegionSelection support to this statement.
                     if (entityRegion.IsInRegion(boundaryRegion) == true)
                     {
-                        for (int k = 0; k < checkBoundary.CollisionPrimitive.LineCount; ++k)
+                        float paddedRadius = entity.GetContactRadiusInfo().Radius + contactDimensionPadding;
+                        float paddedRadiusSq = paddedRadius * paddedRadius;
+
+                        LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
+                        bool contact = Math2D.DoesIntersect(    entity.GetPosition(),
+                                                                paddedRadius,
+                                                                paddedRadiusSq,
+                                                                linePrimitive2D.Point,
+                                                                linePrimitive2D.Point + linePrimitive2D.Difference,
+                                                                linePrimitive2D.Difference,
+                                                                linePrimitive2D.LengthSqList,
+                                                                ref intersectInfo);
+
+
+                        if (contact)
                         {
-                            if (entityRegion.IsInRegion(checkBoundary.CollisionLineBinRegions[k]) == true)
-                            {
-                                float paddedRadius = entity.GetContactRadiusInfo().Radius + contactDimensionPadding;
-                                float paddedRadiusSq = paddedRadius * paddedRadius;
-
-                                LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive.LineList[k];
-                                bool contact = Math2D.DoesIntersect(    entity.GetPosition(),
-                                                                        paddedRadius,
-                                                                        paddedRadiusSq,
-                                                                        linePrimitive2D.Point,
-                                                                        linePrimitive2D.Point + linePrimitive2D.Difference,
-                                                                        linePrimitive2D.Difference,
-                                                                        linePrimitive2D.LengthSqList,
-                                                                        ref intersectInfo);
-
-
-                                if (contact)
-                                {
-                                    Vector2 contactNormal = -(intersectInfo.PositionDifference / intersectInfo.PositionDistance);
-                                    float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - contactDimensionPadding;
-                                    contactList.AddContact(entity, null, contactNormal, contactOverlap, 1.0f, 0.0f);
-                                }
-                            }
+                            Vector2 contactNormal = -(intersectInfo.PositionDifference / intersectInfo.PositionDistance);
+                            float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - contactDimensionPadding;
+                            contactList.AddContact(entity, null, contactNormal, contactOverlap, 1.0f, 0.0f);
                         }
                     }
                 }

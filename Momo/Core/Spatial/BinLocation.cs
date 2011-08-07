@@ -9,5 +9,12 @@ namespace Momo.Core.Spatial
 	{
 		internal short m_x;
 		internal short m_y;
+
+
+        public BinLocation(short x, short y)
+        {
+            m_x = x;
+            m_y = y;
+        }
 	}
 }

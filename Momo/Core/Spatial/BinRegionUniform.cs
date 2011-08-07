@@ -9,7 +9,18 @@ namespace Momo.Core.Spatial
 	{
 		internal BinLocation m_minLocation;
 		internal BinLocation m_maxLocation;
-		//internal BinDimension m_dimension;
+
+
+        public int GetHeight()
+        {
+            return m_maxLocation.m_y - m_minLocation.m_y;
+        }
+
+
+        public int GetWidth()
+        {
+            return m_maxLocation.m_x - m_minLocation.m_x;
+        }
 
 
 		public bool IsEqual(ref BinRegionUniform binRegion)

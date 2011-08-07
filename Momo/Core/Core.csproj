@@ -98,6 +98,7 @@
     <Compile Include="Collision2D\IDynamicCollidable.cs" />
     <Compile Include="FrameTime.cs" />
     <Compile Include="GameEntities\BoundaryEntity.cs" />
+    <Compile Include="GameEntities\ProjectileGameEntity.cs" />
     <Compile Include="GameEntities\DynamicGameEntity.cs" />
     <Compile Include="GameEntities\GameEntity.cs" />
     <Compile Include="GameEntities\StaticGameEntity.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="RadiusInfo.cs" />
     <Compile Include="Spatial\Bin.cs" />
     <Compile Include="Spatial\BinEntry.cs" />
+    <Compile Include="Spatial\BinIndex.cs" />
     <Compile Include="Spatial\BinItem.cs" />
     <Compile Include="Spatial\BinLocation.cs" />
     <Compile Include="Spatial\BinQueryResults.cs" />

@@ -19,22 +19,21 @@ namespace Momo.Core.GameEntities
 		// --------------------------------------------------------------------
 		// -- Private Members
 		// --------------------------------------------------------------------
-		private LineStripPrimitive2D m_collisionPrimitive = null;
-		private BinRegionUniform [] m_collisionLineBinRegions = null;
-
+		private LinePrimitive2D m_collisionPrimitive;
+		private BinRegionSelection m_collisionLineBinRegionsSelection;    // For axis aligned lines this is unused.
 
 
 		// --------------------------------------------------------------------
 		// -- Public Methods
 		// --------------------------------------------------------------------
-		public LineStripPrimitive2D CollisionPrimitive
+		public LinePrimitive2D CollisionPrimitive
 		{
 			get { return m_collisionPrimitive; }
 		}
 
-		public BinRegionUniform [] CollisionLineBinRegions
+        public BinRegionSelection CollisionLineBinRegionsSelection
 		{
-			get { return m_collisionLineBinRegions; }
+            get { return m_collisionLineBinRegionsSelection; }
 		}
 
 
@@ -44,11 +43,9 @@ namespace Momo.Core.GameEntities
 		}
 
 
-		public BoundaryEntity(LineStripPrimitive2D collisionPrimitive)
+		public BoundaryEntity(LinePrimitive2D collisionPrimitive)
 		{
 			m_collisionPrimitive = collisionPrimitive;
-
-			m_collisionLineBinRegions = new BinRegionUniform[m_collisionPrimitive.LineCount];
 		}
 
 
@@ -56,48 +53,38 @@ namespace Momo.Core.GameEntities
 		{
 			Vector2 minCorner;
 			Vector2 maxCorner;
+            m_collisionPrimitive.CalculateMinMax(out minCorner, out maxCorner);
+
+            // Update uniform region
 			BinRegionUniform binRegion = new BinRegionUniform();
-
-			m_collisionPrimitive.CalculateBoundingArea(out minCorner, out maxCorner);
-
-			bin.GetBinRegionCorners(minCorner, maxCorner, ref binRegion);
-
+            bin.GetBinRegionFromUnsortedCorners(m_collisionPrimitive.m_point, m_collisionPrimitive.m_point + m_collisionPrimitive.m_difference, ref binRegion);
 			SetBinRegion(binRegion);
 
-			for (int i = 0; i < m_collisionPrimitive.LineCount; ++i)
-			{
-				Vector2 min;
-				Vector2 max;
-
-				m_collisionPrimitive.LineList[i].CalculateMinMax(out min, out max);
-
-				bin.GetBinRegionCorners(min, max, ref m_collisionLineBinRegions[i]);
-			}
+            // Only generate the selection on non axis aligned lines, massive waste otherwise.
+            //if (binRegion.GetHeight() != 0 && binRegion.GetWidth() != 0)
+            //    bin.GetBinRegionFromLine(m_collisionPrimitive.m_point, m_collisionPrimitive.m_difference, out m_collisionLineBinRegionsSelection);
 		}
 
 
 		public override void DebugRender(DebugRenderer debugRenderer)
 		{
             Color kBoundaryColour1 = new Color(0.0f, 1.0f, 0.0f, 0.5f);
-            //Color kBoundaryColour2 = new Color(0.0f, 0.5f, 0.0f, 0.5f);
-
-            
-            System.Diagnostics.Debug.Assert(m_collisionPrimitive != null);
-
-			Vector2 lastPoint = m_collisionPrimitive.LineList[0].m_point;
-
-			for (int i = 1; i < m_collisionPrimitive.PointCount; ++i)
-			{
-				Vector2 point = m_collisionPrimitive.LineList[i].m_point;
-
-                //if (i % 2 == 0)
-                    debugRenderer.DrawFilledLineWithCaps(point, lastPoint, kBoundaryColour1, 2.0f);
-                //else
-                //    debugRenderer.DrawFilledLineWithCaps(point, lastPoint, kBoundaryColour2, 2.0f);
-
-				lastPoint = point;
-			}
-
+            debugRenderer.DrawFilledLineWithCaps(m_collisionPrimitive.m_point, m_collisionPrimitive.m_point + m_collisionPrimitive.m_difference, kBoundaryColour1, 2.0f);
 		}
+
+
+        public void AddToBin(Bin bin)
+        {
+            RecalculateBinRegion(bin);
+
+
+            BinRegionUniform binRegion = new BinRegionUniform();
+            GetBinRegion(ref binRegion);
+
+            if(m_collisionLineBinRegionsSelection.m_binIndices == null)
+                bin.UpdateBinItem(this, ref binRegion, 1);
+            else
+                bin.UpdateBinItem(this, ref m_collisionLineBinRegionsSelection, 1);
+        }
 	}
 }

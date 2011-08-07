@@ -29,6 +29,8 @@ namespace Momo.Core.Collision2D
 		float GetInverseMass();
 
 
+        void OnCollisionEvent(ref IDynamicCollidable collidable);
+
 
 		//float Rotation
 		//{
