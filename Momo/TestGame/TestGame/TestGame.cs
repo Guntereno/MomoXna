@@ -11,6 +11,7 @@ using Momo.Core.Spatial;
 using Momo.Core.Collision2D;
 using Momo.Core.Primitive2D;
 using Momo.Core.GameEntities;
+using Momo.Core.Pathfinding;
 using Momo.Debug;
 
 using TestGame.Systems;
@@ -46,6 +47,8 @@ namespace TestGame
 		Map.Map m_map = null;
 		MapRenderer m_mapRenderer = new MapRenderer();
 
+        PathIsland m_pathIsland = new PathIsland();
+
         List<AiEntity> m_ais = new List<AiEntity>(2000);
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
         List<BulletEntity> m_bullets = new List<BulletEntity>(2000);
@@ -60,7 +63,7 @@ namespace TestGame
 
 			m_camera.ViewWidth = kBackBufferWidth;
 			m_camera.ViewHeight = kBackBufferHeight;
-			m_camera.LocalTranslation = new Vector3(0.0f, 0.0f, 10.0f);
+			m_camera.LocalTranslation = new Vector3(300.0f, 750.0f, 10.0f);
 
 			m_cameraController.Camera = m_camera;
 
@@ -102,6 +105,16 @@ namespace TestGame
 
                 m_ais.Add(ai);
             }
+
+
+            PathRegion[] regions = new PathRegion[2];
+            regions[0] = new PathRegion(new Vector2(100.0f, 650.0f), new Vector2(900.0f, 800.0f));
+            regions[1] = new PathRegion(new Vector2(200.0f, 150.0f), new Vector2(700.0f, 550.0f));
+
+            regions[0].GenerateUniformGridOfNodes(10.0f, 50.0f);
+            regions[1].GenerateUniformGridOfNodes(10.0f, 50.0f);
+
+            m_pathIsland.SetRegions(regions);
 
 
 
@@ -174,9 +187,9 @@ namespace TestGame
                 BulletEntity bullet = new BulletEntity();
                 bullet.SetPosition(new Vector2(100.0f, 750.0f));
 
-                Vector2 velocity = new Vector2(1.0f, ((float)ms_random.NextDouble() - 0.5f) * 0.05f);
+                Vector2 velocity = new Vector2(1.0f, ((float)ms_random.NextDouble() - 0.5f) * 0.025f);
                 velocity.Normalize();
-                bullet.SetVelocity(velocity * 500.0f);
+                bullet.SetVelocity(velocity * 750.0f);
 
                 bullet.AddToBin(m_bin);
                 m_bullets.Add(bullet);
@@ -241,62 +254,6 @@ namespace TestGame
 
 			m_worldManager.Render();
 
-			// 3D
-			//m_debugRenderer.DrawCircle(new Vector3(0.0f, 0.0f, 0.0f), 30.0f, Color.Red, Color.Black, 10.0f, new Vector3(1.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), 64);
-
-			//// 2D
-			//float y = 250.0f;
-			//float x = 230.0f;
-			//m_debugRenderer.DrawCircle(new Vector2(x + 0.0f, y), 30.0f, Color.Red, Color.Black, true, 0.0f, 64);
-			//m_debugRenderer.DrawCircle(new Vector2(x + 60.0f, y), 30.0f, Color.Red, Color.Black, true, 10.0f, 64);
-			//m_debugRenderer.DrawCircle(new Vector2(x + 120.0f, y), 30.0f, Color.Red, Color.Black, true, 20.0f, 64);
-
-			//y -= 60;
-			//m_debugRenderer.DrawOutlineCircle(new Vector2(x + 0.0f, y), 30.0f, Color.Black, 0.0f);
-			//m_debugRenderer.DrawOutlineCircle(new Vector2(x + 60.0f, y), 30.0f, Color.Black, 10.0f);
-			//m_debugRenderer.DrawOutlineCircle(new Vector2(x + 120.0f, y), 30.0f, Color.Black, 20.0f);
-
-			//y -= 60;
-			//m_debugRenderer.DrawFilledCircle(new Vector2(x + 0.0f, y), 30.0f, Color.Red);
-			//m_debugRenderer.DrawFilledCircle(new Vector2(x + 60.0f, y), 30.0f, Color.Red);
-			//m_debugRenderer.DrawFilledCircle(new Vector2(x + 120.0f, y), 30.0f, Color.Red);
-
-
-			//// 2D
-			//Vector2 p1 = new Vector2(-300.0f, 30.0f);
-			//Vector2 p2 = new Vector2(-200.0f, 0.0f);
-			//Vector2 p3 = new Vector2(-220.0f, -30.0f);
-			//Vector2 p4 = new Vector2(-330.0f, -50.0f);
-
-			//Vector2 offset = new Vector2(0.0f, -70.0f);
-			//m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 30.0f);
-			//offset = new Vector2(150.0f, -70.0f);
-			//m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 10.0f);
-
-
-			//p1 = new Vector2(-300.0f, -100.0f);
-			//p2 = new Vector2(-180.0f, -100.0f);
-			//p3 = new Vector2(-180.0f, -200.0f);
-			//p4 = new Vector2(-300.0f, -200.0f);
-
-			//offset = new Vector2(-20.0f, -50.0f);
-			//m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 30.0f);
-			//offset = new Vector2(120.0f, -50.0f);
-			//m_debugRenderer.DrawQuad(offset + p1, offset + p2, offset + p3, offset + p4, Color.Red, Color.Black, true, 10.0f);
-
-
-			//y = 270.0f;
-			//m_debugRenderer.DrawFilledLineWithCaps(new Vector2(-350.0f, y - 0.0f), new Vector2(0.0f, y - 0.0f), Color.Black, 13.0f, 4);
-			//m_debugRenderer.DrawFilledLineWithCaps(new Vector2(-350.0f, y - 30.0f), new Vector2(0.0f, y - 30.0f), Color.Black, 23.0f, 5);
-			//m_debugRenderer.DrawFilledLineWithCaps(new Vector2(-350.0f, y - 85.0f), new Vector2(0.0f, y - 85.0f), Color.Black, 51.0f, 32);
-
-			//y -= 140.0f;
-			//m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 0.0f), new Vector2(0.0f, y - 0.0f), Color.Black, 13.0f);
-			//m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 30.0f), new Vector2(0.0f, y - 30.0f), Color.Black, 23.0f);
-			//m_debugRenderer.DrawFilledLine(new Vector2(-350.0f, y - 85.0f), new Vector2(0.0f, y - 85.0f), Color.Black, 51.0f);
-
-            //m_bin.DebugRender(m_debugRenderer, 6, 0);
-			//m_bin.DebugRender(m_debugRenderer, 1, 1);
 
             for (int i = 0; i < m_boundaries.Count; ++i)
 			{
@@ -317,6 +274,9 @@ namespace TestGame
             {
                 m_explosions[i].DebugRender(m_debugRenderer);
             }
+
+            m_pathIsland.DebugRender(m_debugRenderer);
+
 
 			m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);
 			m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);

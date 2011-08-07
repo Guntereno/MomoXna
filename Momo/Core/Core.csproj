@@ -110,6 +110,13 @@
     <Compile Include="Nodes\Cameras\OrthographicCameraNode.cs" />
     <Compile Include="Nodes\Cameras\PerspectiveCameraNode.cs" />
     <Compile Include="Nodes\Node3d.cs" />
+    <Compile Include="Pathfinding\PathNodeConnection.cs" />
+    <Compile Include="Pathfinding\PathIsland.cs" />
+    <Compile Include="Pathfinding\PathNode.cs" />
+    <Compile Include="Pathfinding\PathRegionConnection.cs" />
+    <Compile Include="Pathfinding\PathRegion.cs" />
+    <Compile Include="Pathfinding\PathRoute.cs" />
+    <Compile Include="Pathfinding\PathRouteNode.cs" />
     <Compile Include="Primitive2D\CirclePrimitive2D.cs" />
     <Compile Include="Primitive2D\LinePrimitive2D.cs" />
     <Compile Include="Primitive2D\LineStripPrimitive2D.cs" />

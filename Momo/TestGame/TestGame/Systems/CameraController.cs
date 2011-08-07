@@ -13,23 +13,25 @@ namespace TestGame.Systems
 	{
 		public OrthographicCameraNode Camera { get; set; }
 		Vector3 m_cameraSpeed = Vector3.Zero;
-		Vector3 m_position = Vector3.Zero;
+
+
 
 		public CameraController()
 		{
-			m_position.Z = 10.0f;
+
 		}
 
 		public void Update(GamePadState currentGamePadState, KeyboardState currentKeyboardState)
 		{
 			if (Camera != null)
 			{
-				m_position += m_cameraSpeed;
+                Vector3 pos = Camera.LocalTranslation;
+                pos += m_cameraSpeed;
 
 				Vector3 newPos = new Vector3(
-					(float)Math.Floor(m_position.X),
-					(float)Math.Floor(m_position.Y),
-					(float)Math.Floor(m_position.Z));
+                    (float)Math.Floor(pos.X),
+                    (float)Math.Floor(pos.Y),
+                    (float)Math.Floor(pos.Z));
 
                 Matrix cameraMatrix = Matrix.Identity;
                 // Lets rotate the camera 180 in the z so that the map world renders nicely.
