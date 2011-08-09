@@ -17,8 +17,27 @@ namespace TestGame.Input
 			foreach (Buttons button in Enum.GetValues(typeof(Buttons)))
 			{
 				ButtonInfo buttonInfo = new ButtonInfo();
+				buttonInfo.m_state = false;
+				buttonInfo.m_previousState = false;
+
+				// Map the keyboard buttons
+				switch (button)
+				{
+					case Buttons.RightShoulder: buttonInfo.m_mappedKey = Keys.NumPad0; break;
+					default: buttonInfo.m_mappedKey = null; break;
+				}
+
 				m_buttonDict[button] = buttonInfo;
 			}
+
+			// Map the keyboard buttons
+			{
+				ButtonInfo buttonInfo;
+				buttonInfo = m_buttonDict[Buttons.RightShoulder];
+				buttonInfo.m_mappedKey = Keys.NumPad0;
+				m_buttonDict[Buttons.RightShoulder] = buttonInfo;
+			}
+
 		}
 
 		public Vector2 GetLeftStick() { return m_leftStick; }
@@ -67,6 +86,16 @@ namespace TestGame.Input
 			// Keyboard input overrides joypad
 			UpdateStickKeys(ref m_leftStick, ref currentKeyboardState, Keys.W, Keys.A, Keys.S, Keys.D);
 			UpdateStickKeys(ref m_rightStick, ref currentKeyboardState, Keys.NumPad8, Keys.NumPad4, Keys.NumPad2, Keys.NumPad6);
+
+			foreach (Buttons button in Enum.GetValues(typeof(Buttons)))
+			{
+				ButtonInfo buttonInfo = m_buttonDict[button];
+				if ( (buttonInfo.m_mappedKey != null) && (currentKeyboardState.IsKeyDown(buttonInfo.m_mappedKey.Value)) )
+				{
+					buttonInfo.m_state = true;
+					m_buttonDict[button] = buttonInfo;
+				}
+			}
 		}
 
 		private static void UpdateStick(ref Vector2 resultVector, ref Vector2 padVector)
@@ -114,6 +143,7 @@ namespace TestGame.Input
 		{
 			public bool m_state;
 			public bool m_previousState;
+			public Keys? m_mappedKey;
 		};
 
 		Dictionary<Buttons, ButtonInfo> m_buttonDict;
