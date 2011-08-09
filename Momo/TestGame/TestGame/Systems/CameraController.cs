@@ -30,12 +30,12 @@ namespace TestGame.Systems
 
 		}
 
-		public void Update(GamePadState currentGamePadState, KeyboardState currentKeyboardState)
+		public void Update(ref Input.InputWrapper input)
 		{
 			if (Camera == null)
 				return;
 
-			if (currentGamePadState.IsButtonDown(Buttons.LeftShoulder))
+			if (input.IsButtonDown(Buttons.LeftShoulder))
 			{
 				m_behaviour = Behaviour.Debug;
 			}
@@ -47,7 +47,7 @@ namespace TestGame.Systems
 			switch (m_behaviour)
 			{
 				case Behaviour.Debug:
-					UpdateDebug(ref currentGamePadState, ref currentKeyboardState);
+					UpdateDebug(ref input);
 					break;
 
 				case Behaviour.Follow:
@@ -84,67 +84,47 @@ namespace TestGame.Systems
 			}
 		}
 
-		private void UpdateDebug(ref GamePadState currentGamePadState, ref KeyboardState currentKeyboardState)
+		private void UpdateDebug(ref Input.InputWrapper input)
 		{
 			Vector3 pos = Camera.LocalTranslation;
 			pos += m_cameraVelocity;
 
-			const float kAnalogDeadzone = 0.3f;
+			// Calculate the acceleration based on the pad input
+			const float kMaxAccel = 5.0f;
+			Vector2 inputVector = input.GetLeftStick();
+			Vector3 camAccel = new Vector3(
+				inputVector.X * kMaxAccel,
+				inputVector.Y * -kMaxAccel,
+				0.0f
+			);
 
+			// Apply the acceleration
+			m_cameraVelocity += camAccel;
+			
+			// Clamp the velocity
+			float speed = m_cameraVelocity.Length();
 			float kMaxSpeed = 20.0f;
-			const float kCamAccel = 5.0f;
-			float xAmount = currentGamePadState.ThumbSticks.Left.X;
-
-			bool leftKey = currentKeyboardState.IsKeyDown(Keys.Left);
-			bool rightKey = currentKeyboardState.IsKeyDown(Keys.Right);
-			if (leftKey && !rightKey)
+			if (speed > kMaxSpeed)
 			{
-				xAmount = -1.0f;
-			}
-			else if (rightKey && !leftKey)
-			{
-				xAmount = 1.0f;
+				m_cameraVelocity *= (kMaxSpeed / speed);
 			}
 
-			if (Math.Abs(xAmount) > kAnalogDeadzone)
-			{
-				if (Math.Abs(m_cameraVelocity.X) < kMaxSpeed)
-					m_cameraVelocity.X += (kCamAccel * xAmount);
-			}
-
-
-			float yAmount = -currentGamePadState.ThumbSticks.Left.Y;
-
-			bool upKey = currentKeyboardState.IsKeyDown(Keys.Up);
-			bool downKey = currentKeyboardState.IsKeyDown(Keys.Down);
-			if (upKey && !downKey)
-			{
-				yAmount = -1.0f;
-			}
-			else if (downKey && !upKey)
-			{
-				yAmount = 1.0f;
-			}
-
-			if (Math.Abs(yAmount) > kAnalogDeadzone)
-			{
-				if (Math.Abs(m_cameraVelocity.Y) < kMaxSpeed)
-					m_cameraVelocity.Y += (kCamAccel * yAmount);
-			}
-
+			// Dampen the velocity
 			const float kDampeningFactor = 0.85f;
 			m_cameraVelocity *= kDampeningFactor;
 
-			Camera.LocalTranslation = new Vector3(
-				(float)Math.Floor(pos.X),
-				(float)Math.Floor(pos.Y),
-				(float)Math.Floor(pos.Z));
+			Camera.LocalTranslation = pos;
+			
+			Vector3 clampedPos = new Vector3(
+				 (float)Math.Floor(pos.X),
+				 (float)Math.Floor(pos.Y),
+				 (float)Math.Floor(pos.Z));
 
 			Matrix cameraMatrix = Matrix.Identity;
 			// Lets rotate the camera 180 in the z so that the map world renders nicely.
 			cameraMatrix.Right = new Vector3(1.0f, 0.0f, 0.0f);
 			cameraMatrix.Up = new Vector3(0.0f, -1.0f, 0.0f);
-			cameraMatrix.Translation = Camera.LocalTranslation;
+			cameraMatrix.Translation = clampedPos;
 
 			Camera.Matrix = cameraMatrix;
 		}

@@ -22,45 +22,9 @@ namespace TestGame.Entities
 			DebugColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
 		}
 
-		public void UpdateInput(ref GamePadState currentGamePadState, ref KeyboardState currentKeyboardState)
+		public void UpdateInput(ref Input.InputWrapper input)
 		{
-			const float kAnalogDeadzone = 0.3f;
-			const float kAnalogDeadzoneSq = kAnalogDeadzone * kAnalogDeadzone;
-
-			m_inputVector = Vector2.Zero;
-
-
-			Vector2 padVector = new Vector2(
-									currentGamePadState.ThumbSticks.Left.X,
-									currentGamePadState.ThumbSticks.Left.Y);
-
-			if (padVector.LengthSquared() > kAnalogDeadzoneSq)
-			{
-				m_inputVector = padVector;
-				m_inputVector.Y *= -1.0f;
-			}
-
-			bool leftKey = currentKeyboardState.IsKeyDown(Keys.Left);
-			bool rightKey = currentKeyboardState.IsKeyDown(Keys.Right);
-			if (leftKey && !rightKey)
-			{
-				m_inputVector.X = -1.0f;
-			}
-			else if (rightKey && !leftKey)
-			{
-				m_inputVector.X = 1.0f;
-			}
-
-			bool upKey = currentKeyboardState.IsKeyDown(Keys.Up);
-			bool downKey = currentKeyboardState.IsKeyDown(Keys.Down);
-			if (upKey && !downKey)
-			{
-				m_inputVector.Y = -1.0f;
-			}
-			else if (downKey && !upKey)
-			{
-				m_inputVector.Y = 1.0f;
-			}
+			m_inputVector = input.GetLeftStick();
 		}
 
 		public override void Update(ref FrameTime frameTime)

@@ -35,6 +35,8 @@ namespace TestGame
         
         static Random ms_random = new Random();
 
+		Input.InputWrapper m_inputWrapper = new Input.InputWrapper();
+
 		WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
 		DebugRenderer m_debugRenderer = new DebugRenderer();
 		OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
@@ -170,9 +172,6 @@ namespace TestGame
 
 		protected override void Update(GameTime gameTime)
 		{
-			GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
-			KeyboardState keyboardState = Keyboard.GetState();
-
 			// Allows the game to exit
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
 				this.Exit();
@@ -219,8 +218,11 @@ namespace TestGame
                 m_bullets[i].UpdateBinEntry(m_bin);
             }
 
+			GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+			KeyboardState keyboardState = Keyboard.GetState();
+			m_inputWrapper.Update(gamePadState, keyboardState);
 
-			m_player.UpdateInput(ref gamePadState, ref keyboardState);
+			m_player.UpdateInput(ref m_inputWrapper);
 			m_player.Update(ref frameTime);
             m_player.UpdateBinEntry(m_bin);
 
@@ -250,7 +252,7 @@ namespace TestGame
             }
 
 
-			m_cameraController.Update(gamePadState, keyboardState);
+			m_cameraController.Update(ref m_inputWrapper);
 
 			base.Update(gameTime);
 		}
