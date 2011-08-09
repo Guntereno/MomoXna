@@ -27,6 +27,9 @@ namespace TestGame
 	/// </summary>
 	public class TestGame : Microsoft.Xna.Framework.Game
 	{
+		public static TestGame Instance() { return ms_instance; }
+		private static TestGame ms_instance = null;
+
 		const int kBackBufferWidth = 1200;
 		const int kBackBufferHeight = 900;
 
@@ -60,6 +63,9 @@ namespace TestGame
 
 		public TestGame()
 		{
+			System.Diagnostics.Debug.Assert(ms_instance == null);
+			ms_instance = this;
+
 			graphics = new GraphicsDeviceManager(this);
 			graphics.PreferredBackBufferWidth = kBackBufferWidth;
 			graphics.PreferredBackBufferHeight = kBackBufferHeight;
@@ -71,6 +77,16 @@ namespace TestGame
 			m_cameraController.Camera = m_camera;
 
 			Content.RootDirectory = "Content";
+		}
+
+		public void AddBullet(ref Vector2 startPos, ref Vector2 velocity)
+		{
+			BulletEntity bullet = new BulletEntity();
+			bullet.SetPosition(startPos);
+			bullet.SetVelocity(velocity);
+
+			bullet.AddToBin(m_bin);
+			m_bullets.Add(bullet);
 		}
 
 
@@ -156,9 +172,6 @@ namespace TestGame
 
                     lastPoint = pos;
 				}
-
-
-
 			}
 		}
 
@@ -184,27 +197,12 @@ namespace TestGame
 
             m_worldManager.Update(frameTime.Dt);
 
-
-            if (ms_random.NextDouble() < 0.1f)
-            {
-                BulletEntity bullet = new BulletEntity();
-                bullet.SetPosition(new Vector2(100.0f, 750.0f));
-
-                Vector2 velocity = new Vector2(1.0f, ((float)ms_random.NextDouble() - 0.5f) * 0.25f);
-                velocity.Normalize();
-                bullet.SetVelocity(velocity * 750.0f);
-
-                bullet.AddToBin(m_bin);
-                m_bullets.Add(bullet);
-            }
-
             // Works for the debug rendering is hard on the eye.
 			if (ms_random.NextDouble() < 0.02f)
 			{
 				Explosion explosion = new Explosion(new Vector2(350.0f, 750.0f), 150.0f, 25000.0f);
 				m_explosions.Add(explosion);
 			}
-
 
             for (int i = 0; i < m_ais.Count; ++i)
             {
@@ -256,6 +254,8 @@ namespace TestGame
 
 			base.Update(gameTime);
 		}
+
+
 
 
 		protected override void Draw(GameTime gameTime)
