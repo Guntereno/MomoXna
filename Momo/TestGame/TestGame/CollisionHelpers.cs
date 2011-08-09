@@ -33,7 +33,6 @@ namespace TestGame
             {
                 AiEntity entity = entities[i];
 
-                // TODO: Pad the bin region slightly so that we generate near by contact pairs.
                 entity.GetBinRegion(ref entityRegion);
 
                 bin.StartQuery();
@@ -83,7 +82,6 @@ namespace TestGame
             {
                 AiEntity entity = entities[i];
 
-                // TODO: Pad the bin region slightly so that we generate near by contact pairs.
                 entity.GetBinRegion(ref entityRegion);
 
                 bin.StartQuery();
@@ -133,7 +131,6 @@ namespace TestGame
             {
                 AiEntity entity = entities[i];
 
-                // TODO: Pad the bin region slightly so that we generate near by contact pairs.
                 entity.GetBinRegion(ref entityRegion);
 
                 bin.StartQuery();
@@ -164,6 +161,52 @@ namespace TestGame
                         entity.OnCollisionEvent(ref checkBullet);
 
                         checkBullet.OnCollisionEvent(ref entity);
+                    }
+                }
+            }
+        }
+
+
+        public static void UpdateBulletContacts(List<BulletEntity> bullets, List<BoundaryEntity> boundaries, Bin bin)
+        {
+            BinRegionUniform bulletRegion = new BinRegionUniform();
+            BinRegionUniform boundaryRegion = new BinRegionUniform();
+            Vector2 intersectPoint = Vector2.Zero;
+
+
+            float contactDimensionPadding = DynamicGameEntity.GetContactDimensionPadding();
+
+
+            for (int i = 0; i < bullets.Count; ++i)
+            {
+                BulletEntity bullet = bullets[i];
+
+                bullet.GetBinRegion(ref bulletRegion);
+
+                bin.StartQuery();
+                bin.Query(bulletRegion, 1);
+                BinQueryResults queryResults = bin.EndQuery();
+
+
+                for (int j = 0; j < queryResults.BinItemCount; ++j)
+                {
+                    BoundaryEntity checkBoundary = (BoundaryEntity)queryResults.BinItemQueryResults[j];
+                    checkBoundary.GetBinRegion(ref boundaryRegion);
+
+                    // TODO: Calculate per frame and store in bullet?
+                    Vector2 dPos = bullet.GetPosition() - bullet.GetLastFramePosition();
+
+                    LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
+                    bool contact = Math2D.DoesIntersect(    bullet.GetPosition(),
+                                                            dPos,
+                                                            linePrimitive2D.Point,
+                                                            linePrimitive2D.Difference,
+                                                            ref intersectPoint );
+
+
+                    if (contact)
+                    {
+                        bullet.OnCollisionEvent(ref checkBoundary);
                     }
                 }
             }

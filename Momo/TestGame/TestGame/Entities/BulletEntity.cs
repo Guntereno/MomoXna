@@ -76,5 +76,11 @@ namespace TestGame.Entities
         {
             SetFlags(int.MaxValue);
         }
+
+
+        public void OnCollisionEvent(ref BoundaryEntity entity)
+        {
+            SetFlags(int.MaxValue);
+        }
     }
 }

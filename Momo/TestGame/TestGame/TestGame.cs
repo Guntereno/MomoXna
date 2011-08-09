@@ -191,7 +191,7 @@ namespace TestGame
                 BulletEntity bullet = new BulletEntity();
                 bullet.SetPosition(new Vector2(100.0f, 750.0f));
 
-                Vector2 velocity = new Vector2(1.0f, ((float)ms_random.NextDouble() - 0.5f) * 0.025f);
+                Vector2 velocity = new Vector2(1.0f, ((float)ms_random.NextDouble() - 0.5f) * 0.25f);
                 velocity.Normalize();
                 bullet.SetVelocity(velocity * 750.0f);
 
@@ -228,6 +228,7 @@ namespace TestGame
             CollisionHelpers.GenerateContacts(m_ais, m_bin, m_contactList);
             CollisionHelpers.GenerateContacts(m_ais, m_boundaries, m_bin, m_contactList);
             CollisionHelpers.UpdateBulletContacts(m_ais, m_bullets, m_bin);
+            CollisionHelpers.UpdateBulletContacts(m_bullets, m_boundaries, m_bin);
             CollisionHelpers.UpdateExplosions(m_ais, m_explosions, m_bin);
 
             m_contactList.EndAddingContacts();
