@@ -69,6 +69,49 @@ namespace TestGame
         }
 
 
+        // Temporary until we sort out inheritance on AIEntity and PlayerEntity
+        public static void GenerateContacts(PlayerEntity entity, Bin bin, ContactList contactList)
+        {
+            BinRegionUniform entityRegion = new BinRegionUniform();
+            IntersectInfo2D intersectInfo = new IntersectInfo2D();
+
+            float contactDimensionPadding = DynamicGameEntity.GetContactDimensionPadding();
+            float doubleContactDimensionPadding = contactDimensionPadding * 2.0f;
+
+
+
+            entity.GetBinRegion(ref entityRegion);
+
+            bin.StartQuery();
+            bin.Query(entityRegion, 0);
+            BinQueryResults queryResults = bin.EndQuery();
+
+
+            for (int j = 0; j < queryResults.BinItemCount; ++j)
+            {
+                AiEntity checkEntity = (AiEntity)queryResults.BinItemQueryResults[j];
+
+                bool contact = Math2D.DoesIntersect(entity.GetPosition(),
+                                                        entity.GetContactRadiusInfo().Radius + contactDimensionPadding,
+                                                        checkEntity.GetPosition(),
+                                                        checkEntity.GetContactRadiusInfo().Radius + contactDimensionPadding,
+                                                        ref intersectInfo);
+
+                if (contact)
+                {
+                    Contact existingContact = contactList.GetContact(checkEntity, entity);
+
+                    if (existingContact == null)
+                    {
+                        Vector2 contactNormal = intersectInfo.PositionDifference / intersectInfo.PositionDistance;
+                        float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - doubleContactDimensionPadding;
+                        contactList.AddContact(entity, checkEntity, contactNormal, contactOverlap, 1.0f, 0.0f);
+                    }
+                }
+            }
+        }
+
+
         public static void GenerateContacts(List<AiEntity> entities, List<BoundaryEntity> boundaries, Bin bin, ContactList contactList)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();
@@ -115,6 +158,53 @@ namespace TestGame
                         float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - contactDimensionPadding;
                         contactList.AddContact(entity, null, contactNormal, contactOverlap, 1.0f, 0.0f);
                     }
+                }
+            }
+        }
+
+
+        // Temporary until we sort out inheritance on AIEntity and PlayerEntity
+        public static void GenerateContacts(PlayerEntity entity, List<BoundaryEntity> boundaries, Bin bin, ContactList contactList)
+        {
+            BinRegionUniform entityRegion = new BinRegionUniform();
+            BinRegionUniform boundaryRegion = new BinRegionUniform();
+            IntersectInfo2D intersectInfo = new IntersectInfo2D();
+
+            float contactDimensionPadding = DynamicGameEntity.GetContactDimensionPadding();
+
+
+            entity.GetBinRegion(ref entityRegion);
+
+            bin.StartQuery();
+            bin.Query(entityRegion, 1);
+            BinQueryResults queryResults = bin.EndQuery();
+
+
+            for (int j = 0; j < queryResults.BinItemCount; ++j)
+            {
+                BoundaryEntity checkBoundary = (BoundaryEntity)queryResults.BinItemQueryResults[j];
+                checkBoundary.GetBinRegion(ref boundaryRegion);
+
+
+                float paddedRadius = entity.GetContactRadiusInfo().Radius + contactDimensionPadding;
+                float paddedRadiusSq = paddedRadius * paddedRadius;
+
+                LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
+                bool contact = Math2D.DoesIntersect(entity.GetPosition(),
+                                                        paddedRadius,
+                                                        paddedRadiusSq,
+                                                        linePrimitive2D.Point,
+                                                        linePrimitive2D.Point + linePrimitive2D.Difference,
+                                                        linePrimitive2D.Difference,
+                                                        linePrimitive2D.LengthSqList,
+                                                        ref intersectInfo);
+
+
+                if (contact)
+                {
+                    Vector2 contactNormal = -(intersectInfo.PositionDifference / intersectInfo.PositionDistance);
+                    float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - contactDimensionPadding;
+                    contactList.AddContact(entity, null, contactNormal, contactOverlap, 1.0f, 0.0f);
                 }
             }
         }

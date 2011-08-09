@@ -13,7 +13,7 @@ using TestGame.Objects;
 
 namespace TestGame.Entities
 {
-	class PlayerEntity : DynamicGameEntity
+	public class PlayerEntity : DynamicGameEntity
 	{
 		float m_facingAngle = 0.0f;
 
@@ -103,7 +103,7 @@ namespace TestGame.Entities
 			BinRegionUniform curBinRegion = new BinRegionUniform();
 			bin.GetBinRegionFromCentre(GetPosition(), m_contactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
 
-			bin.UpdateBinItem(this, ref curBinRegion, 0);
+			//bin.UpdateBinItem(this, ref curBinRegion, 0);
 
 			SetBinRegion(curBinRegion);
 		}
@@ -111,13 +111,13 @@ namespace TestGame.Entities
 
 		public void UpdateBinEntry(Bin bin)
 		{
-			BinRegionUniform prevBinRegion = new BinRegionUniform();
+			//BinRegionUniform prevBinRegion = new BinRegionUniform();
 			BinRegionUniform curBinRegion = new BinRegionUniform();
 
-			GetBinRegion(ref prevBinRegion);
+			//GetBinRegion(ref prevBinRegion);
 			bin.GetBinRegionFromCentre(GetPosition(), m_contactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
 
-			bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 0);
+			//bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 0);
 
 			SetBinRegion(curBinRegion);
 		}

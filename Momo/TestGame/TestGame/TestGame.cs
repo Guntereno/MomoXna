@@ -222,11 +222,14 @@ namespace TestGame
 
 			m_player.UpdateInput(ref gamePadState, ref keyboardState);
 			m_player.Update(ref frameTime);
+            m_player.UpdateBinEntry(m_bin);
 
             m_contactList.StartAddingContacts();
 
             CollisionHelpers.GenerateContacts(m_ais, m_bin, m_contactList);
             CollisionHelpers.GenerateContacts(m_ais, m_boundaries, m_bin, m_contactList);
+            CollisionHelpers.GenerateContacts(m_player, m_bin, m_contactList);
+            CollisionHelpers.GenerateContacts(m_player, m_boundaries, m_bin, m_contactList);
             CollisionHelpers.UpdateBulletContacts(m_ais, m_bullets, m_bin);
             CollisionHelpers.UpdateBulletContacts(m_bullets, m_boundaries, m_bin);
             CollisionHelpers.UpdateExplosions(m_ais, m_explosions, m_bin);
@@ -284,7 +287,7 @@ namespace TestGame
                 m_explosions[i].DebugRender(m_debugRenderer);
             }
 
-            m_pathIsland.DebugRender(m_debugRenderer);
+            //m_pathIsland.DebugRender(m_debugRenderer);
 
 
 			m_player.DebugRender(m_debugRenderer);
