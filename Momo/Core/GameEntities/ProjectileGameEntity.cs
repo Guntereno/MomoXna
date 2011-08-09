@@ -11,7 +11,7 @@ using Momo.Core.Collision2D;
 
 namespace Momo.Core.GameEntities
 {
-	public class ProjectileGameEntity : GameEntity
+	public class ProjectileGameEntity : BaseEntity
 	{
         // --------------------------------------------------------------------
         // -- Private Static Members

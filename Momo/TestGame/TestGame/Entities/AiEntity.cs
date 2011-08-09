@@ -18,7 +18,7 @@ using TestGame.Objects;
 
 namespace TestGame.Entities
 {
-    public class AiEntity : DynamicGameEntity
+	public class AiEntity : DynamicGameEntity
     {
         // --------------------------------------------------------------------
         // -- Private Members
@@ -26,28 +26,17 @@ namespace TestGame.Entities
         static System.Random ms_random = new System.Random();
 
         float m_turnVelocity = 0.0f;
-        float m_facingAngle = 0.0f;
-
-        private RadiusInfo m_contactRadiusInfo;
-
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
         public AiEntity()
         {
-            m_facingAngle = (float)ms_random.NextDouble() * ((float)Math.PI * 2.0f);
+            FacingAngle = (float)ms_random.NextDouble() * ((float)Math.PI * 2.0f);
 
 
-            m_contactRadiusInfo = new RadiusInfo(9.0f + ((float)ms_random.NextDouble() * 6.0f));
+			SetContactRadiusInfo(new RadiusInfo(9.0f + ((float)ms_random.NextDouble() * 6.0f)));
         }
-
-
-        public RadiusInfo GetContactRadiusInfo()
-        {
-            return m_contactRadiusInfo;
-        }
-
 
         public override void Update(ref FrameTime frameTime)
         {
@@ -55,9 +44,9 @@ namespace TestGame.Entities
 
             m_turnVelocity += ((float)ms_random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
             m_turnVelocity = MathHelper.Clamp(m_turnVelocity, -1.0f, 1.0f);
-            m_facingAngle += m_turnVelocity * frameTime.Dt;
+            FacingAngle += m_turnVelocity * frameTime.Dt;
 
-            Vector2 direction = new Vector2((float)Math.Cos(m_facingAngle), (float)Math.Sin(m_facingAngle));
+            Vector2 direction = new Vector2((float)Math.Cos(FacingAngle), (float)Math.Sin(FacingAngle));
             Vector2 newPosition = GetPosition() + direction;
 
 
@@ -67,7 +56,7 @@ namespace TestGame.Entities
 
         public override void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawCircle(GetPosition(), m_contactRadiusInfo.Radius, new Color(1.0f, 0.0f, 0.0f, 0.4f), new Color(0.2f, 0.0f, 0.0f, 0.75f), true, 2, 8);
+            debugRenderer.DrawCircle(GetPosition(), GetContactRadiusInfo().Radius, new Color(1.0f, 0.0f, 0.0f, 0.4f), new Color(0.2f, 0.0f, 0.0f, 0.75f), true, 2, 8);
         }
 
 
@@ -75,7 +64,7 @@ namespace TestGame.Entities
         public void AddToBin(Bin bin)
         {
             BinRegionUniform curBinRegion = new BinRegionUniform();
-            bin.GetBinRegionFromCentre(GetPosition(), m_contactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
+			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
 
             bin.UpdateBinItem(this, ref curBinRegion, 0);
 
@@ -89,7 +78,7 @@ namespace TestGame.Entities
             BinRegionUniform curBinRegion = new BinRegionUniform();
 
             GetBinRegion(ref prevBinRegion);
-            bin.GetBinRegionFromCentre(GetPosition(), m_contactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
+			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
 
             bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 0);
 

@@ -11,7 +11,7 @@ using Momo.Core.Collision2D;
 
 namespace Momo.Core.GameEntities
 {
-	public class DynamicGameEntity : GameEntity, IDynamicCollidable
+	public class DynamicEntity : BaseEntity, IDynamicCollidable
 	{
         // --------------------------------------------------------------------
         // -- Private Static Members

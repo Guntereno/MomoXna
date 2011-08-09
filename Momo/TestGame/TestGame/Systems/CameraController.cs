@@ -14,7 +14,7 @@ namespace TestGame.Systems
 	{
 		public OrthographicCameraNode Camera { get; set; }
 
-		public GameEntity TargetEntity { get; set; }
+		public BaseEntity TargetEntity { get; set; }
 
 		Vector3 m_cameraVelocity = Vector3.Zero;
 

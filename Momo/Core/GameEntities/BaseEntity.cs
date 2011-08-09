@@ -11,7 +11,7 @@ using Momo.Debug;
 
 namespace Momo.Core.GameEntities
 {
-	public abstract class GameEntity : BinItem
+	public abstract class BaseEntity : BinItem
 	{
 		// --------------------------------------------------------------------
 		// -- Private Members

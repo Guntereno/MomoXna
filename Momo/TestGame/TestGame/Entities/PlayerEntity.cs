@@ -15,24 +15,15 @@ namespace TestGame.Entities
 {
 	public class PlayerEntity : DynamicGameEntity
 	{
-		float m_facingAngle = 0.0f;
-
 		Vector2 m_inputVector = Vector2.Zero;
-
-		private RadiusInfo m_contactRadiusInfo;
 
 		// --------------------------------------------------------------------
 		// -- Public Methods
 		// --------------------------------------------------------------------
 		public PlayerEntity()
 		{
-			m_facingAngle = 0.0f;
-			m_contactRadiusInfo = new RadiusInfo(12.0f);
-		}
-
-		public RadiusInfo GetContactRadiusInfo()
-		{
-			return m_contactRadiusInfo;
+			FacingAngle = 0.0f;
+			SetContactRadiusInfo(new RadiusInfo(12.0f));
 		}
 
 		public void UpdateInput(ref GamePadState currentGamePadState, ref KeyboardState currentKeyboardState)
@@ -86,22 +77,23 @@ namespace TestGame.Entities
 
 			SetPosition(newPosition);
 
-			if (m_inputVector.Length() > 0.0f)
+			float len = m_inputVector.Length();
+			if (len > 0.0f)
 			{
-				m_facingAngle = (float)Math.Sin((double)(m_inputVector.X));
+				FacingAngle = (float)Math.Asin((double)(m_inputVector.X) / (double)len);
 			}
 		}
 
 
 		public override void DebugRender(DebugRenderer debugRenderer)
 		{
-			debugRenderer.DrawCircle(GetPosition(), m_contactRadiusInfo.Radius, new Color(0.0f, 0.0f, 1.0f, 0.4f), new Color(0.0f, 0.0f, 0.2f, 0.75f), true, 2, 8);
+			debugRenderer.DrawCircle(GetPosition(), GetContactRadiusInfo().Radius, new Color(0.0f, 0.0f, 1.0f, 0.4f), new Color(0.0f, 0.0f, 0.2f, 0.75f), true, 2, 8);
 		}
 
 		public void AddToBin(Bin bin)
 		{
 			BinRegionUniform curBinRegion = new BinRegionUniform();
-			bin.GetBinRegionFromCentre(GetPosition(), m_contactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
+			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
 
 			//bin.UpdateBinItem(this, ref curBinRegion, 0);
 
@@ -115,7 +107,7 @@ namespace TestGame.Entities
 			BinRegionUniform curBinRegion = new BinRegionUniform();
 
 			//GetBinRegion(ref prevBinRegion);
-			bin.GetBinRegionFromCentre(GetPosition(), m_contactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
+			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
 
 			//bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 0);
 

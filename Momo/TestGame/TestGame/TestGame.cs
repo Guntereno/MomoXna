@@ -200,11 +200,11 @@ namespace TestGame
             }
 
             // Works for the debug rendering is hard on the eye.
-            //if (ms_random.NextDouble() < 0.02f)
-            //{
-            //    Explosion explosion = new Explosion(new Vector2(350.0f, 750.0f), 150.0f, 25000.0f);
-            //    m_explosions.Add(explosion);
-            //}
+			if (ms_random.NextDouble() < 0.02f)
+			{
+				Explosion explosion = new Explosion(new Vector2(350.0f, 750.0f), 150.0f, 25000.0f);
+				m_explosions.Add(explosion);
+			}
 
 
             for (int i = 0; i < m_ais.Count; ++i)

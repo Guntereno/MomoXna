@@ -25,7 +25,7 @@ namespace TestGame
             BinRegionUniform entityRegion = new BinRegionUniform();
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
 
-            float contactDimensionPadding = DynamicGameEntity.GetContactDimensionPadding();
+            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
             float doubleContactDimensionPadding = contactDimensionPadding * 2.0f;
 
 
@@ -75,7 +75,7 @@ namespace TestGame
             BinRegionUniform entityRegion = new BinRegionUniform();
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
 
-            float contactDimensionPadding = DynamicGameEntity.GetContactDimensionPadding();
+            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
             float doubleContactDimensionPadding = contactDimensionPadding * 2.0f;
 
 
@@ -118,7 +118,7 @@ namespace TestGame
             BinRegionUniform boundaryRegion = new BinRegionUniform();
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
 
-            float contactDimensionPadding = DynamicGameEntity.GetContactDimensionPadding();
+            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
 
 
             for (int i = 0; i < entities.Count; ++i)
@@ -170,7 +170,7 @@ namespace TestGame
             BinRegionUniform boundaryRegion = new BinRegionUniform();
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
 
-            float contactDimensionPadding = DynamicGameEntity.GetContactDimensionPadding();
+            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
 
 
             entity.GetBinRegion(ref entityRegion);
@@ -264,7 +264,7 @@ namespace TestGame
             Vector2 intersectPoint = Vector2.Zero;
 
 
-            float contactDimensionPadding = DynamicGameEntity.GetContactDimensionPadding();
+            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
 
 
             for (int i = 0; i < bullets.Count; ++i)

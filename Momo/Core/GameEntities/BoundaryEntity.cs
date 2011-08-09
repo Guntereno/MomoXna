@@ -14,7 +14,7 @@ using Momo.Debug;
 
 namespace Momo.Core.GameEntities
 {
-	public class BoundaryEntity : GameEntity
+	public class BoundaryEntity : BaseEntity
 	{
 		// --------------------------------------------------------------------
 		// -- Private Members
