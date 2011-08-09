@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Momo.Core.GameEntities;
-using Momo.Core;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
-using Momo.Debug;
-using Momo.Core.Spatial;
+using Microsoft.Xna.Framework.Input;
+using Momo.Core;
 using Momo.Core.Collision2D;
+using Momo.Core.Spatial;
 using TestGame.Objects;
 
 namespace TestGame.Entities
@@ -24,6 +19,7 @@ namespace TestGame.Entities
 		{
 			FacingAngle = 0.0f;
 			SetContactRadiusInfo(new RadiusInfo(12.0f));
+			DebugColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
 		}
 
 		public void UpdateInput(ref GamePadState currentGamePadState, ref KeyboardState currentKeyboardState)
@@ -80,14 +76,8 @@ namespace TestGame.Entities
 			float len = m_inputVector.Length();
 			if (len > 0.0f)
 			{
-				FacingAngle = (float)Math.Asin((double)(m_inputVector.X) / (double)len);
+				FacingAngle = (float)Math.Atan2(m_inputVector.X, m_inputVector.Y);
 			}
-		}
-
-
-		public override void DebugRender(DebugRenderer debugRenderer)
-		{
-			debugRenderer.DrawCircle(GetPosition(), GetContactRadiusInfo().Radius, new Color(0.0f, 0.0f, 1.0f, 0.4f), new Color(0.0f, 0.0f, 0.2f, 0.75f), true, 2, 8);
 		}
 
 		public void AddToBin(Bin bin)

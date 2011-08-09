@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 using Microsoft.Xna.Framework;
-
 using Momo.Core;
-using Momo.Core.GameEntities;
-using Momo.Core.Primitive2D;
-using Momo.Core.Spatial;
-using Momo.Debug;
-
 using Momo.Core.Collision2D;
-
+using Momo.Core.Spatial;
 using TestGame.Objects;
-
 
 
 namespace TestGame.Entities
@@ -36,6 +26,7 @@ namespace TestGame.Entities
 
 
 			SetContactRadiusInfo(new RadiusInfo(9.0f + ((float)ms_random.NextDouble() * 6.0f)));
+			DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
 
         public override void Update(ref FrameTime frameTime)
@@ -46,20 +37,12 @@ namespace TestGame.Entities
             m_turnVelocity = MathHelper.Clamp(m_turnVelocity, -1.0f, 1.0f);
             FacingAngle += m_turnVelocity * frameTime.Dt;
 
-            Vector2 direction = new Vector2((float)Math.Cos(FacingAngle), (float)Math.Sin(FacingAngle));
+			Vector2 direction = new Vector2((float)Math.Sin(FacingAngle), (float)Math.Cos(FacingAngle));
             Vector2 newPosition = GetPosition() + direction;
 
 
             SetPosition(newPosition);
         }
-
-
-        public override void DebugRender(DebugRenderer debugRenderer)
-        {
-            debugRenderer.DrawCircle(GetPosition(), GetContactRadiusInfo().Radius, new Color(1.0f, 0.0f, 0.0f, 0.4f), new Color(0.2f, 0.0f, 0.0f, 0.75f), true, 2, 8);
-        }
-
-
 
         public void AddToBin(Bin bin)
         {
