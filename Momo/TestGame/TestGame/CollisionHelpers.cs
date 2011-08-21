@@ -236,7 +236,7 @@ namespace TestGame
                     Vector2 dPos = checkBullet.GetPosition() - checkBullet.GetLastFramePosition();
                     float dPosLengthSq = dPos.LengthSquared();
 
-                    bool contact = Math2D.DoesIntersect(entity.GetPosition(),
+                    bool contact = Math2D.DoesIntersect(    entity.GetPosition(),
                                                             entity.GetContactRadiusInfo().Radius,
                                                             entity.GetContactRadiusInfo().RadiusSq,
                                                             checkBullet.GetLastFramePosition(),
@@ -283,12 +283,9 @@ namespace TestGame
                     BoundaryEntity checkBoundary = (BoundaryEntity)queryResults.BinItemQueryResults[j];
                     checkBoundary.GetBinRegion(ref boundaryRegion);
 
-                    // TODO: Calculate per frame and store in bullet?
-                    Vector2 dPos = bullet.GetPosition() - bullet.GetLastFramePosition();
-
                     LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                    bool contact = Math2D.DoesIntersect(    bullet.GetPosition(),
-                                                            dPos,
+                    bool contact = Math2D.DoesIntersect(    bullet.GetLastFramePosition(),
+                                                            bullet.GetPositionDifferenceFromLastFrame(),
                                                             linePrimitive2D.Point,
                                                             linePrimitive2D.Difference,
                                                             ref intersectPoint );

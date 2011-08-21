@@ -68,7 +68,7 @@ namespace TestGame.Entities
 				Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
 				velocity *= 750.0f;
 
-				TestGame.Instance().AddBullet(ref startPos, ref velocity);
+				TestGame.Instance().AddBullet(startPos, velocity);
 			}
 
 		}

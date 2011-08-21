@@ -24,7 +24,7 @@ namespace Momo.Core.GameEntities
 		// --------------------------------------------------------------------
 		private Vector2 m_velocity = Vector2.Zero;
         private Vector2 m_lastFramePosition = Vector2.Zero;
-
+        private Vector2 m_positionDifferenceFromlastFrame = Vector2.Zero;
 
 
         // --------------------------------------------------------------------
@@ -39,6 +39,12 @@ namespace Momo.Core.GameEntities
 		// --------------------------------------------------------------------
 		// -- Public Methods
 		// --------------------------------------------------------------------
+        public override void SetPosition(Vector2 position)
+        {
+            //m_lastFramePosition = position;
+            base.SetPosition(position);
+        }
+
         public void SetVelocity(Vector2 velocity)
         {
             m_velocity = velocity;
@@ -54,18 +60,20 @@ namespace Momo.Core.GameEntities
             return m_lastFramePosition;
         }
 
+        public Vector2 GetPositionDifferenceFromLastFrame()
+        {
+            return m_positionDifferenceFromlastFrame;
+        }
+
 
 
 		public override void Update(ref FrameTime frameTime)
 		{
 			base.Update(ref frameTime);
 
-            Vector2 position = GetPosition();
-            m_lastFramePosition = position;
-
-            position = position + (m_velocity * frameTime.Dt);
-
-            SetPosition(position);
+            m_lastFramePosition = m_position;
+            m_position = m_position + (m_velocity * frameTime.Dt);
+            m_positionDifferenceFromlastFrame = m_position - m_lastFramePosition;
 		}
 
 

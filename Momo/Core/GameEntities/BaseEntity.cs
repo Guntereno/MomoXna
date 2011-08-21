@@ -14,11 +14,11 @@ namespace Momo.Core.GameEntities
 	public abstract class BaseEntity : BinItem
 	{
 		// --------------------------------------------------------------------
-		// -- Private Members
+        // -- Protected Members
 		// --------------------------------------------------------------------
-		private Vector2 m_position = Vector2.Zero;
+		protected Vector2 m_position = Vector2.Zero;
 
-        private int m_flags = 0;  // Use to mark up who owns this etc. int.MaxInt flag indicates it needs destroying.
+        protected int m_flags = 0;  // Use to mark up who owns this etc. int.MaxInt flag indicates it needs destroying.
 
 
 		// --------------------------------------------------------------------

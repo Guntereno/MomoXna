@@ -102,11 +102,14 @@ namespace Momo.Core
             float s = (-lineStep1.Y * (lineStart1.X - lineStart2.X) + lineStep1.X * (lineStart1.Y - lineStart2.Y)) / div;
             float t = (lineStep2.X * (lineStart1.Y - lineStart2.Y) - lineStep2.Y * (lineStart1.X - lineStart2.X)) / div;
 
-            if (t < 0.0f || t > 1.0f || s < 0.0f || s > 1.0f)
-                return false;
+            //if (t < 0.0f || t > 1.0f || s < 0.0f || s > 1.0f)
+            //    return false;
+
+            if (t >= 0.0f && t <= 1.0f && s >= 0.0f && s <= 1.0f)
+                return true;
 
             outIntersectPoint = lineStart1 + (lineStep1 * t);
-            return true;
+            return false;
         }
 	}
 }

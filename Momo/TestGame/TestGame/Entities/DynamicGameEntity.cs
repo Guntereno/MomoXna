@@ -8,12 +8,16 @@ namespace TestGame.Entities
 {
 	public class DynamicGameEntity : DynamicEntity
 	{
+        private RadiusInfo m_contactRadiusInfo;
+        private float m_facingAngle = 0.0f;
+        private Color m_debugColor;
+
+
 		public float FacingAngle
 		{
 			get{ return m_facingAngle; }
 			set{ m_facingAngle = value;}
 		}
-
 
 		public Color DebugColor
 		{
@@ -44,10 +48,5 @@ namespace TestGame.Entities
 			Vector2 direction = new Vector2((float)Math.Sin(FacingAngle), (float)Math.Cos(FacingAngle));
 			debugRenderer.DrawLine(GetPosition(), GetPosition() + (direction * m_contactRadiusInfo.Radius * 1.5f), outlineColour);
 		}
-
-		private RadiusInfo m_contactRadiusInfo;
-		private float m_facingAngle = 0.0f;
-
-		Color m_debugColor;
 	}
 }
