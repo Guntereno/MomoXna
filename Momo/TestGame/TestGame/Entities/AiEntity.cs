@@ -47,13 +47,13 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            AddToBin(bin, GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), 0);
+            AddToBin(bin, GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), BinLayers.kAiEntity);
         }
         
 
         public void RemoveFromBin()
         {
-            RemoveFromBin(0);
+            RemoveFromBin(BinLayers.kAiEntity);
         }
 
 
@@ -66,7 +66,7 @@ namespace TestGame.Entities
             GetBinRegion(ref prevBinRegion);
 			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
 
-            bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 0);
+            bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kAiEntity);
 
             SetBinRegion(curBinRegion);
         }

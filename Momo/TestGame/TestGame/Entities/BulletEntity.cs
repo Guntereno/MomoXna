@@ -46,13 +46,13 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            AddToBin(bin, GetPosition(), GetPosition(), 2);
+            AddToBin(bin, GetPosition(), GetPosition(), BinLayers.kBullet);
         }
 
 
         public void RemoveFromBin()
         {
-            RemoveFromBin(2);
+            RemoveFromBin(BinLayers.kBullet);
         }
 
 
@@ -65,7 +65,7 @@ namespace TestGame.Entities
             GetBinRegion(ref prevBinRegion);
             bin.GetBinRegionFromUnsortedCorners(GetLastFramePosition(), GetPosition(), ref curBinRegion);
 
-            bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 2);
+            bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kBullet);
 
             SetBinRegion(curBinRegion);
         }
@@ -73,14 +73,14 @@ namespace TestGame.Entities
 
         public void OnCollisionEvent(ref AiEntity entity)
         {
-            RemoveFromBin(2);
+            RemoveFromBin(BinLayers.kBullet);
             DestroyItem();
         }
 
 
         public void OnCollisionEvent(ref BoundaryEntity entity)
         {
-            RemoveFromBin(2);
+            RemoveFromBin(BinLayers.kBullet);
             DestroyItem();
         }
 

@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\AiEntity.cs" />
+    <Compile Include="Entities\BinLayers.cs" />
     <Compile Include="Entities\BulletEntity.cs" />
     <Compile Include="CollisionHelpers.cs" />
     <Compile Include="Entities\DynamicGameEntity.cs" />

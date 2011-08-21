@@ -38,7 +38,7 @@ namespace TestGame
 
                 // Entities
                 bin.StartQuery();
-                bin.Query(entityRegion, 0);
+                bin.Query(entityRegion, BinLayers.kAiEntity);
                 BinQueryResults queryResults = bin.EndQuery();
 
 
@@ -71,7 +71,7 @@ namespace TestGame
 
                 // Boundaries
                 bin.StartQuery();
-                bin.Query(entityRegion, 1);
+                bin.Query(entityRegion, BinLayers.kBoundary);
                 queryResults = bin.EndQuery();
 
 
@@ -131,7 +131,7 @@ namespace TestGame
 
                 // Entities
                 bin.StartQuery();
-                bin.Query(bulletRegion, 0);
+                bin.Query(bulletRegion, BinLayers.kAiEntity);
                 BinQueryResults queryResults = bin.EndQuery();
 
 
@@ -169,7 +169,7 @@ namespace TestGame
 
                 // Boundaries
                 bin.StartQuery();
-                bin.Query(bulletRegion, 1);
+                bin.Query(bulletRegion, BinLayers.kBoundary);
                 queryResults = bin.EndQuery();
 
 
@@ -210,7 +210,7 @@ namespace TestGame
                 bin.GetBinRegionFromCentre(explosion.GetPosition(), explosion.GetRange(), ref explosionRegion);
 
                 bin.StartQuery();
-                bin.Query(explosionRegion, 0);
+                bin.Query(explosionRegion, BinLayers.kAiEntity);
                 BinQueryResults queryResults = bin.EndQuery();
 
 
