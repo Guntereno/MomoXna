@@ -48,7 +48,6 @@ namespace WorldManager
 
 			m_state = WorldState.kLoading;
 			m_world.Load();
-			m_world.Enter();
 			m_state = WorldState.kLoaded;
 		}
 
@@ -63,7 +62,6 @@ namespace WorldManager
 			Debug.Assert(m_state == WorldState.kActive);
 
 			m_state = WorldState.kFlushing;
-			m_world.Exit();
 			m_world.Flush();
 			m_state = WorldState.kFlushed;
 		}

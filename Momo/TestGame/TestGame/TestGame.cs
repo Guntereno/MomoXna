@@ -84,7 +84,7 @@ namespace TestGame
 		protected override void UnloadContent()
 		{
             m_worldManager.FlushWorld("TestWorld");
-            //m_worldManager.LoadWorld("TestWorldPathFinding");
+            //m_worldManager.FlushWorld("TestWorldPathFinding");
 		}
 
 

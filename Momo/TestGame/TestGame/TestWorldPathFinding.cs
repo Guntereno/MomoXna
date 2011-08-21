@@ -248,7 +248,7 @@ namespace TestGame
             //    m_explosions[i].DebugRender(m_debugRenderer);
             //}
 
-            //m_pathIsland.DebugRender(m_debugRenderer);
+            m_pathIsland.DebugRender(m_debugRenderer);
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
         }

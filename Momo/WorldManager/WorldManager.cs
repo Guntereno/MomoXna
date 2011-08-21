@@ -30,12 +30,16 @@ namespace WorldManager
 
                     case WorldState.kLoaded:
 					case WorldState.kActive:
+                        if (info.m_state == WorldState.kLoaded)
+                        {
+                            info.m_world.Enter();
+                            info.m_state = WorldState.kActive;
+                        }
+
 						Debug.Assert(info.m_created == true, "WorldManager: Trying to update a world that has not been created.");
 						Debug.Assert(info.m_world != null, "WorldManager: Trying to update a world that is not active.");
-                        
-                        info.m_state = WorldState.kActive;
-						info.m_world.Update(dt);
 
+						info.m_world.Update(dt);
 						break;
 
 					case WorldState.kFlushing:
@@ -117,6 +121,8 @@ namespace WorldManager
 
 			Debug.Assert(info != null, "WorldManager: Can not find world to load.");
 			Debug.Assert(info.m_state == WorldState.kActive, "WorldManager: World is not in its active state.");
+
+            info.m_world.Exit();
 
 			Thread t = new Thread(info.FlushWorldThread);
 			t.Start();

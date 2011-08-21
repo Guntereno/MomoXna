@@ -29,6 +29,7 @@ namespace TestGame.Entities
 			DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
 
+
         public override void Update(ref FrameTime frameTime)
         {
             base.Update(ref frameTime);
