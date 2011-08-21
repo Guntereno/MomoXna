@@ -20,21 +20,23 @@ namespace TestGame
 {
     public class CollisionHelpers
     {
-        public static void GenerateContacts(List<AiEntity> entities, Bin bin, ContactList contactList)
+        public static void GenerateContacts(DynamicGameEntity[] entities, int entityCount, Bin bin, ContactList contactList)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();
+            BinRegionUniform boundaryRegion = new BinRegionUniform();
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
 
             float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
             float doubleContactDimensionPadding = contactDimensionPadding * 2.0f;
 
 
-            for (int i = 0; i < entities.Count; ++i)
+            for (int i = 0; i < entityCount; ++i)
             {
-                AiEntity entity = entities[i];
+                DynamicGameEntity entity = entities[i];
 
                 entity.GetBinRegion(ref entityRegion);
 
+                // Entities
                 bin.StartQuery();
                 bin.Query(entityRegion, 0);
                 BinQueryResults queryResults = bin.EndQuery();
@@ -65,71 +67,12 @@ namespace TestGame
                         }
                     }
                 }
-            }
-        }
 
 
-        // Temporary until we sort out inheritance on AIEntity and PlayerEntity
-        public static void GenerateContacts(PlayerEntity entity, Bin bin, ContactList contactList)
-        {
-            BinRegionUniform entityRegion = new BinRegionUniform();
-            IntersectInfo2D intersectInfo = new IntersectInfo2D();
-
-            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
-            float doubleContactDimensionPadding = contactDimensionPadding * 2.0f;
-
-
-
-            entity.GetBinRegion(ref entityRegion);
-
-            bin.StartQuery();
-            bin.Query(entityRegion, 0);
-            BinQueryResults queryResults = bin.EndQuery();
-
-
-            for (int j = 0; j < queryResults.BinItemCount; ++j)
-            {
-                AiEntity checkEntity = (AiEntity)queryResults.BinItemQueryResults[j];
-
-                bool contact = Math2D.DoesIntersect(entity.GetPosition(),
-                                                        entity.GetContactRadiusInfo().Radius + contactDimensionPadding,
-                                                        checkEntity.GetPosition(),
-                                                        checkEntity.GetContactRadiusInfo().Radius + contactDimensionPadding,
-                                                        ref intersectInfo);
-
-                if (contact)
-                {
-                    Contact existingContact = contactList.GetContact(checkEntity, entity);
-
-                    if (existingContact == null)
-                    {
-                        Vector2 contactNormal = intersectInfo.PositionDifference / intersectInfo.PositionDistance;
-                        float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - doubleContactDimensionPadding;
-                        contactList.AddContact(entity, checkEntity, contactNormal, contactOverlap, 1.0f, 0.0f);
-                    }
-                }
-            }
-        }
-
-
-        public static void GenerateContacts(List<AiEntity> entities, List<BoundaryEntity> boundaries, Bin bin, ContactList contactList)
-        {
-            BinRegionUniform entityRegion = new BinRegionUniform();
-            BinRegionUniform boundaryRegion = new BinRegionUniform();
-            IntersectInfo2D intersectInfo = new IntersectInfo2D();
-
-            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
-
-
-            for (int i = 0; i < entities.Count; ++i)
-            {
-                AiEntity entity = entities[i];
-
-                entity.GetBinRegion(ref entityRegion);
-
+                // Boundaries
                 bin.StartQuery();
                 bin.Query(entityRegion, 1);
-                BinQueryResults queryResults = bin.EndQuery();
+                queryResults = bin.EndQuery();
 
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
@@ -142,7 +85,7 @@ namespace TestGame
                     float paddedRadiusSq = paddedRadius * paddedRadius;
 
                     LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                    bool contact = Math2D.DoesIntersect(    entity.GetPosition(),
+                    bool contact = Math2D.DoesIntersect(entity.GetPosition(),
                                                             paddedRadius,
                                                             paddedRadiusSq,
                                                             linePrimitive2D.Point,
@@ -163,119 +106,71 @@ namespace TestGame
         }
 
 
-        // Temporary until we sort out inheritance on AIEntity and PlayerEntity
-        public static void GenerateContacts(PlayerEntity entity, List<BoundaryEntity> boundaries, Bin bin, ContactList contactList)
-        {
-            BinRegionUniform entityRegion = new BinRegionUniform();
-            BinRegionUniform boundaryRegion = new BinRegionUniform();
-            IntersectInfo2D intersectInfo = new IntersectInfo2D();
-
-            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
-
-
-            entity.GetBinRegion(ref entityRegion);
-
-            bin.StartQuery();
-            bin.Query(entityRegion, 1);
-            BinQueryResults queryResults = bin.EndQuery();
-
-
-            for (int j = 0; j < queryResults.BinItemCount; ++j)
-            {
-                BoundaryEntity checkBoundary = (BoundaryEntity)queryResults.BinItemQueryResults[j];
-                checkBoundary.GetBinRegion(ref boundaryRegion);
-
-
-                float paddedRadius = entity.GetContactRadiusInfo().Radius + contactDimensionPadding;
-                float paddedRadiusSq = paddedRadius * paddedRadius;
-
-                LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                bool contact = Math2D.DoesIntersect(entity.GetPosition(),
-                                                        paddedRadius,
-                                                        paddedRadiusSq,
-                                                        linePrimitive2D.Point,
-                                                        linePrimitive2D.Point + linePrimitive2D.Difference,
-                                                        linePrimitive2D.Difference,
-                                                        linePrimitive2D.LengthSqList,
-                                                        ref intersectInfo);
-
-
-                if (contact)
-                {
-                    Vector2 contactNormal = -(intersectInfo.PositionDifference / intersectInfo.PositionDistance);
-                    float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - contactDimensionPadding;
-                    contactList.AddContact(entity, null, contactNormal, contactOverlap, 1.0f, 0.0f);
-                }
-            }
-        }
-
-
-        public static void UpdateBulletContacts(List<AiEntity> entities, List<BulletEntity> bullets, Bin bin)
+        public static void UpdateBulletContacts(BulletEntity[] bullets, int bulletCount, Bin bin)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();
             BinRegionUniform bulletRegion = new BinRegionUniform();
-            IntersectInfo2D intersectInfo = new IntersectInfo2D();
-
-
-            for (int i = 0; i < entities.Count; ++i)
-            {
-                AiEntity entity = entities[i];
-
-                entity.GetBinRegion(ref entityRegion);
-
-                bin.StartQuery();
-                bin.Query(entityRegion, 2);
-                BinQueryResults queryResults = bin.EndQuery();
-
-
-                for (int j = 0; j < queryResults.BinItemCount; ++j)
-                {
-                    BulletEntity checkBullet = (BulletEntity)queryResults.BinItemQueryResults[j];
-                    checkBullet.GetBinRegion(ref bulletRegion);
-
-                    Vector2 dPos = checkBullet.GetPosition() - checkBullet.GetLastFramePosition();
-                    float dPosLengthSq = dPos.LengthSquared();
-
-                    bool contact = Math2D.DoesIntersect(    entity.GetPosition(),
-                                                            entity.GetContactRadiusInfo().Radius,
-                                                            entity.GetContactRadiusInfo().RadiusSq,
-                                                            checkBullet.GetLastFramePosition(),
-                                                            checkBullet.GetPosition(),
-                                                            dPos,
-                                                            dPosLengthSq,
-                                                            ref intersectInfo);
-
-
-                    if (contact)
-                    {
-                        entity.OnCollisionEvent(ref checkBullet);
-
-                        checkBullet.OnCollisionEvent(ref entity);
-                    }
-                }
-            }
-        }
-
-
-        public static void UpdateBulletContacts(List<BulletEntity> bullets, List<BoundaryEntity> boundaries, Bin bin)
-        {
-            BinRegionUniform bulletRegion = new BinRegionUniform();
             BinRegionUniform boundaryRegion = new BinRegionUniform();
+
+            IntersectInfo2D intersectInfo = new IntersectInfo2D();
             Vector2 intersectPoint = Vector2.Zero;
 
 
             float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
 
 
-            for (int i = 0; i < bullets.Count; ++i)
+            for (int i = 0; i < bulletCount; ++i)
             {
                 BulletEntity bullet = bullets[i];
 
+                bool bulletContact = false;
+                float dPosLengthSq = bullet.GetPositionDifferenceFromLastFrame().LengthSquared();
+
                 bullet.GetBinRegion(ref bulletRegion);
 
+
+                // Entities
+                bin.StartQuery();
+                bin.Query(bulletRegion, 0);
+                BinQueryResults queryResults = bin.EndQuery();
+
+
+                for (int j = 0; j < queryResults.BinItemCount; ++j)
+                {
+                    AiEntity checkEntity = (AiEntity)queryResults.BinItemQueryResults[j];
+                    checkEntity.GetBinRegion(ref entityRegion);
+
+
+
+                    bool contact = Math2D.DoesIntersect(    checkEntity.GetPosition(),
+                                                            checkEntity.GetContactRadiusInfo().Radius,
+                                                            checkEntity.GetContactRadiusInfo().RadiusSq,
+                                                            bullet.GetLastFramePosition(),
+                                                            bullet.GetPosition(),
+                                                            bullet.GetPositionDifferenceFromLastFrame(),
+                                                            dPosLengthSq,
+                                                            ref intersectInfo);
+
+
+                    if (contact)
+                    {
+                        checkEntity.OnCollisionEvent(ref bullet);
+
+                        bullet.OnCollisionEvent(ref checkEntity);
+                        bulletContact = true;
+                        break;
+                    }
+                }
+
+
+                if (bulletContact)
+                    continue;
+
+
+                // Boundaries
                 bin.StartQuery();
                 bin.Query(bulletRegion, 1);
-                BinQueryResults queryResults = bin.EndQuery();
+                queryResults = bin.EndQuery();
 
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
@@ -294,13 +189,14 @@ namespace TestGame
                     if (contact)
                     {
                         bullet.OnCollisionEvent(ref checkBoundary);
+                        break;
                     }
                 }
             }
         }
 
 
-        public static void UpdateExplosions(List<AiEntity> entities, List<Explosion> explosions, Bin bin)
+        public static void UpdateExplosions(List<Explosion> explosions, Bin bin)
         {
             BinRegionUniform explosionRegion = new BinRegionUniform();
             BinRegionUniform entityRegion = new BinRegionUniform();

@@ -5,8 +5,10 @@ using System.Text;
 
 namespace Momo.Core.Spatial
 {
-    struct BinIndex
+    public struct BinIndex
     {
+        public const short kInvalidIndex = short.MaxValue;
+
         internal short m_index;
 
 

@@ -8,17 +8,19 @@ using Momo.Core;
 using Momo.Core.GameEntities;
 using Momo.Core.Primitive2D;
 using Momo.Core.Spatial;
+using Momo.Core.ObjectPools;
 using Momo.Debug;
 
 
 
 namespace TestGame.Entities
 {
-    public class BulletEntity : ProjectileGameEntity
+    public class BulletEntity : ProjectileGameEntity, IPoolItem
     {
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
+        private bool m_destroyed = false;
 
 
         // --------------------------------------------------------------------
@@ -44,24 +46,21 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            BinRegionUniform curBinRegion = new BinRegionUniform();
-
-            bin.GetBinRegionFromUnsortedCorners(GetLastFramePosition(), GetPosition(), ref curBinRegion);
-
-            SetBinRegion(curBinRegion);
+            AddToBin(bin, GetPosition(), GetPosition(), 2);
         }
 
 
-        public void RemoveFromBin(Bin bin)
+        public void RemoveFromBin()
         {
-            bin.RemoveBinItem(this, 2);
+            RemoveFromBin(2);
         }
 
 
-        public void UpdateBinEntry(Bin bin)
+        public void UpdateBinEntry()
         {
             BinRegionUniform prevBinRegion = new BinRegionUniform();
             BinRegionUniform curBinRegion = new BinRegionUniform();
+            Bin bin = GetBin();
 
             GetBinRegion(ref prevBinRegion);
             bin.GetBinRegionFromUnsortedCorners(GetLastFramePosition(), GetPosition(), ref curBinRegion);
@@ -74,13 +73,31 @@ namespace TestGame.Entities
 
         public void OnCollisionEvent(ref AiEntity entity)
         {
-            SetFlags(int.MaxValue);
+            RemoveFromBin(2);
+            DestroyItem();
         }
 
 
         public void OnCollisionEvent(ref BoundaryEntity entity)
         {
-            SetFlags(int.MaxValue);
+            RemoveFromBin(2);
+            DestroyItem();
+        }
+
+
+        public bool IsDestroyed()
+        {
+            return m_destroyed;
+        }
+
+        public void DestroyItem()
+        {
+            m_destroyed = true;
+        }
+
+        public void ResetItem()
+        {
+            m_destroyed = false;
         }
     }
 }

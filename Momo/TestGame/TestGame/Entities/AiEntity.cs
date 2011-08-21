@@ -44,21 +44,24 @@ namespace TestGame.Entities
             SetPosition(newPosition);
         }
 
+
         public void AddToBin(Bin bin)
         {
-            BinRegionUniform curBinRegion = new BinRegionUniform();
-			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
+            AddToBin(bin, GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), 0);
+        }
+        
 
-            bin.UpdateBinItem(this, ref curBinRegion, 0);
-
-            SetBinRegion(curBinRegion);
+        public void RemoveFromBin()
+        {
+            RemoveFromBin(0);
         }
 
 
-        public void UpdateBinEntry(Bin bin)
+        public void UpdateBinEntry()
         {
             BinRegionUniform prevBinRegion = new BinRegionUniform();
             BinRegionUniform curBinRegion = new BinRegionUniform();
+            Bin bin = GetBin();
 
             GetBinRegion(ref prevBinRegion);
 			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
@@ -67,7 +70,6 @@ namespace TestGame.Entities
 
             SetBinRegion(curBinRegion);
         }
-
 
 
         public override void OnCollisionEvent(ref IDynamicCollidable collidable)

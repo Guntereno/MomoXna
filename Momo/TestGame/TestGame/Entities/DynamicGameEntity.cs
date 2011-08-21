@@ -1,16 +1,22 @@
 ﻿using System;
+
 using Microsoft.Xna.Framework;
+
 using Momo.Core;
 using Momo.Core.GameEntities;
+using Momo.Core.ObjectPools;
 using Momo.Debug;
+
+
 
 namespace TestGame.Entities
 {
-	public class DynamicGameEntity : DynamicEntity
+	public class DynamicGameEntity : DynamicEntity, IPoolItem
 	{
         private RadiusInfo m_contactRadiusInfo;
         private float m_facingAngle = 0.0f;
-        private Color m_debugColor;
+        private Color m_debugColor = Color.White;
+        private bool m_destroyed = false;
 
 
 		public float FacingAngle
@@ -48,5 +54,22 @@ namespace TestGame.Entities
 			Vector2 direction = new Vector2((float)Math.Sin(FacingAngle), (float)Math.Cos(FacingAngle));
 			debugRenderer.DrawLine(GetPosition(), GetPosition() + (direction * m_contactRadiusInfo.Radius * 1.5f), outlineColour);
 		}
+
+
+        public bool IsDestroyed()
+        {
+            return m_destroyed;
+        }
+
+        public void DestroyItem()
+        {
+            m_destroyed = true;
+        }
+
+        public void ResetItem()
+        {
+            m_destroyed = false;
+        }
+
 	}
 }

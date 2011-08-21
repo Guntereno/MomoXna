@@ -73,30 +73,27 @@ namespace TestGame.Entities
 
 		}
 
-		public void AddToBin(Bin bin)
+
+        public void AddToBin(Bin bin)
+        {
+            SetBin(bin);
+        }
+
+
+        public void RemoveFromBin()
+        {
+            SetBin(null);
+        }
+
+
+		public void UpdateBinEntry()
 		{
 			BinRegionUniform curBinRegion = new BinRegionUniform();
-			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
 
-			//bin.UpdateBinItem(this, ref curBinRegion, 0);
+			GetBin().GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
 
 			SetBinRegion(curBinRegion);
 		}
-
-
-		public void UpdateBinEntry(Bin bin)
-		{
-			//BinRegionUniform prevBinRegion = new BinRegionUniform();
-			BinRegionUniform curBinRegion = new BinRegionUniform();
-
-			//GetBinRegion(ref prevBinRegion);
-			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
-
-			//bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, 0);
-
-			SetBinRegion(curBinRegion);
-		}
-
 
 
 		public override void OnCollisionEvent(ref IDynamicCollidable collidable)

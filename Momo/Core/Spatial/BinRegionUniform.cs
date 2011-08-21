@@ -7,9 +7,30 @@ namespace Momo.Core.Spatial
 {
 	public struct BinRegionUniform
 	{
+        public static BinRegionUniform kInvalidBinRegionUniform = new BinRegionUniform(BinLocation.kInvalidBinLocation, BinLocation.kInvalidBinLocation);
+
+
 		internal BinLocation m_minLocation;
 		internal BinLocation m_maxLocation;
 
+
+
+        public BinRegionUniform(BinLocation minLocation, BinLocation maxLocation)
+        {
+            m_minLocation = minLocation;
+            m_maxLocation = maxLocation;
+        }
+
+
+        public BinLocation MinLocation
+        {
+            get{ return m_minLocation; }
+        }
+
+        public BinLocation MaxLocation
+        {
+            get { return m_maxLocation; }
+        }
 
         public int GetHeight()
         {

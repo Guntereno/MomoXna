@@ -12,6 +12,7 @@ using Momo.Core.Collision2D;
 using Momo.Core.Primitive2D;
 using Momo.Core.GameEntities;
 using Momo.Core.Pathfinding;
+using Momo.Core.ObjectPools;
 using Momo.Debug;
 
 using TestGame.Systems;
@@ -54,12 +55,16 @@ namespace TestGame
 
         PathIsland m_pathIsland = new PathIsland();
 
-        List<AiEntity> m_ais = new List<AiEntity>(2000);
+        Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(4);
+        Pool<AiEntity> m_ais = new Pool<AiEntity>(2000);
+        Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(2000);
+
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
-        List<BulletEntity> m_bullets = new List<BulletEntity>(2000);
         List<Explosion> m_explosions = new List<Explosion>(100);
 
-		PlayerEntity m_player = new PlayerEntity();
+
+
+
 
 		public TestGame()
 		{
@@ -82,12 +87,11 @@ namespace TestGame
   
 		public void AddBullet(Vector2 startPos, Vector2 velocity)
 		{
-			BulletEntity bullet = new BulletEntity();
+            BulletEntity bullet = m_bullets.CreateItem();
 			bullet.SetPosition(startPos);
 			bullet.SetVelocity(velocity);
 
 			bullet.AddToBin(m_bin);
-			m_bullets.Add(bullet);
 		}
 
 
@@ -113,6 +117,16 @@ namespace TestGame
 			m_map = Content.Load<Map.Map>("maps/1_living_quarters/1_living_quarters");
 
 
+            // ----------------------------------------------------------------
+            // -- Init the pools
+            // ----------------------------------------------------------------
+            for (int i = 0; i < 1; ++i)
+            {
+                PlayerEntity player = new PlayerEntity();
+                player.AddToBin(m_bin);
+                m_players.AddItem(player, true);
+            }
+
             for (int i = 0; i < 200; ++i)
             {
                 AiEntity ai = new AiEntity();
@@ -123,10 +137,18 @@ namespace TestGame
 
                 ai.AddToBin(m_bin);
 
-                m_ais.Add(ai);
+                m_ais.AddItem(ai, true);
             }
 
-			m_player.SetPosition(new Vector2(416.0f, 320.0f));
+            for (int i = 0; i < 1000; ++i)
+            {
+                m_bullets.AddItem(new BulletEntity(), false);
+            }
+
+
+
+
+			m_players[0].SetPosition(new Vector2(416.0f, 320.0f));
 
             PathRegion[] regions = new PathRegion[2];
             regions[0] = new PathRegion(new Vector2(100.0f, 650.0f), new Vector2(900.0f, 800.0f));
@@ -139,7 +161,7 @@ namespace TestGame
 
 
 
-			m_cameraController.TargetEntity = m_player;
+			m_cameraController.TargetEntity = m_players[0];
 
 			BuildCollisionBoundaries();
 
@@ -205,50 +227,48 @@ namespace TestGame
             //    m_explosions.Add(explosion);
             //}
 
-            for (int i = 0; i < m_ais.Count; ++i)
+
+            for (int i = 0; i < m_players.ActiveItemListCount; ++i)
             {
-                m_ais[i].Update(ref frameTime);
-                m_ais[i].UpdateBinEntry(m_bin);
+                m_players[i].UpdateInput(ref m_inputWrapper);
+                m_players[i].Update(ref frameTime);
+                m_players[i].UpdateBinEntry();
             }
 
-            for (int i = 0; i < m_bullets.Count; ++i)
+            for (int i = 0; i < m_ais.ActiveItemListCount; ++i)
+            {
+                m_ais[i].Update(ref frameTime);
+                m_ais[i].UpdateBinEntry();
+            }
+
+            for (int i = 0; i < m_bullets.ActiveItemListCount; ++i)
             {
                 m_bullets[i].Update(ref frameTime);
-                m_bullets[i].UpdateBinEntry(m_bin);
+                m_bullets[i].UpdateBinEntry();
             }
 
 			GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 			KeyboardState keyboardState = Keyboard.GetState();
 			m_inputWrapper.Update(gamePadState, keyboardState);
 
-			m_player.UpdateInput(ref m_inputWrapper);
-			m_player.Update(ref frameTime);
-            m_player.UpdateBinEntry(m_bin);
+
+
 
             m_contactList.StartAddingContacts();
 
-            CollisionHelpers.GenerateContacts(m_ais, m_bin, m_contactList);
-            CollisionHelpers.GenerateContacts(m_ais, m_boundaries, m_bin, m_contactList);
-            CollisionHelpers.GenerateContacts(m_player, m_bin, m_contactList);
-            CollisionHelpers.GenerateContacts(m_player, m_boundaries, m_bin, m_contactList);
-            CollisionHelpers.UpdateBulletContacts(m_ais, m_bullets, m_bin);
-            CollisionHelpers.UpdateBulletContacts(m_bullets, m_boundaries, m_bin);
-            CollisionHelpers.UpdateExplosions(m_ais, m_explosions, m_bin);
+            CollisionHelpers.GenerateContacts(m_ais.ActiveItemList, m_ais.ActiveItemListCount, m_bin, m_contactList);
+            CollisionHelpers.GenerateContacts(m_players.ActiveItemList, m_players.ActiveItemListCount, m_bin, m_contactList);
+
+            CollisionHelpers.UpdateBulletContacts(m_bullets.ActiveItemList, m_bullets.ActiveItemListCount, m_bin);
+
+            CollisionHelpers.UpdateExplosions(m_explosions, m_bin);
 
             m_contactList.EndAddingContacts();
 
             m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
 
             // Destroying dead entities/objects
-            for (int i = 0; i < m_bullets.Count; ++i)
-            {
-                if (m_bullets[i].NeedsDestroying())
-                {
-                    m_bullets[i].RemoveFromBin(m_bin);
-                    m_bullets.RemoveAt(i);
-                    --i;
-                }
-            }
+            m_bullets.CoalesceActiveList(false);
 
 
 			m_cameraController.Update(ref m_inputWrapper);
@@ -275,12 +295,17 @@ namespace TestGame
                 m_boundaries[i].DebugRender(m_debugRenderer);
 			}
 
-            for (int i = 0; i < m_ais.Count; ++i)
+            for (int i = 0; i < m_players.ActiveItemListCount; ++i)
+            {
+                m_players[i].DebugRender(m_debugRenderer);
+            }
+
+            for (int i = 0; i < m_ais.ActiveItemListCount; ++i)
             {
                 m_ais[i].DebugRender(m_debugRenderer);
             }
 
-            for (int i = 0; i < m_bullets.Count; ++i)
+            for (int i = 0; i < m_bullets.ActiveItemListCount; ++i)
             {
                 m_bullets[i].DebugRender(m_debugRenderer);
             }
@@ -292,8 +317,6 @@ namespace TestGame
 
             //m_pathIsland.DebugRender(m_debugRenderer);
 
-
-			m_player.DebugRender(m_debugRenderer);
 
 			m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);
 			m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, GraphicsDevice);

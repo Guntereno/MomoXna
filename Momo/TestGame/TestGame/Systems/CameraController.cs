@@ -94,7 +94,7 @@ namespace TestGame.Systems
 			Vector2 inputVector = input.GetLeftStick();
 			Vector3 camAccel = new Vector3(
 				inputVector.X * kMaxAccel,
-				inputVector.Y * -kMaxAccel,
+				inputVector.Y * kMaxAccel,
 				0.0f
 			);
 

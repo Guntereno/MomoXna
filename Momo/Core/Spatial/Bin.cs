@@ -13,6 +13,9 @@ namespace Momo.Core.Spatial
 {
 	public class Bin
 	{
+        // --------------------------------------------------------------------
+        // -- Private Members
+        // --------------------------------------------------------------------
 		private int m_binCountX = 0;
 		private int m_binCountY = 0;
 		private int m_binCount = 0;
@@ -34,6 +37,9 @@ namespace Momo.Core.Spatial
 
 
 
+        // --------------------------------------------------------------------
+        // -- Public Methods
+        // --------------------------------------------------------------------
 		public Bin(int binCountX, int binCountY, float areaWidth, float areaHeight, int layerCount, int itemCapacity, int queryResultsCapacity, int regionSelectionCapacity)
 		{
 			m_binCountX = binCountX;
@@ -94,6 +100,26 @@ namespace Momo.Core.Spatial
 		{
             AddBinItem(item, ref item.m_region, layerIdx);
 		}
+
+
+        public void AddBinItem(BinItem item, Vector2 corner1, Vector2 corner2, int layerIdx)
+        {
+            BinRegionUniform region = new BinRegionUniform();
+            GetBinRegionFromUnsortedCorners(corner1, corner2, ref region);
+            item.SetBinRegion(region);
+
+            AddBinItem(item, ref region, layerIdx);
+        }
+
+
+        public void AddBinItem(BinItem item, Vector2 centre, float radius, int layerIdx)
+        {
+            BinRegionUniform region = new BinRegionUniform();
+            GetBinRegionFromCentre(centre, radius, ref region);
+            item.SetBinRegion(region);
+
+            AddBinItem(item, ref region, layerIdx);
+        }
 
 
 		public void AddBinItem(BinItem item, ref BinRegionUniform region, int layerIdx)
