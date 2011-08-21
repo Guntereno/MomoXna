@@ -120,6 +120,7 @@
     <Compile Include="Systems\CameraController.cs" />
     <Compile Include="TestGame.cs" />
     <Compile Include="TestWorld.cs" />
+    <Compile Include="TestWorldPathFinding.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

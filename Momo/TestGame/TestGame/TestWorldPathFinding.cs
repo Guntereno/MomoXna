@@ -25,13 +25,8 @@ using WorldManager;
 
 namespace TestGame
 {
-	public class TestWorld : World
-	{
-        // Temporary...
-        public static TestWorld Instance() { return ms_instance; }
-        private static TestWorld ms_instance = null;
-
-
+    public class TestWorldPathFinding : World
+    {
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
         CameraController m_cameraController = new CameraController();
 
@@ -42,31 +37,30 @@ namespace TestGame
         Map.Map m_map = null;
         MapRenderer m_mapRenderer = new MapRenderer();
 
+        PathIsland m_pathIsland = new PathIsland();
+
         Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(4);
         Pool<AiEntity> m_ais = new Pool<AiEntity>(2000);
         Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(2000);
 
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
-        //List<Explosion> m_explosions = new List<Explosion>(100);
-
 
         static Random ms_random = new Random();
         DebugRenderer m_debugRenderer = new DebugRenderer();
 
 
 
-		// --------------------------------------------------------------------
-		// -- Public Methods
-		// --------------------------------------------------------------------
-		public static World WorldCreator()
-		{
-			return new TestWorld();
-		}
+        // --------------------------------------------------------------------
+        // -- Public Methods
+        // --------------------------------------------------------------------
+        public static World WorldCreator()
+        {
+            return new TestWorldPathFinding();
+        }
 
 
-		public override void Load()
-		{
-            ms_instance = this;
+        public override void Load()
+        {
             m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
 
             m_camera.ViewWidth = TestGame.kBackBufferWidth;
@@ -109,7 +103,19 @@ namespace TestGame
             }
 
 
+
+
             m_players[0].SetPosition(new Vector2(416.0f, 320.0f));
+
+            PathRegion[] regions = new PathRegion[2];
+            regions[0] = new PathRegion(new Vector2(100.0f, 650.0f), new Vector2(900.0f, 800.0f));
+            regions[1] = new PathRegion(new Vector2(200.0f, 150.0f), new Vector2(700.0f, 550.0f));
+
+            regions[0].GenerateUniformGridOfNodes(10.0f, 50.0f);
+            regions[1].GenerateUniformGridOfNodes(10.0f, 50.0f);
+
+            m_pathIsland.SetRegions(regions);
+
 
 
             m_cameraController.TargetEntity = m_players[0];
@@ -117,17 +123,17 @@ namespace TestGame
             BuildCollisionBoundaries();
 
             m_mapRenderer.Init(m_map, TestGame.Instance().GraphicsDevice, 16);
-		}
+        }
 
 
-		public override void Enter()
-		{
+        public override void Enter()
+        {
 
-		}
+        }
 
 
-		public override void Update(float dt)
-		{
+        public override void Update(float dt)
+        {
             // More time related numbers will eventually be added to the FrameTime structure. Its worth passing
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
@@ -184,19 +190,19 @@ namespace TestGame
 
 
             m_cameraController.Update(ref inputWrapper);
-		}
+        }
 
 
-		public override void Exit()
-		{
+        public override void Exit()
+        {
 
-		}
+        }
 
 
-		public override void Flush()
-		{
+        public override void Flush()
+        {
 
-		}
+        }
 
 
         public override void PreRender()
@@ -205,18 +211,18 @@ namespace TestGame
             m_camera.PreRenderUpdate();
         }
 
-		public override void Render()
-		{
+        public override void Render()
+        {
             m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
-		}
+        }
 
         public override void PostRender()
         {
 
         }
 
-		public override void DebugRender()
-		{
+        public override void DebugRender()
+        {
             for (int i = 0; i < m_boundaries.Count; ++i)
             {
                 m_boundaries[i].DebugRender(m_debugRenderer);
@@ -245,16 +251,6 @@ namespace TestGame
             //m_pathIsland.DebugRender(m_debugRenderer);
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
-		}
-
-
-        public void AddBullet(Vector2 startPos, Vector2 velocity)
-        {
-            BulletEntity bullet = m_bullets.CreateItem();
-            bullet.SetPosition(startPos);
-            bullet.SetVelocity(velocity);
-
-            bullet.AddToBin(m_bin);
         }
 
 
@@ -286,5 +282,5 @@ namespace TestGame
                 }
             }
         }
-	}
+    }
 }

@@ -18,9 +18,9 @@ namespace WorldManager
 		public abstract void Exit();
 		public abstract void Flush();
 
-		public abstract void PostRender();
+        public abstract void PreRender();
 		public abstract void Render();
-		public abstract void PreRender();
+        public abstract void PostRender();
 
 		public abstract void DebugRender();
 	}

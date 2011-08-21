@@ -28,15 +28,14 @@ namespace WorldManager
 					case WorldState.kLoading:
 						break;
 
-					case WorldState.kLoaded:
-						info.m_state = WorldState.kActive;
-						break;
-
+                    case WorldState.kLoaded:
 					case WorldState.kActive:
 						Debug.Assert(info.m_created == true, "WorldManager: Trying to update a world that has not been created.");
 						Debug.Assert(info.m_world != null, "WorldManager: Trying to update a world that is not active.");
-
+                        
+                        info.m_state = WorldState.kActive;
 						info.m_world.Update(dt);
+
 						break;
 
 					case WorldState.kFlushing:
@@ -60,9 +59,27 @@ namespace WorldManager
 					Debug.Assert(info.m_created == true, "WorldManager: Trying to render a world that has not been created.");
 					Debug.Assert(info.m_world != null, "WorldManager: Trying to render a world that is not active.");
 					
-					info.m_world.Render();
+					info.m_world.PreRender();
 				}
 			}
+
+            foreach (WorldInfo info in m_worldList)
+            {
+                if (info.m_state == WorldState.kActive)
+                    info.m_world.Render();
+            }
+
+            foreach (WorldInfo info in m_worldList)
+            {
+                if (info.m_state == WorldState.kActive)
+                    info.m_world.PostRender();
+            }
+
+            foreach (WorldInfo info in m_worldList)
+            {
+                if (info.m_state == WorldState.kActive)
+                    info.m_world.DebugRender();
+            }
 		}
 
 

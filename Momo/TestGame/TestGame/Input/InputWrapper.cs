@@ -81,6 +81,9 @@ namespace TestGame.Input
 
 		public void Update(GamePadState currentGamePadState, KeyboardState currentKeyboardState)
 		{
+            // Stop the compiler bitching about unused variables...
+            m_previousButtonState = m_buttonState;
+
 			Update(currentGamePadState);
 
 			// Keyboard input overrides joypad
@@ -148,10 +151,10 @@ namespace TestGame.Input
 
 		Dictionary<Buttons, ButtonInfo> m_buttonDict;
 
-		private Vector2 m_leftStick;
-		private Vector2 m_rightStick;
-		private bool[] m_buttonState;
-		private bool[] m_previousButtonState;
+		private Vector2 m_leftStick = Vector2.Zero;
+        private Vector2 m_rightStick = Vector2.Zero;
+		private bool[] m_buttonState = null;
+		private bool[] m_previousButtonState = null;
 
 		private int m_numKeys = Enum.GetNames(typeof(Buttons)).Length;
 	}
