@@ -115,7 +115,7 @@ namespace TestGame
             m_projectileManager.Load();
 
             m_players[0].SetPosition(new Vector2(416.0f, 320.0f));
-
+            m_players[0].Init();
 
             m_cameraController.TargetEntity = m_players[0];
 

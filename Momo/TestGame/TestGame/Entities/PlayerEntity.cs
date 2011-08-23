@@ -22,9 +22,36 @@ namespace TestGame.Entities
 
         public void UpdateInput(ref Input.InputWrapper input)
         {
+            // Handle weapon cycling
+            if(input.IsButtonPressed(Buttons.RightShoulder))
+            {
+                ++m_currentWeapon ;
+                if(m_currentWeapon >= kNumWeaponSlots)
+                {
+                    m_currentWeapon = 0;
+                }
+            }
+            if(input.IsButtonPressed(Buttons.LeftShoulder))
+            {
+                --m_currentWeapon ;
+                if(m_currentWeapon < 0)
+                {
+                    m_currentWeapon = kNumWeaponSlots-1;
+                }
+            }
+
             m_movementInputVector = input.GetLeftStick();
             m_facingInputVector = input.GetRightStick();
             m_triggerState = input.GetRightTrigger();
+        }
+
+        public void Init()
+        {
+            Systems.WeaponManager weaponMan = GetWorld().GetWeaponManager();
+            m_arsenal[0] = weaponMan.Create(Systems.WeaponManager.WeaponType.Shotgun);
+            m_arsenal[1] = weaponMan.Create(Systems.WeaponManager.WeaponType.Minigun);
+
+            m_currentWeapon = 0;
         }
 
         public override void Update(ref FrameTime frameTime)
@@ -52,13 +79,10 @@ namespace TestGame.Entities
                 }
             }
 
-            if (m_weapon != null)
+            if (m_currentWeapon >= 0)
             {
-                m_weapon.Update(ref frameTime, m_triggerState, newPosition, FacingAngle);
-            }
-            else
-            {
-                m_weapon = GetWorld().GetWeaponManager().Create(Systems.WeaponManager.WeaponType.Shotgun);
+                Weapons.Weapon curWeapon = m_arsenal[m_currentWeapon];
+                curWeapon.Update(ref frameTime, m_triggerState, newPosition, FacingAngle);
             }
         }
 
@@ -106,7 +130,10 @@ namespace TestGame.Entities
         Vector2 m_facingInputVector = Vector2.Zero;
         float m_triggerState = 0.0f;
 
-        Weapons.Weapon m_weapon = null;
+        static readonly int kNumWeaponSlots = 2;
+        Weapons.Weapon[] m_arsenal = new Weapons.Weapon[kNumWeaponSlots];
+
+        int m_currentWeapon = -1;
 
         System.Random m_random = new System.Random();
     }
