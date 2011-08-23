@@ -26,17 +26,24 @@ namespace TestGame.Systems
 
         public Weapon Create(WeaponType type)
         {
+            Weapon weapon;
+
             switch (type)
             {
                 case WeaponType.Shotgun:
-                    return m_shotguns.CreateItem();
+                    weapon = m_shotguns.CreateItem();
+                    break;
 
                 case WeaponType.Minigun:
-                    return m_miniguns.CreateItem();
+                    weapon = m_miniguns.CreateItem();
+                    break;
 
                 default:
                     return null;
             }
+
+            weapon.Init();
+            return weapon;
         }
 
         public static readonly int[] kWeaponMax = new int[(int)WeaponType.Count]

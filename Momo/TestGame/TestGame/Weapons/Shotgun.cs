@@ -13,6 +13,10 @@ namespace TestGame.Weapons
         {
         }
 
+        public override void Init()
+        {
+        }
+
         public override void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
         {
         }

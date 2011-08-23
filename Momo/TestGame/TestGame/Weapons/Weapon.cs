@@ -10,8 +10,6 @@ namespace TestGame.Weapons
 {
     public abstract class Weapon : IPoolItem
     {
-        public abstract void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing);
-
         public Weapon(GameWorld world)
         {
             m_world = world;
@@ -19,6 +17,8 @@ namespace TestGame.Weapons
 
         public GameWorld GetWorld() { return m_world; }
 
+        public abstract void Init();
+        public abstract void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing);
 
         public bool IsDestroyed()
         {
@@ -37,6 +37,6 @@ namespace TestGame.Weapons
 
         protected bool m_isDestroyed = true;
 
-		private GameWorld m_world = null;
+        private GameWorld m_world = null;
     }
 }
