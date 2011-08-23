@@ -333,7 +333,6 @@ namespace TmxProcessorLib.Content
                             if (!found)
                             {
                                 // Add the first node again to complete the loop
-                                currentLoop.Add(currentLoop[0]);
                                 edgeLoops.Add(currentLoop);
                                 currentLoop = new List<Edge>();
 
