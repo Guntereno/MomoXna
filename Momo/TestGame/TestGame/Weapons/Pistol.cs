@@ -2,38 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Momo.Core;
 using Microsoft.Xna.Framework;
+using Momo.Core;
 
 namespace TestGame.Weapons
 {
-    public class Shotgun : Weapon
+    public class Pistol : Weapon
     {
-        public Shotgun(GameWorld world) : base(world)
+        public Pistol(GameWorld world) : base(world)
         {
         }
 
         public struct Params
         {
-            public Params(float reloadTime, int clipSize, float velocity, float fireRate, float spread, int shotCount)
+            public Params(float reloadTime, int clipSize, float velocity, float fireRate)
             {
                 m_reloadTime = reloadTime;
                 m_clipSize = clipSize;
                 m_velocity = velocity;
                 m_fireRate = fireRate;
-                m_spread = spread;
-                m_shotCount = shotCount;
             }
 
             public float m_reloadTime; // seconds
             public int m_clipSize;
             public float m_velocity;
             public float m_fireRate; // shells/sec
-            public float m_spread; // radians
-            public int m_shotCount;
         }
 
-        public static readonly Params kDefaultParams = new Params(1.5f, 10, 500.0f, 1.5f, (float)(0.1f * Math.PI), 20);
+        public static readonly Params kDefaultParams = new Params(0.5f, 16, 600.0f, 2.0f);
 
         enum State
         {
@@ -60,16 +56,11 @@ namespace TestGame.Weapons
                         {
                             if (m_ammoInClip > 0)
                             {
-                                Random random = GetWorld().GetRandom();
+                                Vector2 velocity = new Vector2((float)Math.Sin(facing), (float)Math.Cos(facing));
+                                velocity *= m_params.m_velocity;
 
-                                for (int i = 0; i < m_params.m_shotCount; ++i)
-                                {
-                                    float angle = facing + (((float)random.NextDouble() * m_params.m_spread) - (0.5f * m_params.m_spread));
-                                    Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
-                                    velocity *= m_params.m_velocity;
+                                GetWorld().GetProjectileManager().AddBullet(pos, velocity);
 
-                                    GetWorld().GetProjectileManager().AddBullet(pos, velocity);
-                                }
                                 --m_ammoInClip;
 
                                 m_timer = 1.0f / m_params.m_fireRate;

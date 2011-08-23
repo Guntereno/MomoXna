@@ -13,7 +13,8 @@ namespace TestGame.Systems
     {
         public enum WeaponType
         {
-            Shotgun = 0,
+            Pistol = 0,
+            Shotgun,
             Minigun,
 
             Count
@@ -30,6 +31,10 @@ namespace TestGame.Systems
 
             switch (type)
             {
+                case WeaponType.Pistol:
+                    weapon = m_pistols.CreateItem();
+                    break;
+
                 case WeaponType.Shotgun:
                     weapon = m_shotguns.CreateItem();
                     break;
@@ -48,14 +53,22 @@ namespace TestGame.Systems
 
         public static readonly int[] kWeaponMax = new int[(int)WeaponType.Count]
         {
+            8,  // Pistol
             8,  // Shotgun
             8   // Minigun
         };
 
         public void Load()
         {
+            // Pistols
+            for (int i = 0; i < kWeaponMax[(int)WeaponType.Pistol]; ++i)
+            {
+                Pistol pistol = new Pistol(m_world);
+                m_pistols.AddItem(pistol, false);
+            }
+
             // Shotguns
-            for (int i = 0; i < kWeaponMax[(int)WeaponType.Shotgun]; ++i)
+            for (int i = 0; i < kWeaponMax[(int)WeaponType.Pistol]; ++i)
             {
                 Shotgun shotgun = new Shotgun(m_world);
                 m_shotguns.AddItem(shotgun, false);
@@ -71,6 +84,7 @@ namespace TestGame.Systems
 
         private GameWorld m_world;
 
+        private Pool<Pistol> m_pistols = new Pool<Pistol>(kWeaponMax[(int)WeaponType.Pistol]);
         private Pool<Shotgun> m_shotguns = new Pool<Shotgun>(kWeaponMax[(int)WeaponType.Shotgun]);
         private Pool<Minigun> m_miniguns = new Pool<Minigun>(kWeaponMax[(int)WeaponType.Minigun]);
     }

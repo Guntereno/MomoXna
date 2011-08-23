@@ -48,8 +48,9 @@ namespace TestGame.Entities
         public void Init()
         {
             Systems.WeaponManager weaponMan = GetWorld().GetWeaponManager();
-            m_arsenal[0] = weaponMan.Create(Systems.WeaponManager.WeaponType.Shotgun);
-            m_arsenal[1] = weaponMan.Create(Systems.WeaponManager.WeaponType.Minigun);
+            m_arsenal[0] = weaponMan.Create(Systems.WeaponManager.WeaponType.Pistol);
+            m_arsenal[1] = weaponMan.Create(Systems.WeaponManager.WeaponType.Shotgun);
+            m_arsenal[2] = weaponMan.Create(Systems.WeaponManager.WeaponType.Minigun);
 
             m_currentWeapon = 0;
         }
@@ -130,7 +131,7 @@ namespace TestGame.Entities
         Vector2 m_facingInputVector = Vector2.Zero;
         float m_triggerState = 0.0f;
 
-        static readonly int kNumWeaponSlots = 2;
+        static readonly int kNumWeaponSlots = 3;
         Weapons.Weapon[] m_arsenal = new Weapons.Weapon[kNumWeaponSlots];
 
         int m_currentWeapon = -1;
