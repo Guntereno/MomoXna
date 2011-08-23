@@ -11,22 +11,22 @@ using Momo.Core.Collision2D;
 
 namespace Momo.Core.GameEntities
 {
-	public class DynamicEntity : BaseEntity, IDynamicCollidable
-	{
+    public class DynamicEntity : BaseEntity, IDynamicCollidable
+    {
         // --------------------------------------------------------------------
         // -- Private Static Members
         // --------------------------------------------------------------------
         private static float ms_contactDimensionPadding = 1.0f;
 
 
-		// --------------------------------------------------------------------
-		// -- Private Members
-		// --------------------------------------------------------------------
-		private Vector2 m_velocity = Vector2.Zero;
-		private Vector2 m_force = Vector2.Zero;
+        // --------------------------------------------------------------------
+        // -- Private Members
+        // --------------------------------------------------------------------
+        private Vector2 m_velocity = Vector2.Zero;
+        private Vector2 m_force = Vector2.Zero;
         private Vector2 m_lastFrameAcceleration = Vector2.Zero;
 
-		private MassInfo m_massInfo = new MassInfo(1.0f);
+        private MassInfo m_massInfo = new MassInfo(1.0f);
 
 
         // --------------------------------------------------------------------
@@ -38,55 +38,55 @@ namespace Momo.Core.GameEntities
         }
 
 
-		// --------------------------------------------------------------------
-		// -- Public Methods
-		// --------------------------------------------------------------------
-		public void SetVelocity(Vector2 velocity)
-		{
-			m_velocity = velocity;
-		}
+        // --------------------------------------------------------------------
+        // -- Public Methods
+        // --------------------------------------------------------------------
+        public void SetVelocity(Vector2 velocity)
+        {
+            m_velocity = velocity;
+        }
 
-		public override Vector2 GetVelocity()
-		{
-			return m_velocity;
-		}
+        public override Vector2 GetVelocity()
+        {
+            return m_velocity;
+        }
 
-		public void SetForce(Vector2 force)
-		{
-			m_force = force;
-		}
+        public void SetForce(Vector2 force)
+        {
+            m_force = force;
+        }
 
-		public Vector2 GetForce()
-		{
-			return m_force;
-		}
+        public Vector2 GetForce()
+        {
+            return m_force;
+        }
 
-		public Vector2 GetLastFrameAcceleration()
-		{
+        public Vector2 GetLastFrameAcceleration()
+        {
             return m_lastFrameAcceleration;
-		}
+        }
 
-		public void SetMass(float mass)
-		{
-			m_massInfo.Mass = mass;
-		}
-
-
-		public float GetMass()
-		{
-			return m_massInfo.Mass;
-		}
+        public void SetMass(float mass)
+        {
+            m_massInfo.Mass = mass;
+        }
 
 
-		public float GetInverseMass()
-		{
-			return m_massInfo.InverseMass;
-		}
+        public float GetMass()
+        {
+            return m_massInfo.Mass;
+        }
 
 
-		public override void Update(ref FrameTime frameTime)
-		{
-			base.Update(ref frameTime);
+        public float GetInverseMass()
+        {
+            return m_massInfo.InverseMass;
+        }
+
+
+        public override void Update(ref FrameTime frameTime)
+        {
+            base.Update(ref frameTime);
 
             Vector2 newPosition = GetPosition() + (m_velocity * frameTime.Dt);
 
@@ -98,18 +98,18 @@ namespace Momo.Core.GameEntities
 
     
             SetPosition(newPosition);
-		}
+        }
 
 
-		public override void PostUpdate()
-		{
+        public override void PostUpdate()
+        {
 
-		}
+        }
 
 
         public virtual void OnCollisionEvent(ref IDynamicCollidable collidable)
         {
 
         }
-	}
+    }
 }

@@ -6,16 +6,16 @@ using Microsoft.Xna.Framework;
 
 namespace Momo.Core.Spatial
 {
-	public class BinItem
-	{
+    public class BinItem
+    {
         internal Bin m_bin = null;
         internal BinRegionUniform m_region = BinRegionUniform.kInvalidBinRegionUniform;
 
 
 
-		// --------------------------------------------------------------------
-		// -- Public Methods
-		// --------------------------------------------------------------------
+        // --------------------------------------------------------------------
+        // -- Public Methods
+        // --------------------------------------------------------------------
         public Bin GetBin()
         {
             return m_bin;
@@ -26,16 +26,16 @@ namespace Momo.Core.Spatial
             m_bin = bin;
         }
 
-		public void GetBinRegion(ref BinRegionUniform region)
-		{
-			region = m_region;
-		}
+        public void GetBinRegion(ref BinRegionUniform region)
+        {
+            region = m_region;
+        }
 
 
-		public void SetBinRegion(BinRegionUniform region)
-		{
-			m_region = region;
-		}
+        public void SetBinRegion(BinRegionUniform region)
+        {
+            m_region = region;
+        }
 
 
         public void AddToBin(Bin bin, Vector2 corner1, Vector2 corner2, int binLayer)
@@ -56,5 +56,5 @@ namespace Momo.Core.Spatial
         {
             m_bin.RemoveBinItem(this, binLayer);
         }
-	}
+    }
 }

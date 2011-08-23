@@ -25,8 +25,8 @@ using WorldManager;
 
 namespace TestGame
 {
-	public class TestWorld : World
-	{
+    public class TestWorld : World
+    {
         // Temporary...
         public static TestWorld Instance() { return ms_instance; }
         private static TestWorld ms_instance = null;
@@ -44,7 +44,6 @@ namespace TestGame
 
         Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(4);
         Pool<AiEntity> m_ais = new Pool<AiEntity>(2000);
-        Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(2000);
 
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
         //List<Explosion> m_explosions = new List<Explosion>(100);
@@ -53,19 +52,31 @@ namespace TestGame
         static Random ms_random = new Random();
         DebugRenderer m_debugRenderer = new DebugRenderer();
 
+        Systems.WeaponManager m_weaponManager = null;
+        Systems.ProjectileManager m_projectileManager = null;
 
+        // --------------------------------------------------------------------
+        // -- Public Methods
+        // --------------------------------------------------------------------
 
-		// --------------------------------------------------------------------
-		// -- Public Methods
-		// --------------------------------------------------------------------
-		public static World WorldCreator()
-		{
-			return new TestWorld();
-		}
+        public TestWorld()
+        {
+            m_weaponManager = new Systems.WeaponManager(this);
+            m_projectileManager = new Systems.ProjectileManager(this, m_bin);
+        }
 
+        public static World WorldCreator()
+        {
+            return new TestWorld();
+        }
 
-		public override void Load()
-		{
+        public Systems.WeaponManager GetWeaponManager() { return m_weaponManager; }
+        public Systems.ProjectileManager GetProjectileManager() { return m_projectileManager; }
+
+        public Random GetRandom() { return ms_random; }
+
+        public override void Load()
+        {
             ms_instance = this;
             m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
 
@@ -75,24 +86,21 @@ namespace TestGame
 
             m_cameraController.Camera = m_camera;
 
-
-
             m_map = TestGame.Instance().Content.Load<Map.Map>("maps/1_living_quarters/1_living_quarters");
-
 
             // ----------------------------------------------------------------
             // -- Init the pools
             // ----------------------------------------------------------------
             for (int i = 0; i < 1; ++i)
             {
-                PlayerEntity player = new PlayerEntity();
+                PlayerEntity player = new PlayerEntity(this);
                 player.AddToBin(m_bin);
                 m_players.AddItem(player, true);
             }
 
             for (int i = 0; i < 200; ++i)
             {
-                AiEntity ai = new AiEntity();
+                AiEntity ai = new AiEntity(this);
                 Vector2 pos = new Vector2(150.0f + ((float)ms_random.NextDouble() * 3300.0f),
                                             725.0f + ((float)ms_random.NextDouble() * 65.0f));
 
@@ -103,11 +111,8 @@ namespace TestGame
                 m_ais.AddItem(ai, true);
             }
 
-            for (int i = 0; i < 1000; ++i)
-            {
-                m_bullets.AddItem(new BulletEntity(), false);
-            }
-
+            m_weaponManager.Load();
+            m_projectileManager.Load();
 
             m_players[0].SetPosition(new Vector2(416.0f, 320.0f));
 
@@ -117,17 +122,17 @@ namespace TestGame
             BuildCollisionBoundaries();
 
             m_mapRenderer.Init(m_map, TestGame.Instance().GraphicsDevice, 16);
-		}
+        }
 
 
-		public override void Enter()
-		{
+        public override void Enter()
+        {
 
-		}
+        }
 
 
-		public override void Update(float dt)
-		{
+        public override void Update(float dt)
+        {
             // More time related numbers will eventually be added to the FrameTime structure. Its worth passing
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
@@ -159,19 +164,14 @@ namespace TestGame
                 m_ais[i].UpdateBinEntry();
             }
 
-            for (int i = 0; i < m_bullets.ActiveItemListCount; ++i)
-            {
-                m_bullets[i].Update(ref frameTime);
-                m_bullets[i].UpdateBinEntry();
-            }
-
-
             m_contactList.StartAddingContacts();
 
             CollisionHelpers.GenerateContacts(m_ais.ActiveItemList, m_ais.ActiveItemListCount, m_bin, m_contactList);
             CollisionHelpers.GenerateContacts(m_players.ActiveItemList, m_players.ActiveItemListCount, m_bin, m_contactList);
 
-            CollisionHelpers.UpdateBulletContacts(m_bullets.ActiveItemList, m_bullets.ActiveItemListCount, m_bin);
+            m_projectileManager.Update(ref frameTime);
+
+            CollisionHelpers.UpdateBulletContacts(m_projectileManager.GetBullets().ActiveItemList, m_projectileManager.GetBullets().ActiveItemListCount, m_bin);
 
             //CollisionHelpers.UpdateExplosions(m_explosions, m_bin);
 
@@ -179,24 +179,22 @@ namespace TestGame
 
             m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
 
-            // Destroying dead entities/objects
-            m_bullets.CoalesceActiveList(false);
-
+            m_projectileManager.EndFrame();
 
             m_cameraController.Update(ref inputWrapper);
-		}
+        }
 
 
-		public override void Exit()
-		{
+        public override void Exit()
+        {
 
-		}
+        }
 
 
-		public override void Flush()
-		{
+        public override void Flush()
+        {
 
-		}
+        }
 
 
         public override void PreRender()
@@ -205,18 +203,18 @@ namespace TestGame
             m_camera.PreRenderUpdate();
         }
 
-		public override void Render()
-		{
+        public override void Render()
+        {
             m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
-		}
+        }
 
         public override void PostRender()
         {
 
         }
 
-		public override void DebugRender()
-		{
+        public override void DebugRender()
+        {
             for (int i = 0; i < m_boundaries.Count; ++i)
             {
                 m_boundaries[i].DebugRender(m_debugRenderer);
@@ -232,10 +230,7 @@ namespace TestGame
                 m_ais[i].DebugRender(m_debugRenderer);
             }
 
-            for (int i = 0; i < m_bullets.ActiveItemListCount; ++i)
-            {
-                m_bullets[i].DebugRender(m_debugRenderer);
-            }
+            m_projectileManager.DebugRender(m_debugRenderer);
 
             //for (int i = 0; i < m_explosions.Count; ++i)
             //{
@@ -245,18 +240,7 @@ namespace TestGame
             //m_pathIsland.DebugRender(m_debugRenderer);
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
-		}
-
-
-        public void AddBullet(Vector2 startPos, Vector2 velocity)
-        {
-            BulletEntity bullet = m_bullets.CreateItem();
-            bullet.SetPosition(startPos);
-            bullet.SetVelocity(velocity);
-
-            bullet.AddToBin(m_bin);
         }
-
 
         private void BuildCollisionBoundaries()
         {
@@ -286,5 +270,5 @@ namespace TestGame
                 }
             }
         }
-	}
+    }
 }

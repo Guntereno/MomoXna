@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Momo.Core.Spatial
 {
-	public struct BinRegionSelection
-	{
-		internal BinIndex [] m_binIndices;
+    public struct BinRegionSelection
+    {
+        internal BinIndex [] m_binIndices;
 
 
         public BinRegionSelection(int capacity)
@@ -22,5 +22,5 @@ namespace Momo.Core.Spatial
             m_binIndices = new BinIndex[binSelection.m_binIndices.Length];
             binSelection.m_binIndices.CopyTo(m_binIndices, 0);
         }
-	}
+    }
 }

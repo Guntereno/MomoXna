@@ -23,23 +23,23 @@ using TestGame.Objects;
 
 namespace TestGame
 {
-	/// <summary>
-	/// This is the main type for your game
-	/// </summary>
-	public class TestGame : Microsoft.Xna.Framework.Game
-	{
-		public static TestGame Instance() { return ms_instance; }
-		private static TestGame ms_instance = null;
+    /// <summary>
+    /// This is the main type for your game
+    /// </summary>
+    public class TestGame : Microsoft.Xna.Framework.Game
+    {
+        public static TestGame Instance() { return ms_instance; }
+        private static TestGame ms_instance = null;
 
-		public const int kBackBufferWidth = 1200;
-		public const int kBackBufferHeight = 900;
+        public const int kBackBufferWidth = 1200;
+        public const int kBackBufferHeight = 900;
 
 
-		GraphicsDeviceManager graphics;
-		SpriteBatch spriteBatch;
+        GraphicsDeviceManager graphics;
+        SpriteBatch spriteBatch;
 
-		Input.InputWrapper m_inputWrapper = new Input.InputWrapper();
-		WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
+        Input.InputWrapper m_inputWrapper = new Input.InputWrapper();
+        WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
 
 
         public Input.InputWrapper InputWrapper
@@ -49,50 +49,50 @@ namespace TestGame
 
 
 
-		public TestGame()
-		{
-			System.Diagnostics.Debug.Assert(ms_instance == null);
-			ms_instance = this;
+        public TestGame()
+        {
+            System.Diagnostics.Debug.Assert(ms_instance == null);
+            ms_instance = this;
 
-			graphics = new GraphicsDeviceManager(this);
-			graphics.PreferredBackBufferWidth = kBackBufferWidth;
-			graphics.PreferredBackBufferHeight = kBackBufferHeight;
+            graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = kBackBufferWidth;
+            graphics.PreferredBackBufferHeight = kBackBufferHeight;
 
-			Content.RootDirectory = "Content";
-		}
-
-
-		protected override void Initialize()
-		{
-			m_worldManager.RegisterWorld("TestWorld", TestWorld.WorldCreator);
-            m_worldManager.RegisterWorld("TestWorldPathFinding", TestWorldPathFinding.WorldCreator);
-
-			base.Initialize();
-		}
+            Content.RootDirectory = "Content";
+        }
 
 
-		protected override void LoadContent()
-		{
-			// Create a new SpriteBatch, which can be used to draw textures.
-			spriteBatch = new SpriteBatch(GraphicsDevice);
+        protected override void Initialize()
+        {
+            m_worldManager.RegisterWorld("TestWorld", TestWorld.WorldCreator);
+//            m_worldManager.RegisterWorld("TestWorldPathFinding", TestWorldPathFinding.WorldCreator);
+
+            base.Initialize();
+        }
+
+
+        protected override void LoadContent()
+        {
+            // Create a new SpriteBatch, which can be used to draw textures.
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
             m_worldManager.LoadWorld("TestWorld");
             //m_worldManager.LoadWorld("TestWorldPathFinding");
-		}
+        }
 
 
-		protected override void UnloadContent()
-		{
+        protected override void UnloadContent()
+        {
             m_worldManager.FlushWorld("TestWorld");
             //m_worldManager.FlushWorld("TestWorldPathFinding");
-		}
+        }
 
 
-		protected override void Update(GameTime gameTime)
-		{
-			// Allows the game to exit
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-				this.Exit();
+        protected override void Update(GameTime gameTime)
+        {
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                this.Exit();
 
 
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
@@ -106,19 +106,19 @@ namespace TestGame
 
             m_worldManager.Update(frameTime.Dt);
 
-			base.Update(gameTime);
-		}
+            base.Update(gameTime);
+        }
 
 
 
 
-		protected override void Draw(GameTime gameTime)
-		{
-			GraphicsDevice.Clear(Color.SteelBlue);
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.SteelBlue);
 
-			m_worldManager.Render();
+            m_worldManager.Render();
 
-			base.Draw(gameTime);
-		}
-	}
+            base.Draw(gameTime);
+        }
+    }
 }

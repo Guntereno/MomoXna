@@ -7,41 +7,41 @@ using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
 namespace TmxProcessorLib.Content
 {
-	public class Layer
-	{
-		public string Name { get; private set; }
-		public Microsoft.Xna.Framework.Point Dimensions { get; private set; }
+    public class Layer
+    {
+        public string Name { get; private set; }
+        public Microsoft.Xna.Framework.Point Dimensions { get; private set; }
 
-		public virtual void ImportXmlNode(System.Xml.XmlNode layerNode, ContentImporterContext context)
-		{
-			Name = layerNode.Attributes["name"].Value;
+        public virtual void ImportXmlNode(System.Xml.XmlNode layerNode, ContentImporterContext context)
+        {
+            Name = layerNode.Attributes["name"].Value;
 
-			Microsoft.Xna.Framework.Point dimensions = new Microsoft.Xna.Framework.Point();
-			if (layerNode.Attributes["width"] == null)
-				throw new PipelineException("No 'width' attribute found in layer {0} with xml {1}", Name, layerNode.InnerXml);
-			dimensions.X = int.Parse(layerNode.Attributes["width"].Value);
+            Microsoft.Xna.Framework.Point dimensions = new Microsoft.Xna.Framework.Point();
+            if (layerNode.Attributes["width"] == null)
+                throw new PipelineException("No 'width' attribute found in layer {0} with xml {1}", Name, layerNode.InnerXml);
+            dimensions.X = int.Parse(layerNode.Attributes["width"].Value);
 
-			if (layerNode.Attributes["height"] == null)
-				throw new PipelineException("No 'firstgid' attribute found in tileset {0} with xml {1}", Name, Name, layerNode.InnerXml);
-			dimensions.Y = int.Parse(layerNode.Attributes["height"].Value);
+            if (layerNode.Attributes["height"] == null)
+                throw new PipelineException("No 'firstgid' attribute found in tileset {0} with xml {1}", Name, Name, layerNode.InnerXml);
+            dimensions.Y = int.Parse(layerNode.Attributes["height"].Value);
 
-			if ((dimensions.X + dimensions.Y) == 0)
-			{
-				throw new PipelineException("Layer {0} has no dimensions", Name);
-			}
+            if ((dimensions.X + dimensions.Y) == 0)
+            {
+                throw new PipelineException("Layer {0} has no dimensions", Name);
+            }
 
-			Dimensions = dimensions;
-		}
+            Dimensions = dimensions;
+        }
 
-		public virtual void Process(TmxData parent, ContentProcessorContext context)
-		{
+        public virtual void Process(TmxData parent, ContentProcessorContext context)
+        {
 
-		}
+        }
 
-		public virtual void Write(ContentWriter output)
-		{
-			output.Write(Name);
-			output.WriteObject<Microsoft.Xna.Framework.Point>(Dimensions);
-		}
-	}
+        public virtual void Write(ContentWriter output)
+        {
+            output.Write(Name);
+            output.WriteObject<Microsoft.Xna.Framework.Point>(Dimensions);
+        }
+    }
 }

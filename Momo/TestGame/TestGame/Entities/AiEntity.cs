@@ -8,7 +8,7 @@ using TestGame.Objects;
 
 namespace TestGame.Entities
 {
-	public class AiEntity : DynamicGameEntity
+    public class AiEntity : DynamicGameEntity
     {
         // --------------------------------------------------------------------
         // -- Private Members
@@ -20,13 +20,13 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public AiEntity()
+        public AiEntity(TestWorld world): base(world)
         {
             FacingAngle = (float)ms_random.NextDouble() * ((float)Math.PI * 2.0f);
 
 
-			SetContactRadiusInfo(new RadiusInfo(9.0f + ((float)ms_random.NextDouble() * 6.0f)));
-			DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            SetContactRadiusInfo(new RadiusInfo(9.0f + ((float)ms_random.NextDouble() * 6.0f)));
+            DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
 
 
@@ -38,7 +38,7 @@ namespace TestGame.Entities
             m_turnVelocity = MathHelper.Clamp(m_turnVelocity, -1.0f, 1.0f);
             FacingAngle += m_turnVelocity * frameTime.Dt;
 
-			Vector2 direction = new Vector2((float)Math.Sin(FacingAngle), (float)Math.Cos(FacingAngle));
+            Vector2 direction = new Vector2((float)Math.Sin(FacingAngle), (float)Math.Cos(FacingAngle));
             Vector2 newPosition = GetPosition() + direction;
 
 
@@ -65,7 +65,7 @@ namespace TestGame.Entities
             Bin bin = GetBin();
 
             GetBinRegion(ref prevBinRegion);
-			bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
+            bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
 
             bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kAiEntity);
 

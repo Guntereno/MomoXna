@@ -11,23 +11,23 @@ using TImport = TmxProcessorLib.Content.TmxData;
 
 namespace TmxProcessorLib
 {
-	/// <summary>
-	/// Importer simply loads the xml from a tmx file into a TmxXml class
-	/// </summary>
-	[ContentImporter(".tmx", DisplayName = "Tiled Map File", DefaultProcessor = "TmxProcessor")]
-	public class TmxImporter : ContentImporter<TImport>
-	{
-		public override TImport Import(string filename, ContentImporterContext context)
-		{
-			context.Logger.PushFile(filename);
+    /// <summary>
+    /// Importer simply loads the xml from a tmx file into a TmxXml class
+    /// </summary>
+    [ContentImporter(".tmx", DisplayName = "Tiled Map File", DefaultProcessor = "TmxProcessor")]
+    public class TmxImporter : ContentImporter<TImport>
+    {
+        public override TImport Import(string filename, ContentImporterContext context)
+        {
+            context.Logger.PushFile(filename);
 
-			System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
-			xmlDoc.Load(filename);
+            System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
+            xmlDoc.Load(filename);
 
-			TImport data = new TImport(filename);
-			data.ImportXmlDoc(xmlDoc, context);
+            TImport data = new TImport(filename);
+            data.ImportXmlDoc(xmlDoc, context);
 
-			return data;
-		}
-	}
+            return data;
+        }
+    }
 }

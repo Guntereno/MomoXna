@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Momo.Core.Spatial
 {
-	public struct BinLocation
-	{
+    public struct BinLocation
+    {
         public static BinLocation kInvalidBinLocation = new BinLocation(BinIndex.kInvalidIndex, BinIndex.kInvalidIndex);
 
 
-		internal short m_x;
-		internal short m_y;
+        internal short m_x;
+        internal short m_y;
 
         public short X
         {
@@ -37,5 +37,5 @@ namespace Momo.Core.Spatial
             m_y = BinIndex.kInvalidIndex;
         }
 
-	}
+    }
 }
