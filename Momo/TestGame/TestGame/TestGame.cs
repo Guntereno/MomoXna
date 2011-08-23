@@ -64,7 +64,7 @@ namespace TestGame
 
         protected override void Initialize()
         {
-            m_worldManager.RegisterWorld("TestWorld", TestWorld.WorldCreator);
+            m_worldManager.RegisterWorld("TestWorld", GameWorld.WorldCreator);
 //            m_worldManager.RegisterWorld("TestWorldPathFinding", TestWorldPathFinding.WorldCreator);
 
             base.Initialize();

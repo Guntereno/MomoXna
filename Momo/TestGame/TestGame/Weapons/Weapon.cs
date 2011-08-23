@@ -12,12 +12,12 @@ namespace TestGame.Weapons
     {
         public abstract void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing);
 
-        public Weapon(TestWorld world)
+        public Weapon(GameWorld world)
         {
             m_world = world;
         }
 
-        public TestWorld GetWorld() { return m_world; }
+        public GameWorld GetWorld() { return m_world; }
 
 
         public bool IsDestroyed()
@@ -37,6 +37,6 @@ namespace TestGame.Weapons
 
         protected bool m_isDestroyed = true;
 
-		private TestWorld m_world = null;
+		private GameWorld m_world = null;
     }
 }

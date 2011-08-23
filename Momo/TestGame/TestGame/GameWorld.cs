@@ -25,11 +25,11 @@ using WorldManager;
 
 namespace TestGame
 {
-    public class TestWorld : World
+    public class GameWorld : World
     {
         // Temporary...
-        public static TestWorld Instance() { return ms_instance; }
-        private static TestWorld ms_instance = null;
+        public static GameWorld Instance() { return ms_instance; }
+        private static GameWorld ms_instance = null;
 
 
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
@@ -59,7 +59,7 @@ namespace TestGame
         // -- Public Methods
         // --------------------------------------------------------------------
 
-        public TestWorld()
+        public GameWorld()
         {
             m_weaponManager = new Systems.WeaponManager(this);
             m_projectileManager = new Systems.ProjectileManager(this, m_bin);
@@ -67,7 +67,7 @@ namespace TestGame
 
         public static World WorldCreator()
         {
-            return new TestWorld();
+            return new GameWorld();
         }
 
         public Systems.WeaponManager GetWeaponManager() { return m_weaponManager; }

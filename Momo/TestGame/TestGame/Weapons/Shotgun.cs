@@ -9,7 +9,7 @@ namespace TestGame.Weapons
 {
     public class Shotgun : Weapon
     {
-        public Shotgun(TestWorld world) : base(world)
+        public Shotgun(GameWorld world) : base(world)
         {
         }
 

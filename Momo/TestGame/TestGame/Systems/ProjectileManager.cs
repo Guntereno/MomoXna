@@ -15,7 +15,7 @@ namespace TestGame.Systems
     {
         const int kMaxBullets = 2000;
 
-        public ProjectileManager(TestWorld world, Bin bin)
+        public ProjectileManager(GameWorld world, Bin bin)
         {
             m_world = world;
             m_bin = bin;
@@ -63,7 +63,7 @@ namespace TestGame.Systems
 
         public Pool<BulletEntity> GetBullets() { return m_bullets; }
 
-        private TestWorld m_world = null;
+        private GameWorld m_world = null;
         private Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(2000);
 
         Bin m_bin = null;

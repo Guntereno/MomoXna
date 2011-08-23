@@ -17,9 +17,9 @@ namespace TestGame.Entities
         private float m_facingAngle = 0.0f;
         private Color m_debugColor = Color.White;
         private bool m_destroyed = false;
-        private TestWorld m_world;
+        private GameWorld m_world;
 
-        public DynamicGameEntity(TestWorld world)
+        public DynamicGameEntity(GameWorld world)
         {
             m_world = world;
         }
@@ -36,7 +36,7 @@ namespace TestGame.Entities
             set { m_debugColor = value; }
         }
 
-        public TestWorld GetWorld()
+        public GameWorld GetWorld()
         {
             return m_world;
         }

@@ -13,7 +13,7 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public PlayerEntity(TestWorld world) : base(world)
+        public PlayerEntity(GameWorld world) : base(world)
         {
             FacingAngle = 0.0f;
             SetContactRadiusInfo(new RadiusInfo(12.0f));

@@ -19,7 +19,7 @@ namespace TestGame.Systems
             Count
         }
 
-        public WeaponManager(TestWorld world)
+        public WeaponManager(GameWorld world)
         {
             m_world = world;
         }
@@ -62,7 +62,7 @@ namespace TestGame.Systems
             }
         }
 
-        private TestWorld m_world;
+        private GameWorld m_world;
 
         private Pool<Shotgun> m_shotguns = new Pool<Shotgun>(kWeaponMax[(int)WeaponType.Shotgun]);
         private Pool<Minigun> m_miniguns = new Pool<Minigun>(kWeaponMax[(int)WeaponType.Minigun]);

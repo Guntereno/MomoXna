@@ -9,7 +9,7 @@ namespace TestGame.Weapons
 {
     class Minigun: Weapon
     {
-        public Minigun(TestWorld world): base(world)
+        public Minigun(GameWorld world): base(world)
         {
         }
 

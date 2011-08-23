@@ -20,7 +20,7 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public AiEntity(TestWorld world): base(world)
+        public AiEntity(GameWorld world): base(world)
         {
             FacingAngle = (float)ms_random.NextDouble() * ((float)Math.PI * 2.0f);
 
