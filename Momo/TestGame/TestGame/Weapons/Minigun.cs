@@ -15,17 +15,21 @@ namespace TestGame.Weapons
 
         public struct Params
         {
-            public Params(float reloadTime, int clipSize)
+            public Params(float reloadTime, int clipSize, float velocity, float spread)
             {
-                m_reloadTime = reloadTime; // seconds
+                m_reloadTime = reloadTime;
                 m_clipSize = clipSize;
+                m_velocity = velocity;
+                m_spread = spread;
             }
 
             public float m_reloadTime; // seconds
             public int m_clipSize;
+            public float m_velocity;
+            public float m_spread;
         }
 
-        public static readonly Params kDefaultParams = new Params(2.0f, 200);
+        public static readonly Params kDefaultParams = new Params(4.0f, 300, 750.0f, 0.08f);
 
         enum State
         {
@@ -53,10 +57,9 @@ namespace TestGame.Weapons
                             {
                                 Random random = GetWorld().GetRandom();
 
-                                const float kVariance = 0.1f;
-                                float angle = facing + (((float)random.NextDouble() * kVariance) - (0.5f * kVariance));
+                                float angle = facing + (((float)random.NextDouble() * m_params.m_spread) - (0.5f * m_params.m_spread));
                                 Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
-                                velocity *= 750.0f;
+                                velocity *= m_params.m_velocity;
 
                                 GetWorld().GetProjectileManager().AddBullet(pos, velocity);
 

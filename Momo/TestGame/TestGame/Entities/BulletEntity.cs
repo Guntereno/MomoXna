@@ -40,7 +40,7 @@ namespace TestGame.Entities
 
         public override void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - GetVelocity() * 0.02f, new Color(0.0f, 1.0f, 1.0f, 0.6f), 3.5f);
+            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - GetVelocity() * 0.02f, new Color(1.0f, 1.0f, 0.0f, 0.4f), 3.5f);
         }
 
 

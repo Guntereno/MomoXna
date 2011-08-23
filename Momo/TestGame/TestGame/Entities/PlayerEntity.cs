@@ -37,7 +37,6 @@ namespace TestGame.Entities
 
             SetPosition(newPosition);
 
-
             // If the player has a facing input, use it...
             if (m_facingInputVector != Vector2.Zero)
             {
@@ -59,7 +58,7 @@ namespace TestGame.Entities
             }
             else
             {
-                m_weapon = GetWorld().GetWeaponManager().Create(Systems.WeaponManager.WeaponType.Minigun);
+                m_weapon = GetWorld().GetWeaponManager().Create(Systems.WeaponManager.WeaponType.Shotgun);
             }
         }
 
