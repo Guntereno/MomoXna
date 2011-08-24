@@ -13,7 +13,7 @@ namespace TestGame.Systems
 {
     public class ProjectileManager
     {
-        const int kMaxBullets = 2000;
+        const int kMaxBullets = 1000;
 
         public ProjectileManager(GameWorld world, Bin bin)
         {
@@ -23,7 +23,7 @@ namespace TestGame.Systems
 
         public void Load()
         {
-            for (int i = 0; i < 1000; ++i)
+            for (int i = 0; i < kMaxBullets; ++i)
             {
                 m_bullets.AddItem(new BulletEntity(), false);
             }
@@ -64,7 +64,7 @@ namespace TestGame.Systems
         public Pool<BulletEntity> GetBullets() { return m_bullets; }
 
         private GameWorld m_world = null;
-        private Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(2000);
+        private Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(kMaxBullets);
 
         Bin m_bin = null;
 
