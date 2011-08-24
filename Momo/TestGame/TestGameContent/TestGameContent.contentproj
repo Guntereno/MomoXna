@@ -65,6 +65,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\FontProcessorLib\FontProcessorLib.csproj">
+      <Project>{6867B53F-C496-4083-9117-3070D9A6DD9C}</Project>
+      <Name>FontProcessorLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\TmxProcessorLib\TmxProcessorLib.csproj">
       <Project>{34F93E51-C959-4F9C-A8C3-0584ED9C27D5}</Project>
       <Name>TmxProcessorLib</Name>
@@ -94,6 +98,35 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="maps\tilesets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="fonts\Arial_32_b_o4.fnt">
+      <Name>Arial_32_b_o4</Name>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="fonts\Frespech_20.fnt">
+      <Name>Frespech_20</Name>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="effects\text.fx">
+      <Name>text</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="fonts\Arial_32_b_o4_00.png">
+      <Name>Arial_32_b_o4_00</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Frespech_20_00.png">
+      <Name>Frespech_20_00</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -33,7 +33,7 @@ namespace TestGame.Weapons
             public int m_shotCount;
         }
 
-        public static readonly Params kDefaultParams = new Params(1.5f, 10, 500.0f, 1.5f, (float)(0.1f * Math.PI), 20);
+        public static readonly Params kDefaultParams = new Params(1.5f, 10, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 20);
 
         enum State
         {

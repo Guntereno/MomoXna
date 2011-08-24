@@ -10,23 +10,23 @@ namespace Momo.Core.Pathfinding
 {
     public struct PathRegionConnection
     {
-        internal PathRegion m_region1;
-        internal PathRegion m_region2;
+        internal PathRegion m_fromRegion;
+        internal PathRegion m_toRegion;
 
-        internal PathNode[] m_regionNodes1;
-        internal PathNode[] m_regionNodes2;
+        internal PathNode[] m_fromNodes;
+        internal PathNode[] m_toNodes;
 
         internal float m_distanceEstimate;
 
 
 
-        public PathRegionConnection(PathRegion region1, PathNode[] regionNodes1, PathRegion region2, PathNode[] regionNodes2, float distanceEstimate)
+        public PathRegionConnection(PathRegion fromRegion, PathNode[] fromNodes, PathRegion toRegion, PathNode[] toNodes, float distanceEstimate)
         {
-            m_region1 = region1;
-            m_region2 = region2;
+            m_fromRegion = fromRegion;
+            m_toRegion = toRegion;
 
-            m_regionNodes1 = regionNodes1;
-            m_regionNodes2 = regionNodes2;
+            m_fromNodes = fromNodes;
+            m_toNodes = toNodes;
 
             m_distanceEstimate = distanceEstimate;
         }
@@ -34,12 +34,15 @@ namespace Momo.Core.Pathfinding
 
         public void DebugRender(DebugRenderer debugRenderer)
         {
-            for (int i = 0; i < m_regionNodes1.Length; ++i)
+            if (m_fromNodes != null && m_toNodes != null)
             {
-                PathNode node1 = m_regionNodes1[i];
-                PathNode node2 = m_regionNodes2[i];
+                for (int i = 0; i < m_fromNodes.Length; ++i)
+                {
+                    PathNode node1 = m_fromNodes[i];
+                    PathNode node2 = m_toNodes[i];
 
-                debugRenderer.DrawFilledLine(node1.m_position, node2.m_position, new Color(0.0f, 1.0f, 0.0f, 0.5f), 3.0f);
+                    debugRenderer.DrawFilledLine(node1.m_position, node2.m_position, new Color(0.0f, 1.0f, 0.0f, 0.15f), 8.0f, 4);
+                }
             }
         }
     }

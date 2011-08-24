@@ -25,19 +25,19 @@ namespace Momo.Core.Pathfinding
             // Calculate the region route seperately in its own function.
             //
 
-            for (int i = 0; i < m_fromRegion.m_connections.Length; ++i)
-            {
-                PathRegionConnection connection = m_fromRegion.m_connections[i];
+            //for (int i = 0; i < m_fromRegion.m_connections.Length; ++i)
+            //{
+            //    PathRegionConnection connection = m_fromRegion.m_connections[i];
 
-                PathRegion connectedRegion = connection.m_region1;
+            //    PathRegion connectedRegion = connection.m_region1;
 
-                if (connectedRegion == m_fromRegion)
-                    connectedRegion = connection.m_region2;
-
-
+            //    if (connectedRegion == m_fromRegion)
+            //        connectedRegion = connection.m_region2;
 
 
-            }
+
+
+            //}
         }
 
 

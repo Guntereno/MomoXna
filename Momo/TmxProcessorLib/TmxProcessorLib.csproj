@@ -64,9 +64,9 @@
     <Compile Include="TmxProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MapData\MapData Windows.csproj">
+    <ProjectReference Include="..\MapData\MapData.csproj">
       <Project>{2A9FB9C8-0CD3-42F3-9343-6DABE152E5C2}</Project>
-      <Name>MapData Windows</Name>
+      <Name>MapData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

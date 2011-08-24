@@ -21,17 +21,14 @@ using TestGame.Objects;
 
 using WorldManager;
 
+using Fonts;
+
 
 
 namespace TestGame
 {
     public class GameWorld : World
     {
-        // Temporary...
-        public static GameWorld Instance() { return ms_instance; }
-        private static GameWorld ms_instance = null;
-
-
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
         CameraController m_cameraController = new CameraController();
 
@@ -77,7 +74,6 @@ namespace TestGame
 
         public override void Load()
         {
-            ms_instance = this;
             m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
 
             m_camera.ViewWidth = TestGame.kBackBufferWidth;
@@ -87,6 +83,9 @@ namespace TestGame
             m_cameraController.Camera = m_camera;
 
             m_map = TestGame.Instance().Content.Load<Map.Map>("maps/1_living_quarters/1_living_quarters");
+
+            //Font font = TestGame.Instance().Content.Load<Font>("fonts/Arial_32_b_o4");
+
 
             // ----------------------------------------------------------------
             // -- Init the pools

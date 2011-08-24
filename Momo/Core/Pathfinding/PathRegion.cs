@@ -10,13 +10,25 @@ namespace Momo.Core.Pathfinding
 {
     public class PathRegion
     {
-        internal PathRegionConnection[] m_connections = null;
-
         internal PathNode[] m_nodes = null;
+        internal PathConnection[] m_connections = null;
+        internal PathRegionConnection[] m_regionConnections = null;
 
         internal Vector2 m_minCorner = Vector2.Zero;
         internal Vector2 m_maxCorner = Vector2.Zero;
 
+
+        public PathNode[] Nodes
+        {
+            get { return m_nodes; }
+            set { m_nodes = value; }
+        }
+
+        public PathRegionConnection[] RegionConnections
+        {
+            get { return m_regionConnections; }
+            set { m_regionConnections = value; }
+        }
 
 
         public PathRegion(Vector2 minCorner, Vector2 maxCorner)
@@ -38,11 +50,11 @@ namespace Momo.Core.Pathfinding
                 }
             }
 
-            if (m_connections != null)
+            if (m_regionConnections != null)
             {
-                for (int i = 0; i < m_connections.Length; ++i)
+                for (int i = 0; i < m_regionConnections.Length; ++i)
                 {
-                    m_connections[i].DebugRender(debugRenderer);
+                    m_regionConnections[i].DebugRender(debugRenderer);
                 }
             }
         }
