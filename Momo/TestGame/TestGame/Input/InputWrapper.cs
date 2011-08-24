@@ -7,6 +7,9 @@ namespace TestGame.Input
 {
     public class InputWrapper
     {
+        private static Buttons[] ms_buttons = (Buttons[])Enum.GetValues(typeof(Buttons));
+
+
         public InputWrapper()
         {
             m_leftStick = Vector2.Zero;
@@ -14,7 +17,8 @@ namespace TestGame.Input
 
             m_buttonDict = new Dictionary<Buttons, ButtonInfo>();
 
-            foreach (Buttons button in Enum.GetValues(typeof(Buttons)))
+
+            foreach (Buttons button in ms_buttons)
             {
                 ButtonInfo buttonInfo = new ButtonInfo();
                 buttonInfo.m_state = false;
@@ -78,7 +82,7 @@ namespace TestGame.Input
             m_rightTrigger = currentGamePadState.Triggers.Right;
 
             // Update the buttons
-            foreach(Buttons button in Enum.GetValues(typeof(Buttons)))
+            foreach (Buttons button in ms_buttons)
             {
                 ButtonInfo buttonInfo = m_buttonDict[button];
                 buttonInfo.m_previousState = buttonInfo.m_state;
@@ -98,7 +102,7 @@ namespace TestGame.Input
             UpdateStickKeys(ref m_leftStick, ref currentKeyboardState, Keys.W, Keys.A, Keys.S, Keys.D);
             UpdateStickKeys(ref m_rightStick, ref currentKeyboardState, Keys.NumPad8, Keys.NumPad4, Keys.NumPad2, Keys.NumPad6);
 
-            foreach (Buttons button in Enum.GetValues(typeof(Buttons)))
+            foreach (Buttons button in ms_buttons)
             {
                 ButtonInfo buttonInfo = m_buttonDict[button];
                 if ( (buttonInfo.m_mappedKey != null) && (currentKeyboardState.IsKeyDown(buttonInfo.m_mappedKey.Value)) )

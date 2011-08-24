@@ -26,6 +26,9 @@ namespace Momo.Core.Graphics
 
         SamplerState m_samplerState;
 
+        BoundingFrustum m_viewFrustum = new BoundingFrustum(Matrix.Identity);
+
+
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
@@ -86,7 +89,7 @@ namespace Momo.Core.Graphics
             m_effect.Projection = projMatrix;
 
             // Create a view frustrum for culling
-            BoundingFrustum viewFrustum = new BoundingFrustum(modelMatrix * viewMatrix * projMatrix);
+            m_viewFrustum.Matrix = modelMatrix * viewMatrix * projMatrix;
 
             graphicsDevice.BlendState = BlendState.AlphaBlend;
             graphicsDevice.DepthStencilState = DepthStencilState.None;
@@ -98,7 +101,7 @@ namespace Momo.Core.Graphics
                 for (int patchIdx = 0; patchIdx < m_layers[layerIdx].Count; ++patchIdx)
                 {
                     Patch patch = m_layers[layerIdx][patchIdx];
-                    if(viewFrustum.Intersects(patch.GetBoundingBox()))
+                    if (m_viewFrustum.Intersects(patch.GetBoundingBox()))
                     {
                         patch.Render(m_effect, graphicsDevice);
                     }

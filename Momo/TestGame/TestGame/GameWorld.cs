@@ -238,6 +238,7 @@ namespace TestGame
             //}
 
             //m_pathIsland.DebugRender(m_debugRenderer);
+            //m_bin.DebugRender(m_debugRenderer, 10, 2);
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
         }
