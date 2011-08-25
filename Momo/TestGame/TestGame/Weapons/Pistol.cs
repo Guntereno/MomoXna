@@ -29,7 +29,7 @@ namespace TestGame.Weapons
             public float m_fireRate; // shells/sec
         }
 
-        public static readonly Params kDefaultParams = new Params(0.5f, 16, 600.0f, 2.0f);
+        public static readonly Params kDefaultParams = new Params(0.5f, 16, 1100.0f, 2.0f);
 
         enum State
         {

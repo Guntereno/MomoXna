@@ -29,7 +29,7 @@ namespace TestGame.Weapons
             public float m_spread;
         }
 
-        public static readonly Params kDefaultParams = new Params(4.0f, 300, 750.0f, 0.08f);
+        public static readonly Params kDefaultParams = new Params(4.0f, 1300, 750.0f, 0.08f);
 
         enum State
         {
