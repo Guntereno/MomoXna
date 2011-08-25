@@ -42,7 +42,9 @@ namespace TestGame
         Map.Map m_map = null;
         MapRenderer m_mapRenderer = new MapRenderer();
 
-        Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(4);
+        static readonly int kMaxPlayers = 4;
+        Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers);
+        TextObject[] m_playerAmmo = new TextObject[kMaxPlayers];
         Pool<AiEntity> m_ais = new Pool<AiEntity>(2000);
 
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
@@ -57,8 +59,6 @@ namespace TestGame
 
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
         Font m_debugFont = null;
-        TextObject m_text1 = null;
-        TextObject m_text2 = null;
         List<TextObject> m_textList = new List<TextObject>(10);
 
 
@@ -87,16 +87,6 @@ namespace TestGame
             m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 1000, 1);
             m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Calibri_24_b_o4");
 
-            m_text1 = new TextObject("Hello1", m_debugFont, 500, 10, 1);
-            m_text1.Position = new Vector2(100.0f, 100.0f);
-
-            m_text2 = new TextObject("Hello2", m_debugFont, 500, 10, 1);
-            m_text2.Position = new Vector2(100.0f, 150.0f);
-
-            m_textList.Add(m_text1);
-            m_textList.Add(m_text2);
-
-
             m_camera.ViewWidth = TestGame.kBackBufferWidth;
             m_camera.ViewHeight = TestGame.kBackBufferHeight;
             m_camera.LocalTranslation = new Vector3(300.0f, 750.0f, 10.0f);
@@ -109,12 +99,22 @@ namespace TestGame
             // ----------------------------------------------------------------
             // -- Init the pools
             // ----------------------------------------------------------------
-            for (int i = 0; i < 1; ++i)
+            const int kNumPlayers = 1;
+            for (int i = 0; i < kNumPlayers; ++i)
             {
                 PlayerEntity player = new PlayerEntity(this);
                 player.AddToBin(m_bin);
+
+                // Create the osd items
+                m_playerAmmo[i] = new TextObject("", m_debugFont, 500, 32, 2);
+                m_textList.Add(m_playerAmmo[i]);
+
+                player.SetAmmoOsd(m_playerAmmo[i]);
+
                 m_players.AddItem(player, true);
             }
+
+            m_playerAmmo[0].Position = new Vector2(100.0f, 100.0f);
 
             for (int i = 0; i < 200; ++i)
             {

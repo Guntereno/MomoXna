@@ -5,6 +5,7 @@ using Momo.Core;
 using Momo.Core.Collision2D;
 using Momo.Core.Spatial;
 using TestGame.Objects;
+using Fonts;
 
 namespace TestGame.Entities
 {
@@ -38,6 +39,11 @@ namespace TestGame.Entities
                 {
                     m_currentWeapon = kNumWeaponSlots-1;
                 }
+            }
+
+            if (input.IsButtonPressed(Buttons.X))
+            {
+                m_arsenal[m_currentWeapon].Reload();
             }
 
             m_movementInputVector = input.GetLeftStick();
@@ -84,6 +90,17 @@ namespace TestGame.Entities
             {
                 Weapons.Weapon curWeapon = m_arsenal[m_currentWeapon];
                 curWeapon.Update(ref frameTime, m_triggerState, newPosition, FacingAngle);
+                if (m_ammoOsd != null)
+                {
+                    m_ammoOsd.SetText(curWeapon.GetAmmoInClip().ToString() + "  " + curWeapon.GetCurrentStateName());
+                }
+            }
+            else
+            {
+                if (m_ammoOsd != null)
+                {
+                    m_ammoOsd.SetText("");
+                }
             }
         }
 
@@ -127,6 +144,11 @@ namespace TestGame.Entities
             SetForce(force);
         }
 
+        public void SetAmmoOsd(TextObject ammoOsd)
+        {
+            m_ammoOsd = ammoOsd;
+        }
+
         Vector2 m_movementInputVector = Vector2.Zero;
         Vector2 m_facingInputVector = Vector2.Zero;
         float m_triggerState = 0.0f;
@@ -137,5 +159,7 @@ namespace TestGame.Entities
         int m_currentWeapon = -1;
 
         System.Random m_random = new System.Random();
+
+        TextObject m_ammoOsd = null;
     }
 }

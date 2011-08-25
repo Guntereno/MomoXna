@@ -35,7 +35,7 @@ namespace TestGame.Systems
             if (Camera == null)
                 return;
 
-            if (input.IsButtonDown(Buttons.LeftShoulder))
+            if (input.IsButtonDown(Buttons.LeftStick))
             {
                 m_behaviour = Behaviour.Debug;
             }
@@ -91,7 +91,7 @@ namespace TestGame.Systems
 
             // Calculate the acceleration based on the pad input
             const float kMaxAccel = 5.0f;
-            Vector2 inputVector = input.GetLeftStick();
+            Vector2 inputVector = input.GetRightStick();
             Vector3 camAccel = new Vector3(
                 inputVector.X * kMaxAccel,
                 inputVector.Y * kMaxAccel,
