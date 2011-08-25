@@ -13,23 +13,14 @@ namespace TestGame.Weapons
         {
         }
 
-        public struct Params
+        public class PistolParams : Weapon.Params
         {
-            public Params(float reloadTime, int clipSize, float velocity, float fireRate)
-            {
-                m_reloadTime = reloadTime;
-                m_clipSize = clipSize;
-                m_velocity = velocity;
-                m_fireRate = fireRate;
-            }
-
-            public float m_reloadTime; // seconds
-            public int m_clipSize;
-            public float m_velocity;
-            public float m_fireRate; // shells/sec
+            public PistolParams(float reloadTime, int clipSize, float velocity, float fireRate):
+                base(reloadTime, clipSize, velocity, fireRate)
+            {}
         }
 
-        public static readonly Params kDefaultParams = new Params(0.5f, 16, 1100.0f, 2.0f);
+        public static readonly PistolParams kDefaultParams = new PistolParams(0.5f, 16, 1100.0f, 2.0f);
 
         enum State
         {
@@ -40,7 +31,8 @@ namespace TestGame.Weapons
 
         public override void Init()
         {
-            m_params = kDefaultParams;
+            m_pistolParams = kDefaultParams;
+            m_params = m_pistolParams;
             m_state = State.Active;
             m_ammoInClip = m_params.m_clipSize;
         }
@@ -100,7 +92,7 @@ namespace TestGame.Weapons
         }
 
         State m_state = State.Active;
-        Params m_params;
+        PistolParams m_pistolParams = null;
 
         int m_ammoInClip = 0;
         float m_timer;

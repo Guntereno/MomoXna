@@ -13,23 +13,18 @@ namespace TestGame.Weapons
         {
         }
 
-        public struct Params
+        public class MinigunParams: Weapon.Params
         {
-            public Params(float reloadTime, int clipSize, float velocity, float spread)
+            public MinigunParams(float reloadTime, int clipSize, float velocity, float fireRate, float spread):
+                base(reloadTime, clipSize, velocity, fireRate)
             {
-                m_reloadTime = reloadTime;
-                m_clipSize = clipSize;
-                m_velocity = velocity;
                 m_spread = spread;
             }
 
-            public float m_reloadTime; // seconds
-            public int m_clipSize;
-            public float m_velocity;
             public float m_spread;
         }
 
-        public static readonly Params kDefaultParams = new Params(4.0f, 1300, 750.0f, 0.08f);
+        public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 1300, 750.0f, 45.0f, 0.08f);
 
         enum State
         {
@@ -39,7 +34,8 @@ namespace TestGame.Weapons
 
         public override void Init()
         {
-            m_params = kDefaultParams;
+            m_minigunParams = kDefaultParams;
+            m_params = m_minigunParams;
             m_state = State.Active;
             m_ammoInClip = m_params.m_clipSize;
         }
@@ -57,7 +53,7 @@ namespace TestGame.Weapons
                             {
                                 Random random = GetWorld().GetRandom();
 
-                                float angle = facing + (((float)random.NextDouble() * m_params.m_spread) - (0.5f * m_params.m_spread));
+                                float angle = facing + (((float)random.NextDouble() * m_minigunParams.m_spread) - (0.5f * m_minigunParams.m_spread));
                                 Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
                                 velocity *= m_params.m_velocity;
 
@@ -88,7 +84,7 @@ namespace TestGame.Weapons
         }
 
         State m_state = State.Active;
-        Params m_params;
+        MinigunParams m_minigunParams;
 
         int m_ammoInClip = 0;
         float m_reloadTimer;

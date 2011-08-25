@@ -10,6 +10,22 @@ namespace TestGame.Weapons
 {
     public abstract class Weapon : IPoolItem
     {
+        public class Params
+        {
+            public Params(float reloadTime, int clipSize, float velocity, float fireRate)
+            {
+                m_reloadTime = reloadTime;
+                m_clipSize = clipSize;
+                m_velocity = velocity;
+                m_fireRate = fireRate;
+            }
+
+            public float m_reloadTime; // seconds
+            public int m_clipSize;
+            public float m_velocity;
+            public float m_fireRate; // shells/sec
+        }
+
         public Weapon(GameWorld world)
         {
             m_world = world;
@@ -36,6 +52,7 @@ namespace TestGame.Weapons
         }
 
         protected bool m_isDestroyed = true;
+        protected Params m_params = null;
 
         private GameWorld m_world = null;
     }

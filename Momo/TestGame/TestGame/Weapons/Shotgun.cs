@@ -13,27 +13,20 @@ namespace TestGame.Weapons
         {
         }
 
-        public struct Params
+        public class ShotgunParams : Weapon.Params
         {
-            public Params(float reloadTime, int clipSize, float velocity, float fireRate, float spread, int shotCount)
+            public ShotgunParams(float reloadTime, int clipSize, float velocity, float fireRate, float spread, int shotCount) :
+                base(reloadTime, clipSize, velocity, fireRate)
             {
-                m_reloadTime = reloadTime;
-                m_clipSize = clipSize;
-                m_velocity = velocity;
-                m_fireRate = fireRate;
                 m_spread = spread;
                 m_shotCount = shotCount;
             }
 
-            public float m_reloadTime; // seconds
-            public int m_clipSize;
-            public float m_velocity;
-            public float m_fireRate; // shells/sec
             public float m_spread; // radians
             public int m_shotCount;
         }
 
-        public static readonly Params kDefaultParams = new Params(1.5f, 10, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 20);
+        public static readonly ShotgunParams kDefaultParams = new ShotgunParams(1.5f, 10, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 20);
 
         enum State
         {
@@ -44,7 +37,8 @@ namespace TestGame.Weapons
 
         public override void Init()
         {
-            m_params = kDefaultParams;
+            m_shotgunParams = kDefaultParams;
+            m_params = m_shotgunParams;
             m_state = State.Active;
             m_ammoInClip = m_params.m_clipSize;
         }
@@ -62,9 +56,9 @@ namespace TestGame.Weapons
                             {
                                 Random random = GetWorld().GetRandom();
 
-                                for (int i = 0; i < m_params.m_shotCount; ++i)
+                                for (int i = 0; i < m_shotgunParams.m_shotCount; ++i)
                                 {
-                                    float angle = facing + (((float)random.NextDouble() * m_params.m_spread) - (0.5f * m_params.m_spread));
+                                    float angle = facing + (((float)random.NextDouble() * m_shotgunParams.m_spread) - (0.5f * m_shotgunParams.m_spread));
                                     Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
                                     velocity *= m_params.m_velocity;
 
@@ -109,9 +103,9 @@ namespace TestGame.Weapons
         }
 
         State m_state = State.Active;
-        Params m_params;
 
+        ShotgunParams m_shotgunParams = null;
         int m_ammoInClip = 0;
-        float m_timer;
+        float m_timer = 0.0f;
     }
 }
