@@ -114,37 +114,37 @@ namespace Fonts
             }
         }
 
-        public void SetTextPart(string text, Font font, int width, int startChar, int endChar, int lineStart)
-        {
-            m_font = font;
-            m_maxWidth = width;
+        //public void SetTextPart(string text, Font font, int width, int startChar, int endChar, int lineStart)
+        //{
+        //    m_font = font;
+        //    m_maxWidth = width;
 
-            int characterIndex = startChar;
-            int stringLen = text.Length;
-            if (endChar < stringLen)
-                stringLen = endChar;
+        //    int characterIndex = startChar;
+        //    int stringLen = text.Length;
+        //    if (endChar < stringLen)
+        //        stringLen = endChar;
 
-            bool foundStartLine = (lineStart == 0);
-            m_lineCnt = 0;
-            while ((characterIndex < stringLen) && (m_lineCnt < m_maxLines))
-            {
-                FillLine(ref m_lines[m_lineCnt], text, stringLen, ref characterIndex, m_maxWidth);
+        //    bool foundStartLine = (lineStart == 0);
+        //    m_lineCnt = 0;
+        //    while ((characterIndex < stringLen) && (m_lineCnt < m_maxLines))
+        //    {
+        //        FillLine(ref m_lines[m_lineCnt], text, stringLen, ref characterIndex, m_maxWidth);
 
 
-                ++m_lineCnt;
-                if (foundStartLine == false && m_lineCnt == lineStart)
-                {
-                    m_lineCnt = 0;
-                    foundStartLine = true;
-                }
-            }
+        //        ++m_lineCnt;
+        //        if (foundStartLine == false && m_lineCnt == lineStart)
+        //        {
+        //            m_lineCnt = 0;
+        //            foundStartLine = true;
+        //        }
+        //    }
 
-            // If the start line was not found make sure we blank out the text.
-            if (foundStartLine == false)
-            {
-                m_lineCnt = 0;
-            }
-        }
+        //     If the start line was not found make sure we blank out the text.
+        //    if (foundStartLine == false)
+        //    {
+        //        m_lineCnt = 0;
+        //    }
+        //}
 
         public void FillLine(ref Line line, string text, int stringLen, ref int characterIndex, int maxWidth)
         {
@@ -154,10 +154,10 @@ namespace Fonts
             int lastBreakIndex = -1;
 
             // Skip the white spaces at the start of the line.
-            while (characterIndex < stringLen && text[characterIndex] == ' ')
-            {
-                ++characterIndex;
-            }
+            //while (characterIndex < stringLen && text[characterIndex] == ' ')
+            //{
+            //    ++characterIndex;
+            //}
 
             line.m_startCharacter = characterIndex;
 

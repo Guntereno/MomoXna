@@ -100,16 +100,6 @@
     <Folder Include="maps\tilesets\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fonts\Arial_32_b_o4.fnt">
-      <Name>Arial_32_b_o4</Name>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="fonts\Frespech_20.fnt">
-      <Name>Frespech_20</Name>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="effects\text.fx">
       <Name>text</Name>
       <Importer>EffectImporter</Importer>
@@ -117,15 +107,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fonts\Arial_32_b_o4_00.png">
-      <Name>Arial_32_b_o4_00</Name>
+    <Compile Include="fonts\Calibri_24_b_o4_0.png">
+      <Name>Calibri_24_b_o4_0</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="fonts\Frespech_20_00.png">
-      <Name>Frespech_20_00</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="fonts\Calibri_24_b_o4.fnt">
+      <Name>Calibri_24_b_o4</Name>
+      <Importer>FontImporter</Importer>
+      <Processor>FontProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

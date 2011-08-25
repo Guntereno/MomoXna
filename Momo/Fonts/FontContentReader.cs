@@ -32,7 +32,7 @@ namespace Fonts
                 string m_textureAssetName = input.ReadString();
 
                 string texturePath = System.IO.Path.GetDirectoryName(input.AssetName) + "\\" + m_textureAssetName;
-                input.ContentManager.Load<Texture2D>(texturePath);
+                font.m_typeface.m_glyphPageArray[p].m_texture = input.ContentManager.Load<Texture2D>(texturePath);
             }
 
             int glyphCnt = input.ReadInt32();

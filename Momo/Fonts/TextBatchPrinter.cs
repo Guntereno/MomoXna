@@ -13,46 +13,74 @@ namespace Fonts
         private const int MAX_CHARACTER_BATCH_SIZE = 3000;
         private const int MAX_PAGE = 3;
 
-        private Effect ms_effect = null;
-        private VertexPositionTexture[] ms_textBatchVertices = new VertexPositionTexture[MAX_CHARACTER_BATCH_SIZE * 4 * MAX_PAGE];
-        private int[] ms_textBatchIndices = new int[MAX_CHARACTER_BATCH_SIZE * 6];
-        private int[] ms_textBatchVertCnt = new int[MAX_PAGE];
+        private Effect m_effect = null;
+        private EffectParameter m_viewHalfDimensionParam = null;
+        private EffectParameter[] m_colourParam = new EffectParameter[2];
+        private EffectParameter m_fontPageTextureParam = null;
 
-        private List<TextObject> ms_tmpTextObjects = new List<TextObject>(10);
+        private Vector2 m_targetResolution = Vector2.Zero;
+        private Vector2 m_halfTargetResolution = Vector2.Zero;
+        private Vector2 m_halfPixelOffset = Vector2.Zero;
+
+        private VertexPositionTexture[] m_textBatchVertices = new VertexPositionTexture[MAX_CHARACTER_BATCH_SIZE * 4 * MAX_PAGE];
+
+        private int[] m_textBatchIndices = new int[MAX_CHARACTER_BATCH_SIZE * 6];
+        private int[] m_textBatchVertCnt = new int[MAX_PAGE];
+
+        private List<TextObject> m_tmpTextObjects = new List<TextObject>(1);
 
 
-        public void Init()
+
+        public void Init(Effect effect, Vector2 targetResolution/*, int maxCharacters, int maxPages*/)
         {
             int vertIndex = 0;
             for (int i = 0; i < MAX_CHARACTER_BATCH_SIZE * 6; i += 6)
             {
-                ms_textBatchIndices[i + 0] = vertIndex + 0;
-                ms_textBatchIndices[i + 1] = vertIndex + 1;
-                ms_textBatchIndices[i + 2] = vertIndex + 2;
-                ms_textBatchIndices[i + 3] = vertIndex + 2;
-                ms_textBatchIndices[i + 4] = vertIndex + 3;
-                ms_textBatchIndices[i + 5] = vertIndex + 0;
+                m_textBatchIndices[i + 0] = vertIndex + 0;
+                m_textBatchIndices[i + 1] = vertIndex + 1;
+                m_textBatchIndices[i + 2] = vertIndex + 2;
+                m_textBatchIndices[i + 3] = vertIndex + 2;
+                m_textBatchIndices[i + 4] = vertIndex + 3;
+                m_textBatchIndices[i + 5] = vertIndex + 0;
 
                 vertIndex += 4;
             }
 
-            ms_effect = null;// ShaderManager.ms_shaderManager.GetShader("text");
+            m_effect = effect;
+            m_viewHalfDimensionParam = m_effect.Parameters["gViewHalfDim"];
+            m_colourParam[0] = m_effect.Parameters["gColour"];
+            m_colourParam[1] = m_effect.Parameters["gOutlineColour"];
+            m_fontPageTextureParam = m_effect.Parameters["gTex"];
+
+            SetRenderTargetResolution(targetResolution);
         }
 
 
-
-        public void Render(List<TextObject> textObjects, Vector2 halfResolution, bool handleRenderStates, GraphicsDevice graphicsDevice)
+        public void SetRenderTargetResolution(int width, int height)
         {
-            //float viewWidth = viewport.Width;
-            //float viewHeight = viewport.Height;
-            //float halfViewWidth = viewport.HalfWidth;
-            //float halfViewHeight = viewport.HalfHeight;
-            //Vector2 texelOffset = viewport.TexelOffset;
+            SetRenderTargetResolution(new Vector2((float)width, (float)height)); 
+        }
 
+
+        public void SetRenderTargetResolution(Vector2 resolution)
+        {
+            m_targetResolution = resolution;
+            m_halfTargetResolution = m_targetResolution * 0.5f;
+            m_halfPixelOffset = new Vector2(0.5f, 0.5f) / m_targetResolution;
+        }
+
+
+        public void Render(TextObject textObject, bool handleRenderStates, GraphicsDevice graphicsDevice)
+        {
+            m_tmpTextObjects.Add(textObject);
+            Render(m_tmpTextObjects, handleRenderStates, graphicsDevice);
+            m_tmpTextObjects.Clear();
+        }
+
+
+        public void Render(List<TextObject> textObjects, bool handleRenderStates, GraphicsDevice graphicsDevice)
+        {
             GlyphInfo lastGlyphInfo = null;
-
-
-            //Global.GraphicsDevice.VertexDeclaration = VertexFormats.VertexPositionTextureDecl;
 
 
             if (handleRenderStates)
@@ -63,120 +91,121 @@ namespace Fonts
 
 
             // Set the viewport dimension
-            //EffectParameter viewHalfDimension = textShader.GetUnmanagedParameter("VIEWPORT_HALF_DIMENSION");
-            //viewHalfDimension.SetValue(halfResolution);
+            m_viewHalfDimensionParam.SetValue(m_halfTargetResolution);
 
 
-            // Begin rendering with this effect.
-            Effect effect = ms_effect;
-
-
-            for (int p = 0; p < effect.CurrentTechnique.Passes.Count; p++)
+            int textObjectCnt = textObjects.Count;
+            for (int t = 0; t < textObjectCnt; ++t)
             {
-                //EffectPass pass = effect.CurrentTechnique.Passes[p];
-                //pass.Begin();
+                TextObject textObject = textObjects[t];
 
-                int textObjectCnt = textObjects.Count;
-                for (int t = 0; t < textObjectCnt; ++t)
+                float scaledLineHeight = (float)textObject.Font.m_typeface.m_lineHeight * textObject.Scale.Y;
+                Vector2 screenPosition = new Vector2(textObject.Position.X, textObject.Position.Y);
+                screenPosition.Y += textObject.GetYInset();
+                float startX = screenPosition.X;
+
+                int pageCnt = textObject.Font.m_typeface.m_glyphPageCnt;
+
+
+                // Go through each line in the wordwrapper, building up a vertex array list.
+                for (int i = 0; i < textObject.WordWrapper.LineCount; ++i)
                 {
-                    TextObject textObject = textObjects[t];
-
-                    float scaledLineHeight = (float)textObject.Font.m_typeface.m_lineHeight * textObject.Scale.Y;
-                    Vector2 screenPosition = new Vector2(textObject.Position.X, textObject.Position.Y);
-                    screenPosition.Y += textObject.GetYInset();
-                    float startX = screenPosition.X;
-
-                    int pageCnt = textObject.Font.m_typeface.m_glyphPageCnt;
-
-                    for (int i = 0; i < pageCnt; ++i)
-                        ms_textBatchVertCnt[i] = 0;
+                    Line line = textObject.WordWrapper.Lines[i];
+                    screenPosition.X = startX + textObject.GetXInset(i);
+                    lastGlyphInfo = null;
 
 
-                    // Go through each line in the wordwrapper, building up a vertex array list.
-                    for (int i = 0; i < textObject.WordWrapper.LineCount; ++i)
+                    for (int g = 0; g < line.m_glyphCnt; ++g)
                     {
-                        Line line = textObject.WordWrapper.Lines[i];
-                        screenPosition.X = startX + textObject.GetXInset(i);
-                        lastGlyphInfo = null;
+                        GlyphInfo glyphInfo = line.m_glyphInfo[g];
+                        int page = glyphInfo.m_page;
 
 
-                        for (int g = 0; g < line.m_glyphCnt; ++g)
+                        Vector2 screenPos = screenPosition;
+                        screenPos.X += ((float)glyphInfo.m_offset.X * textObject.Scale.X);
+                        screenPos.Y += ((float)glyphInfo.m_offset.Y * textObject.Scale.Y);
+
+
+                        // Add any X based kerning offsets.
+                        if (lastGlyphInfo != null)
+                            screenPos.X += (float)lastGlyphInfo.GetKerningInfo(glyphInfo.m_character) * textObject.Scale.X;
+
+                        Vector2 pos = new Vector2((float)screenPos.X, (float)screenPos.Y);
+                        Vector2 scale = new Vector2((float)glyphInfo.m_dimension.X, (float)glyphInfo.m_dimension.Y) * textObject.Scale;
+
+                        const float kZ = 0.0f;
+                        Vector3 pos3 = new Vector3(pos + m_halfPixelOffset, kZ);
+                        int vertOffSet = (MAX_CHARACTER_BATCH_SIZE * 4 * page) + m_textBatchVertCnt[page];
+                        m_textBatchVertices[vertOffSet].Position = pos3;
+                        m_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[0];
+
+                        pos3.X += scale.X;
+                        m_textBatchVertices[vertOffSet].Position = pos3;
+                        m_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[1];
+
+                        pos3.Y += scale.Y;
+                        m_textBatchVertices[vertOffSet].Position = pos3;
+                        m_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[2];
+
+                        pos3.X = pos.X;
+                        m_textBatchVertices[vertOffSet].Position = pos3;
+                        m_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[3];
+
+                        m_textBatchVertCnt[page] += 4;
+
+
+                        screenPosition.X += ((float)glyphInfo.m_advance * textObject.Scale.X);
+
+                        lastGlyphInfo = glyphInfo;
+                    }
+
+                    screenPosition.Y += scaledLineHeight;
+                }
+
+
+                // Do not draw the text object if the next one is the same settings.
+                if (t == textObjectCnt - 1 ||
+                    textObjects[t + 1].Font != textObject.Font ||
+                    textObjects[t + 1].Colours[0] != textObject.Colours[0] ||
+                    textObjects[t + 1].Colours[1] != textObject.Colours[1])
+                {
+                    // Work backwards, outlines first, fill second.
+                    for (int c = 1; c >= 0; --c)
+                    {
+                        // Only draw it if its visible.
+                        if (textObject.Colours[c].A > 0)
                         {
-                            GlyphInfo glyphInfo = line.m_glyphInfo[g];
-                            int page = glyphInfo.m_page;
+                            // Draw our batch of tris.
+                            for (int i = 0; i < pageCnt; ++i)
+                            {
+                                // Do not try and draw 0 primitives, it will fail and complain.
+                                if (m_textBatchVertCnt[i] == 0)
+                                    continue;
+
+                                // Set the text objects colours.
+                                m_colourParam[c].SetValue(textObject.Colours[c].ToVector4());
+
+                                // Set the text page texture.
+                                m_fontPageTextureParam.SetValue(textObject.Font.m_typeface.m_glyphPageArray[i].m_texture);
+
+                                m_effect.CurrentTechnique.Passes[c].Apply();
 
 
-                            Vector2 screenPos = screenPosition;
-                            screenPos.X += ((float)glyphInfo.m_offset.X * textObject.Scale.X);
-                            screenPos.Y += ((float)glyphInfo.m_offset.Y * textObject.Scale.Y);
-
-
-                            // Add any X based kerning offsets.
-                            if (lastGlyphInfo != null)
-                                screenPos.X += (float)lastGlyphInfo.GetKerningInfo(glyphInfo.m_character) * textObject.Scale.X;
-
-                            Vector2 pos = new Vector2((float)screenPos.X, (float)screenPos.Y);
-                            Vector2 scale = new Vector2((float)glyphInfo.m_dimension.X, (float)glyphInfo.m_dimension.Y) * textObject.Scale;
-
-                            const float kZ = 0.0f;
-                            // TODO: Get half texel offset back in.
-                            //Vector3 pos3 = new Vector3(pos + texelOffset, z);
-                            Vector3 pos3 = new Vector3(pos, kZ);
-                            int vertOffSet = (MAX_CHARACTER_BATCH_SIZE * 4 * page) + ms_textBatchVertCnt[page];
-                            ms_textBatchVertices[vertOffSet].Position = pos3;
-                            ms_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[0];
-
-                            pos3.X += scale.X;
-                            ms_textBatchVertices[vertOffSet].Position = pos3;
-                            ms_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[1];
-
-                            pos3.Y += scale.Y;
-                            ms_textBatchVertices[vertOffSet].Position = pos3;
-                            ms_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[2];
-
-                            pos3.X = pos.X;
-                            ms_textBatchVertices[vertOffSet].Position = pos3;
-                            ms_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[3];
-
-                            ms_textBatchVertCnt[page] += 4;
-
-
-                            screenPosition.X += ((float)glyphInfo.m_advance * textObject.Scale.X);
-
-                            lastGlyphInfo = glyphInfo;
+                                // Send the quad to the graphics card
+                                graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList,
+                                                                                                    m_textBatchVertices,
+                                                                                                    MAX_CHARACTER_BATCH_SIZE * 4 * i,
+                                                                                                    m_textBatchVertCnt[i],
+                                                                                                    m_textBatchIndices,
+                                                                                                    0,
+                                                                                                    m_textBatchVertCnt[i] / 2);
+                            }
                         }
-
-                        screenPosition.Y += scaledLineHeight;
                     }
 
 
-
-                    // Set the text objects colours.
-                    //textShader.GetUnmanagedParameter("COLOUR1").SetValue(textObject.Colour.ToVector4());
-                    //textShader.GetUnmanagedParameter("COLOUR2").SetValue(textObject.OutlineColour.ToVector4());
-
-
-                    // Draw our batch of tris.
                     for (int i = 0; i < pageCnt; ++i)
-                    {
-                        // Do not try and draw 0 primitives, it will fail and complain.
-                        if (ms_textBatchVertCnt[i] == 0)
-                            continue;
-
-                        //textShader.ManagedParameterList[(int)ParameterSemantic.Type.kTexture1].SetValue(textObject.Font.m_typeface.m_glyphPageArray[i].m_texture);
-                        effect.CurrentTechnique.Passes[0].Apply();
-
-
-                        // Send the quad to the graphics card
-                        graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(
-                            PrimitiveType.TriangleList,
-                            ms_textBatchVertices,
-                            MAX_CHARACTER_BATCH_SIZE * 4 * i,
-                            ms_textBatchVertCnt[i],
-                            ms_textBatchIndices,
-                            0,
-                            ms_textBatchVertCnt[i] / 2);
-                    }
+                        m_textBatchVertCnt[i] = 0;
                 }
             }
 
@@ -189,4 +218,7 @@ namespace Fonts
             }
         }
     }
+
+
+
 }

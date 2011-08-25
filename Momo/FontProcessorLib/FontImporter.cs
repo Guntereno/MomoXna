@@ -63,13 +63,7 @@ namespace FontProcessorLib
 
                 FontContent.Page page = new FontContent.Page();
 
-                //string pageTextureAssetName = fontContent.m_typeface.m_typefaceName.Trim('"') + "_" + fontContent.m_typeface.m_size.ToString();
-                //if (fontContent.m_typeface.m_bold)
-                //    pageTextureAssetName += "_B";
-                //pageTextureAssetName += "_page" + i;
-
-                string pageTextureAssetName = System.IO.Path.GetFileNameWithoutExtension(filename) + "_0" + i;
-
+                string pageTextureAssetName = System.IO.Path.GetFileNameWithoutExtension(filename) + "_" + i;
 
                 page.m_textureAssetName = pageTextureAssetName;
                 page.m_textureFileName = file.Trim('"');

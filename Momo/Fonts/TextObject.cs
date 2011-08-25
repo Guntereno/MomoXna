@@ -13,7 +13,10 @@ namespace Fonts
         // -- Protected Members
         // --------------------------------------------------------------------
         private string m_text = null;
+
         protected Font m_font = null;
+        protected Color[] m_colour = new Color[2] { Color.White, Color.Black };
+
         protected WordWrapper m_wordWrapper = null;
 
         protected Vector2 m_position = Vector2.Zero;
@@ -23,8 +26,6 @@ namespace Fonts
         protected VerticalAlignment m_verticalAlignment = VerticalAlignment.kTop;
         protected HorizontalAlignment m_horizontalAlignment = HorizontalAlignment.kLeft;
 
-        protected Color m_colour = Color.White;
-        protected Color m_outlineColour = Color.Black;
 
 
         // --------------------------------------------------------------------
@@ -76,15 +77,22 @@ namespace Fonts
 
         public Color Colour
         {
-            get { return m_colour; }
-            set { m_colour = value; }
+            get { return m_colour[0]; }
+            set { m_colour[0] = value; }
         }
 
         public Color OutlineColour
         {
-            get { return m_outlineColour; }
-            set { m_outlineColour = value; }
+            get { return m_colour[1]; }
+            set { m_colour[1] = value; }
         }
+
+        public Color[] Colours
+        {
+            get { return m_colour; }
+            set { m_colour = value; }
+        }
+
         #endregion
 
 

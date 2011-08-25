@@ -29,6 +29,9 @@ namespace TestGame
 {
     public class GameWorld : World
     {
+        public static World WorldCreator() { return new GameWorld(); }
+
+
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
         CameraController m_cameraController = new CameraController();
 
@@ -52,29 +55,47 @@ namespace TestGame
         Systems.WeaponManager m_weaponManager = null;
         Systems.ProjectileManager m_projectileManager = null;
 
+        TextBatchPrinter m_textPrinter = new TextBatchPrinter();
+        Font m_debugFont = null;
+        TextObject m_text1 = null;
+        TextObject m_text2 = null;
+        List<TextObject> m_textList = new List<TextObject>(10);
+
+
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-
         public GameWorld()
         {
             m_weaponManager = new Systems.WeaponManager(this);
             m_projectileManager = new Systems.ProjectileManager(this, m_bin);
         }
 
-        public static World WorldCreator()
-        {
-            return new GameWorld();
-        }
 
-        public Systems.WeaponManager GetWeaponManager() { return m_weaponManager; }
+        public Systems.WeaponManager GetWeaponManager()         { return m_weaponManager; }
         public Systems.ProjectileManager GetProjectileManager() { return m_projectileManager; }
+        public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
+        public Font GetDebugFont()                              { return m_debugFont; }
+        public Random GetRandom()                               { return ms_random; }
 
-        public Random GetRandom() { return ms_random; }
 
         public override void Load()
         {
             m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
+
+            Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
+            m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight));
+            m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Calibri_24_b_o4");
+
+            m_text1 = new TextObject("Hello1", m_debugFont, 500, 10, 1);
+            m_text1.Position = new Vector2(100.0f, 100.0f);
+
+            m_text2 = new TextObject("Hello2", m_debugFont, 500, 10, 1);
+            m_text2.Position = new Vector2(200.0f, 100.0f);
+
+            m_textList.Add(m_text1);
+            m_textList.Add(m_text2);
+
 
             m_camera.ViewWidth = TestGame.kBackBufferWidth;
             m_camera.ViewHeight = TestGame.kBackBufferHeight;
@@ -83,8 +104,6 @@ namespace TestGame
             m_cameraController.Camera = m_camera;
 
             m_map = TestGame.Instance().Content.Load<Map.Map>("maps/1_living_quarters/1_living_quarters");
-
-            //Font font = TestGame.Instance().Content.Load<Font>("fonts/Arial_32_b_o4");
 
 
             // ----------------------------------------------------------------
@@ -205,6 +224,8 @@ namespace TestGame
         public override void Render()
         {
             m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
+
+            m_textPrinter.Render(m_textList, true, TestGame.Instance().GraphicsDevice);
         }
 
         public override void PostRender()
