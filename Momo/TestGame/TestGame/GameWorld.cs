@@ -84,14 +84,14 @@ namespace TestGame
             m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
 
             Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
-            m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight));
+            m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 1000, 1);
             m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Calibri_24_b_o4");
 
             m_text1 = new TextObject("Hello1", m_debugFont, 500, 10, 1);
             m_text1.Position = new Vector2(100.0f, 100.0f);
 
             m_text2 = new TextObject("Hello2", m_debugFont, 500, 10, 1);
-            m_text2.Position = new Vector2(200.0f, 100.0f);
+            m_text2.Position = new Vector2(100.0f, 150.0f);
 
             m_textList.Add(m_text1);
             m_textList.Add(m_text2);

@@ -103,6 +103,7 @@
     <Compile Include="TextAlignment.cs" />
     <Compile Include="TextBatchPrinter.cs" />
     <Compile Include="TextObject.cs" />
+    <Compile Include="TextVertexDeclaration.cs" />
     <Compile Include="Typeface.cs" />
     <Compile Include="WordWrapper.cs" />
   </ItemGroup>

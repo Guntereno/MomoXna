@@ -18,13 +18,14 @@ sampler TexSampler = sampler_state
 };
 
 
-void TextVS(float3 posL : POSITION0, float2 uv : TEXCOORD0, 
+void TextVS(float2 posL : POSITION0, float2 uv : TEXCOORD0, 
 		  out float4 oPosH : POSITION0, out float2 oUv : TEXCOORD0)
 {
 	posL.xy -= float2(0.5f + gViewHalfDim.x, 0.5f);
 	posL.y = gViewHalfDim.y - posL.y;
 	posL.xy /= gViewHalfDim;
-	oPosH = float4(posL, 1.0f);
+
+	oPosH = float4(posL, 0.0f, 1.0f);
 	oUv = uv;
 }
 
@@ -50,15 +51,15 @@ float4 TextOutlinePS(float2 uv : TEXCOORD0) : COLOR
 
 technique SpriteV20
 {
-	pass Text
-	{
-		vertexShader = compile vs_3_0 TextVS();
-		pixelShader  = compile ps_3_0 TextPS();
-	}
-
 	pass TextOutline
 	{
 		vertexShader = compile vs_3_0 TextVS();
 		pixelShader  = compile ps_3_0 TextOutlinePS();
+	}
+
+	pass Text
+	{
+		vertexShader = compile vs_3_0 TextVS();
+		pixelShader  = compile ps_3_0 TextPS();
 	}
 }

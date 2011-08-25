@@ -10,8 +10,8 @@ namespace Fonts
 {
     public class TextBatchPrinter
     {
-        private const int MAX_CHARACTER_BATCH_SIZE = 3000;
-        private const int MAX_PAGE = 3;
+        private int m_maxCharacters = 0;
+        private int m_maxPages = 0;
 
         private Effect m_effect = null;
         private EffectParameter m_viewHalfDimensionParam = null;
@@ -22,26 +22,33 @@ namespace Fonts
         private Vector2 m_halfTargetResolution = Vector2.Zero;
         private Vector2 m_halfPixelOffset = Vector2.Zero;
 
-        private VertexPositionTexture[] m_textBatchVertices = new VertexPositionTexture[MAX_CHARACTER_BATCH_SIZE * 4 * MAX_PAGE];
-
-        private int[] m_textBatchIndices = new int[MAX_CHARACTER_BATCH_SIZE * 6];
-        private int[] m_textBatchVertCnt = new int[MAX_PAGE];
+        private TextVertexDeclaration[] m_textBatchVertices = null;
+        private short[] m_textBatchIndices = null;
+        private int[] m_textBatchVertCnt = null;
 
         private List<TextObject> m_tmpTextObjects = new List<TextObject>(1);
 
 
 
-        public void Init(Effect effect, Vector2 targetResolution/*, int maxCharacters, int maxPages*/)
+        public void Init(Effect effect, Vector2 targetResolution, int maxCharacters, int maxPages)
         {
+            m_maxCharacters = maxCharacters;
+            m_maxPages = maxPages;
+
+            m_textBatchVertices = new TextVertexDeclaration[m_maxCharacters * 4 * m_maxPages];
+            m_textBatchIndices = new short[m_maxCharacters * 6];
+            m_textBatchVertCnt = new int[m_maxPages];
+
+
             int vertIndex = 0;
-            for (int i = 0; i < MAX_CHARACTER_BATCH_SIZE * 6; i += 6)
+            for (int i = 0; i < m_maxCharacters * 6; i += 6)
             {
-                m_textBatchIndices[i + 0] = vertIndex + 0;
-                m_textBatchIndices[i + 1] = vertIndex + 1;
-                m_textBatchIndices[i + 2] = vertIndex + 2;
-                m_textBatchIndices[i + 3] = vertIndex + 2;
-                m_textBatchIndices[i + 4] = vertIndex + 3;
-                m_textBatchIndices[i + 5] = vertIndex + 0;
+                m_textBatchIndices[i + 0] = (short)(vertIndex + 0);
+                m_textBatchIndices[i + 1] = (short)(vertIndex + 1);
+                m_textBatchIndices[i + 2] = (short)(vertIndex + 2);
+                m_textBatchIndices[i + 3] = (short)(vertIndex + 2);
+                m_textBatchIndices[i + 4] = (short)(vertIndex + 3);
+                m_textBatchIndices[i + 5] = (short)(vertIndex + 0);
 
                 vertIndex += 4;
             }
@@ -121,7 +128,7 @@ namespace Fonts
                         int page = glyphInfo.m_page;
 
 
-                        Vector2 screenPos = screenPosition;
+                        Vector2 screenPos = screenPosition + m_halfPixelOffset;
                         screenPos.X += ((float)glyphInfo.m_offset.X * textObject.Scale.X);
                         screenPos.Y += ((float)glyphInfo.m_offset.Y * textObject.Scale.Y);
 
@@ -130,25 +137,22 @@ namespace Fonts
                         if (lastGlyphInfo != null)
                             screenPos.X += (float)lastGlyphInfo.GetKerningInfo(glyphInfo.m_character) * textObject.Scale.X;
 
-                        Vector2 pos = new Vector2((float)screenPos.X, (float)screenPos.Y);
                         Vector2 scale = new Vector2((float)glyphInfo.m_dimension.X, (float)glyphInfo.m_dimension.Y) * textObject.Scale;
 
-                        const float kZ = 0.0f;
-                        Vector3 pos3 = new Vector3(pos + m_halfPixelOffset, kZ);
-                        int vertOffSet = (MAX_CHARACTER_BATCH_SIZE * 4 * page) + m_textBatchVertCnt[page];
-                        m_textBatchVertices[vertOffSet].Position = pos3;
+                        int vertOffSet = (m_maxCharacters * 4 * page) + m_textBatchVertCnt[page];
+                        m_textBatchVertices[vertOffSet].Position = screenPos;
                         m_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[0];
 
-                        pos3.X += scale.X;
-                        m_textBatchVertices[vertOffSet].Position = pos3;
+                        screenPos.X += scale.X;
+                        m_textBatchVertices[vertOffSet].Position = screenPos;
                         m_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[1];
 
-                        pos3.Y += scale.Y;
-                        m_textBatchVertices[vertOffSet].Position = pos3;
+                        screenPos.Y += scale.Y;
+                        m_textBatchVertices[vertOffSet].Position = screenPos;
                         m_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[2];
 
-                        pos3.X = pos.X;
-                        m_textBatchVertices[vertOffSet].Position = pos3;
+                        screenPos.X -= scale.X;
+                        m_textBatchVertices[vertOffSet].Position = screenPos;
                         m_textBatchVertices[vertOffSet++].TextureCoordinate = glyphInfo.m_uvs[3];
 
                         m_textBatchVertCnt[page] += 4;
@@ -170,7 +174,7 @@ namespace Fonts
                     textObjects[t + 1].Colours[1] != textObject.Colours[1])
                 {
                     // Work backwards, outlines first, fill second.
-                    for (int c = 1; c >= 0; --c)
+                    for (int c = 0; c < 2; ++c)
                     {
                         // Only draw it if its visible.
                         if (textObject.Colours[c].A > 0)
@@ -192,9 +196,9 @@ namespace Fonts
 
 
                                 // Send the quad to the graphics card
-                                graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList,
+                                graphicsDevice.DrawUserIndexedPrimitives<TextVertexDeclaration>(PrimitiveType.TriangleList,
                                                                                                     m_textBatchVertices,
-                                                                                                    MAX_CHARACTER_BATCH_SIZE * 4 * i,
+                                                                                                    m_maxCharacters * 4 * i,
                                                                                                     m_textBatchVertCnt[i],
                                                                                                     m_textBatchIndices,
                                                                                                     0,
