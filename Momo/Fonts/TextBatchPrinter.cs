@@ -20,7 +20,6 @@ namespace Fonts
 
         private Vector2 m_targetResolution = Vector2.Zero;
         private Vector2 m_halfTargetResolution = Vector2.Zero;
-        private Vector2 m_halfPixelOffset = Vector2.Zero;
 
         private TextVertexDeclaration[] m_textBatchVertices = null;
         private short[] m_textBatchIndices = null;
@@ -73,7 +72,6 @@ namespace Fonts
         {
             m_targetResolution = resolution;
             m_halfTargetResolution = m_targetResolution * 0.5f;
-            m_halfPixelOffset = new Vector2(0.5f, 0.5f) / m_targetResolution;
         }
 
 
@@ -128,7 +126,7 @@ namespace Fonts
                         int page = glyphInfo.m_page;
 
 
-                        Vector2 screenPos = screenPosition + m_halfPixelOffset;
+                        Vector2 screenPos = screenPosition;
                         screenPos.X += ((float)glyphInfo.m_offset.X * textObject.Scale.X);
                         screenPos.Y += ((float)glyphInfo.m_offset.Y * textObject.Scale.Y);
 

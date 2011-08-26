@@ -48,7 +48,6 @@ namespace TestGame
         Pool<AiEntity> m_ais = new Pool<AiEntity>(2000);
 
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
-        //List<Explosion> m_explosions = new List<Explosion>(100);
 
 
         static Random ms_random = new Random();
@@ -158,16 +157,6 @@ namespace TestGame
             Input.InputWrapper inputWrapper = TestGame.Instance().InputWrapper;
 
 
-            //m_explosions.Clear();
-
-
-            // Works for the debug rendering is hard on the eye.
-            //if (ms_random.NextDouble() < 0.02f)
-            //{
-            //    Explosion explosion = new Explosion(new Vector2(350.0f, 750.0f), 150.0f, 25000.0f);
-            //    m_explosions.Add(explosion);
-            //}
-
 
             for (int i = 0; i < m_players.ActiveItemListCount; ++i)
             {
@@ -190,8 +179,6 @@ namespace TestGame
             m_projectileManager.Update(ref frameTime);
 
             CollisionHelpers.UpdateBulletContacts(m_projectileManager.GetBullets().ActiveItemList, m_projectileManager.GetBullets().ActiveItemListCount, m_bin);
-
-            //CollisionHelpers.UpdateExplosions(m_explosions, m_bin);
 
             m_contactList.EndAddingContacts();
 
@@ -251,11 +238,6 @@ namespace TestGame
             }
 
             m_projectileManager.DebugRender(m_debugRenderer);
-
-            //for (int i = 0; i < m_explosions.Count; ++i)
-            //{
-            //    m_explosions[i].DebugRender(m_debugRenderer);
-            //}
 
             //m_pathIsland.DebugRender(m_debugRenderer);
             //m_bin.DebugRender(m_debugRenderer, 10, 2);
