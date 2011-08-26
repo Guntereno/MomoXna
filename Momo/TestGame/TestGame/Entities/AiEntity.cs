@@ -13,8 +13,6 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        static System.Random ms_random = new System.Random();
-
         float m_turnVelocity = 0.0f;
 
         // --------------------------------------------------------------------
@@ -22,10 +20,14 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         public AiEntity(GameWorld world): base(world)
         {
-            FacingAngle = (float)ms_random.NextDouble() * ((float)Math.PI * 2.0f);
+            Random random = GetWorld().GetRandom();
+
+            FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
 
-            SetContactRadiusInfo(new RadiusInfo(9.0f + ((float)ms_random.NextDouble() * 6.0f)));
+            SetContactRadiusInfo(new RadiusInfo(9.0f + ((float)random.NextDouble() * 6.0f)));
+            SetMass(GetContactRadiusInfo().Radius * 0.5f);
+
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
 
@@ -34,7 +36,9 @@ namespace TestGame.Entities
         {
             base.Update(ref frameTime);
 
-            m_turnVelocity += ((float)ms_random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
+            Random random = GetWorld().GetRandom();
+
+            m_turnVelocity += ((float)random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
             m_turnVelocity = MathHelper.Clamp(m_turnVelocity, -1.0f, 1.0f);
             FacingAngle += m_turnVelocity * frameTime.Dt;
 
@@ -81,13 +85,13 @@ namespace TestGame.Entities
 
         public void OnCollisionEvent(ref BulletEntity bullet)
         {
-            SetForce(bullet.GetVelocity() * 10.0f);
+            AddForce(bullet.GetVelocity() * 50.0f);
         }
 
 
         public void OnExplosionEvent(ref Explosion explosion, Vector2 force)
         {
-            SetForce(force);
+            AddForce(force);
         }
     }
 }

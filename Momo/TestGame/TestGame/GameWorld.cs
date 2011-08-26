@@ -78,13 +78,14 @@ namespace TestGame
         public Random GetRandom()                               { return ms_random; }
 
 
+
         public override void Load()
         {
             m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
 
             Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
             m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 1000, 1);
-            m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Calibri_24_b_o4");
+            m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
 
             m_camera.ViewWidth = TestGame.kBackBufferWidth;
             m_camera.ViewHeight = TestGame.kBackBufferHeight;
@@ -105,7 +106,7 @@ namespace TestGame
                 player.AddToBin(m_bin);
 
                 // Create the osd items
-                m_playerAmmo[i] = new TextObject("", m_debugFont, 500, 32, 2);
+                m_playerAmmo[i] = new TextObject("", m_debugFont, 500, 32, 1);
                 m_textList.Add(m_playerAmmo[i]);
 
                 player.SetAmmoOsd(m_playerAmmo[i]);

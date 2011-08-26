@@ -59,7 +59,7 @@ namespace TestGame.Weapons
             public int m_shotCount;
         }
 
-        public static readonly ShotgunParams kDefaultParams = new ShotgunParams(1.5f, 10, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 20);
+        public static readonly ShotgunParams kDefaultParams = new ShotgunParams(1.5f, 50, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 20);
 
 
         public class ActiveState : State
@@ -98,7 +98,8 @@ namespace TestGame.Weapons
                         {
                             float angle = facing + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
                             Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
-                            velocity *= param.m_velocity;
+
+                            velocity *= param.m_velocity + (param.m_velocity * ((float)random.NextDouble() * 0.08f));
 
                             world.GetProjectileManager().AddBullet(pos, velocity);
                         }

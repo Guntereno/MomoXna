@@ -16,7 +16,12 @@ namespace Momo.Core.GameEntities
         // --------------------------------------------------------------------
         // -- Private Static Members
         // --------------------------------------------------------------------
-        private static float ms_contactDimensionPadding = 1.0f;
+        private static readonly float kContactDimensionPadding = 1.0f;
+
+        private static readonly float kMaxVelocity = 500.0f;
+        private static readonly float kMaxVelocitySq = kMaxVelocity * kMaxVelocity;
+        private static readonly float kMaxAcceleration = 500.0f;
+        private static readonly float kMaxAccelerationSq = kMaxAcceleration * kMaxAcceleration;
 
 
         // --------------------------------------------------------------------
@@ -34,7 +39,7 @@ namespace Momo.Core.GameEntities
         // --------------------------------------------------------------------
         public static float GetContactDimensionPadding()
         {
-            return ms_contactDimensionPadding;
+            return kContactDimensionPadding;
         }
 
 
@@ -54,6 +59,11 @@ namespace Momo.Core.GameEntities
         public void SetForce(Vector2 force)
         {
             m_force = force;
+        }
+
+        public void AddForce(Vector2 force)
+        {
+            m_force += force;
         }
 
         public Vector2 GetForce()
@@ -90,12 +100,23 @@ namespace Momo.Core.GameEntities
 
             Vector2 newPosition = GetPosition() + (m_velocity * frameTime.Dt);
 
-            m_lastFrameAcceleration = (m_force * frameTime.Dt);
+            // Acceleration update
+            Vector2 acceleration = ((m_force * m_massInfo.InverseMass) * frameTime.Dt);
+           
+            // Cap the acceleration
+            Math2D.CapVectorMagnitude(ref m_lastFrameAcceleration, kMaxAcceleration, kMaxAccelerationSq);
+
+
+            // Velocity update
             m_velocity = m_velocity + m_lastFrameAcceleration;
-            m_velocity *= 0.90f;
+            m_velocity *= 0.92f;
+
+            // Cap the velocity
+            Math2D.CapVectorMagnitude(ref m_velocity, kMaxVelocity, kMaxVelocitySq);
+
 
             m_force = Vector2.Zero;
-
+            m_lastFrameAcceleration = acceleration;
     
             SetPosition(newPosition);
         }

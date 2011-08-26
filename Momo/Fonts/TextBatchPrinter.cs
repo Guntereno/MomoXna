@@ -172,7 +172,7 @@ namespace Fonts
                     textObjects[t + 1].Colours[1] != textObject.Colours[1])
                 {
                     // Work backwards, outlines first, fill second.
-                    for (int c = 0; c < 2; ++c)
+                    for (int c = 1; c >= 0; --c)
                     {
                         // Only draw it if its visible.
                         if (textObject.Colours[c].A > 0)

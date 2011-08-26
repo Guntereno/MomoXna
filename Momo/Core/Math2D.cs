@@ -41,6 +41,17 @@ namespace Momo.Core
 
     public class Math2D
     {
+        public static void CapVectorMagnitude(ref Vector2 vector, float magnitude, float magnitudeSq)
+        {
+            float vectorMagSq = vector.LengthSquared();
+            if (vectorMagSq > magnitudeSq)
+            {
+                float vectorMag = (float)Math.Sqrt(vectorMagSq);
+                vector = (vector / vectorMag) * magnitude;
+            }
+        }
+
+
         public static bool DoesIntersect(Vector2 centre1, float radius1, Vector2 centre2, float radius2, ref IntersectInfo2D outIntersectInfo)
         {
             Vector2 dCentre = centre1 - centre2;

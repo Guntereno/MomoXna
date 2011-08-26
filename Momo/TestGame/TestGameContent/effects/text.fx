@@ -51,15 +51,15 @@ float4 TextOutlinePS(float2 uv : TEXCOORD0) : COLOR
 
 technique SpriteV20
 {
-	pass TextOutline
-	{
-		vertexShader = compile vs_3_0 TextVS();
-		pixelShader  = compile ps_3_0 TextOutlinePS();
-	}
-
 	pass Text
 	{
 		vertexShader = compile vs_3_0 TextVS();
 		pixelShader  = compile ps_3_0 TextPS();
+	}
+
+	pass TextOutline
+	{
+		vertexShader = compile vs_3_0 TextVS();
+		pixelShader  = compile ps_3_0 TextOutlinePS();
 	}
 }

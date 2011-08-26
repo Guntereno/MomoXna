@@ -12,6 +12,7 @@ namespace Momo.Core.Collision2D
         // -- Private Members
         // --------------------------------------------------------------------
         private Contact[] m_contacts = null;
+
         private int m_contactCapacity = 0;
         private int m_contactCnt = 0;
 

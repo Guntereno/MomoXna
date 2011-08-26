@@ -21,6 +21,9 @@ namespace Momo.Core.Collision2D
         private const int kPenetrationResolveContactMulitplier = 4;     // What factor of the number of contacts do we resolve
                                                                         // the penerations.
 
+        // A subset of the passed in contact list
+        static readonly int kMaxNonPenerationContacts = 4000;
+        private Contact[] m_nonPenerationContacts = new Contact[kMaxNonPenerationContacts];
 
 
         // --------------------------------------------------------------------
@@ -31,10 +34,16 @@ namespace Momo.Core.Collision2D
             int contactListCnt = contactList.GetContactCount();
             Contact[] contacts = contactList.GetContactList();
 
+            int nonPenerationContactCount = 0;
+
 
             for (int i = 0; i < contactListCnt; ++i)
             {
-                contacts[i].calculateInternals();
+                Contact contact = contacts[i];
+                contact.calculateInternals();
+
+                if(contact.m_penetration > 0.0f)
+                    m_nonPenerationContacts[nonPenerationContactCount++] = contacts[i];
             }
 
 
@@ -44,15 +53,16 @@ namespace Momo.Core.Collision2D
                 float max = kSeperatingVelocityEpsilon;
                 int maxIndex = contactListCnt;
 
-                for (int i = 0; i < contactListCnt; ++i)
+                for (int i = 0; i < nonPenerationContactCount; ++i)
                 {
-                    if (contacts[i].m_penetration > 0.0f)
+                    if (m_nonPenerationContacts[i].m_seperatingVelocity < max)
                     {
-                        if (contacts[i].m_seperatingVelocity < max)
-                        {
-                            max = contacts[i].m_seperatingVelocity;
-                            maxIndex = i;
-                        }
+                        // We are using a pre filtered list now.
+                        //if (contacts[i].m_penetration > 0.0f)
+                        //{
+                        max = m_nonPenerationContacts[i].m_seperatingVelocity;
+                        maxIndex = i;
+                        //}
                     }
                 }
 
@@ -60,10 +70,32 @@ namespace Momo.Core.Collision2D
                 if (maxIndex == contactListCnt)
                     break;
 
-                contacts[maxIndex].matchAwakeState();
+                m_nonPenerationContacts[maxIndex].matchAwakeState();
 
                 // Resolve the velocity
-                contacts[maxIndex].resolveVelocity(dt);
+                m_nonPenerationContacts[maxIndex].resolveVelocity(dt);
+
+
+                //for (int i = 0; i < contactListCnt; ++i)
+                //{
+                //    if (contacts[i].m_seperatingVelocity < max)
+                //    {
+                //        if (contacts[i].m_penetration > 0.0f)
+                //        {
+                //            max = contacts[i].m_seperatingVelocity;
+                //            maxIndex = i;
+                //        }
+                //    }
+                //}
+
+                //// Do we have anything worth resolving?
+                //if (maxIndex == contactListCnt)
+                //    break;
+
+                //contacts[maxIndex].matchAwakeState();
+
+                //// Resolve the velocity
+                //contacts[maxIndex].resolveVelocity(dt);
             }
 
 
@@ -117,6 +149,12 @@ namespace Momo.Core.Collision2D
                         }
                     }
                 }
+            }
+
+
+            for(int i = 0; i < nonPenerationContactCount; ++i)
+            {
+                m_nonPenerationContacts[i] = null;
             }
         }
     }

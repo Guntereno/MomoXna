@@ -107,17 +107,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fonts\Calibri_24_b_o4_0.png">
-      <Name>Calibri_24_b_o4_0</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
+    <Compile Include="fonts\Calibri_26_b_o3.fnt">
+      <Name>Calibri_26_b_o3</Name>
+      <Importer>FontImporter</Importer>
+      <Processor>FontProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fonts\Calibri_24_b_o4.fnt">
-      <Name>Calibri_24_b_o4</Name>
-      <Importer>FontImporter</Importer>
-      <Processor>FontProcessor</Processor>
+    <Compile Include="fonts\Calibri_26_b_o3_0.png">
+      <Name>Calibri_26_b_o3_0</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

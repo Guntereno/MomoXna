@@ -18,6 +18,7 @@ namespace TestGame.Entities
         {
             FacingAngle = 0.0f;
             SetContactRadiusInfo(new RadiusInfo(12.0f));
+            SetMass(GetContactRadiusInfo().Radius * 0.5f);
             DebugColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
         }
 
@@ -135,13 +136,13 @@ namespace TestGame.Entities
 
         public void OnCollisionEvent(ref BulletEntity bullet)
         {
-            SetForce(bullet.GetVelocity() * 10.0f);
+            AddForce(bullet.GetVelocity());
         }
 
 
         public void OnExplosionEvent(ref Explosion explosion, Vector2 force)
         {
-            SetForce(force);
+            AddForce(force);
         }
 
         public void SetAmmoOsd(TextObject ammoOsd)
