@@ -1,7 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Collections.Generic;
+
+using Microsoft.Xna.Framework;
+
+
 
 namespace Momo.Core
 {
@@ -73,20 +76,32 @@ namespace Momo.Core
 
         public void Append(int value)
         {
+            Append(value, 0);
+        }
+
+
+        public void Append(int value, int padSize)
+        {
             if (value < 0)
             {
                 m_stringBuilder.Append('-');
                 uint uintValue = uint.MaxValue - ((uint)value) + 1; //< This is to deal with Int32.MinValue
-                Append(uintValue);
+                Append(uintValue, padSize);
             }
             else
             {
-                Append((uint)value);
+                Append((uint)value, padSize);
             }
         }
 
 
         public void Append(uint value)
+        {
+            Append(value, 0);
+        }
+
+
+        public void Append(uint value, int padSize)
         {
             // Calculate length of integer when written out
             int length = 0;
@@ -99,6 +114,8 @@ namespace Momo.Core
             }
             while (lengthCalc > 0);
 
+            if (padSize > length)
+                length = padSize;
 
             m_stringBuilder.Length = m_stringBuilder.Length + length;
             int strpos = m_stringBuilder.Length;
@@ -118,7 +135,7 @@ namespace Momo.Core
         }
 
         
-        public void Append(float floatVal, uint decimalPlaces)
+        public void Append(float floatVal, int decimalPlaces)
         {
             if (decimalPlaces == 0)
             {
@@ -143,18 +160,13 @@ namespace Momo.Core
                 float remainder = Math.Abs(floatVal - intPart);
 
                 // Multiply up to become an int that we can print
-                do
-                {
-                    remainder *= 10;
-                    decimalPlaces--;
-                }
-                while (decimalPlaces > 0);
+                remainder = remainder * (float)Math.Pow(10, decimalPlaces);
 
                 // Round up. It's guaranteed to be a positive number, so no extra work required here.
                 remainder += 0.5f;
 
                 // All done, print that as an int!
-                Append((uint)remainder);
+                Append((uint)remainder, decimalPlaces);
             }
         }
 
