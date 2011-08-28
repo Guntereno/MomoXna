@@ -39,7 +39,7 @@ namespace TestGame.Entities
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
-            SetContactRadiusInfo(new RadiusInfo(9.0f + ((float)random.NextDouble() * 6.0f)));
+            SetContactRadiusInfo(new RadiusInfo(13.0f + ((float)random.NextDouble() * 3.0f)));
             SetMass(GetContactRadiusInfo().Radius * 0.5f);
 
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
@@ -126,7 +126,7 @@ namespace TestGame.Entities
             {
                 // Take damage from the bullet
                 m_health -= bullet.GetParams().m_damage;
-                if (m_health < 0.0f)
+                if (m_health <= 0.0f)
                 {
                     m_health = 0.0f;
 

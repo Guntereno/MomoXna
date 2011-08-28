@@ -17,7 +17,7 @@ namespace TestGame.Entities
         public PlayerEntity(GameWorld world) : base(world)
         {
             FacingAngle = 0.0f;
-            SetContactRadiusInfo(new RadiusInfo(12.0f));
+            SetContactRadiusInfo(new RadiusInfo(16.0f));
             SetMass(GetContactRadiusInfo().Radius * 2.0f);
             DebugColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
         }

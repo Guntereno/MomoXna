@@ -59,7 +59,7 @@ namespace TestGame.Weapons
             {}
         }
 
-        public static readonly PistolParams kDefaultParams = new PistolParams(0.5f, 16, 1100.0f, 2.0f);
+        public static readonly PistolParams kDefaultParams = new PistolParams(1.0f, 6, 1100.0f, 1.5f);
 
 
         public class ActiveState : State
@@ -114,7 +114,7 @@ namespace TestGame.Weapons
             private State m_emptyState = null;
             private State m_coolDownState = null;
 
-            BulletEntity.Params m_bulletParams = new BulletEntity.Params(70.0f, new Color(0.9f, 0.4f, 0.1f, 0.4f));
+            BulletEntity.Params m_bulletParams = new BulletEntity.Params(100.0f, new Color(0.9f, 0.4f, 0.1f, 0.4f));
         }
     }
 }
