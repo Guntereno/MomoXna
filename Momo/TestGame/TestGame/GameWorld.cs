@@ -118,7 +118,7 @@ namespace TestGame
                 m_players.AddItem(player, true);
             }
 
-            m_playerAmmo[0].Position = new Vector2(100.0f, 100.0f);
+            m_playerAmmo[0].Position = new Vector2(25.0f, 25.0f);
 
             // Create the enemies
             for (int i = 0; i < 200; ++i)

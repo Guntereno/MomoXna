@@ -100,8 +100,8 @@ namespace Momo.Core
             while (lengthCalc > 0);
 
 
-            int strpos = length;
-            m_stringBuilder.Length = length;
+            m_stringBuilder.Length = m_stringBuilder.Length + length;
+            int strpos = m_stringBuilder.Length;
 
             // We're writing backwards, one character at a time.
             while (length > 0)
