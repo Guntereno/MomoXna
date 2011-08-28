@@ -59,7 +59,7 @@ namespace TestGame
         Systems.EnemyManager m_enemyManager = null;
 
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
-        Font m_debugFont = null;
+        Font m_font = null;
         List<TextObject> m_textList = new List<TextObject>(10);
 
 
@@ -78,8 +78,10 @@ namespace TestGame
         public Systems.ProjectileManager GetProjectileManager() { return m_projectileManager; }
         public Systems.EnemyManager GetEnemyManager()           { return m_enemyManager; }
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
-        public Font GetDebugFont()                              { return m_debugFont; }
+        public Font GetFont()                                   { return m_font; }
         public Random GetRandom()                               { return m_random; }
+        
+        public PlayerEntity[] GetPlayers()                      { return m_players.ActiveItemList; }
 
 
 
@@ -89,7 +91,7 @@ namespace TestGame
 
             Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
             m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 1000, 1);
-            m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
+            m_font = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
 
             m_camera.ViewWidth = TestGame.kBackBufferWidth;
             m_camera.ViewHeight = TestGame.kBackBufferHeight;
@@ -110,7 +112,7 @@ namespace TestGame
                 player.AddToBin(m_bin);
 
                 // Create the osd items
-                m_playerAmmo[i] = new TextObject("", m_debugFont, 500, 100, 3);
+                m_playerAmmo[i] = new TextObject("", m_font, 500, 100, 3);
                 m_textList.Add(m_playerAmmo[i]);
 
                 player.SetAmmoOsd(m_playerAmmo[i]);
@@ -163,7 +165,6 @@ namespace TestGame
             Input.InputWrapper inputWrapper = TestGame.Instance().InputWrapper;
 
 
-
             for (int i = 0; i < m_players.ActiveItemListCount; ++i)
             {
                 m_players[i].UpdateInput(ref inputWrapper);
@@ -172,19 +173,16 @@ namespace TestGame
             }
 
             m_enemyManager.Update(ref frameTime);
-
-            m_contactList.StartAddingContacts();
-
-            CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList);
-            CollisionHelpers.GenerateContacts(m_players.ActiveItemList, m_players.ActiveItemListCount, m_bin, m_contactList);
-
             m_projectileManager.Update(ref frameTime);
 
+            m_contactList.StartAddingContacts();
+            CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList);
+            CollisionHelpers.GenerateContacts(m_players.ActiveItemList, m_players.ActiveItemListCount, m_bin, m_contactList);
             CollisionHelpers.UpdateBulletContacts(m_projectileManager.GetBullets().ActiveItemList, m_projectileManager.GetBullets().ActiveItemListCount, m_bin);
-
             m_contactList.EndAddingContacts();
 
             m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
+
 
             m_projectileManager.EndFrame();
 

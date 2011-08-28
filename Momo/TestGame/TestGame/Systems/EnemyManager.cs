@@ -44,6 +44,8 @@ namespace TestGame.Systems
                 m_enemies[i].Update(ref frameTime);
                 m_enemies[i].UpdateBinEntry();
 
+                m_enemies[i].UpdateSensoryData(m_world.GetPlayers());
+
                 if (m_enemies[i].IsDestroyed())
                 {
                     m_bin.RemoveBinItem(m_enemies[i], BinLayers.kAiEntity);

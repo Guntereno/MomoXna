@@ -15,11 +15,14 @@ namespace TestGame.Entities
     {
         private RadiusInfo m_contactRadiusInfo;
         private float m_facingAngle = 0.0f;
+        private Vector2 m_facingDirection = Vector2.Zero;
+
         private Color m_debugColor = Color.White;
         private bool m_destroyed = false;
         private GameWorld m_world;
         
         protected float m_health = 100.0f;
+
 
         public DynamicGameEntity(GameWorld world)
         {
@@ -29,7 +32,19 @@ namespace TestGame.Entities
         public float FacingAngle
         {
             get{ return m_facingAngle; }
-            set{ m_facingAngle = value;}
+            set{
+                m_facingAngle = value;
+                m_facingDirection = new Vector2((float)Math.Sin(m_facingAngle), (float)Math.Cos(m_facingAngle));
+            }
+        }
+
+        public Vector2 FacingDirection
+        {
+            get { return m_facingDirection; }
+            set {
+                m_facingDirection = value;
+                m_facingAngle = (float)Math.Atan2(m_facingDirection.X, m_facingDirection.Y);
+            }
         }
 
         public Color DebugColor
@@ -62,9 +77,7 @@ namespace TestGame.Entities
             outlineColour.A = 191;
 
             debugRenderer.DrawCircle(GetPosition(), GetContactRadiusInfo().Radius, fillColour, outlineColour, true, 2, 8);
-
-            Vector2 direction = new Vector2((float)Math.Sin(FacingAngle), (float)Math.Cos(FacingAngle));
-            debugRenderer.DrawLine(GetPosition(), GetPosition() + (direction * m_contactRadiusInfo.Radius * 1.5f), outlineColour);
+            debugRenderer.DrawLine(GetPosition(), GetPosition() + (m_facingDirection * m_contactRadiusInfo.Radius * 1.5f), outlineColour);
         }
 
 

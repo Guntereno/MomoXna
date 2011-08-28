@@ -113,6 +113,7 @@
     <Compile Include="Entities\BulletEntity.cs" />
     <Compile Include="CollisionHelpers.cs" />
     <Compile Include="Entities\DynamicGameEntity.cs" />
+    <Compile Include="Entities\EntitySensoryData.cs" />
     <Compile Include="Entities\PlayerEntity.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Input\InputWrapper.cs" />

@@ -14,12 +14,14 @@ namespace TestGame.Entities
         // -- Private Members
         // --------------------------------------------------------------------
         private float m_turnVelocity = 0.0f;
+        private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI * 0.9f, 500.0f, 200.0f);
 
         private State m_currentState = null;
 
         private RandomWanderState m_stateRandomWander = null;
         private StunnedState m_stateStunned = null;
         private DyingState m_stateDying = null;
+
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -42,10 +44,12 @@ namespace TestGame.Entities
             m_stateStunned.Init(m_stateRandomWander);
         }
 
+
         public void Init()
         {
             m_currentState = m_stateRandomWander;
         }
+
 
         public override void Update(ref FrameTime frameTime)
         {
@@ -54,6 +58,23 @@ namespace TestGame.Entities
             if (m_currentState != null)
             {
                 m_currentState.Update(ref frameTime);
+            }
+
+            m_sensoryData.Update(ref frameTime);
+
+            if (m_sensoryData.SensePlayer)
+                DebugColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+            else
+                DebugColor = new Color(1.0f, 0.5f, 0.0f, 0.5f);
+        }
+
+
+        // Temporary until we work out how the player visually will update the aiEntity
+        public void UpdateSensoryData(PlayerEntity[] players)
+        {
+            for(int i = 0; i < players.Length; ++i)
+            {
+                m_sensoryData.UpdateSensoryData(m_position, FacingDirection, players);
             }
         }
 
@@ -118,6 +139,7 @@ namespace TestGame.Entities
         {
             AddForce(force);
         }
+
 
         public void SetCurrentState(State state)
         {
