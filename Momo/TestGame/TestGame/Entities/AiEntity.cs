@@ -49,6 +49,8 @@ namespace TestGame.Entities
             m_stateStunned = new StunnedState(this);
             m_stateDying = new DyingState(this);
 
+            m_stateRandomWander.Init(m_stateChase);
+            m_stateChase.Init(m_stateRandomWander);
             m_stateStunned.Init(m_stateRandomWander);
         }
 
@@ -63,22 +65,11 @@ namespace TestGame.Entities
         {
             base.Update(ref frameTime);
 
+            m_sensoryData.Update(ref frameTime);
+
             if (m_currentState != null)
             {
                 m_currentState.Update(ref frameTime);
-            }
-
-            m_sensoryData.Update(ref frameTime);
-
-            if (m_sensoryData.SensePlayer)
-            {
-                DebugColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
-                m_currentState = m_stateChase;
-            }
-            else
-            {
-                DebugColor = new Color(1.0f, 0.5f, 0.0f, 0.5f);
-                m_currentState = m_stateRandomWander;
             }
         }
 

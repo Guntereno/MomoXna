@@ -30,7 +30,7 @@ namespace TmxProcessorLib.Content
             Debug.Assert(objectNode.Attributes["type"] != null);
             Type = objectNode.Attributes["type"].Value;
 
-             Microsoft.Xna.Framework.Vector2 position = new Microsoft.Xna.Framework.Vector2();        
+            Microsoft.Xna.Framework.Vector2 position = new Microsoft.Xna.Framework.Vector2();
             
             Debug.Assert(objectNode.Attributes["x"] != null);
             position.X = (float)int.Parse(objectNode.Attributes["x"].Value);

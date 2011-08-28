@@ -44,6 +44,8 @@ namespace TestGame.Ai.States
 
         public override void OnEnter()
         {
+            base.OnEnter();
+
             m_timer = GetTime();
         }
 
@@ -71,6 +73,13 @@ namespace TestGame.Ai.States
             return "Stunned (" + m_timer.ToString("F3") + ")";
         }
 
+        public override void OnEnter()
+        {
+            base.OnEnter();
+
+            GetEntity().DebugColor = new Color(0.5f, 0.0f, 0.0f, 0.5f);
+        }
+
         protected override float GetTime()
         {
             const float kStunTime = 0.5f;
@@ -90,8 +99,18 @@ namespace TestGame.Ai.States
             return "Dying (" + m_timer.ToString("F3") + ")";
         }
 
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+
+            GetEntity().DebugColor = new Color(0.7f, 0.5f, 0.5f, 0.5f);
+        }
+
         public override void OnExit()
         {
+            base.OnExit();
+
             GetEntity().Kill();
         }
 
@@ -113,25 +132,47 @@ namespace TestGame.Ai.States
             return "Random Wander";
         }
 
+        public void Init(State foundPlayerState)
+        {
+            m_foundPlayerState = foundPlayerState;
+        }
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+
+            GetEntity().DebugColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+        }
+
         public override void Update(ref FrameTime frameTime)
         {
             GameWorld world = GetEntity().GetWorld();
-            Random random = world.GetRandom();
 
-            float turnVelocity = GetEntity().GetTurnVelocity();
-            turnVelocity += ((float)random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
-            turnVelocity = MathHelper.Clamp(turnVelocity, -1.0f, 1.0f);
-            GetEntity().SetTurnVelocity(turnVelocity);
+            if (GetEntity().SensoryData.SensePlayer)
+            {
+                GetEntity().SetCurrentState(m_foundPlayerState);
+            }
+            else
+            {
+                Random random = world.GetRandom();
 
-            float facingAngle = GetEntity().FacingAngle;
-            facingAngle += turnVelocity * frameTime.Dt;
-            GetEntity().FacingAngle = facingAngle;
+                float turnVelocity = GetEntity().GetTurnVelocity();
+                turnVelocity += ((float)random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
+                turnVelocity = MathHelper.Clamp(turnVelocity, -1.0f, 1.0f);
+                GetEntity().SetTurnVelocity(turnVelocity);
 
-            Vector2 direction = new Vector2((float)Math.Sin(facingAngle), (float)Math.Cos(facingAngle));
-            Vector2 newPosition = GetEntity().GetPosition() + direction;
+                float facingAngle = GetEntity().FacingAngle;
+                facingAngle += turnVelocity * frameTime.Dt;
+                GetEntity().FacingAngle = facingAngle;
 
-            GetEntity().SetPosition(newPosition);
+                Vector2 direction = new Vector2((float)Math.Sin(facingAngle), (float)Math.Cos(facingAngle));
+                Vector2 newPosition = GetEntity().GetPosition() + direction;
+
+                GetEntity().SetPosition(newPosition);
+            }
         }
+
+        State m_foundPlayerState = null;
     }
 
 
@@ -146,16 +187,27 @@ namespace TestGame.Ai.States
             return "Chase";
         }
 
+        public void Init(State lostPlayerState)
+        {
+            m_lostPlayerState = lostPlayerState;
+        }
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+
+            GetEntity().DebugColor = new Color(1.0f, 0.5f, 0.0f, 0.5f);
+        }
+
         public override void Update(ref FrameTime frameTime)
         {
             AiEntity entity = GetEntity();
-
 
             if (entity.SensoryData.SensePlayer)
             {
                 SensedObject obj = null;
 
-                if(entity.SensoryData.GetClosestSense(SensedType.kPlayer, ref obj))
+                if (entity.SensoryData.GetClosestSense(SensedType.kPlayer, ref obj))
                 {
                     Vector2 direction = obj.m_lastPosition - GetEntity().GetPosition();
                     direction.Normalize();
@@ -168,7 +220,13 @@ namespace TestGame.Ai.States
 
                 }
             }
+            else
+            {
+                entity.SetCurrentState(m_lostPlayerState);
+            }
         }
+
+        State m_lostPlayerState = null;
     }
 
 }
