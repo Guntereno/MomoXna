@@ -134,4 +134,41 @@ namespace TestGame.Ai.States
         }
     }
 
+
+    public class ChaseState : State
+    {
+        public ChaseState(AiEntity entity) :
+            base(entity)
+        { }
+
+        public override string ToString()
+        {
+            return "Chase";
+        }
+
+        public override void Update(ref FrameTime frameTime)
+        {
+            AiEntity entity = GetEntity();
+
+
+            if (entity.SensoryData.SensePlayer)
+            {
+                SensedObject obj = null;
+
+                if(entity.SensoryData.GetClosestSense(SensedType.kPlayer, ref obj))
+                {
+                    Vector2 direction = obj.m_lastPosition - GetEntity().GetPosition();
+                    direction.Normalize();
+
+                    GetEntity().FacingDirection = direction;
+
+                    Vector2 newPosition = GetEntity().GetPosition() + direction;
+
+                    GetEntity().SetPosition(newPosition);
+
+                }
+            }
+        }
+    }
+
 }

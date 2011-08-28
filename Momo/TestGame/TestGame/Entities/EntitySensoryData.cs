@@ -19,7 +19,7 @@ namespace TestGame.Entities
     }
 
 
-    public struct SensedObject
+    public class SensedObject
     {
         internal int m_id;
         internal SensedType m_type;
@@ -125,7 +125,7 @@ namespace TestGame.Entities
         }
 
 
-        private void AddSense(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed)
+        public void AddSense(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed)
         {
             int objectIdx = GetSenseIndex(id, obj);
 
@@ -145,6 +145,20 @@ namespace TestGame.Entities
 
 
             m_sensedObjects[objectIdx] = new SensedObject(id, obj, position, distanceSq, timeSensed);
+        }
+
+
+        public bool GetClosestSense(SensedType type, ref SensedObject obj)
+        {
+            int closestIndex = GetClosestSenseIndex(type);
+
+            if (closestIndex >= 0)
+            {
+                obj = m_sensedObjects[closestIndex];
+                return true;
+            }
+
+            return false;
         }
 
 
@@ -184,6 +198,21 @@ namespace TestGame.Entities
             }
 
             return lowestIndex;
+        }
+
+
+        private int GetClosestSenseIndex(SensedType type)
+        {
+            float closestDistSq = float.MaxValue;
+            int closestIndex = -1;
+
+            for (int i = 0; i < m_sensedObjectCnt; ++i)
+            {
+                if (m_sensedObjects[i].m_type == type && m_sensedObjects[i].m_sensedDistanceSq < closestDistSq)
+                    closestIndex = i;
+            }
+
+            return closestIndex;
         }
 
 

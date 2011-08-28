@@ -14,11 +14,12 @@ namespace TestGame.Entities
         // -- Private Members
         // --------------------------------------------------------------------
         private float m_turnVelocity = 0.0f;
-        private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI * 0.9f, 500.0f, 200.0f);
+        private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI, 400.0f, 150.0f);
 
         private State m_currentState = null;
 
         private RandomWanderState m_stateRandomWander = null;
+        private ChaseState m_stateChase = null;
         private StunnedState m_stateStunned = null;
         private DyingState m_stateDying = null;
 
@@ -26,6 +27,12 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
+        public EntitySensoryData SensoryData
+        {
+            get { return m_sensoryData; }
+        }
+
+
         public AiEntity(GameWorld world): base(world)
         {
             Random random = GetWorld().GetRandom();
@@ -38,6 +45,7 @@ namespace TestGame.Entities
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
             m_stateRandomWander = new RandomWanderState(this);
+            m_stateChase = new ChaseState(this);
             m_stateStunned = new StunnedState(this);
             m_stateDying = new DyingState(this);
 
@@ -47,7 +55,7 @@ namespace TestGame.Entities
 
         public void Init()
         {
-            m_currentState = m_stateRandomWander;
+            m_currentState = m_stateChase;
         }
 
 
@@ -63,9 +71,15 @@ namespace TestGame.Entities
             m_sensoryData.Update(ref frameTime);
 
             if (m_sensoryData.SensePlayer)
+            {
                 DebugColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                m_currentState = m_stateChase;
+            }
             else
+            {
                 DebugColor = new Color(1.0f, 0.5f, 0.0f, 0.5f);
+                m_currentState = m_stateRandomWander;
+            }
         }
 
 

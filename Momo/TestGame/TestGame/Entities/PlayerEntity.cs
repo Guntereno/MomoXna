@@ -18,9 +18,10 @@ namespace TestGame.Entities
         {
             FacingAngle = 0.0f;
             SetContactRadiusInfo(new RadiusInfo(12.0f));
-            SetMass(GetContactRadiusInfo().Radius * 0.5f);
+            SetMass(GetContactRadiusInfo().Radius * 2.0f);
             DebugColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
         }
+
 
         public void UpdateInput(ref Input.InputWrapper input)
         {
