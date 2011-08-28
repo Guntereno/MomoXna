@@ -31,16 +31,12 @@ namespace Map
 
         public Tile[] Tiles { get; private set; }
 
-        public List<Light> Lights { get; private set; }
-
         public Point[][] CollisionBoundaries { get; private set; }
 
-        public float LightFactor { get; set; }
+        public Vector2[] PlayerSpawnPoints { get; private set; }
 
         public void Read(ContentReader input)
         {
-            LightFactor = 1.0f;
-
             Type = (TypeId)input.ReadByte();
             Dimensions = input.ReadObject<Point>();
             TileDimensions = input.ReadObject<Point>();
@@ -91,6 +87,14 @@ namespace Map
                 {
                     CollisionBoundaries[boundaryIdx][nodeIdx] = input.ReadObject<Point>();
                 }
+            }
+
+            // Read in the player spawn objects
+            int numSpawnPoints = input.ReadInt32();
+            PlayerSpawnPoints = new Vector2[numSpawnPoints];
+            for (int i = 0; i < numSpawnPoints; ++i)
+            {
+                PlayerSpawnPoints[i] = input.ReadVector2();
             }
         }
     }

@@ -43,9 +43,11 @@ namespace TmxProcessorLib.Content
             context.Logger.LogMessage("POSITION: {0}", Position);
 
             System.Xml.XmlNode propertiesNode = objectNode.SelectSingleNode("properties");
-            Debug.Assert(propertiesNode != null);
-            Properties = new PropertySheet();
-            Properties.ImportXmlNode(propertiesNode, context);
+            if (propertiesNode != null)
+            {
+                Properties = new PropertySheet();
+                Properties.ImportXmlNode(propertiesNode, context);
+            }
         }
 
     }

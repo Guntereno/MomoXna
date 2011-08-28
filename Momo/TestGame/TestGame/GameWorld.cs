@@ -139,7 +139,9 @@ namespace TestGame
             m_weaponManager.Load();
             m_projectileManager.Load();
 
-            m_players[0].SetPosition(new Vector2(416.0f, 320.0f));
+
+            int playerSpawnIndex = m_random.Next(m_map.PlayerSpawnPoints.Length);
+            m_players[0].SetPosition(m_map.PlayerSpawnPoints[playerSpawnIndex]);
             m_players[0].Init();
 
             m_cameraController.TargetEntity = m_players[0];

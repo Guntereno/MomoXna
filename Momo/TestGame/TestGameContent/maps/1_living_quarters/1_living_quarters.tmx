@@ -1452,4 +1452,7 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup name="Player" width="256" height="256">
+  <object name="PlayerSpawn1" type="PlayerSpawn" x="255" y="191"/>
+ </objectgroup>
 </map>

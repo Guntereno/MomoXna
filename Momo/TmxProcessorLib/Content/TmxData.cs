@@ -35,6 +35,8 @@ namespace TmxProcessorLib.Content
 
         public List<Point[]> CollisionBoundaries { get; private set; }
 
+        public List<Vector2> PlayerSpawns { get; private set; }
+
         public TmxData(string fileName)
         {
             FileName = fileName;
@@ -126,6 +128,26 @@ namespace TmxProcessorLib.Content
             }
 
             BuildCollisionStrip();
+
+            BuildPlayerSpawns();
+        }
+
+        private void BuildPlayerSpawns()
+        {
+            if (ObjectGroups.ContainsKey("Player"))
+            {
+                ObjectGroup playerGroup = ObjectGroups["Player"];
+
+                PlayerSpawns = new List<Vector2>();
+                foreach(String objName in playerGroup.Objects.Keys)
+                {
+                    Object obj = playerGroup.Objects[objName];
+                    if (obj.Type == "PlayerSpawn")
+                    {
+                        PlayerSpawns.Add(obj.Position);
+                    }
+                }
+            }
         }
 
 
@@ -381,6 +403,13 @@ namespace TmxProcessorLib.Content
             else
             {
                 output.Write(0);
+            }
+
+            // Output the player spawns
+            output.Write(PlayerSpawns.Count);
+            foreach (Vector2 pos in PlayerSpawns)
+            {
+                output.Write(pos);
             }
 
         }

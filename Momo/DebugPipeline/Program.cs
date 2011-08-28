@@ -85,6 +85,8 @@ namespace DebugPipeline
         ///       Example:
         ///               private const string ProjectToDebug = @"C:\XNA Samples\SkinnedModelExtensions\SkinningSample\Content\SkinningSampleContent.contentproj";
         /// </summary>
+        /// 
+        /// Need to make this a relative path, but I'm not sure where it should be relative from :P
         private const string ProjectToDebug = @"D:\dev\XNA\MomoRepo\Momo\TestGame\TestGameContent\TestGameContent.contentproj";
 
         /// <summary>
@@ -94,8 +96,8 @@ namespace DebugPipeline
         ///       Example:
         ///               private const string SingleItem = @"dude.fbx";
         /// </summary>
-        //private const string SingleItem = @"maps/1_living_quarters/1_living_quarters.tmx";
-        private const string SingleItem = @"";
+        private const string SingleItem = @"maps/test_arena/test_arena.tmx";
+        //private const string SingleItem = @"";
 
         /// <summary>
         /// TODO: Set the XnaProfile to HiDef or Reach, depending on your target graphics profile.
