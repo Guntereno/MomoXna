@@ -31,15 +31,29 @@ namespace TestGame.Systems
             ai.AddToBin(m_bin);
             m_enemies.AddItem(ai, true);
 
+            ai.Init();
+
             return ai;
         }
 
         public void Update(ref FrameTime frameTime)
         {
+            bool needsCoalesce = false;
             for (int i = 0; i < m_enemies.ActiveItemListCount; ++i)
             {
                 m_enemies[i].Update(ref frameTime);
                 m_enemies[i].UpdateBinEntry();
+
+                if (m_enemies[i].IsDestroyed())
+                {
+                    m_bin.RemoveBinItem(m_enemies[i], BinLayers.kAiEntity);
+                    needsCoalesce = true;
+                }
+            }
+
+            if (needsCoalesce)
+            {
+                m_enemies.CoalesceActiveList(false);
             }
         }
 

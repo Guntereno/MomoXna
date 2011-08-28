@@ -59,7 +59,7 @@ namespace TestGame.Weapons
             public int m_shotCount;
         }
 
-        public static readonly ShotgunParams kDefaultParams = new ShotgunParams(1.5f, 50, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 20);
+        public static readonly ShotgunParams kDefaultParams = new ShotgunParams(1.5f, 10, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 20);
 
 
         public class ActiveState : State

@@ -4,7 +4,7 @@ using Momo.Core;
 using Momo.Core.Collision2D;
 using Momo.Core.Spatial;
 using TestGame.Objects;
-
+using TestGame.Ai.States;
 
 namespace TestGame.Entities
 {
@@ -13,7 +13,13 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        float m_turnVelocity = 0.0f;
+        private float m_turnVelocity = 0.0f;
+
+        private State m_currentState = null;
+
+        private RandomWanderState m_stateRandomWander = null;
+        private StunnedState m_stateStunned = null;
+        private DyingState m_stateDying = null;
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -24,29 +30,31 @@ namespace TestGame.Entities
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
-
             SetContactRadiusInfo(new RadiusInfo(9.0f + ((float)random.NextDouble() * 6.0f)));
             SetMass(GetContactRadiusInfo().Radius * 0.5f);
 
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+
+            m_stateRandomWander = new RandomWanderState(this);
+            m_stateStunned = new StunnedState(this);
+            m_stateDying = new DyingState(this);
+
+            m_stateStunned.Init(m_stateRandomWander);
         }
 
+        public void Init()
+        {
+            m_currentState = m_stateRandomWander;
+        }
 
         public override void Update(ref FrameTime frameTime)
         {
             base.Update(ref frameTime);
 
-            Random random = GetWorld().GetRandom();
-
-            m_turnVelocity += ((float)random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
-            m_turnVelocity = MathHelper.Clamp(m_turnVelocity, -1.0f, 1.0f);
-            FacingAngle += m_turnVelocity * frameTime.Dt;
-
-            Vector2 direction = new Vector2((float)Math.Sin(FacingAngle), (float)Math.Cos(FacingAngle));
-            Vector2 newPosition = GetPosition() + direction;
-
-
-            SetPosition(newPosition);
+            if (m_currentState != null)
+            {
+                m_currentState.Update(ref frameTime);
+            }
         }
 
 
@@ -87,11 +95,21 @@ namespace TestGame.Entities
         {
             AddForce(bullet.GetVelocity() * 50.0f);
 
-            // Take damage from the bullet
-            m_health -= bullet.GetParams().m_damage;
-            if (m_health < 0.0f)
+
+            if (m_currentState != m_stateDying)
             {
-                m_health = 0.0f;
+                // Take damage from the bullet
+                m_health -= bullet.GetParams().m_damage;
+                if (m_health < 0.0f)
+                {
+                    m_health = 0.0f;
+
+                    SetCurrentState(m_stateDying);
+                }
+                else
+                {
+                    SetCurrentState(m_stateStunned);
+                }
             }
         }
 
@@ -99,6 +117,39 @@ namespace TestGame.Entities
         public void OnExplosionEvent(ref Explosion explosion, Vector2 force)
         {
             AddForce(force);
+        }
+
+        public void SetCurrentState(State state)
+        {
+            if (m_currentState != null)
+            {
+                m_currentState.OnExit();
+            }
+
+            m_currentState = state;
+
+            if (m_currentState != null)
+            {
+                m_currentState.OnEnter();
+            }
+        }
+
+        public String GetCurrentStateName()
+        {
+            if (m_currentState == null)
+            {
+                return "";
+            }
+
+            return m_currentState.ToString();
+        }
+
+        public float GetTurnVelocity() { return m_turnVelocity; }
+        public void SetTurnVelocity(float value) { m_turnVelocity = value; }
+
+        internal void Kill()
+        {
+            DestroyItem();
         }
     }
 }
