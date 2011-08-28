@@ -45,8 +45,6 @@ namespace Map
             Dimensions = input.ReadObject<Point>();
             TileDimensions = input.ReadObject<Point>();
 
-            LightFactor = input.ReadSingle();
-
             int tilesetCount = input.ReadInt32();
             Tilesets = new Tileset[tilesetCount];
             for (int i = 0; i < tilesetCount; i++)
@@ -79,34 +77,6 @@ namespace Map
                 for (int j = 0; j < Tilesets[i].Tiles.Length; j++)
                 {
                     Tiles[Tilesets[i].FirstGid + j] = new Tile(Tilesets[i].DiffuseMap, Tilesets[i].HeightMap, Tilesets[i].NormalMap, Tilesets[i].Tiles[j]);
-                }
-            }
-
-            // Read in the lights
-            int numLights = input.ReadInt32();
-            Lights = new List<Light>();
-            for (int i = 0; i < numLights; i++)
-            {
-                Light.Type type = (Light.Type)(input.ReadInt32());
-                string name = input.ReadString();
-                Color colour = input.ReadColor();
-                switch (type)
-                {
-                    case Light.Type.PointLight:
-                        PointLight pointLight = new PointLight(name);
-                        pointLight.Colour = colour;
-                        pointLight.Position = input.ReadVector3();
-                        pointLight.ConstantAttenuation = input.ReadSingle();
-                        pointLight.LinearAttenuation = input.ReadSingle();
-                        pointLight.QuadraticAttenuation = input.ReadSingle();
-                        pointLight.Radius = input.ReadSingle();
-                        pointLight.Strength = input.ReadSingle();
-                        Lights.Add(pointLight);
-                        break;
-
-                    default:
-                        Debug.Assert(false, "Invalid light type", "Light type of {0} is not valid!", type);
-                        break;
                 }
             }
 

@@ -97,7 +97,7 @@ namespace TestGame
 
             m_cameraController.Camera = m_camera;
 
-            m_map = TestGame.Instance().Content.Load<Map.Map>("maps/1_living_quarters/1_living_quarters");
+            m_map = TestGame.Instance().Content.Load<Map.Map>("maps/test_arena/test_arena");
 
 
             // ----------------------------------------------------------------
@@ -121,10 +121,16 @@ namespace TestGame
             m_playerAmmo[0].Position = new Vector2(25.0f, 25.0f);
 
             // Create the enemies
+            float mapWidth = (float)(m_map.Dimensions.X * m_map.TileDimensions.X);
+            float mapHeight = (float)(m_map.Dimensions.Y* m_map.TileDimensions.Y);
+            const float kSpawnBoxWidth = 1600.0f;
+            const float kSpawnBoxHeight = 800.0f;
+            float minX = (mapWidth - kSpawnBoxWidth) * 0.5f;
+            float minY = (mapHeight - kSpawnBoxHeight) * 0.5f;
             for (int i = 0; i < 200; ++i)
             {
-                Vector2 pos = new Vector2(150.0f + ((float)m_random.NextDouble() * 3300.0f),
-                                            725.0f + ((float)m_random.NextDouble() * 65.0f));
+                Vector2 pos = new Vector2(minX + ((float)m_random.NextDouble() * kSpawnBoxWidth),
+                                            minY + ((float)m_random.NextDouble() * kSpawnBoxHeight));
                 AiEntity ai = m_enemyManager.Create(pos);
             }
 
