@@ -124,7 +124,7 @@ namespace TestGame
             float mapWidth = (float)(m_map.Dimensions.X * m_map.TileDimensions.X);
             float mapHeight = (float)(m_map.Dimensions.Y* m_map.TileDimensions.Y);
             const float kSpawnBoxWidth = 1600.0f;
-            const float kSpawnBoxHeight = 800.0f;
+            const float kSpawnBoxHeight = 400.0f;
             float minX = (mapWidth - kSpawnBoxWidth) * 0.5f;
             float minY = (mapHeight - kSpawnBoxHeight) * 0.5f;
             for (int i = 0; i < 200; ++i)
