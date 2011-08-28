@@ -20,8 +20,11 @@ namespace Momo.Core.GameEntities
 
         private static readonly float kMaxVelocity = 500.0f;
         private static readonly float kMaxVelocitySq = kMaxVelocity * kMaxVelocity;
+
         private static readonly float kMaxAcceleration = 500.0f;
         private static readonly float kMaxAccelerationSq = kMaxAcceleration * kMaxAcceleration;
+        
+        private static readonly float kFriction = 50.0f;
 
 
         // --------------------------------------------------------------------
@@ -104,15 +107,32 @@ namespace Momo.Core.GameEntities
             Vector2 acceleration = ((m_force * m_massInfo.InverseMass) * frameTime.Dt);
            
             // Cap the acceleration
-            Math2D.CapVectorMagnitude(ref m_lastFrameAcceleration, kMaxAcceleration, kMaxAccelerationSq);
+            Math2D.CapVectorMagnitude(ref acceleration, kMaxAcceleration, kMaxAccelerationSq);
 
 
             // Velocity update
-            m_velocity = m_velocity + m_lastFrameAcceleration;
-            m_velocity *= 0.92f;
+            m_velocity = m_velocity + acceleration;
 
             // Cap the velocity
-            Math2D.CapVectorMagnitude(ref m_velocity, kMaxVelocity, kMaxVelocitySq);
+            float velocityMagSq = m_velocity.LengthSquared();
+            if (velocityMagSq > 0.0f)
+            {
+                float velocityMag = (float)Math.Sqrt(velocityMagSq);
+                float velocityMagAfterFriction = velocityMag - kFriction;
+
+                if (velocityMagAfterFriction < 0.0f)
+                {
+                    m_velocity = Vector2.Zero;
+                }
+                else
+                {
+                    if (velocityMagAfterFriction > kMaxVelocity)
+                        velocityMagAfterFriction = kMaxVelocity;
+
+                    Vector2 normalisedVelocity = (m_velocity / velocityMag);
+                    m_velocity = (normalisedVelocity * velocityMagAfterFriction);
+                }
+            }
 
 
             m_force = Vector2.Zero;
