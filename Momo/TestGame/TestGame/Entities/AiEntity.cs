@@ -86,6 +86,13 @@ namespace TestGame.Entities
         public void OnCollisionEvent(ref BulletEntity bullet)
         {
             AddForce(bullet.GetVelocity() * 50.0f);
+
+            // Take damage from the bullet
+            m_health -= bullet.GetParams().m_damage;
+            if (m_health < 0.0f)
+            {
+                m_health = 0.0f;
+            }
         }
 
 

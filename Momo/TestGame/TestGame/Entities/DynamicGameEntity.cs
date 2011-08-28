@@ -18,6 +18,8 @@ namespace TestGame.Entities
         private Color m_debugColor = Color.White;
         private bool m_destroyed = false;
         private GameWorld m_world;
+        
+        protected float m_health = 100.0f;
 
         public DynamicGameEntity(GameWorld world)
         {

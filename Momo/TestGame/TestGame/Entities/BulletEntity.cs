@@ -22,13 +22,14 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         private bool m_destroyed = false;
 
+        BulletParams m_params;
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
         public BulletEntity()
         {
-
+            m_params = kDefaultParams;
         }
 
 
@@ -99,5 +100,22 @@ namespace TestGame.Entities
         {
             m_destroyed = false;
         }
+
+        public BulletParams GetParams()
+        {
+            return m_params;
+        }
+
+        public class BulletParams
+        {
+            public BulletParams(float damage)
+            {
+                m_damage = damage;
+            }
+
+            public float m_damage;
+        }
+
+        public readonly BulletParams kDefaultParams = new BulletParams(10.0f);
     }
 }
