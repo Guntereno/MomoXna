@@ -94,10 +94,15 @@ namespace TestGame.Entities
                 if (m_ammoOsd != null)
                 {
                     m_ammoString.Clear();
+
+                    m_ammoString.Append(curWeapon.ToString());
+                    m_ammoString.Append("\n");
                     m_ammoString.Append(curWeapon.GetAmmoInClip());
-                    m_ammoString.Append(" ");
+                    m_ammoString.Append("\n");
                     m_ammoString.Append(curWeapon.GetCurrentStateName());
+
                     m_ammoString.EndAppend();
+
 
                     m_ammoOsd.SetText(m_ammoString.GetCharacterArray());
                 }

@@ -31,6 +31,11 @@ namespace TestGame.Weapons
             m_world = world;
         }
 
+        public override string ToString()
+        {
+            return "";
+        }
+
         public GameWorld GetWorld() { return m_world; }
         public Params GetParams() { return m_params; }
 

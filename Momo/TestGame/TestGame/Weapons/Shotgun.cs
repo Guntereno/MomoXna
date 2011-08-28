@@ -23,6 +23,10 @@ namespace TestGame.Weapons
             m_coolDownState.Init(m_activeState);
         }
 
+        public override string ToString()
+        {
+            return "Shotgun";
+        }
 
         public override void Init()
         {

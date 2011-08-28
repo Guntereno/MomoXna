@@ -23,6 +23,11 @@ namespace TestGame.Weapons
             m_coolDownState.Init(m_activeState);
         }
 
+        public override string ToString()
+        {
+            return "Minigun";
+        }
+
 
         MinigunParams m_minigunParams;
 
