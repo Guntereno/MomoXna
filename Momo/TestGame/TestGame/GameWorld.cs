@@ -31,6 +31,8 @@ namespace TestGame
     {
         public static World WorldCreator() { return new GameWorld(); }
 
+        public static readonly int kMaxPlayers = 4;
+
 
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
         CameraController m_cameraController = new CameraController();
@@ -42,7 +44,7 @@ namespace TestGame
         Map.Map m_map = null;
         MapRenderer m_mapRenderer = new MapRenderer();
 
-        static readonly int kMaxPlayers = 4;
+
         Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers);
         TextObject[] m_playerAmmo = new TextObject[kMaxPlayers];
         Pool<AiEntity> m_ais = new Pool<AiEntity>(2000);
@@ -50,7 +52,7 @@ namespace TestGame
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
 
 
-        static Random ms_random = new Random();
+        Random m_random = new Random();
         DebugRenderer m_debugRenderer = new DebugRenderer();
 
         Systems.WeaponManager m_weaponManager = null;
@@ -75,7 +77,7 @@ namespace TestGame
         public Systems.ProjectileManager GetProjectileManager() { return m_projectileManager; }
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
         public Font GetDebugFont()                              { return m_debugFont; }
-        public Random GetRandom()                               { return ms_random; }
+        public Random GetRandom()                               { return m_random; }
 
 
 
@@ -119,8 +121,8 @@ namespace TestGame
             for (int i = 0; i < 200; ++i)
             {
                 AiEntity ai = new AiEntity(this);
-                Vector2 pos = new Vector2(150.0f + ((float)ms_random.NextDouble() * 3300.0f),
-                                            725.0f + ((float)ms_random.NextDouble() * 65.0f));
+                Vector2 pos = new Vector2(150.0f + ((float)m_random.NextDouble() * 3300.0f),
+                                            725.0f + ((float)m_random.NextDouble() * 65.0f));
 
                 ai.SetPosition(pos);
 

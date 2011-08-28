@@ -78,11 +78,16 @@ namespace WorldManager
                 if (info.m_state == WorldState.kActive)
                     info.m_world.PostRender();
             }
+        }
 
+        public void DebugRender()
+        {
             foreach (WorldInfo info in m_worldList)
             {
                 if (info.m_state == WorldState.kActive)
+                {
                     info.m_world.DebugRender();
+                }
             }
         }
 

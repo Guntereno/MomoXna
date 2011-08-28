@@ -16,8 +16,8 @@ namespace Momo.Debug
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        BasicEffect m_effect = null;
-        bool m_inited;
+        private BasicEffect m_effect = null;
+        private bool m_inited = false;
 
         private int m_triVertexCnt = 0;
         private int m_triVertexCapacity = 0;
@@ -35,17 +35,15 @@ namespace Momo.Debug
         {
             System.Diagnostics.Debug.Assert(!m_inited, "Already inited. Call DeInit first.");
 
-            if (!m_inited)
-            {
-                m_effect = new BasicEffect(graphicsDevice);
-                m_effect.TextureEnabled = false;
-                m_effect.LightingEnabled = false;
-                m_effect.VertexColorEnabled = true;
+            m_effect = new BasicEffect(graphicsDevice);
+            m_effect.World = Matrix.Identity;
+            m_effect.TextureEnabled = false;
+            m_effect.LightingEnabled = false;
+            m_effect.VertexColorEnabled = true;
 
-                CreateBuffers(triCapacity, lineCapacity);
+            CreateBuffers(triCapacity, lineCapacity);
 
-                m_inited = true;
-            }
+            m_inited = true;
         }
 
 
@@ -53,15 +51,12 @@ namespace Momo.Debug
         {
             System.Diagnostics.Debug.Assert(m_inited, "Init first.");
 
-            if (m_inited)
-            {
-                FlushBuffers();
+            FlushBuffers();
 
-                m_effect.Dispose();
-                m_effect = null;
+            m_effect.Dispose();
+            m_effect = null;
 
-                m_inited = false;
-            }
+            m_inited = false;
         }
 
 
@@ -470,7 +465,6 @@ namespace Momo.Debug
             //    shader.ManagedParameterList[(int)ParameterSemantic.Type.kCameraViewProjMat].SetValue(cameraNode.ViewProjectionMatrix);
 
 
-            m_effect.World = Matrix.Identity;
             m_effect.View = viewMatrix;
             m_effect.Projection = projMatrix;
 
