@@ -47,7 +47,6 @@ namespace TestGame
 
         Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers);
         TextObject[] m_playerAmmo = new TextObject[kMaxPlayers];
-        Pool<AiEntity> m_ais = new Pool<AiEntity>(2000);
 
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
 
@@ -57,6 +56,7 @@ namespace TestGame
 
         Systems.WeaponManager m_weaponManager = null;
         Systems.ProjectileManager m_projectileManager = null;
+        Systems.EnemyManager m_enemyManager = null;
 
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
         Font m_debugFont = null;
@@ -70,11 +70,13 @@ namespace TestGame
         {
             m_weaponManager = new Systems.WeaponManager(this);
             m_projectileManager = new Systems.ProjectileManager(this, m_bin);
+            m_enemyManager = new Systems.EnemyManager(this, m_bin);
         }
 
 
         public Systems.WeaponManager GetWeaponManager()         { return m_weaponManager; }
         public Systems.ProjectileManager GetProjectileManager() { return m_projectileManager; }
+        public Systems.EnemyManager GetEnemyManager()           { return m_enemyManager; }
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
         public Font GetDebugFont()                              { return m_debugFont; }
         public Random GetRandom()                               { return m_random; }
@@ -118,17 +120,12 @@ namespace TestGame
 
             m_playerAmmo[0].Position = new Vector2(100.0f, 100.0f);
 
+            // Create the enemies
             for (int i = 0; i < 200; ++i)
             {
-                AiEntity ai = new AiEntity(this);
                 Vector2 pos = new Vector2(150.0f + ((float)m_random.NextDouble() * 3300.0f),
                                             725.0f + ((float)m_random.NextDouble() * 65.0f));
-
-                ai.SetPosition(pos);
-
-                ai.AddToBin(m_bin);
-
-                m_ais.AddItem(ai, true);
+                AiEntity ai = m_enemyManager.Create(pos);
             }
 
             m_weaponManager.Load();
@@ -168,15 +165,11 @@ namespace TestGame
                 m_players[i].UpdateBinEntry();
             }
 
-            for (int i = 0; i < m_ais.ActiveItemListCount; ++i)
-            {
-                m_ais[i].Update(ref frameTime);
-                m_ais[i].UpdateBinEntry();
-            }
+            m_enemyManager.Update(ref frameTime);
 
             m_contactList.StartAddingContacts();
 
-            CollisionHelpers.GenerateContacts(m_ais.ActiveItemList, m_ais.ActiveItemListCount, m_bin, m_contactList);
+            CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList);
             CollisionHelpers.GenerateContacts(m_players.ActiveItemList, m_players.ActiveItemListCount, m_bin, m_contactList);
 
             m_projectileManager.Update(ref frameTime);
@@ -235,11 +228,7 @@ namespace TestGame
                 m_players[i].DebugRender(m_debugRenderer);
             }
 
-            for (int i = 0; i < m_ais.ActiveItemListCount; ++i)
-            {
-                m_ais[i].DebugRender(m_debugRenderer);
-            }
-
+            m_enemyManager.DebugRender(m_debugRenderer);
             m_projectileManager.DebugRender(m_debugRenderer);
 
             //m_pathIsland.DebugRender(m_debugRenderer);
