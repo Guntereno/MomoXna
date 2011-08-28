@@ -22,7 +22,7 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         private bool m_destroyed = false;
 
-        BulletParams m_params;
+        Params m_params;
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -41,7 +41,7 @@ namespace TestGame.Entities
 
         public override void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - GetVelocity() * 0.02f, new Color(1.0f, 0.80f, 0.0f, 0.4f), 3.5f);
+            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - GetVelocity() * 0.02f, m_params.m_debugColor, 3.5f);
         }
 
 
@@ -101,21 +101,28 @@ namespace TestGame.Entities
             m_destroyed = false;
         }
 
-        public BulletParams GetParams()
+        public Params GetParams()
         {
             return m_params;
         }
 
-        public class BulletParams
+        public void SetParams(Params value)
         {
-            public BulletParams(float damage)
+            m_params = value;
+        }
+
+        public class Params
+        {
+            public Params(float damage, Color debugColor)
             {
                 m_damage = damage;
+                m_debugColor = debugColor;
             }
 
             public float m_damage;
+            public Color m_debugColor;
         }
 
-        public readonly BulletParams kDefaultParams = new BulletParams(10.0f);
+        public readonly Params kDefaultParams = new Params(10.0f, new Color(1.0f, 0.80f, 0.0f, 0.4f));
     }
 }

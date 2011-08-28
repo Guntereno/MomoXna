@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Momo.Core;
 using Microsoft.Xna.Framework;
+using TestGame.Entities;
 
 namespace TestGame.Weapons
 {
@@ -59,7 +60,7 @@ namespace TestGame.Weapons
             public int m_shotCount;
         }
 
-        public static readonly ShotgunParams kDefaultParams = new ShotgunParams(1.5f, 10, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 20);
+        public static readonly ShotgunParams kDefaultParams = new ShotgunParams(1.5f, 10, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 10);
 
 
         public class ActiveState : State
@@ -101,7 +102,7 @@ namespace TestGame.Weapons
 
                             velocity *= param.m_velocity + (param.m_velocity * ((float)random.NextDouble() * 0.08f));
 
-                            world.GetProjectileManager().AddBullet(pos, velocity);
+                            world.GetProjectileManager().AddBullet(pos, velocity, m_bulletParams);
                         }
 
 
@@ -119,6 +120,8 @@ namespace TestGame.Weapons
 
             private State m_emptyState = null;
             private State m_coolDownState = null;
+
+            BulletEntity.Params m_bulletParams = new BulletEntity.Params(10.0f, new Color(0.9f, 0.6f, 0.1f, 0.4f));
         }
     }
 }

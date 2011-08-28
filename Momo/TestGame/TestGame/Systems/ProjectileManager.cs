@@ -52,11 +52,12 @@ namespace TestGame.Systems
             }
         }
 
-        public void AddBullet(Vector2 startPos, Vector2 velocity)
+        public void AddBullet(Vector2 startPos, Vector2 velocity, BulletEntity.Params param)
         {
             BulletEntity bullet = m_bullets.CreateItem();
             bullet.SetPosition(startPos);
             bullet.SetVelocity(velocity);
+            bullet.SetParams(param);
 
             bullet.AddToBin(m_bin);
         }

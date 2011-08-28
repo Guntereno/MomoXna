@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Momo.Core;
 using Microsoft.Xna.Framework;
+using TestGame.Entities;
 
 namespace TestGame.Weapons
 {
@@ -57,7 +58,7 @@ namespace TestGame.Weapons
             public float m_spread;
         }
 
-        public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 1300, 750.0f, 45.0f, 0.08f);
+        public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 600, 750.0f, 45.0f, 0.08f);
 
 
         public class ActiveState : State
@@ -96,7 +97,7 @@ namespace TestGame.Weapons
                         Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
                         velocity *= param.m_velocity;
 
-                        world.GetProjectileManager().AddBullet(pos, velocity);
+                        world.GetProjectileManager().AddBullet(pos, velocity, m_bulletParams);
 
                         --ammoInClip;
                         weapon.SetAmmoInClip(ammoInClip);
@@ -112,6 +113,8 @@ namespace TestGame.Weapons
 
             private State m_emptyState = null;
             private State m_coolDownState = null;
+
+            BulletEntity.Params m_bulletParams = new BulletEntity.Params(20.0f, new Color(0.9f, 0.8f, 0.6f, 0.4f));
         }
 
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Momo.Core;
+using TestGame.Entities;
 
 namespace TestGame.Weapons
 {
@@ -91,7 +92,7 @@ namespace TestGame.Weapons
                         Vector2 velocity = new Vector2((float)Math.Sin(facing), (float)Math.Cos(facing));
                         velocity *= param.m_velocity;
 
-                        world.GetProjectileManager().AddBullet(pos, velocity);
+                        world.GetProjectileManager().AddBullet(pos, velocity, m_bulletParams);
 
                         --ammoInClip;
                         weapon.SetAmmoInClip(ammoInClip);
@@ -107,7 +108,8 @@ namespace TestGame.Weapons
 
             private State m_emptyState = null;
             private State m_coolDownState = null;
-        }
 
+            BulletEntity.Params m_bulletParams = new BulletEntity.Params(70.0f, new Color(0.9f, 0.4f, 0.1f, 0.4f));
+        }
     }
 }
