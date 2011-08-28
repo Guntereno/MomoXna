@@ -93,7 +93,13 @@ namespace TestGame.Entities
                 curWeapon.Update(ref frameTime, m_triggerState, newPosition, FacingAngle);
                 if (m_ammoOsd != null)
                 {
-                    m_ammoOsd.SetText(curWeapon.GetAmmoInClip().ToString() + "  " + curWeapon.GetCurrentStateName());
+                    m_ammoString.Clear();
+                    m_ammoString.Append(curWeapon.GetAmmoInClip());
+                    m_ammoString.Append(" ");
+                    m_ammoString.Append(curWeapon.GetCurrentStateName());
+                    m_ammoString.EndAppend();
+
+                    m_ammoOsd.SetText(m_ammoString.GetCharacterArray());
                 }
             }
             else
@@ -150,6 +156,7 @@ namespace TestGame.Entities
             m_ammoOsd = ammoOsd;
         }
 
+
         Vector2 m_movementInputVector = Vector2.Zero;
         Vector2 m_facingInputVector = Vector2.Zero;
         float m_triggerState = 0.0f;
@@ -159,8 +166,7 @@ namespace TestGame.Entities
 
         int m_currentWeapon = -1;
 
-        System.Random m_random = new System.Random();
-
         TextObject m_ammoOsd = null;
+        MutableString m_ammoString = new MutableString(40);
     }
 }

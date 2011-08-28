@@ -113,6 +113,7 @@ namespace Fonts
 
 
                 // Go through each line in the wordwrapper, building up a vertex array list.
+                int glyphIdx = 0;
                 for (int i = 0; i < textObject.WordWrapper.LineCount; ++i)
                 {
                     Line line = textObject.WordWrapper.Lines[i];
@@ -120,9 +121,9 @@ namespace Fonts
                     lastGlyphInfo = null;
 
 
-                    for (int g = 0; g < line.m_glyphCnt; ++g)
+                    for (; glyphIdx <= line.m_endGlyphIdx; ++glyphIdx)
                     {
-                        GlyphInfo glyphInfo = line.m_glyphInfo[g];
+                        GlyphInfo glyphInfo = textObject.WordWrapper.GlyphInfo[glyphIdx];
                         int page = glyphInfo.m_page;
 
 

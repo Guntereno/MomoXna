@@ -105,6 +105,7 @@
     <Compile Include="Graphics\MapRenderer.cs" />
     <Compile Include="MassInfo.cs" />
     <Compile Include="Math2D.cs" />
+    <Compile Include="MutableString.cs" />
     <Compile Include="NamedObject.cs" />
     <Compile Include="Nodes\Cameras\CameraNode.cs" />
     <Compile Include="Nodes\Cameras\OrthographicCameraNode.cs" />

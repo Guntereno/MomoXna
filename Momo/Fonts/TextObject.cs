@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using System.Runtime.InteropServices;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,7 +14,8 @@ namespace Fonts
         // --------------------------------------------------------------------
         // -- Protected Members
         // --------------------------------------------------------------------
-        private string m_text = null;
+        public string m_stringText = null;
+        public char[] m_charArrayText = null;
 
         protected Font m_font = null;
         protected Color[] m_colour = new Color[2] { Color.White, Color.Black };
@@ -31,13 +34,7 @@ namespace Fonts
         // --------------------------------------------------------------------
         // -- Public Properties
         // --------------------------------------------------------------------
-        #region Properties
-        public string Text
-        {
-            get { return m_text; }
-            set { SetText(value); }
-        }
-        
+        #region Properties       
         public Font Font
         {
             get { return m_font; }
@@ -99,9 +96,9 @@ namespace Fonts
         // --------------------------------------------------------------------
         // -- Constructor/Deconstructor
         // --------------------------------------------------------------------
-        public TextObject(string text, Font font, int width, int maxCharsPerLine, int maxLines)
+        public TextObject(string text, Font font, int width, int maxChars, int maxLines)
         {
-            m_wordWrapper = new WordWrapper(maxCharsPerLine, maxLines);
+            m_wordWrapper = new WordWrapper(maxChars, maxLines);
             SetText(text, font, width);
         }
 
@@ -111,23 +108,54 @@ namespace Fonts
         // --------------------------------------------------------------------
         public void SetText(string text)
         {
-            m_text = text;
-            m_wordWrapper.SetText(text);
+            m_stringText = text;
+            m_charArrayText = null;
+
+            m_wordWrapper.SetText(text, m_font, (int)m_width, false);
         }
+
 
         public void SetText(string text, Font font, int width)
         {
-            m_text = text;
+            m_stringText = text;
+            m_charArrayText = null;
             m_font = font;
-            SetWidth((float)width);
+
+            SetWidth(width);
         }
+
+
+        public void SetText(char[] text)
+        {
+            m_stringText = null;
+            m_charArrayText = text;
+
+            m_wordWrapper.SetText(text, m_font, (int)m_width, false);
+        }
+
+
+        public void SetText(char[] text, Font font, int width)
+        {
+            m_stringText = null;
+            m_charArrayText = text;
+            m_font = font;
+
+            SetWidth(width);
+        }
+
 
         public void SetWidth(float width)
         {
-            float invScaleX = 1.0f / m_scale.X;
             m_width = width;
-            m_wordWrapper.SetText(m_text, m_font, (int)(width * invScaleX));
+            float invScaleX = 1.0f / m_scale.X;
+            int scaledWidth = (int)(width * invScaleX);
+
+            if (m_stringText != null)
+                m_wordWrapper.SetText(m_stringText, m_font, scaledWidth, false);
+            else
+                m_wordWrapper.SetText(m_charArrayText, m_font, scaledWidth, false);
         }
+
 
         public float GetYInset()
         {
@@ -135,6 +163,7 @@ namespace Fonts
 
             float maxTextHeight = m_font.m_typeface.m_lineHeight * m_wordWrapper.MaxLines;
             float height = m_font.m_typeface.m_lineHeight * m_wordWrapper.LineCount;
+
             if (m_verticalAlignment == VerticalAlignment.kBottom)
                 inset = (float)Math.Round((maxTextHeight - (height * m_scale.Y)));
             else if (m_verticalAlignment == VerticalAlignment.kMiddle)
@@ -157,7 +186,7 @@ namespace Fonts
 
 
         // --------------------------------------------------------------------
-        // -- Protected Methods
+        // -- Private Methods
         // --------------------------------------------------------------------
     }
 }

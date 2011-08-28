@@ -13,10 +13,8 @@ namespace Fonts
     // --------------------------------------------------------------------
     public struct Line
     {
-        public int m_startCharacter;
+        public int m_endGlyphIdx;
         public int m_width;
-        public GlyphInfo[] m_glyphInfo;
-        public int m_glyphCnt;
     }
 
 
@@ -25,16 +23,17 @@ namespace Fonts
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private Font m_font = null;
         private int m_maxWidth;
 
-        private int m_maxCharsPerLine = 0;
-        private int m_maxLines = 0;
+        private readonly int m_maxChars = 0;
+        private readonly int m_maxLines = 0;
 
         private Line[] m_lines = null;
         private int m_lineCnt = 0;
 
-        private bool m_canBreakWord = false;
+        public GlyphInfo[] m_glyphInfo;
+        public int m_glyphInfoCnt;
+
 
 
         // --------------------------------------------------------------------
@@ -48,12 +47,22 @@ namespace Fonts
 
         public int MaxCharactersPerLine
         {
-            get { return m_maxCharsPerLine; }
+            get { return m_maxChars; }
         }
 
         public int MaxLines
         {
             get { return m_maxLines; }
+        }
+        
+        public GlyphInfo[] GlyphInfo
+        {
+            get { return m_glyphInfo; }
+        }
+
+        public int GlyphInfoCount
+        {
+            get { return m_glyphInfoCnt; }
         }
 
         public Line[] Lines
@@ -65,167 +74,142 @@ namespace Fonts
         {
             get { return m_lineCnt; }
         }
-
-        public bool CanBreakWord
-        {
-            get { return m_canBreakWord; }
-            set { m_canBreakWord = value; }
-        }
         #endregion
 
 
         // --------------------------------------------------------------------
         // -- Constructor/Deconstructor
         // --------------------------------------------------------------------
-        public WordWrapper(int maxCharsPerLine, int maxLines)
+        public WordWrapper(int maxChars, int maxLines)
         {
-            m_maxCharsPerLine = maxCharsPerLine;
+            m_maxChars = maxChars;
             m_maxLines = maxLines;
 
             m_lines = new Line[maxLines];
-            for (int i = 0; i < maxLines; ++i)
-            {
-                m_lines[i].m_glyphInfo = new GlyphInfo[maxCharsPerLine];
-                m_lines[i].m_glyphCnt = 0;
-            }
+
+            m_glyphInfo = new GlyphInfo[maxChars];
+            m_glyphInfoCnt = 0;
         }
 
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public void SetText(string text)
+        public void SetText(string text, Font font, int width, bool canBreakWord)
         {
-            SetText(text, m_font, m_maxWidth);
+            GeneralisedStringText str = new GeneralisedStringText(text);
+            SetText(str, font, width, canBreakWord);
         }
 
-        public void SetText(string text, Font font, int width)
+
+        public void SetText(char[] text, Font font, int width, bool canBreakWord)
         {
-            m_font = font;
+            GeneralisedCharArrayText str = new GeneralisedCharArrayText(text);
+            SetText(str, font, width, canBreakWord);
+        }
+
+
+        public void SetText(GeneralisedText text, Font font, int width, bool canBreakWord)
+        {
+            Clear();
+
             m_maxWidth = width;
 
             int characterIndex = 0;
-            int stringLen = text.Length;
-            m_lineCnt = 0;
-            while ((characterIndex < stringLen) && (m_lineCnt < m_maxLines))
+
+            while (!text.IsEnd(characterIndex) && (m_lineCnt < m_maxLines))
             {
-                FillLine(ref m_lines[m_lineCnt], text, stringLen, ref characterIndex, m_maxWidth);
+                FillLine(ref m_lines[m_lineCnt], text, font, ref characterIndex, m_maxWidth, canBreakWord);
                 ++m_lineCnt;
             }
         }
 
-        //public void SetTextPart(string text, Font font, int width, int startChar, int endChar, int lineStart)
-        //{
-        //    m_font = font;
-        //    m_maxWidth = width;
 
-        //    int characterIndex = startChar;
-        //    int stringLen = text.Length;
-        //    if (endChar < stringLen)
-        //        stringLen = endChar;
+        public void Clear()
+        {
+            m_maxWidth = 0;
+            m_lineCnt = 0;
 
-        //    bool foundStartLine = (lineStart == 0);
-        //    m_lineCnt = 0;
-        //    while ((characterIndex < stringLen) && (m_lineCnt < m_maxLines))
-        //    {
-        //        FillLine(ref m_lines[m_lineCnt], text, stringLen, ref characterIndex, m_maxWidth);
+            // Blank out the array so that it does not hang on to dangling pointers.
+            for (int i = 0; i < m_glyphInfoCnt; ++i)
+                m_glyphInfo[i] = null;
+
+            m_glyphInfoCnt = 0;
+        }
 
 
-        //        ++m_lineCnt;
-        //        if (foundStartLine == false && m_lineCnt == lineStart)
-        //        {
-        //            m_lineCnt = 0;
-        //            foundStartLine = true;
-        //        }
-        //    }
-
-        //     If the start line was not found make sure we blank out the text.
-        //    if (foundStartLine == false)
-        //    {
-        //        m_lineCnt = 0;
-        //    }
-        //}
-
-        public void FillLine(ref Line line, string text, int stringLen, ref int characterIndex, int maxWidth)
+        public void FillLine(ref Line line, GeneralisedText text, Font font, ref int characterIndex, int maxWidth, bool canBreakWord)
         {
             int width = 0;
             int widthAtBreak = 0;
-            int glyphCnt = 0;
             int lastBreakIndex = -1;
+            GlyphInfo lastGlyphInfo = null;
+
 
             // Skip the white spaces at the start of the line.
-            //while (characterIndex < stringLen && text[characterIndex] == ' ')
-            //{
-            //    ++characterIndex;
-            //}
+            char c = ' ';
+            while (!text.IsEnd(characterIndex))
+            {
+                c = text.GetCharacter(characterIndex);
+                if ((c != ' ' && c != '\n'))
+                    break;
 
-            line.m_startCharacter = characterIndex;
+                ++characterIndex;
+            }
+
 
 
             do
             {
-                if (characterIndex == stringLen)
+                if (text.IsEnd(characterIndex))
                 {
                     widthAtBreak = width;
                     lastBreakIndex = characterIndex;
                     break;
                 }
 
-                char character = text[characterIndex];
+                c = text.GetCharacter(characterIndex);
 
-                if (character == ' ')
+                if (c == ' ')
                 {
                     widthAtBreak = width;
                     lastBreakIndex = characterIndex;
                 }
 
-                GlyphInfo glyphInfo = m_font.GetGlyphInfo(character);
+                GlyphInfo glyphInfo = font.GetGlyphInfo(c);
+                int kerning = 0;
 
-                bool lineBreak = ((width + glyphInfo.m_dimension.X) > maxWidth) || (character == '\n');
+                if (lastGlyphInfo != null)
+                    kerning = lastGlyphInfo.GetKerningInfo(glyphInfo.m_character);
+
+
+                bool lineBreak = ((width + glyphInfo.m_dimension.X + kerning) > maxWidth) || (c == '\n');
 
                 if (lineBreak)
                 {
-                    if (lastBreakIndex == -1 || m_canBreakWord)
+                    if (lastBreakIndex == -1 || canBreakWord)
                     {
                         lastBreakIndex = characterIndex;
                         widthAtBreak = width;
                     }
+                    lastGlyphInfo = null;
                     break;
                 }
 
-                width += glyphInfo.m_advance;
-                line.m_glyphInfo[glyphCnt++] = glyphInfo;
+                width += glyphInfo.m_advance + kerning;
 
+
+                m_glyphInfo[m_glyphInfoCnt++] = glyphInfo;
+
+                lastGlyphInfo = glyphInfo;
                 ++characterIndex;
             } while (true);
 
 
-            line.m_glyphCnt = lastBreakIndex - line.m_startCharacter;
             line.m_width = widthAtBreak;
+            line.m_endGlyphIdx = m_glyphInfoCnt - 1;
+
             characterIndex = lastBreakIndex;
-        }
-
-
-        public string DebugGenerateWordWrappedString()
-        {
-            StringBuilder stringBuilder = new StringBuilder(300);
-
-            for(int l = 0; l < m_lineCnt; ++l)
-            {
-                Line line = m_lines[l];
-
-                stringBuilder.Append('"');
-                for(int g = 0; g < line.m_glyphCnt; ++g)
-                {
-                    GlyphInfo glyphInfo = line.m_glyphInfo[g];
-                    stringBuilder.Append(glyphInfo.m_character);
-                }
-
-                stringBuilder.Append('"');
-                stringBuilder.Append('\n');
-            }
-
-            return stringBuilder.ToString();
         }
     }
 }

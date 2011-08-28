@@ -106,7 +106,7 @@ namespace TestGame
                 player.AddToBin(m_bin);
 
                 // Create the osd items
-                m_playerAmmo[i] = new TextObject("", m_debugFont, 500, 32, 1);
+                m_playerAmmo[i] = new TextObject("", m_debugFont, 500, 100, 3);
                 m_textList.Add(m_playerAmmo[i]);
 
                 player.SetAmmoOsd(m_playerAmmo[i]);

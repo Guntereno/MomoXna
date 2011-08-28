@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="Font.cs" />
     <Compile Include="FontContentReader.cs" />
+    <Compile Include="GeneralisedText.cs" />
     <Compile Include="GlyphInfo.cs" />
     <Compile Include="GlyphPage.cs">
       <SubType>Code</SubType>
