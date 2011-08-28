@@ -16,11 +16,13 @@ namespace TestGame.Weapons
             m_emptyState = new EmptyState(this);
             m_reloadState = new ReloadState(this);
             m_coolDownState = new CoolDownState(this);
+            m_ventingHeatState = new VentHeat(this);
 
-            m_activeState.Init(m_emptyState, m_coolDownState);
+            m_activeState.Init(m_emptyState, m_coolDownState, m_ventingHeatState);
             m_emptyState.Init(m_activeState);
             m_reloadState.Init(m_activeState);
             m_coolDownState.Init(m_activeState);
+            m_ventingHeatState.Init(m_activeState);
         }
 
         public override string ToString()
@@ -35,12 +37,17 @@ namespace TestGame.Weapons
         EmptyState m_emptyState = null;
         ReloadState m_reloadState = null;
         CoolDownState m_coolDownState = null;
+        VentHeat m_ventingHeatState = null;
+
+        public float Heat { get; set; }
 
 
         public override void Init()
         {
             m_minigunParams = kDefaultParams;
             m_params = m_minigunParams;
+
+            Heat = 0.0f;
 
             base.Init();
 
@@ -77,15 +84,17 @@ namespace TestGame.Weapons
                 return "Active";
             }
 
-            public void Init(State emptyState, State coolDownState)
+            public void Init(State emptyState, State coolDownState, State overheatState)
             {
                 m_emptyState = emptyState;
                 m_coolDownState = coolDownState;
+                m_overheatState = overheatState;
             }
 
             public override void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
             {
                 Weapon weapon = GetWeapon();
+                Minigun minigun = (Minigun)(weapon);
 
                 const float kTriggerThresh = 0.5f;
                 if (triggerState > kTriggerThresh)
@@ -107,19 +116,78 @@ namespace TestGame.Weapons
                         --ammoInClip;
                         weapon.SetAmmoInClip(ammoInClip);
 
-                        weapon.SetCurrentState(m_coolDownState);
+                        const float kHeatDelta = 0.4f;
+                        minigun.Heat = minigun.Heat + kHeatDelta;
+
+                        const float kOverheatThreshold = 50.0f;
+                        if (minigun.Heat >= kOverheatThreshold)
+                        {
+                            weapon.SetCurrentState(m_overheatState);
+                        }
+                        else
+                        {
+                            weapon.SetCurrentState(m_coolDownState);
+                        }
                     }
                     else
                     {
                         weapon.SetCurrentState(m_emptyState);
                     }
                 }
+                else
+                {
+                    // Cool down when not used
+                    const float kCoolDelta = 0.2f;
+
+                    float heat = minigun.Heat;
+                    heat -= kCoolDelta;
+                    if (heat < 0.0f)
+                        heat = 0.0f;
+
+                    minigun.Heat = heat;
+                }
             }
 
             private State m_emptyState = null;
             private State m_coolDownState = null;
+            private State m_overheatState = null;
 
             BulletEntity.Params m_bulletParams = new BulletEntity.Params(20.0f, new Color(0.9f, 0.8f, 0.6f, 0.4f));
+        }
+
+        public class VentHeat : State
+        {
+            public VentHeat(Weapon weapon) :
+                base(weapon)
+            { }
+
+            public override string ToString()
+            {
+                return "Venting Heat";
+            }
+
+            public void Init(State nextState)
+            {
+                m_nextState = nextState;
+            }
+
+            public override void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
+            {
+                Weapon weapon = GetWeapon();
+                Minigun minigun = (Minigun)(weapon);
+
+                const float kCoolDelta = 0.4f;
+                float heat = minigun.Heat;
+                heat -= kCoolDelta;
+                if (heat <= 0.0f)
+                {
+                    heat = 0.0f;
+                    weapon.SetCurrentState(m_nextState);
+                }
+                minigun.Heat = heat;
+            }
+
+            private State m_nextState = null;
         }
 
     }
