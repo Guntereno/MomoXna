@@ -36,6 +36,8 @@ namespace TestGame.Weapons
             return "";
         }
 
+        public Vector2 Recoil { get; set; }
+
         public GameWorld GetWorld() { return m_world; }
         public Params GetParams() { return m_params; }
 
@@ -74,6 +76,8 @@ namespace TestGame.Weapons
 
         public void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
         {
+            Recoil = Vector2.Zero;
+
             if (m_currentState != null)
             {
                 m_currentState.Update(ref frameTime, triggerState, pos, facing);

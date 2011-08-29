@@ -70,7 +70,7 @@ namespace TestGame.Weapons
             public float m_spread;
         }
 
-        public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 600, 750.0f, 45.0f, 0.08f);
+        public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 600, 750.0f, 45.0f, 0.15f);
 
 
         public class ActiveState : State
@@ -112,6 +112,8 @@ namespace TestGame.Weapons
                         velocity *= param.m_velocity;
 
                         world.GetProjectileManager().AddBullet(pos, velocity, m_bulletParams);
+
+                        minigun.Recoil = -velocity;
 
                         --ammoInClip;
                         weapon.SetAmmoInClip(ammoInClip);

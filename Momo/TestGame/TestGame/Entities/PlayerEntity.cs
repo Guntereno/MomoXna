@@ -92,6 +92,9 @@ namespace TestGame.Entities
             {
                 Weapons.Weapon curWeapon = m_arsenal[m_currentWeapon];
                 curWeapon.Update(ref frameTime, m_triggerState, newPosition, FacingAngle);
+
+                AddForce(curWeapon.Recoil);
+
                 if (m_ammoOsd != null)
                 {
                     m_ammoString.Clear();
