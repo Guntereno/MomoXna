@@ -33,7 +33,6 @@ namespace Momo.Core.Spatial
         private BinEntry[,] m_binEntries = null;
 
         private BinQueryResults m_queryResults = null;
-        private BinRegionSelection m_binRegionSelectionBuffer; // Temporary buffer for region selection calculations.
 
 
 
@@ -57,7 +56,6 @@ namespace Momo.Core.Spatial
             m_invBinDimension = Vector2.One / m_binDimension;
 
             m_queryResults = new BinQueryResults(queryResultsCapacity);
-            m_binRegionSelectionBuffer = new BinRegionSelection(regionSelectionCapacity);
 
             m_binEntryPool = new BinEntry[itemCapacity];
             m_binEntries = new BinEntry[layerCount, m_binCount];
@@ -300,6 +298,27 @@ namespace Momo.Core.Spatial
         }
 
 
+        public void Query(BinRegionSelection region, int layerIdx)
+        {
+            int itemCnt = m_queryResults.BinItemCount;
+
+
+            for (int i = 0; i < region.m_binCnt; ++i)
+            {
+                int lastBinCnt = itemCnt;
+
+                // Dont add sentital.
+                BinEntry entry = m_binEntries[layerIdx, region.m_binIndices[i].m_index].m_nextEntry;
+                while (entry != null)
+                {
+                    itemCnt = m_queryResults.AddBinItem(entry.m_item, lastBinCnt);
+
+                    entry = entry.m_nextEntry;
+                }
+            }
+        }
+
+
         public BinQueryResults EndQuery()
         {
             return m_queryResults;
@@ -368,7 +387,7 @@ namespace Momo.Core.Spatial
         }
 
 
-        public void GetBinRegionFromLine(Vector2 p1, Vector2 diff, out BinRegionSelection outBinRegion)
+        public void GetBinRegionFromLine(Vector2 p1, Vector2 diff, ref BinRegionSelection outBinRegion)
         {
             int binCnt = 0;
 
@@ -404,7 +423,7 @@ namespace Momo.Core.Spatial
 
 
 
-            m_binRegionSelectionBuffer.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
+            outBinRegion.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
 
 
             // The one will have to change based on -/+ direction of y.
@@ -418,20 +437,20 @@ namespace Momo.Core.Spatial
                 if (tY < tX)
                 {
                     binLocation.m_y += binMoveY;
-                    m_binRegionSelectionBuffer.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
+                    outBinRegion.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
 
                     tY = ((float)(binLocation.m_y + binBaseY) - p1BinSpace.Y) / diffBinSpace.Y;
                 }
                 else
                 {
                     binLocation.m_x += binMoveX;
-                    m_binRegionSelectionBuffer.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
+                    outBinRegion.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
 
                     tX = ((float)(binLocation.m_x + binBaseX) - p1BinSpace.X) / diffBinSpace.X;
                 }
             }
 
-            outBinRegion = new BinRegionSelection(ref m_binRegionSelectionBuffer);
+            outBinRegion.m_binCnt = binCnt;
         }
 
 

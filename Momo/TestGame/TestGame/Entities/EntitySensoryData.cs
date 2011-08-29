@@ -235,10 +235,17 @@ namespace TestGame.Entities
                     Vector2 normlisedDPos = dPos / distance;
                     float angleToEntity = Vector2.Dot(normlisedDPos, myDirection);
 
+
+
                     if (angleToEntity > m_invHalfSightFov)
                     {
-                        AddSense(0, SensedType.kPlayer, entity.GetPosition(), distanceSq, 5.0f);
-                        return true;
+                        bool clearLineOfSight = CollisionHelpers.IsClearLineOfSight(myPosition, dPos, entity.GetBin());
+
+                        if (clearLineOfSight)
+                        {
+                            AddSense(0, SensedType.kPlayer, entity.GetPosition(), distanceSq, 5.0f);
+                            return true;
+                        }
                     }
                 }
             }

@@ -20,6 +20,10 @@ namespace TestGame
 {
     public class CollisionHelpers
     {
+        private static readonly int kBinSelectionCapacity = 1000;
+        private static BinRegionSelection ms_binRegion = new BinRegionSelection(kBinSelectionCapacity);
+
+
         public static void GenerateContacts(DynamicGameEntity[] entities, int entityCount, Bin bin, ContactList contactList)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();
@@ -103,6 +107,42 @@ namespace TestGame
                     }
                 }
             }
+        }
+
+
+        public static bool IsClearLineOfSight(Vector2 position, Vector2 dPos, Bin bin)
+        {
+            BinRegionUniform boundaryRegion = new BinRegionUniform();
+            Vector2 intersectPoint = Vector2.Zero;
+
+
+            bin.GetBinRegionFromLine(position, dPos, ref ms_binRegion);
+
+            // Boundaries
+            bin.StartQuery();
+            bin.Query(ms_binRegion, BinLayers.kBoundary);
+            BinQueryResults queryResults = bin.EndQuery();
+
+            for (int j = 0; j < queryResults.BinItemCount; ++j)
+            {
+                BoundaryEntity checkBoundary = (BoundaryEntity)queryResults.BinItemQueryResults[j];
+                checkBoundary.GetBinRegion(ref boundaryRegion);
+
+                LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
+                bool contact = Math2D.DoesIntersect(    position,
+                                                        dPos,
+                                                        linePrimitive2D.Point,
+                                                        linePrimitive2D.Difference,
+                                                        ref intersectPoint );
+
+
+                if (contact)
+                {
+                    return false;
+                }
+            }
+                
+            return true;
         }
 
 
