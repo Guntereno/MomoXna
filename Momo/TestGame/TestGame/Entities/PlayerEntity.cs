@@ -43,9 +43,13 @@ namespace TestGame.Entities
                 }
             }
 
-            if (input.IsButtonPressed(Buttons.X) || (m_arsenal[m_currentWeapon].GetAmmoInClip() == 0))
+            Weapons.Weapon currentWeapon = m_arsenal[m_currentWeapon];
+            if (currentWeapon.GetAmmoInClip() < currentWeapon.GetParams().m_clipSize)
             {
-                m_arsenal[m_currentWeapon].Reload();
+                if (input.IsButtonPressed(Buttons.X) || (m_arsenal[m_currentWeapon].GetAmmoInClip() == 0))
+                {
+                    m_arsenal[m_currentWeapon].Reload();
+                }
             }
 
             m_movementInputVector = input.GetLeftStick();
