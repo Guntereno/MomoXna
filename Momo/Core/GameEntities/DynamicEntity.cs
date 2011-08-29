@@ -24,7 +24,7 @@ namespace Momo.Core.GameEntities
         private static readonly float kMaxAcceleration = 500.0f;
         private static readonly float kMaxAccelerationSq = kMaxAcceleration * kMaxAcceleration;
         
-        private static readonly float kFriction = 50.0f;
+        private static readonly float kFriction = 10000.0f;
 
 
         // --------------------------------------------------------------------
@@ -118,7 +118,7 @@ namespace Momo.Core.GameEntities
             if (velocityMagSq > 0.0f)
             {
                 float velocityMag = (float)Math.Sqrt(velocityMagSq);
-                float velocityMagAfterFriction = velocityMag - kFriction;
+                float velocityMagAfterFriction = velocityMag - (kFriction * m_massInfo.InverseMass * frameTime.Dt);
 
                 if (velocityMagAfterFriction < 0.0f)
                 {

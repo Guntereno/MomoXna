@@ -119,7 +119,7 @@ namespace TestGame.Entities
 
         public void OnCollisionEvent(ref BulletEntity bullet)
         {
-            AddForce(bullet.GetVelocity() * 50.0f);
+            AddForce(bullet.GetVelocity() * 5.0f);
 
 
             if (m_currentState != m_stateDying)
