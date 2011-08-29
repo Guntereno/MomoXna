@@ -224,28 +224,42 @@ namespace TestGame.Entities
 
             if (distanceSq < m_sightDistanceSq)
             {
-                if (distanceSq < m_senseDistanceSq)
-                {
-                    AddSense(0, SensedType.kPlayer, entity.GetPosition(), distanceSq, 3.0f);
-                    return true;
-                }
-                else
+                bool checkLineOfSight = distanceSq < m_senseDistanceSq;
+
+                if (!checkLineOfSight)
                 {
                     float distance = (float)Math.Sqrt(distanceSq);
                     Vector2 normlisedDPos = dPos / distance;
                     float angleToEntity = Vector2.Dot(normlisedDPos, myDirection);
 
+                    checkLineOfSight = angleToEntity > m_invHalfSightFov;
+                }
+
+                if (checkLineOfSight)
+                {
+                    bool clearLineOfSight = CollisionHelpers.IsClearLineOfSight(myPosition, dPos, entity.GetBin());
+
+                    //if (clearLineOfSight)
+                    //    entity.GetWorld().GetDebugRenderer().DrawFilledLine(myPosition, entity.GetPosition(), new Color(0.0f, 1.0f, 0.0f, 0.2f), 2.0f);
+                    //else
+                    //    entity.GetWorld().GetDebugRenderer().DrawFilledLine(myPosition, entity.GetPosition(), new Color(1.0f, 0.0f, 0.0f, 0.2f), 2.0f);
 
 
-                    if (angleToEntity > m_invHalfSightFov)
+                    //int kBinSelectionCapacity = 1000;
+                    //BinRegionSelection ms_tempBinRegionSelection = new BinRegionSelection(kBinSelectionCapacity);
+                    //entity.GetBin().GetBinRegionFromLine(myPosition, dPos, ref ms_tempBinRegionSelection);
+
+                    //if(clearLineOfSight)
+                    //    entity.GetBin().DebugRender(entity.GetWorld().GetDebugRenderer(), ms_tempBinRegionSelection, new Color(0.0f, 1.0f, 0.0f, 0.2f));
+                    //else
+                    //    entity.GetBin().DebugRender(entity.GetWorld().GetDebugRenderer(), ms_tempBinRegionSelection, new Color(1.0f, 0.0f, 0.0f, 0.2f));
+
+
+
+                    if (clearLineOfSight)
                     {
-                        bool clearLineOfSight = CollisionHelpers.IsClearLineOfSight(myPosition, dPos, entity.GetBin());
-
-                        if (clearLineOfSight)
-                        {
-                            AddSense(0, SensedType.kPlayer, entity.GetPosition(), distanceSq, 5.0f);
-                            return true;
-                        }
+                        AddSense(0, SensedType.kPlayer, entity.GetPosition(), distanceSq, 0.5f);
+                        return true;
                     }
                 }
             }

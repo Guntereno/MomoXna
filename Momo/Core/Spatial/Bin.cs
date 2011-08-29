@@ -417,9 +417,9 @@ namespace Momo.Core.Spatial
 
             // Stop divide by 0.
             if (diffBinSpace.X == 0.0f)
-                diffBinSpace.X = float.MaxValue;
+                diffBinSpace.X = float.MinValue;
             else if (diffBinSpace.Y == 0.0f)
-                diffBinSpace.Y = float.MaxValue;
+                diffBinSpace.Y = float.MinValue;
 
 
 
@@ -427,8 +427,8 @@ namespace Momo.Core.Spatial
 
 
             // The one will have to change based on -/+ direction of y.
-            float tX = ((float)binBaseX - p1BinSpace.X) / diffBinSpace.X;
-            float tY = ((float)binBaseY - p1BinSpace.Y) / diffBinSpace.Y;
+            float tX = ((float)(binLocation.m_x + binBaseX) - p1BinSpace.X) / diffBinSpace.X;
+            float tY = ((float)(binLocation.m_y + binBaseY) - p1BinSpace.Y) / diffBinSpace.Y;
 
 
             while (tX < 1.0f || tY < 1.0f)
@@ -515,7 +515,46 @@ namespace Momo.Core.Spatial
 
 
             debugRenderer.DrawQuad(new Vector2(0.0f, 0.0f), m_areaDimension, new Color(0.0f, 1.0f, 0.0f, 0.5f), new Color(0.0f, 1.0f, 0.0f, 0.5f), false, 10.0f);
+        }
 
+
+        public void DebugRender(DebugRenderer debugRenderer, BinRegionSelection region, Color regionColour)
+        {
+            for (int i = 0; i < region.m_binCnt; ++i)
+            {
+                short binIdx = region.m_binIndices[i].m_index;
+                int x = binIdx % m_binCountX;
+                int y = binIdx / m_binCountX;
+
+                Vector2 p1 = new Vector2((float)x * m_binDimension.X, (float)y * m_binDimension.Y);
+                Vector2 p2 = p1;
+                p2.X += m_binDimension.X;
+                Vector2 p3 = p1 + m_binDimension;
+                Vector2 p4 = p1;
+                p4.Y += m_binDimension.Y;
+
+                debugRenderer.DrawQuad(p1, p2, p3, p4, regionColour, Color.Black, true, 0.0f);
+            }
+        }
+
+
+        public void DebugRenderGrid(DebugRenderer debugRenderer, Color gridColour)
+        {
+            for (int x = 0; x <= m_binCountX; ++x)
+            {
+                Vector2 p1 = new Vector2((float)x * m_binDimension.X, 0.0f);
+                Vector2 p2 = new Vector2((float)x * m_binDimension.X, m_areaDimension.Y);
+
+                debugRenderer.DrawLine(p1, p2, gridColour);
+            }
+
+            for (int y = 0; y <= m_binCountY; ++y)
+            {
+                Vector2 p1 = new Vector2(0.0f, (float)y * m_binDimension.Y);
+                Vector2 p2 = new Vector2(m_areaDimension.X, (float)y * m_binDimension.Y);
+
+                debugRenderer.DrawLine(p1, p2, gridColour);
+            }
         }
 
 

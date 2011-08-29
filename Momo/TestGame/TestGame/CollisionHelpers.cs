@@ -21,7 +21,7 @@ namespace TestGame
     public class CollisionHelpers
     {
         private static readonly int kBinSelectionCapacity = 1000;
-        private static BinRegionSelection ms_binRegion = new BinRegionSelection(kBinSelectionCapacity);
+        private static BinRegionSelection ms_tempBinRegionSelection = new BinRegionSelection(kBinSelectionCapacity);
 
 
         public static void GenerateContacts(DynamicGameEntity[] entities, int entityCount, Bin bin, ContactList contactList)
@@ -116,11 +116,11 @@ namespace TestGame
             Vector2 intersectPoint = Vector2.Zero;
 
 
-            bin.GetBinRegionFromLine(position, dPos, ref ms_binRegion);
+            bin.GetBinRegionFromLine(position, dPos, ref ms_tempBinRegionSelection);
 
             // Boundaries
             bin.StartQuery();
-            bin.Query(ms_binRegion, BinLayers.kBoundary);
+            bin.Query(ms_tempBinRegionSelection, BinLayers.kBoundary);
             BinQueryResults queryResults = bin.EndQuery();
 
             for (int j = 0; j < queryResults.BinItemCount; ++j)

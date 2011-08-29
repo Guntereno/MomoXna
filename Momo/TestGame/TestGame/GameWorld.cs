@@ -37,7 +37,7 @@ namespace TestGame
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
         CameraController m_cameraController = new CameraController();
 
-        Bin m_bin = new Bin(100, 100, 10000, 10000, 3, 10000, 5000, 1000);
+        Bin m_bin = new Bin(150, 150, 10000, 10000, 3, 10000, 5000, 1000);
         ContactList m_contactList = new ContactList(4000);
         ContactResolver m_contactResolver = new ContactResolver();
 
@@ -80,7 +80,8 @@ namespace TestGame
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
         public Font GetFont()                                   { return m_font; }
         public Random GetRandom()                               { return m_random; }
-        
+        public DebugRenderer GetDebugRenderer()                 { return m_debugRenderer; }
+
         public PlayerEntity[] GetPlayers()                      { return m_players.ActiveItemList; }
 
 
@@ -206,7 +207,6 @@ namespace TestGame
 
         public override void PreRender()
         {
-            m_debugRenderer.Clear();
             m_camera.PreRenderUpdate();
         }
 
@@ -239,8 +239,10 @@ namespace TestGame
 
             //m_pathIsland.DebugRender(m_debugRenderer);
             //m_bin.DebugRender(m_debugRenderer, 10, 2);
+            //m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange);
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
+            m_debugRenderer.Clear();
         }
 
         private void BuildCollisionBoundaries()

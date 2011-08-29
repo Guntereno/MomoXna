@@ -14,7 +14,7 @@ namespace TestGame.Entities
         // -- Private Members
         // --------------------------------------------------------------------
         private float m_turnVelocity = 0.0f;
-        private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI, 400.0f, 150.0f);
+        private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
 
         private State m_currentState = null;
 
