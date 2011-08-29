@@ -31,9 +31,8 @@ namespace TestGame
         public static TestGame Instance() { return ms_instance; }
         private static TestGame ms_instance = null;
 
-        public const int kBackBufferWidth = 1200;
-        public const int kBackBufferHeight = 900;
-
+        public const int kBackBufferWidth = 1280;
+        public const int kBackBufferHeight = 720;
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -46,13 +45,10 @@ namespace TestGame
         Input.InputWrapper m_inputWrapper = new Input.InputWrapper();
         WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
 
-
         public Input.InputWrapper InputWrapper
         {
             get { return m_inputWrapper; }
         }
-
-
 
         public TestGame()
         {
@@ -63,9 +59,27 @@ namespace TestGame
             graphics.PreferredBackBufferWidth = kBackBufferWidth;
             graphics.PreferredBackBufferHeight = kBackBufferHeight;
 
+            graphics.PreparingDeviceSettings += PreparingDeviceSettings;
+
             Content.RootDirectory = "Content";
+
+            if (GraphicsAdapter.Adapters.Count > 1)
+            {
+                graphics.IsFullScreen = true;
+            }
         }
 
+        public void PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            GraphicsAdapter currentAdapter = GraphicsAdapter.DefaultAdapter;
+
+            if (GraphicsAdapter.Adapters.Count > 1)
+            {
+                currentAdapter = GraphicsAdapter.Adapters[1];
+            }
+
+            e.GraphicsDeviceInformation.Adapter = currentAdapter;
+        }
 
         protected override void Initialize()
         {
