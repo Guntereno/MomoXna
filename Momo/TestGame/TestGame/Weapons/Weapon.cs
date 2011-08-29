@@ -12,18 +12,20 @@ namespace TestGame.Weapons
     {
         public class Params
         {
-            public Params(float reloadTime, int clipSize, float velocity, float fireRate)
+            public Params(float reloadTime, int clipSize, float speed, float fireRate, float recoil)
             {
                 m_reloadTime = reloadTime;
                 m_clipSize = clipSize;
-                m_velocity = velocity;
+                m_speed = speed;
                 m_fireRate = fireRate;
+                m_recoil = recoil;
             }
 
             public float m_reloadTime; // seconds
             public int m_clipSize;
-            public float m_velocity;
+            public float m_speed;
             public float m_fireRate; // shells/sec
+            public float m_recoil;
         }
 
         public Weapon(GameWorld world)

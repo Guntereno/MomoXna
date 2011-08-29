@@ -53,8 +53,8 @@ namespace TestGame.Weapons
 
         public class ShotgunParams : Weapon.Params
         {
-            public ShotgunParams(float reloadTime, int clipSize, float velocity, float fireRate, float spread, int shotCount) :
-                base(reloadTime, clipSize, velocity, fireRate)
+            public ShotgunParams(float reloadTime, int clipSize, float speed, float fireRate, float recoil, float spread, int shotCount) :
+                base(reloadTime, clipSize, speed, fireRate, recoil)
             {
                 m_spread = spread;
                 m_shotCount = shotCount;
@@ -64,7 +64,7 @@ namespace TestGame.Weapons
             public int m_shotCount;
         }
 
-        public static readonly ShotgunParams kDefaultParams = new ShotgunParams(1.5f, 10, 1200.0f, 1.5f, (float)(0.1f * Math.PI), 10);
+        public static readonly ShotgunParams kDefaultParams = new ShotgunParams(1.5f, 10, 1200.0f, 1.5f, 80000.0f, (float)(0.1f * Math.PI), 10);
 
 
         public class ActiveState : State
@@ -104,7 +104,9 @@ namespace TestGame.Weapons
                             float angle = facing + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
                             Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
 
-                            velocity *= param.m_velocity + (param.m_velocity * ((float)random.NextDouble() * 0.08f));
+                            weapon.Recoil = -velocity * weapon.GetParams().m_recoil;
+
+                            velocity *= param.m_speed + (param.m_speed * ((float)random.NextDouble() * 0.08f));
 
                             world.GetProjectileManager().AddBullet(pos, velocity, m_bulletParams);
                         }
@@ -125,7 +127,7 @@ namespace TestGame.Weapons
             private State m_emptyState = null;
             private State m_coolDownState = null;
 
-            BulletEntity.Params m_bulletParams = new BulletEntity.Params(10.0f, new Color(0.9f, 0.6f, 0.1f, 0.4f));
+            BulletEntity.Params m_bulletParams = new BulletEntity.Params(20.0f, new Color(0.9f, 0.6f, 0.1f, 0.4f));
         }
     }
 }

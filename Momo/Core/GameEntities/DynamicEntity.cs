@@ -24,7 +24,7 @@ namespace Momo.Core.GameEntities
         private static readonly float kMaxAcceleration = 500.0f;
         private static readonly float kMaxAccelerationSq = kMaxAcceleration * kMaxAcceleration;
         
-        private static readonly float kFriction = 10000.0f;
+        private static readonly float kFriction = 7000.0f;
 
 
         // --------------------------------------------------------------------

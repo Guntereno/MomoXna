@@ -54,12 +54,12 @@ namespace TestGame.Weapons
 
         public class PistolParams : Weapon.Params
         {
-            public PistolParams(float reloadTime, int clipSize, float velocity, float fireRate):
-                base(reloadTime, clipSize, velocity, fireRate)
+            public PistolParams(float reloadTime, int clipSize, float speed, float fireRate, float recoil):
+                base(reloadTime, clipSize, speed, fireRate, recoil)
             {}
         }
 
-        public static readonly PistolParams kDefaultParams = new PistolParams(1.0f, 6, 1100.0f, 1.5f);
+        public static readonly PistolParams kDefaultParams = new PistolParams(1.0f, 6, 1100.0f, 1.5f, 80000.0f);
 
 
         public class ActiveState : State
@@ -95,7 +95,10 @@ namespace TestGame.Weapons
 
                         PistolParams param = (PistolParams)(GetWeapon().GetParams());
                         Vector2 velocity = new Vector2((float)Math.Sin(facing), (float)Math.Cos(facing));
-                        velocity *= param.m_velocity;
+
+                        weapon.Recoil = -velocity * weapon.GetParams().m_recoil;
+                        
+                        velocity *= param.m_speed;
 
                         world.GetProjectileManager().AddBullet(pos, velocity, m_bulletParams);
 

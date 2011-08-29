@@ -61,8 +61,8 @@ namespace TestGame.Weapons
 
         public class MinigunParams : Weapon.Params
         {
-            public MinigunParams(float reloadTime, int clipSize, float velocity, float fireRate, float spread) :
-                base(reloadTime, clipSize, velocity, fireRate)
+            public MinigunParams(float reloadTime, int clipSize, float speed, float fireRate, float recoil, float spread) :
+                base(reloadTime, clipSize, speed, fireRate, recoil)
             {
                 m_spread = spread;
             }
@@ -70,7 +70,7 @@ namespace TestGame.Weapons
             public float m_spread;
         }
 
-        public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 600, 750.0f, 45.0f, 0.15f);
+        public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 600, 750.0f, 45.0f, 23000.0f, 0.15f);
 
 
         public class ActiveState : State
@@ -108,12 +108,15 @@ namespace TestGame.Weapons
 
                         MinigunParams param = (MinigunParams)(GetWeapon().GetParams());
                         float angle = facing + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
+
                         Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
-                        velocity *= param.m_velocity;
+
+                        minigun.Recoil = -velocity * weapon.GetParams().m_recoil;
+
+
+                        velocity *= param.m_speed;
 
                         world.GetProjectileManager().AddBullet(pos, velocity, m_bulletParams);
-
-                        minigun.Recoil = -velocity;
 
                         --ammoInClip;
                         weapon.SetAmmoInClip(ammoInClip);
