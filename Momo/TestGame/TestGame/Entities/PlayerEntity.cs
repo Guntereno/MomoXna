@@ -43,7 +43,7 @@ namespace TestGame.Entities
                 }
             }
 
-            if (input.IsButtonPressed(Buttons.X))
+            if (input.IsButtonPressed(Buttons.X) || (m_arsenal[m_currentWeapon].GetAmmoInClip() == 0))
             {
                 m_arsenal[m_currentWeapon].Reload();
             }

@@ -59,7 +59,7 @@ namespace TestGame.Weapons
             {}
         }
 
-        public static readonly PistolParams kDefaultParams = new PistolParams(1.0f, 6, 1100.0f, 1.5f, 80000.0f);
+        public static readonly PistolParams kDefaultParams = new PistolParams(1.5f, 6, 1100.0f, 1.5f, 80000.0f);
 
 
         public class ActiveState : State
