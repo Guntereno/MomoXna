@@ -27,21 +27,14 @@ namespace TestGame.Input
                 // Map the keyboard buttons
                 switch (button)
                 {
-                    case Buttons.RightShoulder: buttonInfo.m_mappedKey = Keys.NumPad0; break;
+                    case Buttons.RightShoulder: buttonInfo.m_mappedKey = Keys.Add; break;
+                    case Buttons.LeftShoulder: buttonInfo.m_mappedKey = Keys.Subtract; break;
+                    case Buttons.X: buttonInfo.m_mappedKey = Keys.Enter; break;
                     default: buttonInfo.m_mappedKey = null; break;
                 }
 
                 m_buttonDict[button] = buttonInfo;
             }
-
-            // Map the keyboard buttons
-            {
-                ButtonInfo buttonInfo;
-                buttonInfo = m_buttonDict[Buttons.RightShoulder];
-                buttonInfo.m_mappedKey = Keys.NumPad0;
-                m_buttonDict[Buttons.RightShoulder] = buttonInfo;
-            }
-
         }
 
         public Vector2 GetLeftStick() { return m_leftStick; }
@@ -101,6 +94,8 @@ namespace TestGame.Input
             // Keyboard input overrides joypad
             UpdateStickKeys(ref m_leftStick, ref currentKeyboardState, Keys.W, Keys.A, Keys.S, Keys.D);
             UpdateStickKeys(ref m_rightStick, ref currentKeyboardState, Keys.NumPad8, Keys.NumPad4, Keys.NumPad2, Keys.NumPad6);
+            UpdateTriggerKeys(ref m_leftTrigger, ref currentKeyboardState, Keys.LeftControl);
+            UpdateTriggerKeys(ref m_rightTrigger, ref currentKeyboardState, Keys.NumPad0);
 
             foreach (Buttons button in ms_buttons)
             {
@@ -152,6 +147,19 @@ namespace TestGame.Input
                 resultVector.Y = 1.0f;
             }
         }
+
+        private static void UpdateTriggerKeys(ref float result, ref KeyboardState currentKeyboardState, Keys key)
+        {
+            if (currentKeyboardState.IsKeyDown(key))
+            {
+                result = 1.0f;
+            }
+            else
+            {
+                result = 0.0f;
+            }
+        }
+
 
 
         private struct ButtonInfo
