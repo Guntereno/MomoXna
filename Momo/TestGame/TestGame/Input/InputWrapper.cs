@@ -7,8 +7,38 @@ namespace TestGame.Input
 {
     public class InputWrapper
     {
-        private static Buttons[] ms_buttons = (Buttons[])Enum.GetValues(typeof(Buttons));
+        private static Buttons[] ms_buttons = new Buttons[]
+        {
+            Buttons.DPadUp,
+            Buttons.DPadDown,
+            Buttons.DPadLeft,
+            Buttons.DPadRight,
+            Buttons.Start,
+            Buttons.Back,
+            Buttons.LeftStick,
+            Buttons.RightStick,
+            Buttons.LeftShoulder,
+            Buttons.RightShoulder,
 
+            Buttons.BigButton,
+
+            Buttons.A,
+            Buttons.B,
+            Buttons.X,
+            Buttons.Y,
+
+            Buttons.LeftThumbstickLeft,
+            Buttons.RightTrigger,
+            Buttons.LeftTrigger,
+            Buttons.RightThumbstickUp,
+            Buttons.RightThumbstickDown,
+            Buttons.RightThumbstickRight,
+            Buttons.RightThumbstickLeft,
+            Buttons.LeftThumbstickUp,
+            Buttons.LeftThumbstickDown,
+            Buttons.LeftThumbstickRight,
+        };
+        
 
         public InputWrapper()
         {
@@ -179,6 +209,6 @@ namespace TestGame.Input
         private float m_leftTrigger = 0.0f;
         private float m_rightTrigger = 0.0f;
 
-        private int m_numKeys = Enum.GetNames(typeof(Buttons)).Length;
+        private int m_numKeys = ms_buttons.Length;
     }
 }

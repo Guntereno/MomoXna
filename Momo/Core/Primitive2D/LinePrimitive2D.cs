@@ -56,6 +56,9 @@ namespace Momo.Core.Primitive2D
 
         public void CalculateMinMax(out Vector2 outMin, out Vector2 outMax)
         {
+            outMin = new Vector2();
+            outMax = new Vector2();
+
             if (m_difference.X > 0.0f)
             {
                 outMin.X = m_point.X;

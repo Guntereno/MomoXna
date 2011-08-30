@@ -88,6 +88,9 @@ namespace Momo.Core.Primitive2D
 
         public void CalculateBoundingArea(out Vector2 minCorner, out Vector2 maxCorner)
         {
+            minCorner = new Vector2();
+            maxCorner = new Vector2();
+
             System.Diagnostics.Debug.Assert(m_pointCount > 0);
 
             float minX = m_lastPoint.X;

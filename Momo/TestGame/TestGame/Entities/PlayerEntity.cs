@@ -71,7 +71,7 @@ namespace TestGame.Entities
         {
             base.Update(ref frameTime);
 
-            const float kMaxSpeed = 160.0f;
+            const float kMaxSpeed = 200.0f;
 
             Vector2 newPosition = GetPosition() + ((m_movementInputVector * kMaxSpeed) * frameTime.Dt);
 
