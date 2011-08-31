@@ -55,7 +55,8 @@ namespace TestGame.Systems
         {
             for (int i = 0; i < m_world.GetPlayerManager().GetPlayers().ActiveItemListCount; ++i)
             {
-                Weapons.Weapon currentWeapon = m_world.GetPlayerManager().GetPlayers()[i].GetCurrentWeapon();
+                PlayerEntity player = m_world.GetPlayerManager().GetPlayers()[i];
+                Weapons.Weapon currentWeapon = player.GetCurrentWeapon();
 
                 m_weaponString[i].Clear();
 
@@ -69,6 +70,7 @@ namespace TestGame.Systems
                 }
 
                 m_weaponString[i].EndAppend();
+                m_weaponInfo[i].Colour = player.DebugColor;
                 m_weaponInfo[i].SetText(m_weaponString[i].GetCharacterArray());
             }
         }

@@ -36,6 +36,16 @@ namespace TestGame.Systems
 
             player.SetInputWrapper(input);
 
+            Color[] debugColours = 
+            {
+                Color.ForestGreen,
+                Color.IndianRed,
+                Color.DodgerBlue,
+                Color.LightYellow
+            };
+
+            player.DebugColor = debugColours[m_players.ActiveItemListCount];
+
             // Spawn at a spawn point
             Map.Map map = m_world.GetMap();
             //int playerSpawnIndex = m_world.GetRandom().Next(map.PlayerSpawnPoints.Length);
