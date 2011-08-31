@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 
 
-namespace Fonts
+namespace Momo.Fonts
 {
     public class FontContentReader : ContentTypeReader<Font>
     {

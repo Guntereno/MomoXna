@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 
-namespace Fonts
+namespace Momo.Fonts
 {
     struct Kerning
     {

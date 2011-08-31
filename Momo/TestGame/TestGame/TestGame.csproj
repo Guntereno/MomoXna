@@ -122,6 +122,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Systems\CameraController.cs" />
     <Compile Include="Systems\EnemyManager.cs" />
+    <Compile Include="Systems\OsdManager.cs" />
     <Compile Include="TestGame.cs" />
     <Compile Include="TestWorldPathFinding.cs" />
     <Compile Include="Systems\ProjectileManager.cs" />

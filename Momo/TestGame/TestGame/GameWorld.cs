@@ -21,7 +21,7 @@ using TestGame.Objects;
 
 using WorldManager;
 
-using Fonts;
+using Momo.Fonts;
 
 
 
@@ -46,8 +46,6 @@ namespace TestGame
 
 
         Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers);
-        TextObject[] m_playerAmmo = new TextObject[kMaxPlayers];
-
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
 
 
@@ -57,10 +55,9 @@ namespace TestGame
         Systems.WeaponManager m_weaponManager = null;
         Systems.ProjectileManager m_projectileManager = null;
         Systems.EnemyManager m_enemyManager = null;
+        Systems.OsdManager m_osdManager = null;
 
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
-        Font m_font = null;
-        List<TextObject> m_textList = new List<TextObject>(10);
 
 
         // --------------------------------------------------------------------
@@ -71,6 +68,7 @@ namespace TestGame
             m_weaponManager = new Systems.WeaponManager(this);
             m_projectileManager = new Systems.ProjectileManager(this, m_bin);
             m_enemyManager = new Systems.EnemyManager(this, m_bin);
+            m_osdManager = new Systems.OsdManager(this);
         }
 
 
@@ -78,11 +76,11 @@ namespace TestGame
         public Systems.ProjectileManager GetProjectileManager() { return m_projectileManager; }
         public Systems.EnemyManager GetEnemyManager()           { return m_enemyManager; }
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
-        public Font GetFont()                                   { return m_font; }
         public Random GetRandom()                               { return m_random; }
         public DebugRenderer GetDebugRenderer()                 { return m_debugRenderer; }
 
         public PlayerEntity[] GetPlayers()                      { return m_players.ActiveItemList; }
+        public int GetPlayerCount()                             { return m_players.ActiveItemListCount; }
 
 
 
@@ -91,8 +89,7 @@ namespace TestGame
             m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
 
             Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
-            m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 1000, 1);
-            m_font = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
+            m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 100, 1000, 1);
 
             m_camera.ViewWidth = TestGame.kBackBufferWidth;
             m_camera.ViewHeight = TestGame.kBackBufferHeight;
@@ -112,16 +109,9 @@ namespace TestGame
                 PlayerEntity player = new PlayerEntity(this);
                 player.AddToBin(m_bin);
 
-                // Create the osd items
-                m_playerAmmo[i] = new TextObject("", m_font, 500, 100, 3);
-                m_textList.Add(m_playerAmmo[i]);
-
-                player.SetAmmoOsd(m_playerAmmo[i]);
-
                 m_players.AddItem(player, true);
             }
 
-            m_playerAmmo[0].Position = new Vector2(25.0f, 25.0f);
 
             // Create the enemies
             float mapWidth = (float)(m_map.Dimensions.X * m_map.TileDimensions.X);
@@ -177,6 +167,8 @@ namespace TestGame
 
             m_enemyManager.Update(ref frameTime);
             m_projectileManager.Update(ref frameTime);
+            m_osdManager.Update(ref frameTime);
+
 
             m_contactList.StartAddingContacts();
             CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList);
@@ -210,17 +202,22 @@ namespace TestGame
             m_camera.PreRenderUpdate();
         }
 
+
         public override void Render()
         {
             m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
 
-            m_textPrinter.Render(m_textList, true, TestGame.Instance().GraphicsDevice);
+            m_osdManager.Render();
+
+            m_textPrinter.Render(true, TestGame.Instance().GraphicsDevice);
         }
+
 
         public override void PostRender()
         {
-
+            m_textPrinter.ClearDrawList();
         }
+
 
         public override void DebugRender()
         {
@@ -236,6 +233,7 @@ namespace TestGame
 
             m_enemyManager.DebugRender(m_debugRenderer);
             m_projectileManager.DebugRender(m_debugRenderer);
+            m_osdManager.DebugRender(m_debugRenderer);
 
             //m_pathIsland.DebugRender(m_debugRenderer);
             //m_bin.DebugRender(m_debugRenderer, 10, 2);

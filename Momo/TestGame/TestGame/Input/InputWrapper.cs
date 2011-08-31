@@ -104,6 +104,7 @@ namespace TestGame.Input
             m_leftTrigger = currentGamePadState.Triggers.Left;
             m_rightTrigger = currentGamePadState.Triggers.Right;
 
+
             // Update the buttons
             foreach (Buttons button in ms_buttons)
             {
@@ -183,10 +184,6 @@ namespace TestGame.Input
             if (currentKeyboardState.IsKeyDown(key))
             {
                 result = 1.0f;
-            }
-            else
-            {
-                result = 0.0f;
             }
         }
 

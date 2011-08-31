@@ -6,12 +6,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 
 
-namespace Fonts
+namespace Momo.Fonts
 {
     public class TextBatchPrinter
     {
+        private int m_maxTextObjects = 0;
         private int m_maxCharacters = 0;
         private int m_maxPages = 0;
+
+        private int m_textObjectCnt = 0;
 
         private Effect m_effect = null;
         private EffectParameter m_viewHalfDimensionParam = null;
@@ -21,18 +24,22 @@ namespace Fonts
         private Vector2 m_targetResolution = Vector2.Zero;
         private Vector2 m_halfTargetResolution = Vector2.Zero;
 
+        private TextObject[] m_textObjects = null;
+
         private TextVertexDeclaration[] m_textBatchVertices = null;
         private short[] m_textBatchIndices = null;
         private int[] m_textBatchVertCnt = null;
 
-        private List<TextObject> m_tmpTextObjects = new List<TextObject>(1);
 
 
 
-        public void Init(Effect effect, Vector2 targetResolution, int maxCharacters, int maxPages)
+        public void Init(Effect effect, Vector2 targetResolution, int maxTextObjects, int maxCharacters, int maxPages)
         {
+            m_maxTextObjects = maxTextObjects;
             m_maxCharacters = maxCharacters;
             m_maxPages = maxPages;
+
+            m_textObjects = new TextObject[m_maxTextObjects];
 
             m_textBatchVertices = new TextVertexDeclaration[m_maxCharacters * 4 * m_maxPages];
             m_textBatchIndices = new short[m_maxCharacters * 6];
@@ -62,6 +69,23 @@ namespace Fonts
         }
 
 
+        public void AddToDrawList(TextObject textObject)
+        {
+            m_textObjects[m_textObjectCnt++] = textObject;
+        }
+
+
+        public void ClearDrawList()
+        {
+            for (int i = 0; i < m_textObjectCnt; ++i)
+            {
+                m_textObjects[i] = null;
+            }
+
+            m_textObjectCnt = 0;
+        }
+
+
         public void SetRenderTargetResolution(int width, int height)
         {
             SetRenderTargetResolution(new Vector2((float)width, (float)height)); 
@@ -75,15 +99,13 @@ namespace Fonts
         }
 
 
-        public void Render(TextObject textObject, bool handleRenderStates, GraphicsDevice graphicsDevice)
+        public void Render(bool handleRenderStates, GraphicsDevice graphicsDevice)
         {
-            m_tmpTextObjects.Add(textObject);
-            Render(m_tmpTextObjects, handleRenderStates, graphicsDevice);
-            m_tmpTextObjects.Clear();
+            Render(m_textObjects, m_textObjectCnt, handleRenderStates, graphicsDevice);
         }
 
 
-        public void Render(List<TextObject> textObjects, bool handleRenderStates, GraphicsDevice graphicsDevice)
+        public void Render(TextObject[] textObjects, int textObjectCnt, bool handleRenderStates, GraphicsDevice graphicsDevice)
         {
             GlyphInfo lastGlyphInfo = null;
 
@@ -99,7 +121,6 @@ namespace Fonts
             m_viewHalfDimensionParam.SetValue(m_halfTargetResolution);
 
 
-            int textObjectCnt = textObjects.Count;
             for (int t = 0; t < textObjectCnt; ++t)
             {
                 TextObject textObject = textObjects[t];

@@ -69,7 +69,7 @@ namespace FontProcessorLib
         // data will be loaded into at runtime.
         public override string GetRuntimeType(TargetPlatform targetPlatform)
         {
-            return "Fonts.Font, Fonts";
+            return "Momo.Fonts.Font, Momo.Fonts";
         }
 
 
@@ -77,7 +77,7 @@ namespace FontProcessorLib
         // will be used to load the basic model data.
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            return "Fonts.FontContentReader, Fonts";
+            return "Momo.Fonts.FontContentReader, Momo.Fonts";
         }
     }
 }

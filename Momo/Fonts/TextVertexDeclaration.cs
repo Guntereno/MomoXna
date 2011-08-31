@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 
 
-namespace Fonts
+namespace Momo.Fonts
 {
     //[StructLayout(LayoutKind.Sequential)]
     public struct TextVertexDeclaration : IVertexType
