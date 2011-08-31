@@ -54,9 +54,9 @@ namespace TestGame.Systems
                 if (currentWeapon != null)
                 {
                     m_weaponString[i].Append(currentWeapon.ToString());
-                    m_weaponString[i].Append("\n");
+                    m_weaponString[i].Append('\n');
                     m_weaponString[i].Append(currentWeapon.GetAmmoInClip());
-                    m_weaponString[i].Append("\n");
+                    m_weaponString[i].Append('\n');
                     m_weaponString[i].Append(currentWeapon.GetCurrentStateName());
                 }
 

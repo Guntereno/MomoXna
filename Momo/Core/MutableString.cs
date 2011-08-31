@@ -12,65 +12,109 @@ namespace Momo.Core
     {
         private static readonly char[] kDigits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
+        private char[] m_string = null;
+        private int m_length = 0;
 
-        private StringBuilder m_stringBuilder = null;
-        private char[] m_internalString = null;
 
 
         public MutableString(int maxLength)
         {
-            m_stringBuilder = new StringBuilder(maxLength, maxLength);
-
-            m_internalString = (char[])m_stringBuilder.GetType().GetField(
-                                        "m_ChunkChars",
-                                        System.Reflection.BindingFlags.NonPublic |
-                                        System.Reflection.BindingFlags.Instance).GetValue(m_stringBuilder);
+            m_string = new char[maxLength];
         }
 
 
+        public int GetLength()
+        {
+            return m_length;
+        }
+
         public void Clear()
         {
-            m_stringBuilder.Length = 0;
+            m_length = 0;
+            EndAppend();
         }
 
         public void EndAppend()
         {
-            m_stringBuilder.Append('\0');
+            m_string[m_length] = '\0';
+        }
+
+        public void Set(string value)
+        {
+            m_length = 0;
+            Append(value);
+            EndAppend();
+        }
+
+        public void Set(char[] value)
+        {
+            m_length = 0;
+            Append(value);
+            EndAppend();
+        }
+
+        public void Set(MutableString value)
+        {
+            m_length = 0;
+            Append(value.GetCharacterArray());
+            EndAppend();
+        }
+
+        public void Set(int value)
+        {
+            m_length = 0;
+            Append(value);
+            EndAppend();
+        }
+
+        public void Set(float value, int decimalPlaces)
+        {
+            m_length = 0;
+            Append(value, decimalPlaces);
+            EndAppend();
         }
 
         public void Append(string value)
         {
-            m_stringBuilder.Append(value);
+            int valueLength = value.Length;
+            value.CopyTo(0, m_string, m_length, valueLength);
+            m_length = m_length + valueLength;
         }
 
         public void Append(char value)
         {
-            m_stringBuilder.Append(value);
+            m_string[m_length++] = value;
         }
 
         public void Append(char[] value)
         {
-            m_stringBuilder.Append(value);
+            value.CopyTo(m_string, 0);
         }
 
         public void Append(bool value)
         {
-            m_stringBuilder.Append(value);
+            if (value)
+                Append("true");
+            else
+                Append("false");
         }
 
         public void AppendLine()
         {
-            m_stringBuilder.AppendLine();
+            Append('\n');
         }
 
         public void AppendLine(string value)
         {
-            m_stringBuilder.AppendLine(value);
+            Append(value);
+            AppendLine();
         }
 
         public void Insert(int index, string value)
         {
-            m_stringBuilder.Insert(index, value);
+            int valueLength = value.Length;
+            m_length = (index + valueLength);
+            value.CopyTo(0, m_string, index, valueLength);
         }
 
 
@@ -84,7 +128,7 @@ namespace Momo.Core
         {
             if (value < 0)
             {
-                m_stringBuilder.Append('-');
+                Append('-');
                 uint uintValue = uint.MaxValue - ((uint)value) + 1; //< This is to deal with Int32.MinValue
                 Append(uintValue, padSize);
             }
@@ -117,8 +161,8 @@ namespace Momo.Core
             if (padSize > length)
                 length = padSize;
 
-            m_stringBuilder.Length = m_stringBuilder.Length + length;
-            int strpos = m_stringBuilder.Length;
+            m_length = (m_length + length);
+            int strpos = m_length;
 
             // We're writing backwards, one character at a time.
             while (length > 0)
@@ -127,7 +171,7 @@ namespace Momo.Core
 
                 // Lookup from static char array, to cover hex values too
                 char digit = kDigits[value % 10];
-                m_stringBuilder[strpos] = digit;
+                m_string[strpos] = digit;
 
                 value /= 10;
                 length--;
@@ -173,7 +217,7 @@ namespace Momo.Core
 
         public char[] GetCharacterArray()
         {
-            return m_internalString;
+            return m_string;
         }
     }
 }

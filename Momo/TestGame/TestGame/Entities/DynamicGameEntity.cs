@@ -11,8 +11,13 @@ using Momo.Debug;
 
 namespace TestGame.Entities
 {
-    public class DynamicGameEntity : DynamicEntity, IPoolItem
+    public class DynamicGameEntity : DynamicEntity, INamed, IPoolItem
     {
+        const int kMaxNameLength = 32;
+
+        private MutableString m_name = new MutableString(kMaxNameLength);
+        private int m_nameHash = 0;
+
         private RadiusInfo m_contactRadiusInfo;
         private float m_facingAngle = 0.0f;
         private Vector2 m_facingDirection = Vector2.Zero;
@@ -22,6 +27,7 @@ namespace TestGame.Entities
         private GameWorld m_world;
         
         protected float m_health = 100.0f;
+
 
 
         public DynamicGameEntity(GameWorld world)
@@ -81,6 +87,10 @@ namespace TestGame.Entities
         }
 
 
+
+        // --------------------------------------------------------------------
+        // -- IPool interface implementation
+        // --------------------------------------------------------------------
         public bool IsDestroyed()
         {
             return m_destroyed;
@@ -96,5 +106,30 @@ namespace TestGame.Entities
             m_destroyed = false;
         }
 
+
+        // --------------------------------------------------------------------
+        // -- INamed interface implementation
+        // --------------------------------------------------------------------
+        public void SetName(MutableString name)
+        {
+            m_name.Set(name);
+            m_nameHash = Hashing.GenerateHash(m_name.GetCharacterArray(), m_name.GetLength());
+        }
+
+        public void SetName(string name)
+        {
+            m_name.Set(name);
+            m_nameHash = Hashing.GenerateHash(m_name.GetCharacterArray(), m_name.GetLength());
+        }
+
+        public MutableString GetName()
+        {
+            return m_name;
+        }
+
+        public int GetNameHash()
+        {
+            return m_nameHash;
+        }
     }
 }
