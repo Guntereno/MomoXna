@@ -121,6 +121,7 @@ namespace TestGame
             m_projectileManager.Load();
 
             m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(0));
+            m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(1));
 
             m_cameraController.TargetEntity = m_playerManager.GetPlayers()[0];
 

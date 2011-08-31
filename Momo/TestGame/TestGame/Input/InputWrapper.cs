@@ -6,7 +6,7 @@ using Momo.Core.ObjectPools;
 
 namespace TestGame.Input
 {
-    public class InputWrapper: IPoolItem
+    public class InputWrapper
     {
         private static Buttons[] ms_buttons = new Buttons[]
         {
@@ -39,6 +39,8 @@ namespace TestGame.Input
             Buttons.LeftThumbstickDown,
             Buttons.LeftThumbstickRight,
         };
+
+        private bool m_isActive;
         
 
         public InputWrapper()
@@ -68,6 +70,9 @@ namespace TestGame.Input
             }
         }
 
+
+        public bool GetIsActive() { return m_isActive; }
+
         public Vector2 GetLeftStick() { return m_leftStick; }
         public Vector2 GetRightStick() { return m_rightStick; }
 
@@ -78,30 +83,12 @@ namespace TestGame.Input
         {
             m_isActive = true;
         }
-        
-        #region IPoolItem Interface
-        
-        private bool m_isActive = false;
 
-        public bool IsDestroyed()
-        {
-            return m_isActive;
-        }
-
-        public void DestroyItem()
+        public void Deactivate()
         {
             m_isActive = false;
         }
-
-        public void ResetItem()
-        {
-            m_isActive = false;
-        }
-
-        #endregion
-
-
-
+        
 
         public bool IsButtonPressed(Buttons button)
         {
@@ -122,6 +109,9 @@ namespace TestGame.Input
 
         public void Update(GamePadState currentGamePadState)
         {
+            if (!m_isActive)
+                return;
+
             // Update the sticks
             Vector2 padVector;
             padVector = currentGamePadState.ThumbSticks.Left;

@@ -13,28 +13,56 @@ namespace TestGame.Input
     {
         public readonly int kMaxInputs = 4;
 
-        Pool<InputWrapper> m_wrappers = null;
+        InputWrapper[] m_wrappers = null;
 
         public InputWrapper GetInputWrapper(int idx) { return m_wrappers[idx]; }
 
         public InputManager()
         {
-            m_wrappers =  new Pool<InputWrapper>(kMaxInputs);
+            m_wrappers = new InputWrapper[kMaxInputs]; ;
 
-            InputWrapper inputWrapper = new InputWrapper();
-            inputWrapper.Init();
+            for (int i = 0; i < kMaxInputs; ++i)
+            {
+                InputWrapper inputWrapper = new InputWrapper();
+                m_wrappers[i] = inputWrapper;
+            }
 
-            m_wrappers.AddItem(inputWrapper, true);
+            m_wrappers[0].Init();
         }
 
         public void Update(ref FrameTime frameTime)
         {
-            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
             KeyboardState keyboardState = Keyboard.GetState();
 
-            for (int i = 0; i < m_wrappers.ActiveItemListCount; ++i)
+            for (int i = 0; i < kMaxInputs; ++i)
             {
-                GetInputWrapper(i).Update(gamePadState, keyboardState);
+                GamePadState gamePadState = GamePad.GetState((PlayerIndex)i);
+                InputWrapper wrapper = GetInputWrapper(i);
+
+                // Handle connection status
+                if(gamePadState.IsConnected)
+                {
+                    if (!wrapper.GetIsActive())
+                    {
+                        wrapper.Init();
+                    }
+                }
+                else
+                {
+                    if (wrapper.GetIsActive())
+                    {
+                        wrapper.Deactivate();
+                    }
+                }
+
+                if (i == 0)
+                {
+                    GetInputWrapper(i).Update(gamePadState, keyboardState);
+                }
+                else
+                {
+                    GetInputWrapper(i).Update(gamePadState);
+                }
             }
         }
     }
