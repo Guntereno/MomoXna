@@ -13,8 +13,8 @@ namespace TestGame.Systems
     class CameraController
     {
         public OrthographicCameraNode Camera { get; set; }
+        public Vector2 FollowPosition { get; set; }
 
-        public BaseEntity TargetEntity { get; set; }
 
         Vector3 m_cameraVelocity = Vector3.Zero;
 
@@ -25,9 +25,13 @@ namespace TestGame.Systems
         }
         Behaviour m_behaviour = Behaviour.Debug;
 
-        public CameraController()
-        {
+        private  GameWorld m_world;
 
+
+
+        public CameraController(GameWorld world)
+        {
+            m_world = world;
         }
 
         public void Update(ref Input.InputWrapper input)
@@ -58,30 +62,30 @@ namespace TestGame.Systems
 
         private void UpdateFollow()
         {
-            if (TargetEntity != null)
-            {
-                Vector3 pos = Camera.LocalTranslation;
-                Vector3 oldPos = pos;
+            PlayerManager playerManager = m_world.GetPlayerManager();
 
-                Vector2 entityPosition = TargetEntity.GetPosition();
-                pos.X = entityPosition.X;
-                pos.Y = entityPosition.Y;
+            Vector3 pos = Camera.LocalTranslation;
+            Vector3 oldPos = pos;
 
-                Camera.LocalTranslation = new Vector3(
-                    (float)Math.Floor(pos.X),
-                    (float)Math.Floor(pos.Y),
-                    (float)Math.Floor(pos.Z));
+            Vector2 averagePosition = FollowPosition;
 
-                m_cameraVelocity = pos - oldPos;
+            pos.X = averagePosition.X;
+            pos.Y = averagePosition.Y;
 
-                Matrix cameraMatrix = Matrix.Identity;
-                // Lets rotate the camera 180 in the z so that the map world renders nicely.
-                cameraMatrix.Right = new Vector3(1.0f, 0.0f, 0.0f);
-                cameraMatrix.Up = new Vector3(0.0f, -1.0f, 0.0f);
-                cameraMatrix.Translation = Camera.LocalTranslation;
+            Camera.LocalTranslation = new Vector3(
+                (float)Math.Floor(pos.X),
+                (float)Math.Floor(pos.Y),
+                (float)Math.Floor(pos.Z));
 
-                Camera.Matrix = cameraMatrix;
-            }
+            m_cameraVelocity = pos - oldPos;
+
+            Matrix cameraMatrix = Matrix.Identity;
+            // Lets rotate the camera 180 in the z so that the map world renders nicely.
+            cameraMatrix.Right = new Vector3(1.0f, 0.0f, 0.0f);
+            cameraMatrix.Up = new Vector3(0.0f, -1.0f, 0.0f);
+            cameraMatrix.Translation = Camera.LocalTranslation;
+
+            Camera.Matrix = cameraMatrix;
         }
 
         private void UpdateDebug(ref Input.InputWrapper input)

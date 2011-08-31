@@ -7,6 +7,7 @@ using Momo.Core.ObjectPools;
 using TestGame.Entities;
 using Momo.Core;
 using TestGame.Input;
+using Microsoft.Xna.Framework;
 
 namespace TestGame.Systems
 {
@@ -37,7 +38,8 @@ namespace TestGame.Systems
 
             // Spawn at a spawn point
             Map.Map map = m_world.GetMap();
-            int playerSpawnIndex = m_world.GetRandom().Next(map.PlayerSpawnPoints.Length);
+            //int playerSpawnIndex = m_world.GetRandom().Next(map.PlayerSpawnPoints.Length);
+            int playerSpawnIndex = 0;
             player.SetPosition(map.PlayerSpawnPoints[playerSpawnIndex]);
             player.Init();
 
@@ -55,6 +57,21 @@ namespace TestGame.Systems
                 m_players[i].Update(ref frameTime);
                 m_players[i].UpdateBinEntry();
             }
+        }
+
+        // TODO: Cache this
+        public Vector2 GetAveragePosition()
+        {
+            // Calculate the center point of the players
+            Vector2 averagePosition = Vector2.Zero;
+            int playerCount = m_players.ActiveItemListCount;
+            for (int i = 0; i < playerCount; ++i)
+            {
+                averagePosition += m_players[i].GetPosition();
+            }
+            averagePosition *= 1.0f / playerCount;
+
+            return averagePosition;
         }
 
         public Pool<PlayerEntity> GetPlayers() { return m_players; }

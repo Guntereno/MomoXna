@@ -33,13 +33,21 @@ namespace TestGame.Systems
 
             m_font = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
 
+            Vector2[] osdPositions = 
+            {
+                new Vector2(25.0f, 25.0f),
+                new Vector2(25.0f, 125.0f),
+                new Vector2(25.0f, 225.0f),
+                new Vector2(25.0f, 325.0f)
+            };
+
             for (int i = 0; i < kMaxPlayers; ++i)
             {
                 m_weaponInfo[i] = new TextObject("", m_font, 500, 100, 3);
                 m_weaponString[i] = new MutableString(40);
-            }
 
-            m_weaponInfo[0].Position = new Vector2(25.0f, 25.0f);
+                m_weaponInfo[i].Position = osdPositions[i];
+            }
         }
 
 

@@ -34,7 +34,7 @@ namespace TestGame
 
 
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
-        CameraController m_cameraController = new CameraController();
+        CameraController m_cameraController = null;
 
         Bin m_bin = new Bin(150, 150, 10000, 10000, 3, 10000, 5000, 1000);
         ContactList m_contactList = new ContactList(4000);
@@ -62,6 +62,7 @@ namespace TestGame
         // --------------------------------------------------------------------
         public GameWorld()
         {
+            m_cameraController = new CameraController(this);
             m_weaponManager = new WeaponManager(this);
             m_projectileManager = new ProjectileManager(this, m_bin);
             m_enemyManager = new EnemyManager(this, m_bin);
@@ -121,9 +122,13 @@ namespace TestGame
             m_projectileManager.Load();
 
             m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(0));
-            m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(1));
 
-            m_cameraController.TargetEntity = m_playerManager.GetPlayers()[0];
+            // TODO: Temp: Disconnects need to be handled in the InputManager
+            GamePadState gamePadState = GamePad.GetState(PlayerIndex.Two);
+            if (gamePadState.IsConnected)
+            {
+                m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(1));
+            }
 
             BuildCollisionBoundaries();
 
@@ -146,6 +151,9 @@ namespace TestGame
             Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper(0);
 
             m_playerManager.Update(ref frameTime);
+
+            // Move the camera follow position
+            m_cameraController.FollowPosition = m_playerManager.GetAveragePosition();
 
             m_enemyManager.Update(ref frameTime);
             m_projectileManager.Update(ref frameTime);
