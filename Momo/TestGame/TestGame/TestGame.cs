@@ -1,23 +1,11 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using Momo.Core;
-using Momo.Core.Graphics;
-using Momo.Core.Nodes.Cameras;
-using Momo.Core.Spatial;
-using Momo.Core.Collision2D;
-using Momo.Core.Primitive2D;
-using Momo.Core.GameEntities;
-using Momo.Core.Pathfinding;
-using Momo.Core.ObjectPools;
 using Momo.Debug;
 
-using TestGame.Systems;
-using TestGame.Entities;
-using TestGame.Objects;
+using TestGame.Input;
 
 
 
@@ -34,26 +22,25 @@ namespace TestGame
         public const int kBackBufferWidth = 1280;
         public const int kBackBufferHeight = 720;
 
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
 
-        Profiler m_profiler = new Profiler();
-        int m_cpuUpdateProfileItemId = 0;
-        int m_cpuRenderProfileItemId = 0;
-        int m_cpuDebugRenderProfileItemId = 0;
+        private Profiler m_profiler = new Profiler();
+        private int m_cpuUpdateProfileItemId = 0;
+        private int m_cpuRenderProfileItemId = 0;
+        private int m_cpuDebugRenderProfileItemId = 0;
 
-        Input.InputWrapper m_inputWrapper = new Input.InputWrapper();
-        WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
+        public InputManager InputManager { get; private set; }
 
-        public Input.InputWrapper InputWrapper
-        {
-            get { return m_inputWrapper; }
-        }
+        private WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
+
 
         public TestGame()
         {
             System.Diagnostics.Debug.Assert(ms_instance == null);
             ms_instance = this;
+
+            InputManager = new Input.InputManager();
 
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = kBackBufferWidth;
@@ -117,19 +104,15 @@ namespace TestGame
         {
             m_profiler.StartProfile(m_cpuUpdateProfileItemId);
 
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
-
-            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
-            KeyboardState keyboardState = Keyboard.GetState();
-            m_inputWrapper.Update(gamePadState, keyboardState);
-
-
             // More time related numbers will eventually be added to the FrameTime structure. Its worth passing
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            InputManager.Update(ref frameTime);
+
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                this.Exit();
 
             m_worldManager.Update(frameTime.Dt);
 

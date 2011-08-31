@@ -120,7 +120,7 @@ namespace TestGame
             m_weaponManager.Load();
             m_projectileManager.Load();
 
-            m_playerManager.AddPlayer(TestGame.Instance().InputWrapper);
+            m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper());
 
             m_cameraController.TargetEntity = m_playerManager.GetPlayers()[0];
 
@@ -142,7 +142,7 @@ namespace TestGame
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
 
-            Input.InputWrapper inputWrapper = TestGame.Instance().InputWrapper;
+            Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper();
 
             m_playerManager.Update(ref frameTime);
 

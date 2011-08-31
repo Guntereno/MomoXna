@@ -121,6 +121,7 @@
     <Compile Include="Entities\EntitySensoryData.cs" />
     <Compile Include="Entities\PlayerEntity.cs" />
     <Compile Include="GameWorld.cs" />
+    <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\InputWrapper.cs" />
     <Compile Include="Objects\Explosion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
