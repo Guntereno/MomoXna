@@ -2,10 +2,11 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Momo.Core.ObjectPools;
 
 namespace TestGame.Input
 {
-    public class InputWrapper
+    public class InputWrapper: IPoolItem
     {
         private static Buttons[] ms_buttons = new Buttons[]
         {
@@ -72,6 +73,34 @@ namespace TestGame.Input
 
         public float GetLeftTrigger() { return m_leftTrigger; }
         public float GetRightTrigger() { return m_rightTrigger; }
+
+        public void Init()
+        {
+            m_isActive = true;
+        }
+        
+        #region IPoolItem Interface
+        
+        private bool m_isActive = false;
+
+        public bool IsDestroyed()
+        {
+            return m_isActive;
+        }
+
+        public void DestroyItem()
+        {
+            m_isActive = false;
+        }
+
+        public void ResetItem()
+        {
+            m_isActive = false;
+        }
+
+        #endregion
+
+
 
 
         public bool IsButtonPressed(Buttons button)

@@ -5,18 +5,26 @@ using System.Text;
 using Momo.Core;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using Momo.Core.ObjectPools;
 
 namespace TestGame.Input
 {
     public class InputManager
     {
-        private InputWrapper m_inputWrapper = new InputWrapper();
+        public readonly int kMaxInputs = 4;
 
-        public InputWrapper GetInputWrapper() { return m_inputWrapper; }
+        Pool<InputWrapper> m_wrappers = null;
 
-        public Input.InputWrapper InputWrapper
+        public InputWrapper GetInputWrapper(int idx) { return m_wrappers[idx]; }
+
+        public InputManager()
         {
-            get { return m_inputWrapper; }
+            m_wrappers =  new Pool<InputWrapper>(kMaxInputs);
+
+            InputWrapper inputWrapper = new InputWrapper();
+            inputWrapper.Init();
+
+            m_wrappers.AddItem(inputWrapper, true);
         }
 
         public void Update(ref FrameTime frameTime)
@@ -24,7 +32,10 @@ namespace TestGame.Input
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
             KeyboardState keyboardState = Keyboard.GetState();
 
-            m_inputWrapper.Update(gamePadState, keyboardState);
+            for (int i = 0; i < m_wrappers.ActiveItemListCount; ++i)
+            {
+                GetInputWrapper(i).Update(gamePadState, keyboardState);
+            }
         }
     }
 }
