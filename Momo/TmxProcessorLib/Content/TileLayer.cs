@@ -9,13 +9,13 @@ namespace TmxProcessorLib.Content
 {
     public class TileLayer : Layer
     {
-        public int[] Data { get; private set; }
+        public uint[] Data { get; private set; }
 
         public override void ImportXmlNode(System.Xml.XmlNode layerNode, ContentImporterContext context)
         {
             base.ImportXmlNode(layerNode, context);
 
-            Data = new int[Dimensions.X * Dimensions.Y];
+            Data = new uint[Dimensions.X * Dimensions.Y];
 
             System.Xml.XmlNode dataNode = layerNode.SelectSingleNode("data");
             if (dataNode == null)
@@ -35,7 +35,12 @@ namespace TmxProcessorLib.Content
 
                         for (int i = 0; i < indices.Length; i++)
                         {
-                            Data[i] = int.Parse(indices[i]);
+                            uint value = uint.Parse(indices[i]);
+                            Data[i] = value & 0x3FFFFFFF;
+
+                            // These are currently ignored for now
+                            bool x = (value & 0x80000000) != 0;
+                            bool y = (value & 0x40000000) != 0;
                         }
                     }
                     break;
