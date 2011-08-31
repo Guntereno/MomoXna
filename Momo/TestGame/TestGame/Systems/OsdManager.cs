@@ -45,9 +45,9 @@ namespace TestGame.Systems
 
         public void Update(ref FrameTime frameTime)
         {
-            for (int i = 0; i < m_world.GetPlayerCount(); ++i)
+            for (int i = 0; i < m_world.GetPlayerManager().GetPlayers().ActiveItemListCount; ++i)
             {
-                Weapons.Weapon currentWeapon = m_world.GetPlayers()[i].GetCurrentWeapon();
+                Weapons.Weapon currentWeapon = m_world.GetPlayerManager().GetPlayers()[i].GetCurrentWeapon();
 
                 m_weaponString[i].Clear();
 

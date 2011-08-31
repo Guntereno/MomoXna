@@ -44,7 +44,7 @@ namespace TestGame.Systems
                 m_enemies[i].Update(ref frameTime);
                 m_enemies[i].UpdateBinEntry();
 
-                m_enemies[i].UpdateSensoryData(m_world.GetPlayers());
+                m_enemies[i].UpdateSensoryData(m_world.GetPlayerManager().GetPlayers().ActiveItemList);
 
                 if (m_enemies[i].IsDestroyed())
                 {

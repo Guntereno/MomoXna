@@ -31,7 +31,6 @@ namespace TestGame
     {
         public static World WorldCreator() { return new GameWorld(); }
 
-        public static readonly int kMaxPlayers = 4;
 
 
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
@@ -44,18 +43,16 @@ namespace TestGame
         Map.Map m_map = null;
         MapRenderer m_mapRenderer = new MapRenderer();
 
-
-        Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers);
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
-
 
         Random m_random = new Random();
         DebugRenderer m_debugRenderer = new DebugRenderer();
 
-        Systems.WeaponManager m_weaponManager = null;
-        Systems.ProjectileManager m_projectileManager = null;
-        Systems.EnemyManager m_enemyManager = null;
-        Systems.OsdManager m_osdManager = null;
+        PlayerManager m_playerManager = null;
+        WeaponManager m_weaponManager = null;
+        ProjectileManager m_projectileManager = null;
+        EnemyManager m_enemyManager = null;
+        OsdManager m_osdManager = null;
 
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
@@ -65,23 +62,23 @@ namespace TestGame
         // --------------------------------------------------------------------
         public GameWorld()
         {
-            m_weaponManager = new Systems.WeaponManager(this);
-            m_projectileManager = new Systems.ProjectileManager(this, m_bin);
-            m_enemyManager = new Systems.EnemyManager(this, m_bin);
-            m_osdManager = new Systems.OsdManager(this);
+            m_weaponManager = new WeaponManager(this);
+            m_projectileManager = new ProjectileManager(this, m_bin);
+            m_enemyManager = new EnemyManager(this, m_bin);
+            m_osdManager = new OsdManager(this);
+            m_playerManager = new PlayerManager(this, m_bin);
         }
 
+        public PlayerManager GetPlayerManager()                 { return m_playerManager; }
+        public WeaponManager GetWeaponManager()                 { return m_weaponManager; }
+        public ProjectileManager GetProjectileManager()         { return m_projectileManager; }
+        public EnemyManager GetEnemyManager()                   { return m_enemyManager; }
 
-        public Systems.WeaponManager GetWeaponManager()         { return m_weaponManager; }
-        public Systems.ProjectileManager GetProjectileManager() { return m_projectileManager; }
-        public Systems.EnemyManager GetEnemyManager()           { return m_enemyManager; }
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
         public Random GetRandom()                               { return m_random; }
         public DebugRenderer GetDebugRenderer()                 { return m_debugRenderer; }
 
-        public PlayerEntity[] GetPlayers()                      { return m_players.ActiveItemList; }
-        public int GetPlayerCount()                             { return m_players.ActiveItemListCount; }
-
+        public Map.Map GetMap()                                 { return m_map; }
 
 
         public override void Load()
@@ -103,15 +100,8 @@ namespace TestGame
             // ----------------------------------------------------------------
             // -- Init the pools
             // ----------------------------------------------------------------
-            const int kNumPlayers = 1;
-            for (int i = 0; i < kNumPlayers; ++i)
-            {
-                PlayerEntity player = new PlayerEntity(this);
-                player.AddToBin(m_bin);
 
-                m_players.AddItem(player, true);
-            }
-
+            m_playerManager.Load();
 
             // Create the enemies
             float mapWidth = (float)(m_map.Dimensions.X * m_map.TileDimensions.X);
@@ -130,12 +120,9 @@ namespace TestGame
             m_weaponManager.Load();
             m_projectileManager.Load();
 
+            m_playerManager.AddPlayer(TestGame.Instance().InputWrapper);
 
-            int playerSpawnIndex = m_random.Next(m_map.PlayerSpawnPoints.Length);
-            m_players[0].SetPosition(m_map.PlayerSpawnPoints[playerSpawnIndex]);
-            m_players[0].Init();
-
-            m_cameraController.TargetEntity = m_players[0];
+            m_cameraController.TargetEntity = m_playerManager.GetPlayers()[0];
 
             BuildCollisionBoundaries();
 
@@ -157,13 +144,7 @@ namespace TestGame
 
             Input.InputWrapper inputWrapper = TestGame.Instance().InputWrapper;
 
-
-            for (int i = 0; i < m_players.ActiveItemListCount; ++i)
-            {
-                m_players[i].UpdateInput(ref inputWrapper);
-                m_players[i].Update(ref frameTime);
-                m_players[i].UpdateBinEntry();
-            }
+            m_playerManager.Update(ref frameTime);
 
             m_enemyManager.Update(ref frameTime);
             m_projectileManager.Update(ref frameTime);
@@ -172,7 +153,7 @@ namespace TestGame
 
             m_contactList.StartAddingContacts();
             CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList);
-            CollisionHelpers.GenerateContacts(m_players.ActiveItemList, m_players.ActiveItemListCount, m_bin, m_contactList);
+            CollisionHelpers.GenerateContacts(m_playerManager.GetPlayers().ActiveItemList, m_playerManager.GetPlayers().ActiveItemListCount, m_bin, m_contactList);
             CollisionHelpers.UpdateBulletContacts(m_projectileManager.GetBullets().ActiveItemList, m_projectileManager.GetBullets().ActiveItemListCount, m_bin);
             m_contactList.EndAddingContacts();
 
@@ -226,9 +207,9 @@ namespace TestGame
                 m_boundaries[i].DebugRender(m_debugRenderer);
             }
 
-            for (int i = 0; i < m_players.ActiveItemListCount; ++i)
+            for (int i = 0; i < m_playerManager.GetPlayers().ActiveItemListCount; ++i)
             {
-                m_players[i].DebugRender(m_debugRenderer);
+                m_playerManager.GetPlayers()[i].DebugRender(m_debugRenderer);
             }
 
             m_enemyManager.DebugRender(m_debugRenderer);

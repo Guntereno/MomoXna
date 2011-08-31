@@ -23,7 +23,7 @@ namespace TestGame.Entities
         private Weapons.Weapon m_currentWeapon = null;
         private int m_currentWeaponIdx = -1;
 
-
+        private Input.InputWrapper m_input = null;
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -36,43 +36,10 @@ namespace TestGame.Entities
             DebugColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
         }
 
+        public Weapons.Weapon GetCurrentWeapon() { return m_currentWeapon; }
+        public Input.InputWrapper GetInputWrapper() { return m_input; }
 
-        public void UpdateInput(ref Input.InputWrapper input)
-        {
-            // Handle weapon cycling
-            if(input.IsButtonPressed(Buttons.RightShoulder))
-            {
-                ++m_currentWeaponIdx ;
-                if(m_currentWeaponIdx >= kNumWeaponSlots)
-                {
-                    m_currentWeaponIdx = 0;
-                }
-            }
-
-            if(input.IsButtonPressed(Buttons.LeftShoulder))
-            {
-                --m_currentWeaponIdx ;
-                if(m_currentWeaponIdx < 0)
-                {
-                    m_currentWeaponIdx = kNumWeaponSlots-1;
-                }
-            }
-
-            m_currentWeapon = m_arsenal[m_currentWeaponIdx];
-
-            if (m_currentWeapon.GetAmmoInClip() < m_currentWeapon.GetParams().m_clipSize)
-            {
-                if (input.IsButtonPressed(Buttons.X) || (m_currentWeapon.GetAmmoInClip() == 0))
-                {
-                    m_currentWeapon.Reload();
-                }
-            }
-
-            m_movementInputVector = input.GetLeftStick();
-            m_facingInputVector = input.GetRightStick();
-            m_triggerState = input.GetRightTrigger();
-        }
-
+        public void SetInputWrapper(Input.InputWrapper value) { m_input = value; }
 
         public void Init()
         {
@@ -88,6 +55,8 @@ namespace TestGame.Entities
         public override void Update(ref FrameTime frameTime)
         {
             base.Update(ref frameTime);
+
+            UpdateInput();
 
             const float kMaxSpeed = 200.0f;
 
@@ -117,13 +86,6 @@ namespace TestGame.Entities
                 AddForce(m_currentWeapon.Recoil);
             }
         }
-
-
-        public Weapons.Weapon GetCurrentWeapon()
-        {
-            return m_currentWeapon;
-        }
-
 
         public void AddToBin(Bin bin)
         {
@@ -163,5 +125,44 @@ namespace TestGame.Entities
         {
             AddForce(force);
         }
+
+
+        private void UpdateInput()
+        {
+            // Handle weapon cycling
+            if (m_input.IsButtonPressed(Buttons.RightShoulder))
+            {
+                ++m_currentWeaponIdx;
+                if (m_currentWeaponIdx >= kNumWeaponSlots)
+                {
+                    m_currentWeaponIdx = 0;
+                }
+            }
+
+            if (m_input.IsButtonPressed(Buttons.LeftShoulder))
+            {
+                --m_currentWeaponIdx;
+                if (m_currentWeaponIdx < 0)
+                {
+                    m_currentWeaponIdx = kNumWeaponSlots - 1;
+                }
+            }
+
+            m_currentWeapon = m_arsenal[m_currentWeaponIdx];
+
+            if (m_currentWeapon.GetAmmoInClip() < m_currentWeapon.GetParams().m_clipSize)
+            {
+                if (m_input.IsButtonPressed(Buttons.X) || (m_currentWeapon.GetAmmoInClip() == 0))
+                {
+                    m_currentWeapon.Reload();
+                }
+            }
+
+            m_movementInputVector = m_input.GetLeftStick();
+            m_facingInputVector = m_input.GetRightStick();
+            m_triggerState = m_input.GetRightTrigger();
+        }
+
+
     }
 }
