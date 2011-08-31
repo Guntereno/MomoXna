@@ -4,16 +4,16 @@
   <property name="lightFactor" value="4"/>
  </properties>
  <tileset firstgid="1" name="livingquaters" tilewidth="32" tileheight="32">
-  <image source="../tilesets/livingquaters.png"/>
+  <image source="../tilesets/livingquaters.png" width="512" height="512"/>
  </tileset>
  <tileset firstgid="257" name="shadows" tilewidth="32" tileheight="32">
-  <image source="../tilesets/shadows.png"/>
+  <image source="../tilesets/shadows.png" width="128" height="128"/>
  </tileset>
  <tileset firstgid="273" name="ceiling" tilewidth="32" tileheight="32">
-  <image source="../tilesets/ceiling.png"/>
+  <image source="../tilesets/ceiling.png" width="256" height="128"/>
  </tileset>
  <tileset firstgid="305" name="text" tilewidth="32" tileheight="32">
-  <image source="../tilesets/text.png"/>
+  <image source="../tilesets/text.png" width="512" height="1024"/>
  </tileset>
  <layer name="Floor" width="64" height="64">
   <data encoding="csv">

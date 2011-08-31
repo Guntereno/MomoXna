@@ -107,7 +107,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ai\States\ChaseState.cs" />
+    <Compile Include="Ai\States\DyingState.cs" />
+    <Compile Include="Ai\States\RandomWanderState.cs" />
     <Compile Include="Ai\States\State.cs" />
+    <Compile Include="Ai\States\StunnedState.cs" />
+    <Compile Include="Ai\States\TimedState.cs" />
     <Compile Include="Entities\AiEntity.cs" />
     <Compile Include="Entities\BinLayers.cs" />
     <Compile Include="Entities\BulletEntity.cs" />
