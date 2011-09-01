@@ -119,13 +119,17 @@ namespace TestGame.Entities
 
         public void OnCollisionEvent(ref BulletEntity bullet)
         {
-            AddForce(bullet.GetVelocity() * 5.0f);
+            float damage = bullet.GetParams().m_damage;
+            Vector2 direction = bullet.GetPositionDifferenceFromLastFrame();
+            direction.Normalize();
+
+            AddForce(direction * (damage * 500.0f));
 
 
             if (m_currentState != m_stateDying)
             {
                 // Take damage from the bullet
-                m_health -= bullet.GetParams().m_damage;
+                m_health -= damage;
                 if (m_health <= 0.0f)
                 {
                     m_health = 0.0f;

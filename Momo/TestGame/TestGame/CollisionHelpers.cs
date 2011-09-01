@@ -66,7 +66,7 @@ namespace TestGame
                             {
                                 Vector2 contactNormal = intersectInfo.PositionDifference / intersectInfo.PositionDistance;
                                 float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - doubleContactDimensionPadding;
-                                contactList.AddContact(entity, checkEntity, contactNormal, contactOverlap, 1.0f, 0.0f);
+                                contactList.AddContact(entity, checkEntity, contactNormal, contactOverlap, 1.0f, 0.9f);
                             }
                         }
                     }
@@ -103,7 +103,7 @@ namespace TestGame
                     {
                         Vector2 contactNormal = -(intersectInfo.PositionDifference / intersectInfo.PositionDistance);
                         float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - contactDimensionPadding;
-                        contactList.AddContact(entity, null, contactNormal, contactOverlap, 1.0f, 0.0f);
+                        contactList.AddContact(entity, null, contactNormal, contactOverlap, 1.0f, 0.4f);
                     }
                 }
             }

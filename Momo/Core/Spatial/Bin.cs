@@ -415,11 +415,7 @@ namespace Momo.Core.Spatial
             }
 
 
-            // Stop divide by 0.
-            if (diffBinSpace.X == 0.0f)
-                diffBinSpace.X = float.MinValue;
-            else if (diffBinSpace.Y == 0.0f)
-                diffBinSpace.Y = float.MinValue;
+
 
 
 
@@ -427,8 +423,15 @@ namespace Momo.Core.Spatial
 
 
             // The one will have to change based on -/+ direction of y.
-            float tX = ((float)(binLocation.m_x + binBaseX) - p1BinSpace.X) / diffBinSpace.X;
-            float tY = ((float)(binLocation.m_y + binBaseY) - p1BinSpace.Y) / diffBinSpace.Y;
+            float tX = float.MaxValue;
+            float tY = float.MaxValue;
+
+            // Stop divide by 0.
+            if (diffBinSpace.X != 0.0f)
+                tX = ((float)(binLocation.m_x + binBaseX) - p1BinSpace.X) / diffBinSpace.X;
+            
+            if (diffBinSpace.Y != 0.0f)
+                tY = ((float)(binLocation.m_y + binBaseY) - p1BinSpace.Y) / diffBinSpace.Y;
 
 
             while (tX < 1.0f || tY < 1.0f)

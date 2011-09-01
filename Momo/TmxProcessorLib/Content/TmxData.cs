@@ -148,9 +148,9 @@ namespace TmxProcessorLib.Content
 
                 for (int x = 0; x < Dimensions.X; ++x)
                 {
-                    for (int y = 0; y < Dimensions.Y; ++x)
+                    for (int y = 0; y < Dimensions.Y; ++y)
                     {
-                        if (wallLayer.Data[y * wallLayer.Dimensions.X] != 0)
+                        if (wallLayer.Data[x + (y * wallLayer.Dimensions.X)] != 0)
                         {
                             if (x < min.X)
                                 min.X = x;
@@ -231,12 +231,12 @@ namespace TmxProcessorLib.Content
 
                                 // Compare sides (treat edges as collision)
                                 if (y == 0)
-                                    top = true;
+                                    top = false;
                                 else
                                     top = (wallLayer.Data[x + ((y - 1) * wallLayer.Dimensions.X)] != 0);
 
                                 if (y == wallLayer.Dimensions.Y)
-                                    bottom = true;
+                                    bottom = false;
                                 else
                                     bottom = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)] != 0);
 
@@ -267,12 +267,12 @@ namespace TmxProcessorLib.Content
 
                                 // Compare sides (treat edges as collision)
                                 if (x == 0)
-                                    left = true;
+                                    left = false;
                                 else
                                     left = (wallLayer.Data[(x - 1) + (y * wallLayer.Dimensions.X)] != 0);
 
                                 if (x == wallLayer.Dimensions.X)
-                                    right = true;
+                                    right = false;
                                 else
                                     right = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)] != 0);
 
@@ -440,7 +440,8 @@ namespace TmxProcessorLib.Content
 
                     for (int i = 0; i < boundary.Length; ++i)
                     {
-                        output.WriteObject<Point>(boundary[i]);
+                        Vector2 fBoundary = new Vector2(boundary[i].X, boundary[i].Y);
+                        output.WriteObject<Vector2>(fBoundary);
                     }
                 }
             }

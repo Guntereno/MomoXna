@@ -24,7 +24,7 @@ namespace Momo.Core.Pathfinding
 
         public void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawFilledCircle(m_position, m_radius, new Color(0.0f, 1.0f, 1.0f, 0.10f));
+            debugRenderer.DrawFilledCircle(m_position, m_radius, new Color(0.0f, 1.0f, 1.0f, 0.50f));
         }
     }
 }

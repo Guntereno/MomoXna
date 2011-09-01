@@ -41,6 +41,12 @@ namespace Momo.Core
 
     public class Math2D
     {
+        public static Vector2 Perpendicular(Vector2 vector)
+        {
+            return new Vector2(vector.Y, -vector.X);
+        }
+
+
         public static void CapVectorMagnitude(ref Vector2 vector, float magnitude, float magnitudeSq)
         {
             float vectorMagSq = vector.LengthSquared();

@@ -56,6 +56,8 @@ namespace TestGame
 
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
+        PathIsland m_pathIsland = new PathIsland();
+
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -133,6 +135,15 @@ namespace TestGame
             BuildCollisionBoundaries();
 
             m_mapRenderer.Init(m_map, TestGame.Instance().GraphicsDevice, 16);
+
+
+            PathRegion[] regions = new PathRegion[1];
+            regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
+            //regions[0].GenerateNodesFromGrid(10.0f, 50.0f);
+            regions[0].GenerateNodesFromBoundaries(m_map.CollisionBoundaries);
+            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundary);
+
+            m_pathIsland.SetRegions(regions);
         }
 
 

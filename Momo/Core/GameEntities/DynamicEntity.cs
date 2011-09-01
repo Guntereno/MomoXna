@@ -24,7 +24,7 @@ namespace Momo.Core.GameEntities
         private static readonly float kMaxAcceleration = 500.0f;
         private static readonly float kMaxAccelerationSq = kMaxAcceleration * kMaxAcceleration;
         
-        private static readonly float kFriction = 7000.0f;
+        private static readonly float kFriction = 9000.0f;
 
 
         // --------------------------------------------------------------------
@@ -52,6 +52,11 @@ namespace Momo.Core.GameEntities
         public void SetVelocity(Vector2 velocity)
         {
             m_velocity = velocity;
+        }
+
+        public void AddVelocity(Vector2 velocity)
+        {
+            m_velocity += velocity;
         }
 
         public override Vector2 GetVelocity()

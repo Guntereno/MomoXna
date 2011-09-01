@@ -17,6 +17,36 @@ namespace Momo.Core.Pathfinding
         private PathRegion[] m_regions = null;
 
 
+        //public bool void CreatePath(Vector2 startPos, Vector2 endPos, float radius, out PathRoute)
+        //{
+
+        //    // Check for direct line of sight
+        //    //if(CollisionHelper.isLineOfSight(startPos, endPos, radius)
+        //    //{
+
+        //    //    return true;
+        //    //}
+
+
+        //    //PathNode startNode = GetClosestNode(startPos);
+        //    //PathNode endNode = GetClosestNode(endPos);
+
+        //    //if(startNode != null && endNode != null)
+        //    //{
+
+        //    //  return true;
+        //    //}
+
+        //    //return false;
+        //}
+
+
+        //public bool GetClosestNode(Vector2 pos, out PathNode)
+        //{
+        //    // Use bins to track down limited selection of nodes.
+        //}
+
+
         public void SetRegions(PathRegion[] regions)
         {
             m_regions = regions;

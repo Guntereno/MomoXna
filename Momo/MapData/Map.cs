@@ -31,7 +31,7 @@ namespace Map
 
         public Tile[] Tiles { get; private set; }
 
-        public Point[][] CollisionBoundaries { get; private set; }
+        public Vector2[][] CollisionBoundaries { get; private set; }
 
         public Vector2[] PlayerSpawnPoints { get; private set; }
 
@@ -82,14 +82,14 @@ namespace Map
 
             // Read in the collision data
             int numStrips = input.ReadInt32();
-            CollisionBoundaries = new Point[numStrips][];
+            CollisionBoundaries = new Vector2[numStrips][];
             for (int boundaryIdx = 0; boundaryIdx < numStrips; ++boundaryIdx)
             {
                 int numNodes = input.ReadInt32();
-                CollisionBoundaries[boundaryIdx] = new Point[numNodes];
+                CollisionBoundaries[boundaryIdx] = new Vector2[numNodes];
                 for (int nodeIdx = 0; nodeIdx < numNodes; ++nodeIdx)
                 {
-                    CollisionBoundaries[boundaryIdx][nodeIdx] = input.ReadObject<Point>();
+                    CollisionBoundaries[boundaryIdx][nodeIdx] = input.ReadObject<Vector2>();
                 }
             }
 
