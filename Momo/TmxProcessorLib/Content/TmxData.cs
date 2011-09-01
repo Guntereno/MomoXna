@@ -37,6 +37,9 @@ namespace TmxProcessorLib.Content
 
         public List<Vector2> PlayerSpawns { get; private set; }
 
+        public Vector2 MinPlayableArea { get; private set; }
+        public Vector2 MaxPlayableArea { get; private set; }
+
         public TmxData(string fileName)
         {
             FileName = fileName;
@@ -130,6 +133,47 @@ namespace TmxProcessorLib.Content
             BuildCollisionStrip();
 
             BuildPlayerSpawns();
+
+            CalculatePlayableArea();
+        }
+
+        private void CalculatePlayableArea()
+        {
+            if (TileLayers.ContainsKey("Walls"))
+            {
+                TileLayer wallLayer = TileLayers["Walls"];
+
+                Point min = new Point(int.MaxValue, int.MaxValue);
+                Point max = new Point(int.MinValue, int.MinValue);
+
+                for (int x = 0; x < Dimensions.X; ++x)
+                {
+                    for (int y = 0; y < Dimensions.Y; ++x)
+                    {
+                        if (wallLayer.Data[y * wallLayer.Dimensions.X] != 0)
+                        {
+                            if (x < min.X)
+                                min.X = x;
+                            if (y < min.Y)
+                                min.Y = y;
+
+                            if (x > max.X)
+                                max.X = x;
+                            if (y > max.Y)
+                                max.Y = y;
+                        }
+                    }
+                }
+
+                // Adjust to bring inside the wall
+                min.X += 1;
+                min.Y += 1;
+                max.X -= 1;
+                max.Y -= 1;
+
+                MinPlayableArea = new Vector2((float)(min.X * TileDimensions.X), (float)(min.Y * TileDimensions.Y));
+                MaxPlayableArea = new Vector2((float)(max.X * TileDimensions.X), (float)(max.Y * TileDimensions.Y));
+            }
         }
 
         private void BuildPlayerSpawns()
@@ -412,6 +456,9 @@ namespace TmxProcessorLib.Content
                 output.Write(pos);
             }
 
+            // Output the play area definition
+            output.Write(MinPlayableArea);
+            output.Write(MaxPlayableArea);
         }
     }
 }

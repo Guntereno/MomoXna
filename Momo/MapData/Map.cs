@@ -35,6 +35,10 @@ namespace Map
 
         public Vector2[] PlayerSpawnPoints { get; private set; }
 
+        public Vector2 PlayAreaMin { get; private set; }
+        public Vector2 PlayAreaMax { get; private set; }
+
+
         public void Read(ContentReader input)
         {
             Type = (TypeId)input.ReadByte();
@@ -96,6 +100,10 @@ namespace Map
             {
                 PlayerSpawnPoints[i] = input.ReadVector2();
             }
+
+            // Read in the vectors describing the playable area
+            PlayAreaMin = input.ReadVector2();
+            PlayAreaMax = input.ReadVector2();
         }
     }
 
