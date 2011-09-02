@@ -160,6 +160,10 @@
       <Project>{2A9FB9C8-0CD3-42F3-9343-6DABE152E5C2}</Project>
       <Name>MapData</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Maths\Maths.csproj">
+      <Project>{5E15C6DB-4C37-4B3F-8D66-05DB0EDD8104}</Project>
+      <Name>Maths</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\WorldManager\WorldManager.csproj">
       <Project>{93E06FCE-346B-4333-AC66-22C8651E226B}</Project>
       <Name>WorldManager</Name>

@@ -1,45 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using Microsoft.Xna.Framework;
 
 
 
-namespace Momo.Core
+namespace Momo.Maths
 {
-    public struct IntersectInfo2D
-    {
-        private Vector2 m_dPositions;
-        private float m_distance;
-        private float m_resolveDistance;
-
-
-        // --------------------------------------------------------------------
-        // -- Public Methods
-        // --------------------------------------------------------------------
-        public Vector2 PositionDifference
-        {
-            get { return m_dPositions; }
-            set { m_dPositions = value; }
-        }
-
-        public float PositionDistance
-        {
-            get { return m_distance; }
-            set { m_distance = value; }
-        }
-
-        public float ResolveDistance
-        {
-            get { return m_resolveDistance; }
-            set { m_resolveDistance = value; }
-        }
-    }
-
-
-
-    public class Math2D
+    public class Maths2D
     {
         public static Vector2 Perpendicular(Vector2 vector)
         {
@@ -113,20 +80,50 @@ namespace Momo.Core
         }
 
 
-        public static bool DoesIntersect(Vector2 lineStart1, Vector2 lineStep1, Vector2 lineStart2, Vector2 lineStep2, ref Vector2 outIntersectPoint)
+        public static bool DoesIntersect(Vector2 lineStart1, Vector2 lineStep1, Vector2 lineStart2, Vector2 lineStep2)
         {
             float div = (-lineStep2.X * lineStep1.Y) + (lineStep1.X * lineStep2.Y);
+            //if (div == 0.0f)
+            //    return false;
+
             float s = (-lineStep1.Y * (lineStart1.X - lineStart2.X) + lineStep1.X * (lineStart1.Y - lineStart2.Y)) / div;
             float t = (lineStep2.X * (lineStart1.Y - lineStart2.Y) - lineStep2.Y * (lineStart1.X - lineStart2.X)) / div;
 
-            //if (t < 0.0f || t > 1.0f || s < 0.0f || s > 1.0f)
+            if (t < 0.0f || t > 1.0f || s < 0.0f || s > 1.0f)
+                return false;
+
+            return true;
+        }
+
+
+        public static bool DoesIntersect(Vector2 lineStart1, Vector2 lineStep1, Vector2 lineStart2, Vector2 lineStep2, ref Vector2 outIntersectPoint)
+        {
+            float div = (-lineStep2.X * lineStep1.Y) + (lineStep1.X * lineStep2.Y);
+            //if (div == 0.0f)
             //    return false;
 
-            if (t >= 0.0f && t <= 1.0f && s >= 0.0f && s <= 1.0f)
-                return true;
+            float s = (-lineStep1.Y * (lineStart1.X - lineStart2.X) + lineStep1.X * (lineStart1.Y - lineStart2.Y)) / div;
+            float t = (lineStep2.X * (lineStart1.Y - lineStart2.Y) - lineStep2.Y * (lineStart1.X - lineStart2.X)) / div;
+
+            if (t < 0.0f || t > 1.0f || s < 0.0f || s > 1.0f)
+                return false;
 
             outIntersectPoint = lineStart1 + (lineStep1 * t);
-            return false;
+            return true;
+        }
+
+
+        public static bool DoesIntersectInfinite(Vector2 lineStart1, Vector2 lineStep1, Vector2 lineStart2, Vector2 lineStep2, ref Vector2 outIntersectPoint)
+        {
+            float div = (-lineStep2.X * lineStep1.Y) + (lineStep1.X * lineStep2.Y);
+            if (div == 0.0f)
+                return false;
+
+            float s = (-lineStep1.Y * (lineStart1.X - lineStart2.X) + lineStep1.X * (lineStart1.Y - lineStart2.Y)) / div;
+            float t = (lineStep2.X * (lineStart1.Y - lineStart2.Y) - lineStep2.Y * (lineStart1.X - lineStart2.X)) / div;
+
+            outIntersectPoint = lineStart1 + (lineStep1 * t);
+            return true;
         }
     }
 }

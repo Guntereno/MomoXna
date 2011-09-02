@@ -4,6 +4,7 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 
+using Momo.Maths;
 using Momo.Core.Spatial;
 using Momo.Core.Collision2D;
 
@@ -112,7 +113,7 @@ namespace Momo.Core.GameEntities
             Vector2 acceleration = ((m_force * m_massInfo.InverseMass) * frameTime.Dt);
            
             // Cap the acceleration
-            Math2D.CapVectorMagnitude(ref acceleration, kMaxAcceleration, kMaxAccelerationSq);
+            Maths2D.CapVectorMagnitude(ref acceleration, kMaxAcceleration, kMaxAccelerationSq);
 
 
             // Velocity update

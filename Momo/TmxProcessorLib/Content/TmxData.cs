@@ -248,11 +248,11 @@ namespace TmxProcessorLib.Content
 
                                     if (top)
                                     {
-                                        edgeList.Add(new Edge(leftPoint, rightPoint));
+                                        edgeList.Add(new Edge(rightPoint, leftPoint));
                                     }
                                     else
                                     {
-                                        edgeList.Add(new Edge(rightPoint, leftPoint));
+                                        edgeList.Add(new Edge(leftPoint, rightPoint));
                                     }
                                 }
                             }
@@ -283,11 +283,11 @@ namespace TmxProcessorLib.Content
                                     Point bottomPoint = new Point(x, y + 1);
                                     if (left)
                                     {
-                                        edgeList.Add(new Edge(bottomPoint, topPoint));
+                                        edgeList.Add(new Edge(topPoint, bottomPoint));
                                     }
                                     else
                                     {
-                                        edgeList.Add(new Edge(topPoint, bottomPoint));
+                                        edgeList.Add(new Edge(bottomPoint, topPoint));
                                     }
                                 }
                             }

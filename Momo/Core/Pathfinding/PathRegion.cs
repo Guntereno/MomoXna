@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 using Momo.Debug;
+using Momo.Maths;
 using Momo.Core.Spatial;
 using Momo.Core.GameEntities;
 
@@ -128,7 +129,7 @@ namespace Momo.Core.Pathfinding
 
                 Vector2 lastBoundaryNormal = (boundaryPos - lastBoundaryPos);
                 lastBoundaryNormal.Normalize();
-                lastBoundaryNormal = Math2D.Perpendicular(lastBoundaryNormal);
+                lastBoundaryNormal = Maths2D.Perpendicular(lastBoundaryNormal);
 
                 lastBoundaryPos = boundaryPos;
 
@@ -138,10 +139,10 @@ namespace Momo.Core.Pathfinding
                     boundaryPos = innerBoundaryPositions[j];
                     Vector2 boundaryNormal = boundaryPos - lastBoundaryPos;
                     boundaryNormal.Normalize();
-                    boundaryNormal = Math2D.Perpendicular(boundaryNormal);
+                    boundaryNormal = Maths2D.Perpendicular(boundaryNormal);
 
 
-                    Vector2 cornerNormal = (boundaryNormal + lastBoundaryNormal) * -0.5f;
+                    Vector2 cornerNormal = (boundaryNormal + lastBoundaryNormal) * 0.5f;
                     cornerNormal.Normalize();
 
                     m_nodes[m_nodeCnt++] = new PathNode(lastBoundaryPos + (cornerNormal * 15.0f), 15.0f);
@@ -153,29 +154,34 @@ namespace Momo.Core.Pathfinding
         }
 
 
-        struct ConnectedTo
+        internal struct NodeLink
         {
-            PathNode m_node;
-            Vector2 m_dPos;
-            float m_dPosLenSq;
+            internal PathNode m_node1;
+            internal PathNode m_node2;
+            internal Vector2 m_direction;
+            internal float m_distance;
 
-            public ConnectedTo(PathNode node, Vector2 dPos, float dPosLenSq)
+
+            public NodeLink(PathNode node1, PathNode node2, Vector2 direction, float distance)
             {
-                m_node = node;
-                m_dPos = dPos;
-                m_dPosLenSq = dPosLenSq;
+                m_node1 = node1;
+                m_node2 = node2;
+                m_direction = direction;
+                m_distance = distance;
             }
         };
 
+        // Generates garbage
         public void GenerateNodePaths(Bin bin, int boundaryLayer)
         {
-            const int kConnectedToCapacity = 12;
+            const int kMaxNodeLinks = 500;
             const int kBinSelectionCapacity = 500;
+            NodeLink[] nodeLinks = new NodeLink[kMaxNodeLinks];
             BinRegionSelection tempBinRegionSelection = new BinRegionSelection(kBinSelectionCapacity);
-            ConnectedTo [] connectedTo = new ConnectedTo[kConnectedToCapacity];
+
 
             BinRegionUniform boundaryRegion = new BinRegionUniform();
-            Vector2 intersectPoint = Vector2.Zero;
+
 
             int pathsRequired = 0;
             pathsRequired = (m_nodeCnt * (m_nodeCnt - 1)) / 2;
@@ -184,19 +190,20 @@ namespace Momo.Core.Pathfinding
             m_connectionCnt = 0;
 
 
+            //int nodeLinkCnt = 0;
 
 
             // Check for clear paths 
             for (int i = 0; i < m_nodeCnt; ++i)
             {
                 PathNode node1 = m_nodes[i];
-                int connectedToCnt = 0;
 
                 for (int j = i + 1; j < m_nodeCnt; ++j)
                 {
                     PathNode node2 = m_nodes[j];
 
                     Vector2 dNodePos = node2.m_position - node1.m_position;
+                    float dNodePosLen = dNodePos.Length();
 
                     bin.GetBinRegionFromLine(node1.m_position, dNodePos, ref tempBinRegionSelection);
 
@@ -212,11 +219,10 @@ namespace Momo.Core.Pathfinding
                         checkBoundary.GetBinRegion(ref boundaryRegion);
 
                         LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                        contact |= Math2D.DoesIntersect(node1.m_position,
+                        contact |= Maths2D.DoesIntersect(node1.m_position,
                                                                 dNodePos,
                                                                 linePrimitive2D.Point,
-                                                                linePrimitive2D.Difference,
-                                                                ref intersectPoint);
+                                                                linePrimitive2D.Difference );
 
 
                         if (contact)
@@ -225,11 +231,40 @@ namespace Momo.Core.Pathfinding
 
                     if (contact == false)
                     {
-                        //connectedTo[connectedToCnt++] = new ConnectedTo();
-                        m_connections[m_connectionCnt++] = new PathConnection(node1, node2);
+                        {
+                            m_connections[m_connectionCnt++] = new PathConnection(node1, node2);
+                            //nodeLinks[nodeLinkCnt++] = new NodeLink(node1, node2, dNodePos / dNodePosLen, dNodePosLen);
+                        }
                     }
                 }
             }
+
+                // Only add node connections that are sufficiently different.
+                //for (int i = 0; i < nodeLinkCnt; ++i)
+                //{
+                //    for (int k = 0; k < nodeLinkCnt; ++k)
+                //    {
+                //        if (i == k)
+                //            continue;
+
+                //        if (nodeLinks[k].m_valid == false)
+                //            continue;
+
+                //        if (Vector2.Dot(nodeLinks[i].m_direction, nodeLinks[k].m_direction) > 1.0f)
+                //        {
+                //            if (nodeLinks[k].m_distance < nodeLinks[i].m_distance)
+                //                nodeLinks[i].m_valid = false;
+                //            else
+                //                nodeLinks[k].m_valid = false;
+                //        }
+                //    }
+
+
+                //    if (nodeLinks[i].m_valid)
+                //    {
+                //        m_connections[m_connectionCnt++] = new PathConnection(node1, nodeLinks[i].m_node);
+                //    }
+                //}
         }
 
 

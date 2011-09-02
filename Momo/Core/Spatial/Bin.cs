@@ -389,71 +389,67 @@ namespace Momo.Core.Spatial
 
         public void GetBinRegionFromLine(Vector2 p1, Vector2 diff, ref BinRegionSelection outBinRegion)
         {
-            int binCnt = 0;
+                int binCnt = 0;
 
-            BinLocation binLocation = new BinLocation();
-            GetBinLocation(p1, ref binLocation);
+                BinLocation binLocation = new BinLocation();
+                GetBinLocation(p1, ref binLocation);
 
-            Vector2 p1BinSpace = p1 / m_binDimension;
-            Vector2 diffBinSpace = diff / m_binDimension;
+                Vector2 p1BinSpace = p1 / m_binDimension;
+                Vector2 diffBinSpace = diff / m_binDimension;
 
-            short binMoveX = 1;
-            short binMoveY = 1;
-            short binBaseX = 1;
-            short binBaseY = 1;
+                short binMoveX = 1;
+                short binMoveY = 1;
+                short binBaseX = 1;
+                short binBaseY = 1;
 
-            if (diffBinSpace.X < 0.0f)
-            {
-                binMoveX = -1;
-                binBaseX = 0;
-            }
-
-            if (diffBinSpace.Y < 0.0f)
-            {
-                binMoveY = -1;
-                binBaseY = 0;
-            }
-
-
-
-
-
-
-            outBinRegion.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
-
-
-            // The one will have to change based on -/+ direction of y.
-            float tX = float.MaxValue;
-            float tY = float.MaxValue;
-
-            // Stop divide by 0.
-            if (diffBinSpace.X != 0.0f)
-                tX = ((float)(binLocation.m_x + binBaseX) - p1BinSpace.X) / diffBinSpace.X;
-            
-            if (diffBinSpace.Y != 0.0f)
-                tY = ((float)(binLocation.m_y + binBaseY) - p1BinSpace.Y) / diffBinSpace.Y;
-
-
-            while (tX < 1.0f || tY < 1.0f)
-            {
-                // Y boundary hit first (up or down it goes).
-                if (tY < tX)
+                if (diffBinSpace.X < 0.0f)
                 {
-                    binLocation.m_y += binMoveY;
-                    outBinRegion.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
-
-                    tY = ((float)(binLocation.m_y + binBaseY) - p1BinSpace.Y) / diffBinSpace.Y;
+                    binMoveX = -1;
+                    binBaseX = 0;
                 }
-                else
-                {
-                    binLocation.m_x += binMoveX;
-                    outBinRegion.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
 
+                if (diffBinSpace.Y < 0.0f)
+                {
+                    binMoveY = -1;
+                    binBaseY = 0;
+                }
+
+
+                outBinRegion.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
+
+
+                // The one will have to change based on -/+ direction of y.
+                float tX = float.MaxValue;
+                float tY = float.MaxValue;
+
+                // Stop divide by 0.
+                if (diffBinSpace.X != 0.0f)
                     tX = ((float)(binLocation.m_x + binBaseX) - p1BinSpace.X) / diffBinSpace.X;
-                }
-            }
 
-            outBinRegion.m_binCnt = binCnt;
+                if (diffBinSpace.Y != 0.0f)
+                    tY = ((float)(binLocation.m_y + binBaseY) - p1BinSpace.Y) / diffBinSpace.Y;
+
+
+                while (tX < 1.0f || tY < 1.0f)
+                {
+                    // Y boundary hit first (up or down it goes).
+                    if (tY < tX)
+                    {
+                        binLocation.m_y += binMoveY;
+                        outBinRegion.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
+
+                        tY = ((float)(binLocation.m_y + binBaseY) - p1BinSpace.Y) / diffBinSpace.Y;
+                    }
+                    else
+                    {
+                        binLocation.m_x += binMoveX;
+                        outBinRegion.m_binIndices[binCnt++].m_index = (short)GetBinIndex(ref binLocation);
+
+                        tX = ((float)(binLocation.m_x + binBaseX) - p1BinSpace.X) / diffBinSpace.X;
+                    }
+                }
+
+                outBinRegion.m_binCnt = binCnt;
         }
 
 

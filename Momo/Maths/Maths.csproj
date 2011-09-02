@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{525A3C41-F0A2-40F2-93A8-819C30D64B3B}</ProjectGuid>
+    <ProjectGuid>{5E15C6DB-4C37-4B3F-8D66-05DB0EDD8104}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Momo.Core</RootNamespace>
-    <AssemblyName>Momo.Core</AssemblyName>
+    <RootNamespace>Momo.Maths</RootNamespace>
+    <AssemblyName>Momo.Maths</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>HiDef</XnaProfile>
-    <XnaCrossPlatformGroupID>19f41aa1-09b9-4bbf-a566-eb27b4f68e7e</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>b55205cd-ac75-462a-891e-9ec7bdbafcd2</XnaCrossPlatformGroupID>
     <XnaOutputType>Library</XnaOutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -92,67 +92,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collision2D\Contact.cs" />
-    <Compile Include="Collision2D\ContactList.cs" />
-    <Compile Include="Collision2D\ContactResolver.cs" />
-    <Compile Include="Collision2D\IDynamicCollidable.cs" />
-    <Compile Include="FrameTime.cs" />
-    <Compile Include="GameEntities\BaseEntity.cs" />
-    <Compile Include="GameEntities\BoundaryEntity.cs" />
-    <Compile Include="GameEntities\DynamicEntity.cs" />
-    <Compile Include="GameEntities\ProjectileGameEntity.cs" />
-    <Compile Include="GameEntities\StaticGameEntity.cs" />
-    <Compile Include="Graphics\MapRenderer.cs" />
-    <Compile Include="Hashing.cs" />
-    <Compile Include="MassInfo.cs" />
-    <Compile Include="MutableString.cs" />
-    <Compile Include="INamed.cs" />
-    <Compile Include="Nodes\Cameras\CameraNode.cs" />
-    <Compile Include="Nodes\Cameras\OrthographicCameraNode.cs" />
-    <Compile Include="Nodes\Cameras\PerspectiveCameraNode.cs" />
-    <Compile Include="Nodes\Node3d.cs" />
-    <Compile Include="ObjectPools\IPoolItem.cs" />
-    <Compile Include="ObjectPools\Pool.cs" />
-    <Compile Include="Pathfinding\PathNodeConnection.cs" />
-    <Compile Include="Pathfinding\PathIsland.cs" />
-    <Compile Include="Pathfinding\PathNode.cs" />
-    <Compile Include="Pathfinding\PathRegionConnection.cs" />
-    <Compile Include="Pathfinding\PathRegion.cs" />
-    <Compile Include="Pathfinding\PathRoute.cs" />
-    <Compile Include="Pathfinding\PathRouteNode.cs" />
-    <Compile Include="Primitive2D\CirclePrimitive2D.cs" />
-    <Compile Include="Primitive2D\LinePrimitive2D.cs" />
-    <Compile Include="Primitive2D\LineStripPrimitive2D.cs" />
-    <Compile Include="Primitive2D\MathsPrimitive2D.cs" />
-    <Compile Include="Primitive2D\Primitive2D.cs" />
+    <Compile Include="ExtendedMaths2D.cs" />
+    <Compile Include="Intersection2D.cs" />
+    <Compile Include="Maths2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RadiusInfo.cs" />
-    <Compile Include="Shaders\Shader.cs" />
-    <Compile Include="Shaders\ShaderSemantics.cs" />
-    <Compile Include="Spatial\Bin.cs" />
-    <Compile Include="Spatial\BinEntry.cs" />
-    <Compile Include="Spatial\BinIndex.cs" />
-    <Compile Include="Spatial\BinItem.cs" />
-    <Compile Include="Spatial\BinLocation.cs" />
-    <Compile Include="Spatial\BinQueryResults.cs" />
-    <Compile Include="Spatial\BinRegionSelection.cs" />
-    <Compile Include="Spatial\BinRegionUniform.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Debug\Debug.csproj">
-      <Project>{347E5A57-7F1B-49A5-A637-D49BE71F6F1C}</Project>
-      <Name>Debug</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MapData\MapData.csproj">
-      <Project>{2A9FB9C8-0CD3-42F3-9343-6DABE152E5C2}</Project>
-      <Name>MapData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Maths\Maths.csproj">
-      <Project>{5E15C6DB-4C37-4B3F-8D66-05DB0EDD8104}</Project>
-      <Name>Maths</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

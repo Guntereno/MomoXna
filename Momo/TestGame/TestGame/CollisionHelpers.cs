@@ -4,6 +4,7 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 
+using Momo.Maths;
 using Momo.Core;
 using Momo.Core.GameEntities;
 using Momo.Core.Spatial;
@@ -52,7 +53,7 @@ namespace TestGame
 
                     if (entity != checkEntity)
                     {
-                        bool contact = Math2D.DoesIntersect(    entity.GetPosition(),
+                        bool contact = Maths2D.DoesIntersect(    entity.GetPosition(),
                                                                 entity.GetContactRadiusInfo().Radius + contactDimensionPadding,
                                                                 checkEntity.GetPosition(),
                                                                 checkEntity.GetContactRadiusInfo().Radius + contactDimensionPadding,
@@ -89,7 +90,7 @@ namespace TestGame
                     float paddedRadiusSq = paddedRadius * paddedRadius;
 
                     LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                    bool contact = Math2D.DoesIntersect(entity.GetPosition(),
+                    bool contact = Maths2D.DoesIntersect(entity.GetPosition(),
                                                             paddedRadius,
                                                             paddedRadiusSq,
                                                             linePrimitive2D.Point,
@@ -113,8 +114,6 @@ namespace TestGame
         public static bool IsClearLineOfSight(Vector2 position, Vector2 dPos, Bin bin)
         {
             BinRegionUniform boundaryRegion = new BinRegionUniform();
-            Vector2 intersectPoint = Vector2.Zero;
-
 
             bin.GetBinRegionFromLine(position, dPos, ref ms_tempBinRegionSelection);
 
@@ -129,11 +128,10 @@ namespace TestGame
                 checkBoundary.GetBinRegion(ref boundaryRegion);
 
                 LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                bool contact = Math2D.DoesIntersect(    position,
+                bool contact = Maths2D.DoesIntersect(    position,
                                                         dPos,
                                                         linePrimitive2D.Point,
-                                                        linePrimitive2D.Difference,
-                                                        ref intersectPoint );
+                                                        linePrimitive2D.Difference );
 
 
                 if (contact)
@@ -153,7 +151,6 @@ namespace TestGame
             BinRegionUniform boundaryRegion = new BinRegionUniform();
 
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
-            Vector2 intersectPoint = Vector2.Zero;
 
 
             float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
@@ -182,7 +179,7 @@ namespace TestGame
 
 
 
-                    bool contact = Math2D.DoesIntersect(    checkEntity.GetPosition(),
+                    bool contact = Maths2D.DoesIntersect(    checkEntity.GetPosition(),
                                                             checkEntity.GetContactRadiusInfo().Radius,
                                                             checkEntity.GetContactRadiusInfo().RadiusSq,
                                                             bullet.GetLastFramePosition(),
@@ -219,11 +216,10 @@ namespace TestGame
                     checkBoundary.GetBinRegion(ref boundaryRegion);
 
                     LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                    bool contact = Math2D.DoesIntersect(    bullet.GetLastFramePosition(),
+                    bool contact = Maths2D.DoesIntersect(    bullet.GetLastFramePosition(),
                                                             bullet.GetPositionDifferenceFromLastFrame(),
                                                             linePrimitive2D.Point,
-                                                            linePrimitive2D.Difference,
-                                                            ref intersectPoint );
+                                                            linePrimitive2D.Difference );
 
 
                     if (contact)
@@ -259,7 +255,7 @@ namespace TestGame
                     AiEntity checkEntity = (AiEntity)queryResults.BinItemQueryResults[j];
                     checkEntity.GetBinRegion(ref entityRegion);
 
-                    bool contact = Math2D.DoesIntersect(    explosion.GetPosition(),
+                    bool contact = Maths2D.DoesIntersect(    explosion.GetPosition(),
                                                             explosion.GetRange(),
                                                             checkEntity.GetPosition(),
                                                             checkEntity.GetContactRadiusInfo().Radius,

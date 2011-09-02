@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using Momo.Maths;
 using Momo.Core;
 using Momo.Core.Graphics;
 using Momo.Core.Nodes.Cameras;
@@ -248,20 +249,18 @@ namespace TestGame
         {
             int numBoundries = m_map.CollisionBoundaries.Length;
 
-            for (int boundryIdx = 0; boundryIdx < numBoundries; ++boundryIdx)
-            {
-                int numNodes = m_map.CollisionBoundaries[boundryIdx].Length;
 
-                Vector2 lastPoint = new Vector2(
-                                        (float)(m_map.CollisionBoundaries[boundryIdx][0].X),
-                                        (float)(m_map.CollisionBoundaries[boundryIdx][0].Y));
+            for (int boundaryIdx = 0; boundaryIdx < numBoundries; ++boundaryIdx)
+            {
+                int numNodes = m_map.CollisionBoundaries[boundaryIdx].Length;
+
+
+                Vector2 lastPoint = m_map.CollisionBoundaries[boundaryIdx][0];
+                                      
 
                 for (int nodeIdx = 1; nodeIdx < numNodes; ++nodeIdx)
                 {
-                    Vector2 pos = new Vector2(
-                        (float)(m_map.CollisionBoundaries[boundryIdx][nodeIdx].X),
-                        (float)(m_map.CollisionBoundaries[boundryIdx][nodeIdx].Y));
-
+                    Vector2 pos = m_map.CollisionBoundaries[boundaryIdx][nodeIdx];
 
                     LinePrimitive2D lineStrip = new LinePrimitive2D(lastPoint, pos);
                     BoundaryEntity boundaryEntity = new BoundaryEntity(lineStrip);
