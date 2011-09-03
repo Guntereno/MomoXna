@@ -113,7 +113,7 @@ namespace Momo.Core.GameEntities
             Vector2 acceleration = ((m_force * m_massInfo.InverseMass) * frameTime.Dt);
            
             // Cap the acceleration
-            Maths2D.CapVectorMagnitude(ref acceleration, kMaxAcceleration, kMaxAccelerationSq);
+            ExtendedMaths2D.CapVectorMagnitude(ref acceleration, kMaxAcceleration, kMaxAccelerationSq);
 
 
             // Velocity update

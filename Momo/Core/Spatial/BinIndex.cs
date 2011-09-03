@@ -7,14 +7,14 @@ namespace Momo.Core.Spatial
 {
     public struct BinIndex
     {
-        public const short kInvalidIndex = short.MaxValue;
+        public static readonly BinIndex kInvalidIndex = new BinIndex(int.MaxValue);
 
-        internal short m_index;
+        internal int m_index;
 
 
         public BinIndex(int index)
         {
-            m_index = (short)index;
+            m_index = index;
         }
     }
 }

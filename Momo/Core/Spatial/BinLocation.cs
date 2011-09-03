@@ -7,24 +7,25 @@ namespace Momo.Core.Spatial
 {
     public struct BinLocation
     {
-        public static BinLocation kInvalidBinLocation = new BinLocation(BinIndex.kInvalidIndex, BinIndex.kInvalidIndex);
+        public static readonly BinLocation kInvalidBinLocation = new BinLocation(BinIndex.kInvalidIndex.m_index, BinIndex.kInvalidIndex.m_index);
 
 
-        internal short m_x;
-        internal short m_y;
+        internal int m_x;
+        internal int m_y;
 
-        public short X
+
+        public int X
         {
             get { return m_x; }
         }
 
-        public short Y
+        public int Y
         {
             get { return m_y; }
         }
 
 
-        public BinLocation(short x, short y)
+        public BinLocation(int x, int y)
         {
             m_x = x;
             m_y = y;
@@ -33,9 +34,19 @@ namespace Momo.Core.Spatial
 
         public void Invalidate()
         {
-            m_x = BinIndex.kInvalidIndex;
-            m_y = BinIndex.kInvalidIndex;
+            this = kInvalidBinLocation;
         }
 
+
+        public static BinLocation operator +(BinLocation left, BinLocation right)
+        {
+            return new BinLocation(left.m_x + right.m_x, left.m_y + right.m_y);
+        }
+
+
+        public static BinLocation operator -(BinLocation left, BinLocation right)
+        {
+            return new BinLocation(left.m_x - right.m_x, left.m_y - right.m_y);
+        }
     }
 }

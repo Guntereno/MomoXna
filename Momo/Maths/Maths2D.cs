@@ -14,14 +14,19 @@ namespace Momo.Maths
         }
 
 
-        public static void CapVectorMagnitude(ref Vector2 vector, float magnitude, float magnitudeSq)
+
+        public static float ProjectPointOntoInfiniteLine(Vector2 point, Vector2 lineStart, Vector2 lineStep)
         {
-            float vectorMagSq = vector.LengthSquared();
-            if (vectorMagSq > magnitudeSq)
-            {
-                float vectorMag = (float)Math.Sqrt(vectorMagSq);
-                vector = (vector / vectorMag) * magnitude;
-            }
+            return Vector2.Dot(point - lineStart, lineStep) / Vector2.Dot(lineStep, lineStep);
+        }
+
+
+        public static bool ProjectPointOntoLine(Vector2 point, Vector2 lineStart, Vector2 lineStep, ref Vector2 pointOnLine)
+        {
+            float wLine = Vector2.Dot(point - lineStart, lineStep) / Vector2.Dot(lineStep, lineStep);
+            pointOnLine = lineStart + (lineStep * wLine);
+
+            return (wLine >= 0.0f && wLine <= 1.0f);
         }
 
 
@@ -110,6 +115,78 @@ namespace Momo.Maths
 
             outIntersectPoint = lineStart1 + (lineStep1 * t);
             return true;
+        }
+
+
+
+        public static bool DoesIntersect(Vector2 lineStart1, Vector2 lineStep1, float lineWidthSq1, Vector2 lineStart2, Vector2 lineStep2)
+        {
+            //Vector2 drawOffset = new Vector2(500.0f, 400.0f);
+            //m_debugRenderer.DrawFilledLine(drawOffset + lineStart1, drawOffset + lineStart1 + lineStep1, new Color(1.0f, 0.0f, 0.0f, 0.5f), lineWidth1);
+            //m_debugRenderer.DrawFilledLine(drawOffset + lineStart2, drawOffset + lineStart2 + lineStep2, new Color(0.0f, 1.0f, 0.0f, 0.5f), 1.0f);
+
+
+
+            float wLineP1 = Maths2D.ProjectPointOntoInfiniteLine(lineStart2, lineStart1, lineStep1);
+            float wLineP2 = Maths2D.ProjectPointOntoInfiniteLine(lineStart2 + lineStep2, lineStart1, lineStep1);
+
+            if ((wLineP1 < 0.0f && wLineP2 < 0.0f) || (wLineP1 > 1.0f && wLineP2 > 1.0f))
+                return false;
+
+            float wGap = Math.Abs(wLineP2 - wLineP1);
+            float wLineP1_2 = 0.0f;
+            float wLineP2_2 = 1.0f;
+
+            if (wLineP1 < 0.0f)
+                wLineP1_2 = -wLineP1 / wGap;
+            else if (wLineP1 > 1.0f)
+                wLineP1_2 = (wLineP1 - 1.0f) / wGap;
+
+            if (wLineP2 < 0.0f)
+                wLineP2_2 = wLineP1 / wGap;
+            else if (wLineP2 > 1.0f)
+                wLineP2_2 = (1.0f - wLineP1) / wGap;
+
+
+            Vector2 lineP1_2 = lineStart2 + (lineStep2 * wLineP1_2);
+            Vector2 lineP2_2 = lineStart2 + (lineStep2 * wLineP2_2);
+
+            if (wLineP1 > 1.0f)
+                wLineP1 = 1.0f;
+            else if (wLineP1 < 0.0f)
+                wLineP1 = 0.0f;
+
+            if (wLineP2 > 1.0f)
+                wLineP2 = 1.0f;
+            else if (wLineP2 < 0.0f)
+                wLineP2 = 0.0f;
+
+
+            Vector2 lineP1 = lineStart1 + (lineStep1 * wLineP1);
+            Vector2 lineP2 = lineStart1 + (lineStep1 * wLineP2);
+
+            Vector2 dLinePos1 = lineP1 - lineP1_2;
+            Vector2 dLinePos2 = lineP2 - lineP2_2;
+
+
+            if (Vector2.Dot(dLinePos1, dLinePos2) < 0.0f)
+            {
+                return true;
+            }
+            else
+            {
+                if (dLinePos1.LengthSquared() < lineWidthSq1 || dLinePos2.LengthSquared() < lineWidthSq1)
+                    return true;
+            }
+
+            //m_debugRenderer.DrawFilledLine(drawOffset + lineP1, drawOffset + lineP2, new Color(1.0f, 0.0f, 0.0f, 0.5f), lineWidth1);
+
+            //if (success)
+            //    m_debugRenderer.DrawFilledLine(drawOffset + lineP1_2, drawOffset + lineP2_2, new Color(0.0f, 1.0f, 0.0f, 0.5f), 3.0f);
+            //else
+            //    m_debugRenderer.DrawFilledLine(drawOffset + lineP1_2, drawOffset + lineP2_2, new Color(1.0f, 1.0f, 0.0f, 0.5f), 3.0f);
+
+            return false;
         }
 
 

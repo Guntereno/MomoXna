@@ -36,8 +36,9 @@ namespace TestGame.Input
 
             for (int i = 0; i < kMaxInputs; ++i)
             {
-                GamePadState gamePadState = GamePad.GetState((PlayerIndex)i);
                 InputWrapper wrapper = GetInputWrapper(i);
+
+                GamePadState gamePadState = GamePad.GetState((PlayerIndex)i);
 
                 // Handle connection status
                 if(gamePadState.IsConnected)

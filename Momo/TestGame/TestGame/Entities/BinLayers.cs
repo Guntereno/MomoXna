@@ -10,5 +10,6 @@ namespace TestGame.Entities
         public const int kAiEntity = 0;
         public const int kBoundary = 1;
         public const int kBullet = 2;
+        public const int kPathNodes = 3;
     }
 }

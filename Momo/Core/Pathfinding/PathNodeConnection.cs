@@ -28,7 +28,7 @@ namespace Momo.Core.Pathfinding
 
         public void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawFilledLine(m_fromNode.m_position, m_toNode.m_position, new Color(0.0f, 1.0f, 1.0f, 0.3f), 1.0f);
+            debugRenderer.DrawFilledLine(m_fromNode.m_position, m_toNode.m_position, new Color(0.0f, 1.0f, 1.0f, 0.05f), 7.5f);
         }
     }
 }

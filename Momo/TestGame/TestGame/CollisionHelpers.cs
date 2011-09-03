@@ -25,6 +25,12 @@ namespace TestGame
         private static BinRegionSelection ms_tempBinRegionSelection = new BinRegionSelection(kBinSelectionCapacity);
 
 
+        public static void Init()
+        {
+
+        }
+
+
         public static void GenerateContacts(DynamicGameEntity[] entities, int entityCount, Bin bin, ContactList contactList)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();

@@ -80,5 +80,17 @@ namespace Momo.Maths
             return newPoint;
         }
 
+
+        public static void CapVectorMagnitude(ref Vector2 vector, float magnitude, float magnitudeSq)
+        {
+            float vectorMagSq = vector.LengthSquared();
+            if (vectorMagSq > magnitudeSq)
+            {
+                float vectorMag = (float)Math.Sqrt(vectorMagSq);
+                vector = (vector / vectorMag) * magnitude;
+            }
+        }
+
+
     }
 }

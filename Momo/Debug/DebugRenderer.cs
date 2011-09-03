@@ -95,6 +95,16 @@ namespace Momo.Debug
         }
 
 
+        public void DrawOutlineRect(Vector2 minCorner, Vector2 maxCorner, Color edgeColour)
+        {
+            DrawRect(minCorner, maxCorner, Color.Black, edgeColour, false, 1.0f);
+        }
+
+        public void DrawFilledRect(Vector2 minCorner, Vector2 maxCorner, Color colour)
+        {
+            DrawRect(minCorner, maxCorner, colour, Color.Black, true, 0.0f);
+        }
+
         public void DrawFilledLine(Vector2 startPoint, Vector2 endPoint, Color colour, float width)
         {
             DrawFilledLine(startPoint, endPoint, colour, width, 0);
@@ -358,13 +368,26 @@ namespace Momo.Debug
         }
 
 
-        public void DrawQuad(Vector2 topLeft, Vector2 bottomRight, Color colour, Color edgeColour, bool filled, float edgeWidth)
+        public void DrawRect(Vector2 topLeft, Vector2 bottomRight, Color colour, Color edgeColour, bool filled, float edgeWidth)
         {
-            DrawQuad(new Vector3(topLeft.X, topLeft.Y, 0.0f),
-                        new Vector3(bottomRight.X, topLeft.Y, 0.0f),
-                        new Vector3(bottomRight.X, bottomRight.Y, 0.0f),
-                        new Vector3(topLeft.X, bottomRight.Y, 0.0f),
-                        colour, edgeColour, filled, edgeWidth);
+            Vector3 v1Outer = new Vector3(topLeft.X, topLeft.Y, 0.0f);
+            Vector3 v2Outer = new Vector3(bottomRight.X, topLeft.Y, 0.0f);
+            Vector3 v3Outer = new Vector3(bottomRight.X, bottomRight.Y, 0.0f);
+            Vector3 v4Outer = new Vector3(topLeft.X, bottomRight.Y, 0.0f);
+
+            if (filled)
+            {
+                DrawFilledTriangle(v1Outer, v2Outer, v3Outer, colour);
+                DrawFilledTriangle(v3Outer, v4Outer, v1Outer, colour);
+            }
+
+            if (edgeWidth > 0.0f)
+            {
+                DrawLine(v1Outer, v2Outer, edgeColour);
+                DrawLine(v2Outer, v3Outer, edgeColour);
+                DrawLine(v3Outer, v4Outer, edgeColour);
+                DrawLine(v4Outer, v1Outer, edgeColour);
+            }
         }
 
 
@@ -452,17 +475,6 @@ namespace Momo.Debug
         {
             if (m_triVertexCnt == 0 && m_lineVertexCnt == 0)
                 return;
-
-
-            // Set the shaders camera world position.
-            //if (shader.ManagedParameterList[(int)ParameterSemantic.Type.kObjectWorldMat] != null)
-            //    shader.ManagedParameterList[(int)ParameterSemantic.Type.kObjectWorldMat].SetValue(Matrix.Identity);
-
-            // Set the shaders camera view/proj matrix.
-            //shader.SetCameraParameters(cameraNode);
-
-            //if (shader.ManagedParameterList[(int)ParameterSemantic.Type.kCameraViewProjMat] != null)
-            //    shader.ManagedParameterList[(int)ParameterSemantic.Type.kCameraViewProjMat].SetValue(cameraNode.ViewProjectionMatrix);
 
 
             m_effect.View = viewMatrix;

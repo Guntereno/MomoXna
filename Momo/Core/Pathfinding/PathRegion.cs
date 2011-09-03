@@ -28,23 +28,23 @@ namespace Momo.Core.Pathfinding
         internal Vector2 m_maxCorner = Vector2.Zero;
 
 
-        public PathNode[] Nodes
-        {
-            get { return m_nodes; }
-            set { m_nodes = value; }
-        }
-
-        public PathRegionConnection[] RegionConnections
-        {
-            get { return m_regionConnections; }
-            set { m_regionConnections = value; }
-        }
-
 
         public PathRegion(Vector2 minCorner, Vector2 maxCorner)
         {
             m_minCorner = minCorner;
             m_maxCorner = maxCorner;
+        }
+
+
+        public PathNode[] GetNodes()
+        {
+            return m_nodes;
+        }
+
+
+        public int GetNodeCount()
+        {
+            return m_nodeCnt;
         }
 
 
@@ -104,7 +104,7 @@ namespace Momo.Core.Pathfinding
         }
 
 
-        public void GenerateNodesFromBoundaries(Vector2[][] boundardPositions)
+        public void GenerateNodesFromBoundaries(float radius, Vector2[][] boundardPositions)
         {
             int nodesRequired = 0;
             for (int i = 0; i < boundardPositions.Length; ++i)
@@ -113,6 +113,8 @@ namespace Momo.Core.Pathfinding
             m_nodes = new PathNode[nodesRequired];
             m_nodeCnt = 0;
 
+            float radiusSq = radius * radius;
+            float offset = (float)Math.Sqrt(radiusSq + radiusSq);
 
 
             for( int i = 0; i < boundardPositions.Length; ++i)
@@ -145,7 +147,7 @@ namespace Momo.Core.Pathfinding
                     Vector2 cornerNormal = (boundaryNormal + lastBoundaryNormal) * 0.5f;
                     cornerNormal.Normalize();
 
-                    m_nodes[m_nodeCnt++] = new PathNode(lastBoundaryPos + (cornerNormal * 15.0f), 15.0f);
+                    m_nodes[m_nodeCnt++] = new PathNode(lastBoundaryPos + (cornerNormal * offset), radius);
 
                     lastBoundaryPos = boundaryPos;
                     lastBoundaryNormal = boundaryNormal;
@@ -154,29 +156,42 @@ namespace Momo.Core.Pathfinding
         }
 
 
-        internal struct NodeLink
+
+        internal struct GeneratorNodeInfo
         {
-            internal PathNode m_node1;
-            internal PathNode m_node2;
-            internal Vector2 m_direction;
+            internal GeneratorLinkInfo[] m_links;
+            internal int m_linkCnt;
+
+            public GeneratorNodeInfo(int linkCapacity)
+            {
+                m_linkCnt = 0;
+                m_links = new GeneratorLinkInfo[linkCapacity];
+            }
+
+            public void AddLink(int nodeIdx, float distance)
+            {
+                m_links[m_linkCnt++] = new GeneratorLinkInfo(nodeIdx, distance);
+            }
+        };
+
+        internal struct GeneratorLinkInfo
+        {
+            internal int m_nodeIdx;
             internal float m_distance;
 
-
-            public NodeLink(PathNode node1, PathNode node2, Vector2 direction, float distance)
+            public GeneratorLinkInfo(int nodeIdx, float distance)
             {
-                m_node1 = node1;
-                m_node2 = node2;
-                m_direction = direction;
+                m_nodeIdx = nodeIdx;
                 m_distance = distance;
             }
         };
 
+
         // Generates garbage
-        public void GenerateNodePaths(Bin bin, int boundaryLayer)
+        public void GenerateNodePaths(float radius, Bin bin, int boundaryLayer)
         {
-            const int kMaxNodeLinks = 500;
             const int kBinSelectionCapacity = 500;
-            NodeLink[] nodeLinks = new NodeLink[kMaxNodeLinks];
+            GeneratorNodeInfo[] nodeInfo = new GeneratorNodeInfo[m_nodeCnt];
             BinRegionSelection tempBinRegionSelection = new BinRegionSelection(kBinSelectionCapacity);
 
 
@@ -190,13 +205,12 @@ namespace Momo.Core.Pathfinding
             m_connectionCnt = 0;
 
 
-            //int nodeLinkCnt = 0;
-
-
             // Check for clear paths 
             for (int i = 0; i < m_nodeCnt; ++i)
             {
                 PathNode node1 = m_nodes[i];
+
+                nodeInfo[i] = new GeneratorNodeInfo(20);
 
                 for (int j = i + 1; j < m_nodeCnt; ++j)
                 {
@@ -219,11 +233,11 @@ namespace Momo.Core.Pathfinding
                         checkBoundary.GetBinRegion(ref boundaryRegion);
 
                         LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                        contact |= Maths2D.DoesIntersect(node1.m_position,
+                        contact |= Maths2D.DoesIntersect(       node1.m_position,
                                                                 dNodePos,
+                                                                radius,
                                                                 linePrimitive2D.Point,
-                                                                linePrimitive2D.Difference );
-
+                                                                linePrimitive2D.Difference);
 
                         if (contact)
                             break;
@@ -231,40 +245,94 @@ namespace Momo.Core.Pathfinding
 
                     if (contact == false)
                     {
-                        {
-                            m_connections[m_connectionCnt++] = new PathConnection(node1, node2);
-                            //nodeLinks[nodeLinkCnt++] = new NodeLink(node1, node2, dNodePos / dNodePosLen, dNodePosLen);
-                        }
+                        //m_connections[m_connectionCnt++] = new PathConnection(node1, node2);
+                        //nodeInfo[i].AddLink(j, dNodePosLen);
                     }
                 }
             }
 
-                // Only add node connections that are sufficiently different.
-                //for (int i = 0; i < nodeLinkCnt; ++i)
-                //{
-                //    for (int k = 0; k < nodeLinkCnt; ++k)
-                //    {
-                //        if (i == k)
-                //            continue;
+            // Go through each connection and check if there is route that is almost the same distance via other nodes.
+            // If there is remove the direct connection
+            //RemoveUnnecessaryLinks(nodeInfo);
 
-                //        if (nodeLinks[k].m_valid == false)
-                //            continue;
-
-                //        if (Vector2.Dot(nodeLinks[i].m_direction, nodeLinks[k].m_direction) > 1.0f)
-                //        {
-                //            if (nodeLinks[k].m_distance < nodeLinks[i].m_distance)
-                //                nodeLinks[i].m_valid = false;
-                //            else
-                //                nodeLinks[k].m_valid = false;
-                //        }
-                //    }
+            for (int i = 0; i < m_nodeCnt; ++i)
+            {
+                for (int j = 0; j < nodeInfo[i].m_linkCnt; ++j)
+                {
+                    m_connections[m_connectionCnt++] = new PathConnection(m_nodes[i], m_nodes[nodeInfo[i].m_links[j].m_nodeIdx]);
+                }
+            }
+        }
 
 
-                //    if (nodeLinks[i].m_valid)
-                //    {
-                //        m_connections[m_connectionCnt++] = new PathConnection(node1, nodeLinks[i].m_node);
-                //    }
-                //}
+        //private void RemoveUnnecessaryLinks(GeneratorNodeInfo[] nodeInfo)
+        //{
+        //    List<int> searchedNodes = new List<int>(100);
+
+        //    for (int i = 0; i < nodeInfo.Length; ++i)
+        //    {
+        //        for (int j = 0; j < nodeInfo[i].m_linkCnt; ++j)
+        //        {
+        //            int searchForNodeIdx = nodeInfo[i].m_links[j].m_nodeIdx;
+        //            float searchForNodeShortestDist = nodeInfo[i].m_links[j].m_distance;
+
+
+        //            for (int k = 0; k < nodeInfo[searchForNodeIdx].m_linkCnt; ++k)
+        //            {
+        //                if (j != k)
+        //                {
+        //                    int fromNodeIdx = nodeInfo[searchForNodeIdx].m_links[k].m_nodeIdx;
+        //                    float shortestDistance = 0.0f;
+
+        //                    searchedNodes.Clear();
+        //                    bool foundRoute = CalculateShortestDistance(fromNodeIdx, searchForNodeIdx, nodeInfo, searchedNodes, 3, ref shortestDistance);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+
+        private bool CalculateShortestDistance(int fromNodeIdx, int toNodeIdx, GeneratorNodeInfo[] nodeInfo, List<int> searchedNodes, int searchDepth, ref float outDistance)
+        {
+            for (int i = 0; i < nodeInfo[fromNodeIdx].m_linkCnt; ++i)
+            {
+                int linkToIdx = nodeInfo[fromNodeIdx].m_links[i].m_nodeIdx;
+                bool alreadySearched = false;
+
+                for (int j = 0; j < searchedNodes.Count; ++j)
+                {
+                    if (linkToIdx == searchedNodes[j])
+                    {
+                        alreadySearched = true;
+                        break;
+                    }
+                }
+
+                if (alreadySearched == false)
+                {
+                    searchedNodes.Add(linkToIdx);
+
+                    bool found = false;
+
+                    if (linkToIdx == toNodeIdx)
+                    {
+                        outDistance += nodeInfo[fromNodeIdx].m_links[i].m_distance;
+                        return true;
+                    }
+                    else
+                    {
+                        found = CalculateShortestDistance(linkToIdx, toNodeIdx, nodeInfo, searchedNodes, searchDepth - 1, ref outDistance); 
+                    }
+
+                    if (found)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
 

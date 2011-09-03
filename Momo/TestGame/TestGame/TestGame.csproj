@@ -124,6 +124,7 @@
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\InputWrapper.cs" />
     <Compile Include="Objects\Explosion.cs" />
+    <Compile Include="PathFindingHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Systems\CameraController.cs" />

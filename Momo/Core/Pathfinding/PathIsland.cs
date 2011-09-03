@@ -3,6 +3,8 @@
 using Microsoft.Xna.Framework;
 
 using Momo.Debug;
+using Momo.Core.Spatial;
+
 
 
 namespace Momo.Core.Pathfinding
@@ -11,45 +13,39 @@ namespace Momo.Core.Pathfinding
     {
         // Finding a path and path tracking
         // 1) Region search (broad phase - must be cheap)
-        // 2) A* within each region (this can be delayed until enters region - bet if frequently recalculating route)
+        // 2) A* within each region (this can be delayed until enters region - better if frequently recalculating route)
         // 3) Within A* path use line of sight to future nodes on calculated path to see if its unobstructed
 
         private PathRegion[] m_regions = null;
 
 
-        //public bool void CreatePath(Vector2 startPos, Vector2 endPos, float radius, out PathRoute)
-        //{
-
-        //    // Check for direct line of sight
-        //    //if(CollisionHelper.isLineOfSight(startPos, endPos, radius)
-        //    //{
-
-        //    //    return true;
-        //    //}
-
-
-        //    //PathNode startNode = GetClosestNode(startPos);
-        //    //PathNode endNode = GetClosestNode(endPos);
-
-        //    //if(startNode != null && endNode != null)
-        //    //{
-
-        //    //  return true;
-        //    //}
-
-        //    //return false;
-        //}
+        public bool CreatePath(Vector2 startPos, Vector2 endPos, PathNode startNode, PathNode endNode, ref PathRoute outRoute)
+        {
+            if(startNode != null)
+            {
+                if(endNode != null)
+                {
+                    // We have two nodes to form a path between.
+                    outRoute.SetPathInfo(startPos, endPos, startNode, endNode);
 
 
-        //public bool GetClosestNode(Vector2 pos, out PathNode)
-        //{
-        //    // Use bins to track down limited selection of nodes.
-        //}
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
 
 
         public void SetRegions(PathRegion[] regions)
         {
             m_regions = regions;
+        }
+
+        public PathRegion[] GetRegions()
+        {
+            return m_regions;
         }
 
 

@@ -26,5 +26,41 @@ namespace Momo.Core.Spatial
 
             m_binCnt = binSelection.m_binCnt;
         }
+
+
+        public void Clear()
+        {
+            m_binCnt = 0;
+        }
+
+
+        public void AddBinIndex(BinIndex index)
+        {
+            m_binIndices[m_binCnt++] = index;
+        }
+
+
+        public void AddBinIndex(int index)
+        {
+            m_binIndices[m_binCnt++] = new BinIndex(index);
+        }
+
+
+        public bool HasBinIndex(BinIndex index)
+        {
+            for (int i = 0; i < m_binCnt; ++i)
+            {
+                if (m_binIndices[i].m_index == index.m_index)
+                    return true;
+            }
+
+            return false;
+        }
+
+
+        public bool HasBinIndex(int index)
+        {
+            return HasBinIndex(new BinIndex(index));
+        }
     }
 }

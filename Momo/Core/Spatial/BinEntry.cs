@@ -5,9 +5,13 @@ using System.Text;
 
 namespace Momo.Core.Spatial
 {
-    public class BinEntry
+    public class BinEntry : SentinelBinEntry
     {
         internal BinItem m_item = null;
+    }
+
+    public class SentinelBinEntry
+    {
         internal BinEntry m_nextEntry = null;
     }
 }

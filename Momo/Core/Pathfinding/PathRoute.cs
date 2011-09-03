@@ -10,43 +10,56 @@ namespace Momo.Core.Pathfinding
 {
     public class PathRoute
     {
-        private PathRegion m_fromRegion = null;
-        private PathNode m_fromNode = null;
-        private PathRouteNode m_nextRouteNode = null;
+        private bool m_valid = false;
+
+        private Vector2 m_startPosition = Vector2.Zero;
+        private Vector2 m_endPosition = Vector2.Zero;
+
+        private PathNode m_startNode = null;
+        private PathNode m_endNode = null;
 
 
-        private void CalculatePath(PathRegion fromRegion, PathNode fromNode, PathRegion toRegion, PathNode toNode)
+        public void SetPathInfo(Vector2 startPos, Vector2 endPos, PathNode startNode, PathNode endNode)
         {
-            m_fromRegion = fromRegion;
-            m_fromNode = fromNode;
+            m_startPosition = startPos;
+            m_endPosition = endPos;
 
+            m_startNode = startNode;
+            m_endNode = endNode;
 
-            //
-            // Calculate the region route seperately in its own function.
-            //
-
-            //for (int i = 0; i < m_fromRegion.m_connections.Length; ++i)
-            //{
-            //    PathRegionConnection connection = m_fromRegion.m_connections[i];
-
-            //    PathRegion connectedRegion = connection.m_region1;
-
-            //    if (connectedRegion == m_fromRegion)
-            //        connectedRegion = connection.m_region2;
-
-
-
-
-            //}
+            m_valid = true;
         }
 
 
-        public void DebugRender(PathNode fromNode, DebugRenderer debugRenderer)
+        public void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawOutlineCircle(m_fromNode.m_position, 15.0f, new Color(0.0f, 1.0f, 1.0f, 0.5f), 5.0f);
+            Color nodeFillColor = new Color(1.0f, 0.2f, 1.0f, 0.5f);
+            Color nodeOutlineColor = new Color(0.0f, 0.25f, 0.5f, 0.5f);
+            Color nodeConnectionLine = new Color(1.0f, 0.25f, 1.0f, 0.5f);
 
-            if (m_nextRouteNode != null)
-                m_nextRouteNode.DebugRender(m_fromNode, debugRenderer);
+            if (m_valid)
+            {
+                debugRenderer.DrawCircle(m_startPosition, 15.0f, nodeFillColor, nodeOutlineColor, true, 4.0f, 16);
+                debugRenderer.DrawCircle(m_endPosition, 15.0f, nodeFillColor, nodeOutlineColor, true, 4.0f, 16);
+
+
+                if (m_startNode != null && m_endNode != null)
+                {
+                    debugRenderer.DrawFilledLine(m_startPosition, m_startNode.GetPosition(), nodeConnectionLine, 5.0f);
+                    debugRenderer.DrawCircle(m_startNode.GetPosition(), 10.0f, nodeFillColor, nodeOutlineColor, true, 4.0f, 16);
+
+                    debugRenderer.DrawFilledLine(m_endPosition, m_endNode.GetPosition(), nodeConnectionLine, 5.0f);
+                    debugRenderer.DrawCircle(m_endNode.GetPosition(), 10.0f, nodeFillColor, nodeOutlineColor, true, 4.0f, 16);
+                }
+                else
+                {
+                    debugRenderer.DrawFilledLine(m_startPosition, m_endPosition, nodeConnectionLine, 5.0f);
+                }
+
+
+                //if (m_nextRouteNode != null)
+                //    m_nextRouteNode.DebugRender(m_fromNode, debugRenderer);
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ namespace TestGame
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
         CameraController m_cameraController = null;
 
-        Bin m_bin = new Bin(150, 150, 10000, 10000, 3, 10000, 5000, 1000);
+        Bin m_bin = new Bin();
         ContactList m_contactList = new ContactList(4000);
         ContactResolver m_contactResolver = new ContactResolver();
 
@@ -58,6 +58,8 @@ namespace TestGame
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
         PathIsland m_pathIsland = new PathIsland();
+        PathRoute m_pathRoute = new PathRoute();
+
 
 
         // --------------------------------------------------------------------
@@ -72,6 +74,7 @@ namespace TestGame
             m_osdManager = new OsdManager(this);
             m_playerManager = new PlayerManager(this, m_bin);
         }
+
 
         public PlayerManager GetPlayerManager()                 { return m_playerManager; }
         public WeaponManager GetWeaponManager()                 { return m_weaponManager; }
@@ -89,6 +92,7 @@ namespace TestGame
         {
             m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
 
+
             Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
             m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 100, 1000, 1);
 
@@ -99,6 +103,9 @@ namespace TestGame
             m_cameraController.Camera = m_camera;
 
             m_map = TestGame.Instance().Content.Load<Map.Map>("maps/test_arena/test_arena");
+
+
+            m_bin.Init(50, 50, 5, new Vector2(2250.0f, 2250.0f), 4, 6000, 1000, 1000);
 
 
             // ----------------------------------------------------------------
@@ -140,11 +147,16 @@ namespace TestGame
 
             PathRegion[] regions = new PathRegion[1];
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
-            //regions[0].GenerateNodesFromGrid(10.0f, 50.0f);
-            regions[0].GenerateNodesFromBoundaries(m_map.CollisionBoundaries);
-            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundary);
+            regions[0].GenerateNodesFromBoundaries(15.0f, m_map.CollisionBoundaries);
+            regions[0].GenerateNodePaths(10.0f, m_bin, BinLayers.kBoundary);
 
             m_pathIsland.SetRegions(regions);
+
+            AddPathIslandToBin(m_pathIsland);
+
+
+            CollisionHelpers.Init();
+            PathFindingHelpers.Init(500.0f, 3, m_bin);
         }
 
 
@@ -184,6 +196,9 @@ namespace TestGame
             m_projectileManager.EndFrame();
 
             m_cameraController.Update(ref inputWrapper);
+
+
+            PathFindingHelpers.CreatePath(m_playerManager.GetPlayers()[0].GetPosition(), new Vector2(1000.0f, 1000.0f), m_bin, ref m_pathRoute);
         }
 
 
@@ -238,12 +253,23 @@ namespace TestGame
             m_osdManager.DebugRender(m_debugRenderer);
 
             //m_pathIsland.DebugRender(m_debugRenderer);
-            //m_bin.DebugRender(m_debugRenderer, 10, 2);
-            //m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange);
+            //m_pathRoute.DebugRender(m_debugRenderer);
+            
+            //m_bin.DebugRender(m_debugRenderer, 5, BinLayers.kAiEntity);
+            //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[0], new Color(0.20f, 0.0f, 0.0f, 0.5f));
+            //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[1], new Color(0.40f, 0.0f, 0.0f, 0.5f));
+            //m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange, Color.DarkRed);
+
+
+            //BinLocation centre = new BinLocation(12, 20);
+            //Vector2 centrePos = m_bin.GetCentrePositionOfBin(centre);
+            //m_debugRenderer.DrawOutlineCircle(centrePos, 50.0f, Color.Red, 2.0f);
+            //m_debugRenderer.DrawOutlineCircle(centrePos, 50.0f, Color.Red, 2.0f);
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
             m_debugRenderer.Clear();
         }
+
 
         private void BuildCollisionBoundaries()
         {
@@ -268,6 +294,23 @@ namespace TestGame
                     m_boundaries.Add(boundaryEntity);
 
                     lastPoint = pos;
+                }
+            }
+        }
+
+
+        private void AddPathIslandToBin(PathIsland island)
+        {
+            PathRegion[] regions = island.GetRegions();
+
+            for (int i = 0; i < regions.Length; ++i)
+            {
+                PathNode[] nodes = regions[i].GetNodes();
+                int nodeCnt = regions[i].GetNodeCount();
+
+                for (int j = 0; j < nodeCnt; ++j)
+                {
+                    nodes[j].AddToBin(m_bin, nodes[j].GetPosition(), nodes[j].GetRadius(), BinLayers.kPathNodes);
                 }
             }
         }
