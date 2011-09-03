@@ -49,7 +49,7 @@ namespace TestGame.Systems
             // Spawn at a spawn point
             Map.Map map = m_world.GetMap();
             //int playerSpawnIndex = m_world.GetRandom().Next(map.PlayerSpawnPoints.Length);
-            int playerSpawnIndex = 0;
+            int playerSpawnIndex = m_players.ActiveItemListCount;
             player.SetPosition(map.PlayerSpawnPoints[playerSpawnIndex]);
             player.Init();
 
