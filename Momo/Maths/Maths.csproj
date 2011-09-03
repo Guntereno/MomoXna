@@ -92,6 +92,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CriticallyDampenedSpring.cs" />
     <Compile Include="ExtendedMaths2D.cs" />
     <Compile Include="Intersection2D.cs" />
     <Compile Include="Maths2D.cs" />

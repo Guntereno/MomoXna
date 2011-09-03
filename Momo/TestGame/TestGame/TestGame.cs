@@ -50,11 +50,11 @@ namespace TestGame
 
             Content.RootDirectory = "Content";
 
-            // Screwing up my work machine
-            //if (GraphicsAdapter.Adapters.Count > 1)
-            //{
-            //    graphics.IsFullScreen = true;
-            //}
+            //Screwing up my work machine
+            if (GraphicsAdapter.Adapters.Count > 1)
+            {
+                graphics.IsFullScreen = true;
+            }
         }
 
         public void PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)

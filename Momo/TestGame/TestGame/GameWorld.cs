@@ -195,7 +195,7 @@ namespace TestGame
 
             m_projectileManager.EndFrame();
 
-            m_cameraController.Update(ref inputWrapper);
+            m_cameraController.Update(ref frameTime, ref inputWrapper);
 
 
             PathFindingHelpers.CreatePath(m_playerManager.GetPlayers()[0].GetPosition(), new Vector2(1000.0f, 1000.0f), m_bin, ref m_pathRoute);
