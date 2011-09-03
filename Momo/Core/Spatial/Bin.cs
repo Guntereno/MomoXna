@@ -37,8 +37,8 @@ namespace Momo.Core.Spatial
         private BinEntry[] m_binEntryPool = null;
         private SentinelBinEntry[][] m_binEntries = null;
 
-        private BinQueryResults m_queryResults = null;
-         
+        private BinQueryResults m_sharedQueryResults = null;
+        private BinQueryLocalityResults m_sharedQueryLocalityResults = null;
 
 
         // --------------------------------------------------------------------
@@ -50,10 +50,10 @@ namespace Momo.Core.Spatial
         }
 
 
-        public void Init(int binCountX, int binCountY, int deadZone, Vector2 area, int layerCount, int itemCapacity, int queryResultsCapacity, int regionSelectionCapacity)
+        public void Init(int binCountX, int binCountY, Vector2 area, int layerCount, int itemCapacity, int sharedQueryResultsCapacity, int regionSelectionCapacity)
         {
-            m_binCountX = binCountX + (deadZone * 2);
-            m_binCountY = binCountY + (deadZone * 2);
+            m_binCountX = binCountX;
+            m_binCountY = binCountY;
             m_binCountMinusOneX = m_binCountX - 1;
             m_binCountMinusOneY = m_binCountY - 1;
 
@@ -69,8 +69,9 @@ namespace Momo.Core.Spatial
             m_invBinDimension = Vector2.One / m_binDimension;
 
             m_areaDimension = area;
-     
-            m_queryResults = new BinQueryResults(queryResultsCapacity);
+
+            m_sharedQueryResults = new BinQueryResults(sharedQueryResultsCapacity);
+            m_sharedQueryLocalityResults = new BinQueryLocalityResults(sharedQueryResultsCapacity);
 
             m_binEntryPool = new BinEntry[itemCapacity];
             m_binEntries = new SentinelBinEntry[layerCount][];
@@ -108,6 +109,18 @@ namespace Momo.Core.Spatial
                     m_binEntries[i][j].m_nextEntry = null;
                 }
             }
+        }
+
+
+        public BinQueryResults GetShaderQueryResults()
+        {
+            return m_sharedQueryResults;
+        }
+
+
+        public BinQueryLocalityResults GetShaderQueryLocalityResults()
+        {
+            return m_sharedQueryLocalityResults;
         }
 
 
@@ -277,15 +290,9 @@ namespace Momo.Core.Spatial
         }
 
 
-        public void StartQuery()
+        public void Query(ref BinRegionUniform region, int layerIdx, BinQueryResults results)
         {
-            m_queryResults.Clear();
-        }
-
-
-        public void Query(BinRegionUniform region, int layerIdx)
-        {
-            int itemCnt = m_queryResults.BinItemCount;
+            int itemCnt = results.BinItemCount;
 
             int y = region.m_minLocation.m_y;
 
@@ -301,7 +308,7 @@ namespace Momo.Core.Spatial
                     BinEntry entry = m_binEntries[layerIdx][binIdx].m_nextEntry;
                     while (entry != null)
                     {
-                        itemCnt = m_queryResults.AddBinItem(entry.m_item, lastBinCnt);
+                        itemCnt = results.AddBinItem(entry.m_item, lastBinCnt);
                         entry = entry.m_nextEntry;
                     }
 
@@ -314,136 +321,37 @@ namespace Momo.Core.Spatial
         }
 
 
-        public void Query(BinRegionSelection region, int layerIdx)
+        public void Query(ref BinRegionSelection region, int layerIdx, BinQueryResults results)
         {
-            int itemCnt = m_queryResults.BinItemCount;
-
-
             for (int i = 0; i < region.m_binCnt; ++i)
             {
-                int lastBinCnt = itemCnt;
+                int lastBinCnt = results.BinItemCount;
 
                 // Dont add sentital.
                 BinEntry entry = m_binEntries[layerIdx][region.m_binIndices[i].m_index].m_nextEntry;
                 while (entry != null)
                 {
-                    itemCnt = m_queryResults.AddBinItem(entry.m_item, lastBinCnt);
+                    results.AddBinItem(entry.m_item, lastBinCnt);
                     entry = entry.m_nextEntry;
                 }
             }
         }
 
 
-
-        //public void QuerySearch(int edgeLayer, ref BinLocation binLocation, int layerIdx)
-        //{
-        //    // Special case.
-        //    if (edgeLayer == 0)
-        //    {
-        //        int binIndex = GetBinIndex(ref binLocation);
-
-        //        // Dont add sentital.
-        //        BinEntry entry = m_binEntries[layerIdx, binIndex].m_nextEntry;
-        //        while (entry != null)
-        //        {
-        //            m_queryResults.AddBinItem(entry.m_item, 0);
-        //            entry = entry.m_nextEntry;
-        //        }
-
-        //        if(
-        //    }
-
-
-
-        //    BinLocation minLocation = binLocation;
-        //    BinLocation maxLocation = minLocation;
-
-        //    minLocation.m_x -= edgeLayer;
-        //    minLocation.m_y -= edgeLayer;
-        //    maxLocation.m_x += edgeLayer;
-        //    maxLocation.m_y += edgeLayer;
-
-
-        //    // Clamp to valid region
-        //    for (int i = 0; i < 10; ++i)
-        //    {
-        //        if (minLocation.m_x < 0)
-        //        {
-        //            minLocation.m_x = 0;
-        //            m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kUp].m_skipEdge = true;
-        //        }
-
-        //        if (minLocation.m_y < 0)
-        //        {
-        //            minLocation.m_y = 0;
-        //            m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kRight].m_skipEdge = true;
-        //        }
-
-        //        if (maxLocation.m_x > m_binCountMinusOneX)
-        //        {
-        //            maxLocation.m_x = m_binCountMinusOneX;
-        //            m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kDown].m_skipEdge = true;
-        //        }
-
-        //        if (maxLocation.m_y > m_binCountMinusOneY)
-        //        {
-        //            maxLocation.m_y = m_binCountMinusOneY;
-        //            m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kLeft].m_skipEdge = true;
-        //        }
-
-        //        int dBinX = maxLocation.X - minLocation.X;
-        //        int dBinY = maxLocation.Y - minLocation.Y;
-
-        //        int binIndex = GetBinIndex(ref minLocation);
-        //        m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kRight].m_endIndex = binIndex + dBinX;
-        //        m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kDown].m_endIndex = m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kRight].m_endIndex + (dBinY * m_binCountX);
-        //        m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kLeft].m_endIndex = m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kDown].m_endIndex - dBinX;
-        //        m_tmpEdgeSearchInfo[(int)BinEdgeDirections.kUp].m_endIndex = binIndex;
-
-
-        //        int initialBinCnt = m_queryResults.BinItemCount;
-        //        for (int j = 0; j < (int)BinEdgeDirections.kCount; ++j)
-        //        {
-        //            if (m_tmpEdgeSearchInfo[j].m_skipEdge == false)
-        //            {
-        //                int endIdx = m_tmpEdgeSearchInfo[j].m_endIndex;
-        //                int dIndex = m_edgeDirectionBinIndexChange[j];
-
-        //                do
-        //                {
-        //                    int lastBinCnt = m_queryResults.BinItemCount;
-
-        //                    // Dont add sentital.
-        //                    BinEntry entry = m_binEntries[layerIdx, binIndex].m_nextEntry;
-        //                    while (entry != null)
-        //                    {
-        //                        m_queryResults.AddBinItem(entry.m_item, lastBinCnt);
-        //                        entry = entry.m_nextEntry;
-        //                    }
-
-        //                    binIndex += dIndex;
-
-        //                } while (binIndex != endIdx);
-        //            }
-        //        }
-
-
-        //        // Check if any items where found in the last edge search, if so exit out with the results.
-        //        if (m_queryResults.BinItemCount > initialBinCnt)
-        //            return;
-
-        //        // Expand search area.
-        //        --minLocation.m_x;
-        //        --minLocation.m_y;
-        //        ++maxLocation.m_x;
-        //        ++maxLocation.m_y;
-        //    }
-        //}
-
-
-        public BinQueryResults EndQuery()
+        public void Query(ref BinRegionSelection region, int binIndexOffset, int layerIdx, BinQueryResults results)
         {
-            return m_queryResults;
+            for (int i = 0; i < region.m_binCnt; ++i)
+            {
+                int lastBinCnt = results.BinItemCount;
+
+                // Dont add sentital.
+                BinEntry entry = m_binEntries[layerIdx][binIndexOffset + region.m_binIndices[i].m_index].m_nextEntry;
+                while (entry != null)
+                {
+                    results.AddBinItem(entry.m_item, lastBinCnt);
+                    entry = entry.m_nextEntry;
+                }
+            }
         }
 
 
@@ -461,7 +369,8 @@ namespace Momo.Core.Spatial
 
         public int GetBinIndex(Vector2 binLocation)
         {
-            return (((int)binLocation.Y * m_binCountX) + (int)binLocation.X);
+            Vector2 binSpacePos = GetBinLocation(binLocation);
+            return (((int)binSpacePos.Y * m_binCountX) + (int)binSpacePos.X);
         }
 
 
@@ -577,8 +486,10 @@ namespace Momo.Core.Spatial
 
 
         // Relatively slow. Use at load time.
-        public void GetBinRegionFromCircle(BinLocation centre, float radius, float resolution, ref BinRegionSelection minusRegion, ref BinRegionSelection outBinRegion)
+        public void GetBinRegionFromCircle(BinLocation centre, float radius, float resolution, ref BinRegionSelection[] minusRegion, int minusRegionCnt, ref BinRegionSelection outBinRegion)
         {
+            const float kHalfPI = (float)Math.PI * 0.5f;
+
             BinLocation lastLocation = BinLocation.kInvalidBinLocation;
             BinLocation location = BinLocation.kInvalidBinLocation;
 
@@ -591,22 +502,46 @@ namespace Momo.Core.Spatial
 
 
             float angle = 0.0f;
+            bool endLoop = false;
 
-            while (lastLocation.Y >= 0)
+            do
             {
-                if (location.m_y != lastLocation.m_y)
+                angle += resolution;
+
+                edgePosition = m_halfBinDimension + new Vector2((float)Math.Sin(angle) * radius, (float)Math.Cos(angle) * radius);
+                GetBinLocation(edgePosition, ref location);
+
+
+                if (angle > kHalfPI)
+                {
+                    GetBinLocation(m_halfBinDimension + new Vector2(radius, 0.0f), ref lastLocation);
+                    endLoop = true;
+                }
+
+
+                if (location.m_y != lastLocation.m_y || endLoop)
                 {
                     int binIndex = centreBinIndex + GetBinIndex(ref lastLocation);
                     int binIndexYOffset = m_binCountX * (lastLocation.Y * 2);
 
                     binIndex -= lastLocation.X * 2;
 
-                    for (int x = -lastLocation.X; x <= lastLocation.X; ++x)
+                    for (int x = 0; x <= lastLocation.X * 2; ++x)
                     {
-                        if (!minusRegion.HasBinIndex(binIndex))
+                        bool addBin = true;;
+                        for (int i = 0; i < minusRegionCnt; ++i)
+                        {
+                            if (minusRegion[i].HasBinIndex(binIndex))
+                            {
+                                addBin = false;
+                                break;
+                            }
+                        }
+
+                        if (addBin)
                         {
                             outBinRegion.AddBinIndex(binIndex);
-                            if(lastLocation.Y != 0)
+                            if (lastLocation.Y > 0)
                                 outBinRegion.AddBinIndex(binIndex - binIndexYOffset);
                         }
 
@@ -615,12 +550,8 @@ namespace Momo.Core.Spatial
                 }
 
 
-                angle += resolution;
                 lastLocation = location;
-
-                edgePosition = m_halfBinDimension + new Vector2((float)Math.Sin(angle) * radius, (float)Math.Cos(angle) * radius);
-                GetBinLocation(edgePosition, ref location);
-            }
+            } while (!endLoop);
         }
 
 

@@ -59,7 +59,7 @@ namespace TestGame
 
         PathIsland m_pathIsland = new PathIsland();
         PathRoute m_pathRoute = new PathRoute();
-
+        PathRoute []m_testRoutes = new PathRoute[1000];
 
 
         // --------------------------------------------------------------------
@@ -105,7 +105,7 @@ namespace TestGame
             m_map = TestGame.Instance().Content.Load<Map.Map>("maps/test_arena/test_arena");
 
 
-            m_bin.Init(50, 50, 5, new Vector2(2250.0f, 2250.0f), 4, 6000, 1000, 1000);
+            m_bin.Init(50, 50, new Vector2(2500.0f, 2500.0f), 4, 6000, 1000, 1000);
 
 
             // ----------------------------------------------------------------
@@ -126,6 +126,8 @@ namespace TestGame
                 Vector2 pos = new Vector2(minX + ((float)m_random.NextDouble() * kSpawnBoxWidth),
                                             minY + ((float)m_random.NextDouble() * kSpawnBoxHeight));
                 AiEntity ai = m_enemyManager.Create(pos);
+
+                m_testRoutes[i] = new PathRoute();
             }
 
             m_weaponManager.Load();
@@ -147,7 +149,7 @@ namespace TestGame
 
             PathRegion[] regions = new PathRegion[1];
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
-            regions[0].GenerateNodesFromBoundaries(15.0f, m_map.CollisionBoundaries);
+            regions[0].GenerateNodesFromBoundaries(15.0f, true, m_map.CollisionBoundaries);
             regions[0].GenerateNodePaths(10.0f, m_bin, BinLayers.kBoundary);
 
             m_pathIsland.SetRegions(regions);
@@ -156,7 +158,7 @@ namespace TestGame
 
 
             CollisionHelpers.Init();
-            PathFindingHelpers.Init(500.0f, 3, m_bin);
+            PathFindingHelpers.Init(400.0f, 3, m_bin);
         }
 
 
@@ -198,7 +200,13 @@ namespace TestGame
             m_cameraController.Update(ref frameTime, ref inputWrapper);
 
 
-            PathFindingHelpers.CreatePath(m_playerManager.GetPlayers()[0].GetPosition(), new Vector2(1000.0f, 1000.0f), m_bin, ref m_pathRoute);
+            //PathFindingHelpers.CreatePath(m_playerManager.GetPlayers()[0].GetPosition(), new Vector2(1000.0f, 1000.0f), m_bin, ref m_pathRoute);
+
+            //for (int i = 0; i < m_enemyManager.GetEnemies().ActiveItemListCount; ++i)
+            //{
+            //    PathFindingHelpers.CreatePath(m_enemyManager.GetEnemies().ActiveItemList[i].GetPosition(), m_playerManager.GetPlayers()[0].GetPosition(), m_bin, ref m_testRoutes[i]);
+            //}
+
         }
 
 
@@ -252,19 +260,28 @@ namespace TestGame
             m_projectileManager.DebugRender(m_debugRenderer);
             m_osdManager.DebugRender(m_debugRenderer);
 
+
             //m_pathIsland.DebugRender(m_debugRenderer);
-            //m_pathRoute.DebugRender(m_debugRenderer);
-            
-            //m_bin.DebugRender(m_debugRenderer, 5, BinLayers.kAiEntity);
+
+            //for (int i = 0; i < m_enemyManager.GetEnemies().ActiveItemListCount; ++i)
+            //{
+            //    m_testRoutes[i].DebugRender(m_debugRenderer);
+            //}
+
+            //m_bin.DebugRender(m_debugRenderer, 5, BinLayers.kPathNodes);
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[0], new Color(0.20f, 0.0f, 0.0f, 0.5f));
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[1], new Color(0.40f, 0.0f, 0.0f, 0.5f));
+            //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[2], new Color(0.60f, 0.0f, 0.0f, 0.5f));
+            //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
             //m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange, Color.DarkRed);
 
 
-            //BinLocation centre = new BinLocation(12, 20);
+            //BinLocation centre = new BinLocation(20, 20);
             //Vector2 centrePos = m_bin.GetCentrePositionOfBin(centre);
-            //m_debugRenderer.DrawOutlineCircle(centrePos, 50.0f, Color.Red, 2.0f);
-            //m_debugRenderer.DrawOutlineCircle(centrePos, 50.0f, Color.Red, 2.0f);
+            //m_debugRenderer.DrawOutlineCircle(centrePos, 150.0f, Color.Red, 2.0f);
+            //m_debugRenderer.DrawOutlineCircle(centrePos, 300.0f, Color.Red, 2.0f);
+            //m_debugRenderer.DrawOutlineCircle(centrePos, 450.0f, Color.Red, 2.0f);
+            //m_debugRenderer.DrawOutlineCircle(centrePos, 600.0f, Color.Red, 2.0f);
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
             m_debugRenderer.Clear();

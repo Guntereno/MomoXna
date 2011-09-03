@@ -48,9 +48,10 @@ namespace TestGame
                 entity.GetBinRegion(ref entityRegion);
 
                 // Entities
-                bin.StartQuery();
-                bin.Query(entityRegion, BinLayers.kAiEntity);
-                BinQueryResults queryResults = bin.EndQuery();
+                BinQueryResults queryResults = bin.GetShaderQueryResults();
+                queryResults.StartQuery();
+                bin.Query(ref entityRegion, BinLayers.kAiEntity, queryResults);
+                queryResults.EndQuery();
 
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
@@ -81,9 +82,9 @@ namespace TestGame
 
 
                 // Boundaries
-                bin.StartQuery();
-                bin.Query(entityRegion, BinLayers.kBoundary);
-                queryResults = bin.EndQuery();
+                queryResults.StartQuery();
+                bin.Query(ref entityRegion, BinLayers.kBoundary, queryResults);
+                queryResults.EndQuery();
 
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
@@ -124,9 +125,10 @@ namespace TestGame
             bin.GetBinRegionFromLine(position, dPos, ref ms_tempBinRegionSelection);
 
             // Boundaries
-            bin.StartQuery();
-            bin.Query(ms_tempBinRegionSelection, BinLayers.kBoundary);
-            BinQueryResults queryResults = bin.EndQuery();
+            BinQueryResults queryResults = bin.GetShaderQueryResults();
+            queryResults.StartQuery();
+            bin.Query(ref ms_tempBinRegionSelection, BinLayers.kBoundary, queryResults);
+            queryResults.EndQuery();
 
             for (int j = 0; j < queryResults.BinItemCount; ++j)
             {
@@ -173,9 +175,10 @@ namespace TestGame
 
 
                 // Entities
-                bin.StartQuery();
-                bin.Query(bulletRegion, BinLayers.kAiEntity);
-                BinQueryResults queryResults = bin.EndQuery();
+                BinQueryResults queryResults = bin.GetShaderQueryResults();
+                queryResults.StartQuery();
+                bin.Query(ref bulletRegion, BinLayers.kAiEntity, queryResults);
+                queryResults.EndQuery();
 
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
@@ -211,9 +214,9 @@ namespace TestGame
 
 
                 // Boundaries
-                bin.StartQuery();
-                bin.Query(bulletRegion, BinLayers.kBoundary);
-                queryResults = bin.EndQuery();
+                queryResults.StartQuery();
+                bin.Query(ref bulletRegion, BinLayers.kBoundary, queryResults);
+                queryResults.EndQuery();
 
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
@@ -251,9 +254,10 @@ namespace TestGame
 
                 bin.GetBinRegionFromCentre(explosion.GetPosition(), explosion.GetRange(), ref explosionRegion);
 
-                bin.StartQuery();
-                bin.Query(explosionRegion, BinLayers.kAiEntity);
-                BinQueryResults queryResults = bin.EndQuery();
+                BinQueryResults queryResults = bin.GetShaderQueryResults();
+                queryResults.StartQuery();
+                bin.Query(ref explosionRegion, BinLayers.kAiEntity, queryResults);
+                queryResults.EndQuery();
 
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)

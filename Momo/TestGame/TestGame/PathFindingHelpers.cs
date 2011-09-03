@@ -20,9 +20,13 @@ namespace TestGame
 {
     public class PathFindingHelpers
     {
-        private static float ms_maxCircularSearchRange = 1000.0f;
-        private static int m_maxCircularSearchRegions = 5;
-        public static BinRegionSelection [] ms_circularSearchRegions = null;
+        // TODO: Need to get this using one of the several pre computed extruded collision layers.
+        // Considerably cheaper.
+
+
+        private static float ms_maxCircularSearchRange = 0.0f;
+        private static int m_maxCircularSearchRegions = 0;
+        private static BinRegionSelection [] ms_circularSearchRegions = null;
 
 
         public static void Init(float maxCircularSearchRange, int maxCircularSearchRegions, Bin bin)
@@ -31,27 +35,23 @@ namespace TestGame
             m_maxCircularSearchRegions = maxCircularSearchRegions;
             ms_circularSearchRegions = new BinRegionSelection[maxCircularSearchRegions];
 
-            float circularSelectionRadiusBands = 50.0f;// ms_maxCircularSearchRange / (float)m_maxCircularSearchRegions;
-            BinRegionSelection emptyMinusSelection = new BinRegionSelection(0);
+            float circularSelectionRadiusBands = ms_maxCircularSearchRange / (float)m_maxCircularSearchRegions;
+            BinRegionSelection[] emptyMinusSelection = new BinRegionSelection[1];
             BinRegionSelection circularSelection = new BinRegionSelection(1000);
-            BinLocation centre = new BinLocation(12, 20);
+            BinLocation centre = new BinLocation(0, 0);
 
             for (int i = 0; i < maxCircularSearchRegions; ++i)
             {
-                //if (i != 0)
-                //{
-                //    bin.GetBinRegionFromCircle(centre,
-                //                                circularSelectionRadiusBands * (float)(i + 1), 0.1f,
-                //                                ref ms_circularSearchRegions[i - 1],
-                //                                ref circularSelection);
-                //}
-                //else
-                //{
-                //    bin.GetBinRegionFromCircle(centre,
-                //                                circularSelectionRadiusBands * (float)(i + 1), 0.1f,
-                //                                ref emptyMinusSelection,
-                //                                ref circularSelection);
-                //}
+                float radius = circularSelectionRadiusBands * (float)(i + 1);
+                float resolution = (float)Math.PI / (radius * 0.15f);
+
+                bin.GetBinRegionFromCircle(centre,
+                                            radius,
+                                            resolution,
+                                            ref ms_circularSearchRegions,
+                                            i,
+                                            ref circularSelection);
+
  
                 ms_circularSearchRegions[i] = new BinRegionSelection(ref circularSelection);
                 circularSelection.Clear();
@@ -59,6 +59,8 @@ namespace TestGame
         }
 
 
+        // Most expensive version. Line of sight checks plus re-searches for the start and end node
+        // based on world positions.
         public static bool CreatePath(Vector2 startPos, Vector2 endPos, Bin bin, ref PathRoute outRoute)
         {
             // Check for direct line of sight
@@ -69,54 +71,75 @@ namespace TestGame
             }
 
 
-            PathNode startNode = null;
             PathNode endNode = null;
+            GetClosestPathNode(endPos, bin, BinLayers.kPathNodes, ref endNode);
 
-            GetClosestPathNode(startPos, bin, BinLayers.kPathNodes, ref startNode);
-
-            if (startNode != null)
-            {
-                GetClosestPathNode(endPos, bin, BinLayers.kPathNodes, ref endNode);
-
-                if (endNode != null)
-                {
-                    // We have two nodes to form a path between.
-                    outRoute.SetPathInfo(startPos, endPos, startNode, endNode);
-
-
-                    return true;
-                }
-            }
-
+            if (endNode != null)
+                return CreatePathNoLineOfSight(startPos, endPos, endNode, bin, ref outRoute);
 
             return false;
         }
 
 
+        // Cheaper...
+        public static bool CreatePathNoLineOfSight(Vector2 startPos, Vector2 endPos, PathNode endNode, Bin bin, ref PathRoute outRoute)
+        {
+            PathNode startNode = null;
+            GetClosestPathNode(startPos, bin, BinLayers.kPathNodes, ref startNode);
+
+            if (startNode != null)
+                return CreatePathNoLineOfSight(startPos, startNode, endPos, endNode, bin, ref outRoute);
+
+            return false;
+        }
+
+
+        // Cheaper still...
+        public static bool CreatePathNoLineOfSight(Vector2 startPos, PathNode startNode, Vector2 endPos, PathNode endNode, Bin bin, ref PathRoute outRoute)
+        {
+            // We have two nodes to form a path between.
+            outRoute.SetPathInfo(startPos, endPos, startNode, endNode);
+
+
+            return true;
+        }
+
+
+        // Use this wisely. Try to cache results for a frame etc. Its ok... but not amazingly quick.
         public static bool GetClosestPathNode(Vector2 pos, Bin bin, int layer, ref PathNode outNode)
         {
             // Use bins to track down limited selection of nodes.
             BinLocation binLocation = new BinLocation();
             bin.GetBinLocation(pos, ref binLocation);
 
+            int posBinIndex = bin.GetBinIndex(pos);
 
-            bin.StartQuery();
-            //bin.QuerySearch(1, ref binLocation, layer);
-            BinQueryResults queryResults = bin.EndQuery();
-
-
-            for (int i = 0; i < queryResults.BinItemCount; ++i)
+            for (int i = 0; i < m_maxCircularSearchRegions; ++i)
             {
-                PathNode pathNode = (PathNode)queryResults.BinItemQueryResults[i];
+                BinQueryLocalityResults queryResults = bin.GetShaderQueryLocalityResults();
+                queryResults.SetLocalityInfo(pos);
+                queryResults.StartQuery();
+                bin.Query(ref ms_circularSearchRegions[i], posBinIndex, layer, queryResults);
+                queryResults.EndQuery();
 
-                outNode = pathNode;
-                return true;
+
+                while (queryResults.BinItemCount > 0)
+                {
+                    int closestBinItemIdx = queryResults.GetClosestBinItemIndex();
+
+                    PathNode pathNode = (PathNode)queryResults.BinItemQueryResults[closestBinItemIdx];
+
+                    if (CollisionHelpers.IsClearLineOfSight(pos, pathNode.GetPosition() - pos, bin))
+                    {
+                        outNode = pathNode;
+                        return true;
+                    }
+                    else
+                    {
+                        queryResults.RemoveBinItem(closestBinItemIdx);
+                    }
+                }
             }
-
-            //AddMethod to bin that spiral searches. It searches out until it gets a hit. It keeps the search tho
-            // until it has finished with the whole layer. Then if the results are no good, you can tell it to start searching
-            // again from the next layer.
-
 
             return false;
         }

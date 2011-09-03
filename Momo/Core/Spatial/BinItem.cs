@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Momo.Core.Spatial
 {
-    public class BinItem
+    public abstract class BinItem
     {
         internal Bin m_bin = null;
         internal BinRegionUniform m_region = BinRegionUniform.kInvalidBinRegionUniform;
@@ -16,6 +16,9 @@ namespace Momo.Core.Spatial
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
+        public abstract Vector2 GetPosition();
+
+
         public Bin GetBin()
         {
             return m_bin;

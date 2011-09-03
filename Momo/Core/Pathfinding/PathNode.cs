@@ -22,7 +22,7 @@ namespace Momo.Core.Pathfinding
         }
 
 
-        public Vector2 GetPosition()
+        public override Vector2 GetPosition()
         {
             return m_position;
         }

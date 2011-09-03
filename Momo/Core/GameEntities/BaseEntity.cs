@@ -31,7 +31,7 @@ namespace Momo.Core.GameEntities
         }
 
 
-        public Vector2 GetPosition()
+        public override Vector2 GetPosition()
         {
             return m_position;
         }

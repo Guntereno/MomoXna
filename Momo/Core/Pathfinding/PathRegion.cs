@@ -104,7 +104,7 @@ namespace Momo.Core.Pathfinding
         }
 
 
-        public void GenerateNodesFromBoundaries(float radius, Vector2[][] boundardPositions)
+        public void GenerateNodesFromBoundaries(float radius, bool closedLoop, Vector2[][] boundardPositions)
         {
             int nodesRequired = 0;
             for (int i = 0; i < boundardPositions.Length; ++i)
@@ -131,9 +131,9 @@ namespace Momo.Core.Pathfinding
 
                 Vector2 lastBoundaryNormal = (boundaryPos - lastBoundaryPos);
                 lastBoundaryNormal.Normalize();
-                lastBoundaryNormal = Maths2D.Perpendicular(lastBoundaryNormal);
-
                 lastBoundaryPos = boundaryPos;
+
+                Vector2 firstBoundaryNormal = lastBoundaryNormal;
 
 
                 for (int j = 2; j < innerBoundaryPositionCount; ++j)
@@ -141,16 +141,16 @@ namespace Momo.Core.Pathfinding
                     boundaryPos = innerBoundaryPositions[j];
                     Vector2 boundaryNormal = boundaryPos - lastBoundaryPos;
                     boundaryNormal.Normalize();
-                    boundaryNormal = Maths2D.Perpendicular(boundaryNormal);
 
-
-                    Vector2 cornerNormal = (boundaryNormal + lastBoundaryNormal) * 0.5f;
-                    cornerNormal.Normalize();
-
-                    m_nodes[m_nodeCnt++] = new PathNode(lastBoundaryPos + (cornerNormal * offset), radius);
-
+                    m_nodes[m_nodeCnt++] = new PathNode(ExtendedMaths2D.ExtrudePoint(lastBoundaryPos, lastBoundaryNormal, boundaryNormal, radius), radius);
+   
                     lastBoundaryPos = boundaryPos;
                     lastBoundaryNormal = boundaryNormal;
+                }
+
+                if (closedLoop && innerBoundaryPositionCount > 3)
+                {
+                    m_nodes[m_nodeCnt++] = new PathNode(ExtendedMaths2D.ExtrudePoint(lastBoundaryPos, lastBoundaryNormal, firstBoundaryNormal, radius), radius);
                 }
             }
         }
@@ -222,9 +222,10 @@ namespace Momo.Core.Pathfinding
                     bin.GetBinRegionFromLine(node1.m_position, dNodePos, ref tempBinRegionSelection);
 
                     // Boundaries
-                    bin.StartQuery();
-                    bin.Query(tempBinRegionSelection, boundaryLayer);
-                    BinQueryResults queryResults = bin.EndQuery();
+                    BinQueryResults queryResults = bin.GetShaderQueryResults();
+                    queryResults.StartQuery();
+                    bin.Query(ref tempBinRegionSelection, boundaryLayer, queryResults);
+                    queryResults.EndQuery();
 
                     bool contact = false;
                     for (int k = 0; k < queryResults.BinItemCount; ++k)
