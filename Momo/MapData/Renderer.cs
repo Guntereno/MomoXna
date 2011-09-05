@@ -1,20 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-
-namespace Momo.Core.Graphics
+namespace MapData
 {
     using VFormat = VertexPositionTexture;
 
-    public class MapRenderer
+    public class Renderer
     {
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
         bool m_inited = false;
         MapData.Map m_map = null;
-        
+
         BasicEffect m_effect = null;
 
         SamplerState m_samplerState;

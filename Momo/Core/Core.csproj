@@ -102,7 +102,6 @@
     <Compile Include="GameEntities\DynamicEntity.cs" />
     <Compile Include="GameEntities\ProjectileGameEntity.cs" />
     <Compile Include="GameEntities\StaticGameEntity.cs" />
-    <Compile Include="Graphics\MapRenderer.cs" />
     <Compile Include="Hashing.cs" />
     <Compile Include="MassInfo.cs" />
     <Compile Include="MutableString.cs" />

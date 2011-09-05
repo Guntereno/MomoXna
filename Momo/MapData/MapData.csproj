@@ -92,6 +92,7 @@
     <Compile Include="MapDataReader.cs" />
     <Compile Include="Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Renderer.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileLayer.cs" />
     <Compile Include="Tileset.cs" />

@@ -3,26 +3,18 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
-using Momo.Maths;
 using Momo.Core;
-using Momo.Core.Graphics;
-using Momo.Core.Nodes.Cameras;
-using Momo.Core.Spatial;
 using Momo.Core.Collision2D;
-using Momo.Core.Primitive2D;
 using Momo.Core.GameEntities;
+using Momo.Core.Nodes.Cameras;
 using Momo.Core.Pathfinding;
-using Momo.Core.ObjectPools;
+using Momo.Core.Primitive2D;
+using Momo.Core.Spatial;
 using Momo.Debug;
-
-using TestGame.Systems;
-using TestGame.Entities;
-using TestGame.Objects;
-
-using WorldManager;
-
 using Momo.Fonts;
+using TestGame.Entities;
+using TestGame.Systems;
+using WorldManager;
 
 
 
@@ -32,8 +24,6 @@ namespace TestGame
     {
         public static World WorldCreator() { return new GameWorld(); }
 
-
-
         OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
         CameraController m_cameraController = null;
 
@@ -42,7 +32,7 @@ namespace TestGame
         ContactResolver m_contactResolver = new ContactResolver();
 
         MapData.Map m_map = null;
-        MapRenderer m_mapRenderer = new MapRenderer();
+        MapData.Renderer m_mapRenderer = new MapData.Renderer();
 
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
 
