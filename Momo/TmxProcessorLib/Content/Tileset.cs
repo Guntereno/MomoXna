@@ -19,7 +19,6 @@ namespace TmxProcessorLib.Content
         public Microsoft.Xna.Framework.Point TileDimensions { get; private set; }
 
         public ExternalReference<TextureContent> DiffuseMap { get; private set; }
-        public ExternalReference<TextureContent> HeightMap { get; private set; }
         public ExternalReference<TextureContent> NormalMap { get; private set; }
 
         public List<Microsoft.Xna.Framework.Rectangle> Tiles { get; private set; }
@@ -85,18 +84,6 @@ namespace TmxProcessorLib.Content
             // Check for the existance of the other maps
             int pointPos = diffusePath.LastIndexOf('.');
 
-            string heightMapPath = diffusePath.Substring(0, pointPos) + "_h" + diffusePath.Substring(pointPos);
-            context.Logger.LogMessage("HEIGHT MAP NAME: {0} {1}", heightMapPath, File.Exists(heightMapPath) ? "exists" : "doesn't exist");
-            if (File.Exists(heightMapPath))
-            {
-                HeightMap = context.BuildAsset<TextureContent, TextureContent>(
-                    new ExternalReference<TextureContent>(heightMapPath),
-                    "TextureProcessor",
-                    data,
-                    "TextureImporter",
-                    GetAssetName(heightMapPath));
-            }
-
             // load the image so we can compute the individual tile source rectangles
             int imageWidth = 0;
             int imageHeight = 0;
@@ -144,13 +131,6 @@ namespace TmxProcessorLib.Content
             output.Write(DiffuseName);
             output.WriteObject<Microsoft.Xna.Framework.Point>(TileDimensions);
             output.WriteExternalReference(DiffuseMap);
-
-            bool heightMapExists = (HeightMap != null);
-            output.Write(heightMapExists);
-            if (heightMapExists)
-            {
-                output.WriteExternalReference(HeightMap);
-            }
 
             output.Write(Tiles.Count);
             foreach (Microsoft.Xna.Framework.Rectangle tile in Tiles)

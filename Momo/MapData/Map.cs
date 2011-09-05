@@ -79,7 +79,7 @@ namespace MapData
             {
                 for (int j = 0; j < Tilesets[i].Tiles.Length; j++)
                 {
-                    Tiles[Tilesets[i].FirstGid + j] = new Tile(Tilesets[i].DiffuseMap, Tilesets[i].HeightMap, Tilesets[i].NormalMap, Tilesets[i].Tiles[j]);
+                    Tiles[Tilesets[i].FirstGid + j] = new Tile(Tilesets[i].DiffuseMap, Tilesets[i].Tiles[j]);
                 }
             }
 
@@ -137,8 +137,6 @@ namespace MapData
         public Point TileDimensions { get; private set; }
         public Rectangle[] Tiles { get; private set; }
         public Texture2D DiffuseMap { get; set; }
-        public Texture2D HeightMap { get; set; }
-        public Texture2D NormalMap { get; set; }
 
         public void Read(Map parent, ContentReader input)
         {
@@ -147,11 +145,6 @@ namespace MapData
             TextureName = input.ReadString();
             TileDimensions = input.ReadObject<Point>();
             DiffuseMap = input.ReadExternalReference<Texture2D>();
-
-            if (input.ReadBoolean())
-            {
-                HeightMap = input.ReadExternalReference<Texture2D>();
-            }
 
             int tileCount = input.ReadInt32();
             Tiles = new Rectangle[tileCount];
@@ -198,11 +191,9 @@ namespace MapData
         public Texture2D NormalMap { get; private set; }
         public Rectangle Source { get; private set; }
 
-        public Tile(Texture2D diffuse, Texture2D height, Texture2D normal, Rectangle source)
+        public Tile(Texture2D diffuse, Rectangle source)
         {
             DiffuseMap = diffuse;
-            HeightMap = height;
-            NormalMap = normal;
             Source = source;
         }
     }
