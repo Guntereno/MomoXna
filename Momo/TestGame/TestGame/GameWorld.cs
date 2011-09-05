@@ -41,7 +41,7 @@ namespace TestGame
         ContactList m_contactList = new ContactList(4000);
         ContactResolver m_contactResolver = new ContactResolver();
 
-        Map.Map m_map = null;
+        MapData.Map m_map = null;
         MapRenderer m_mapRenderer = new MapRenderer();
 
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
@@ -85,7 +85,7 @@ namespace TestGame
         public Random GetRandom()                               { return m_random; }
         public DebugRenderer GetDebugRenderer()                 { return m_debugRenderer; }
 
-        public Map.Map GetMap()                                 { return m_map; }
+        public MapData.Map GetMap()                                 { return m_map; }
 
 
         public override void Load()
@@ -102,7 +102,7 @@ namespace TestGame
 
             m_cameraController.Camera = m_camera;
 
-            m_map = TestGame.Instance().Content.Load<Map.Map>("maps/test_arena/test_arena");
+            m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/test_arena/test_arena");
 
 
             m_bin.Init(50, 50, new Vector2(2500.0f, 2500.0f), 4, 6000, 1000, 1000);
@@ -115,19 +115,14 @@ namespace TestGame
             m_playerManager.Load();
 
             // Create the enemies
-            float mapWidth = (float)(m_map.Dimensions.X * m_map.TileDimensions.X);
-            float mapHeight = (float)(m_map.Dimensions.Y* m_map.TileDimensions.Y);
-            const float kSpawnBoxWidth = 1600.0f;
-            const float kSpawnBoxHeight = 400.0f;
-            float minX = (mapWidth - kSpawnBoxWidth) * 0.5f;
-            float minY = (mapHeight - kSpawnBoxHeight) * 0.5f;
-            for (int i = 0; i < 200; ++i)
+            MapData.Wave wave = m_map.Waves[0];
+            int enemyIdx = 0;
+            foreach (MapData.Enemy enemy in wave.GetEnemies())
             {
-                Vector2 pos = new Vector2(minX + ((float)m_random.NextDouble() * kSpawnBoxWidth),
-                                            minY + ((float)m_random.NextDouble() * kSpawnBoxHeight));
-                AiEntity ai = m_enemyManager.Create(pos);
+                AiEntity ai = m_enemyManager.Create(enemy.GetPosition());
 
-                m_testRoutes[i] = new PathRoute();
+                m_testRoutes[enemyIdx] = new PathRoute();
+                ++enemyIdx;
             }
 
             m_weaponManager.Load();

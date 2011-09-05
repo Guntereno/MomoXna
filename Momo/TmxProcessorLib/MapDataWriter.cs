@@ -29,7 +29,7 @@ namespace TmxProcessorLib
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            return "Map.MapDataReader, MapData";
+            return "MapData.MapDataReader, MapData";
         }
     }
 }

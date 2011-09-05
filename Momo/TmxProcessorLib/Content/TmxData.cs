@@ -40,6 +40,8 @@ namespace TmxProcessorLib.Content
         public Vector2 MinPlayableArea { get; private set; }
         public Vector2 MaxPlayableArea { get; private set; }
 
+        public List<ObjectGroup> Waves { get; private set; }
+
         public TmxData(string fileName)
         {
             FileName = fileName;
@@ -135,6 +137,21 @@ namespace TmxProcessorLib.Content
             BuildPlayerSpawns();
 
             CalculatePlayableArea();
+
+            BuildWaveList();
+        }
+
+        private void BuildWaveList()
+        {
+            Waves = new List<ObjectGroup>();
+
+            foreach (String objGroupName in ObjectGroups.Keys)
+            {
+                if(objGroupName.StartsWith("Wave"))
+                {
+                    Waves.Add(ObjectGroups[objGroupName]);
+                }
+            }
         }
 
         private void CalculatePlayableArea()
@@ -460,6 +477,32 @@ namespace TmxProcessorLib.Content
             // Output the play area definition
             output.Write(MinPlayableArea);
             output.Write(MaxPlayableArea);
+
+            // Output each wave
+            output.Write(Waves.Count);
+            foreach (ObjectGroup wave in Waves)
+            {
+                // Ouput enemies
+                {
+                    // Build enemy list
+                    List<Object> enemies = new List<Object>();
+                    foreach (string objName in wave.Objects.Keys)
+                    {
+                        Object obj = wave.Objects[objName];
+                        if (obj.Type == "Enemy")
+                        {
+                            enemies.Add(obj);
+                        }
+                    }
+
+                    output.Write(enemies.Count);
+                    foreach (Object enemy in enemies)
+                    {
+                        output.Write(enemy.Name);
+                        output.WriteObject<Vector2>(enemy.Position);
+                    }
+                }
+            }
         }
     }
 }

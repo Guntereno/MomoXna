@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace Map
+namespace MapData
 {
     public class Map
     {
@@ -38,6 +38,8 @@ namespace Map
 
         public Vector2 PlayAreaMin { get; private set; }
         public Vector2 PlayAreaMax { get; private set; }
+
+        public Wave[] Waves { get; private set; }
 
 
         public void Read(ContentReader input)
@@ -105,6 +107,25 @@ namespace Map
             // Read in the vectors describing the playable area
             PlayAreaMin = input.ReadVector2();
             PlayAreaMax = input.ReadVector2();
+
+            // Read the wave information
+            int numWaves = input.ReadInt32();
+            Waves = new Wave[numWaves];
+
+            for (int waveIdx = 0; waveIdx < numWaves; ++waveIdx)
+            {
+                int numEnemies = input.ReadInt32();
+                Enemy[] enemies = new Enemy[numEnemies];
+                for(int enemyIdx = 0; enemyIdx < numEnemies; ++enemyIdx)
+                {
+                    string name = input.ReadString();
+                    Vector2 pos = input.ReadObject<Vector2>();
+
+                    enemies[enemyIdx] = new Enemy(name, pos);
+                }
+
+                Waves[waveIdx] = new Wave(enemies);
+            }
         }
     }
 

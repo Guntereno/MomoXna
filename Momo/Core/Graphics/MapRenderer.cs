@@ -17,7 +17,7 @@ namespace Momo.Core.Graphics
         // -- Private Members
         // --------------------------------------------------------------------
         bool m_inited = false;
-        Map.Map m_map = null;
+        MapData.Map m_map = null;
         
         BasicEffect m_effect = null;
 
@@ -32,7 +32,7 @@ namespace Momo.Core.Graphics
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public void Init(Map.Map map, GraphicsDevice graphicsDevice, int patchSize)
+        public void Init(MapData.Map map, GraphicsDevice graphicsDevice, int patchSize)
         {
             m_map = map;
             m_patchSize = patchSize;
@@ -50,7 +50,7 @@ namespace Momo.Core.Graphics
             for (int layerIdx = 0; layerIdx < numLayers; ++layerIdx)
             {
                 m_layers[layerIdx] = new List<Patch>();
-                Map.TileLayer tileLayer = m_map.TileLayers[layerIdx];
+                MapData.TileLayer tileLayer = m_map.TileLayers[layerIdx];
 
                 int patchCountX = tileLayer.Dimensions.X / m_patchSize;
                 for (int patchX = 0; patchX < patchCountX; ++patchX)
@@ -120,19 +120,19 @@ namespace Momo.Core.Graphics
         // --------------------------------------------------------------------
         private struct TileInfo
         {
-            public TileInfo(Map.Tile tile, int x, int y)
+            public TileInfo(MapData.Tile tile, int x, int y)
             {
                 m_tile = tile;
                 m_x = x;
                 m_y = y;
             }
 
-            public Map.Tile m_tile;
+            public MapData.Tile m_tile;
             public int m_x;
             public int m_y;
         };
 
-        private Patch BuildPatch(Map.TileLayer tileLayer, int xMin, int yMin)
+        private Patch BuildPatch(MapData.TileLayer tileLayer, int xMin, int yMin)
         {
             // Create a dictionary of all neccessary tile info
             // indexed by the texture
@@ -145,7 +145,7 @@ namespace Momo.Core.Graphics
                 {
                     System.Diagnostics.Debug.Assert(x < m_map.Dimensions.Y);
 
-                    Map.Tile tile = m_map.Tiles[tileLayer.Indices[x + (y * tileLayer.Dimensions.X)]];
+                    MapData.Tile tile = m_map.Tiles[tileLayer.Indices[x + (y * tileLayer.Dimensions.X)]];
 
                     if (tile == null)
                         continue;

@@ -47,7 +47,7 @@ namespace TestGame.Systems
             player.DebugColor = debugColours[m_players.ActiveItemListCount];
 
             // Spawn at a spawn point
-            Map.Map map = m_world.GetMap();
+            MapData.Map map = m_world.GetMap();
             //int playerSpawnIndex = m_world.GetRandom().Next(map.PlayerSpawnPoints.Length);
             int playerSpawnIndex = m_players.ActiveItemListCount;
             player.SetPosition(map.PlayerSpawnPoints[playerSpawnIndex]);

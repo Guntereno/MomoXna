@@ -1,22 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="64" height="64" tilewidth="32" tileheight="32">
- <properties>
-  <property name="lightFactor" value="4"/>
- </properties>
- <tileset firstgid="1" name="livingquaters" tilewidth="32" tileheight="32">
-  <image source="../tilesets/livingquaters.png" width="512" height="512"/>
- </tileset>
- <tileset firstgid="257" name="shadows" tilewidth="32" tileheight="32">
-  <image source="../tilesets/shadows.png" width="128" height="128"/>
- </tileset>
- <tileset firstgid="273" name="ceiling" tilewidth="32" tileheight="32">
-  <image source="../tilesets/ceiling.png" width="256" height="128"/>
- </tileset>
- <tileset firstgid="305" name="text" tilewidth="32" tileheight="32">
-  <image source="../tilesets/text.png" width="512" height="1024"/>
- </tileset>
- <layer name="Floor" width="64" height="64">
-  <data encoding="csv">
+<?xml version="1.0" ?>
+<map height="64" orientation="orthogonal" tileheight="32" tilewidth="32" version="1.0" width="64">
+	
+ 
+	<properties>
+		
+  
+		<property name="lightFactor" value="4"/>
+		
+ 
+	</properties>
+	
+ 
+	<tileset firstgid="1" name="livingquaters" tileheight="32" tilewidth="32">
+		
+  
+		<image height="512" source="../tilesets/livingquaters.png" width="512"/>
+		
+ 
+	</tileset>
+	
+ 
+	<tileset firstgid="257" name="shadows" tileheight="32" tilewidth="32">
+		
+  
+		<image height="128" source="../tilesets/shadows.png" width="128"/>
+		
+ 
+	</tileset>
+	
+ 
+	<tileset firstgid="273" name="ceiling" tileheight="32" tilewidth="32">
+		
+  
+		<image height="128" source="../tilesets/ceiling.png" width="256"/>
+		
+ 
+	</tileset>
+	
+ 
+	<tileset firstgid="305" name="text" tileheight="32" tilewidth="32">
+		
+  
+		<image height="1024" source="../tilesets/text.png" width="512"/>
+		
+ 
+	</tileset>
+	
+ 
+	<layer height="64" name="Floor" width="64">
+		
+  
+		<data encoding="csv">
+			
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -81,10 +116,18 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-</data>
- </layer>
- <layer name="Decals" width="64" height="64">
-  <data encoding="csv">
+
+		</data>
+		
+ 
+	</layer>
+	
+ 
+	<layer height="64" name="Decals" width="64">
+		
+  
+		<data encoding="csv">
+			
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -149,10 +192,18 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-</data>
- </layer>
- <layer name="Walls" width="64" height="64">
-  <data encoding="csv">
+
+		</data>
+		
+ 
+	</layer>
+	
+ 
+	<layer height="64" name="Walls" width="64">
+		
+  
+		<data encoding="csv">
+			
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -217,12 +268,198 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-</data>
- </layer>
- <objectgroup name="Player" width="64" height="64">
-  <object name="PlayerSpawn1" type="PlayerSpawn" x="415" y="415"/>
-  <object name="PlayerSpawn2" type="PlayerSpawn" x="449" y="380"/>
-  <object name="PlayerSpawn4" type="PlayerSpawn" x="448" y="454"/>
-  <object name="PlayerSpawn3" type="PlayerSpawn" x="379" y="452"/>
- </objectgroup>
+
+		</data>
+		
+ 
+	</layer>
+	
+ 
+	<objectgroup height="64" name="Player" width="64">
+		
+  
+		<object name="PlayerSpawn1" type="PlayerSpawn" x="415" y="415"/>
+		
+  
+		<object name="PlayerSpawn2" type="PlayerSpawn" x="449" y="380"/>
+		
+  
+		<object name="PlayerSpawn4" type="PlayerSpawn" x="448" y="454"/>
+		
+  
+		<object name="PlayerSpawn3" type="PlayerSpawn" x="379" y="452"/>
+		
+ 
+	</objectgroup>
+	
+ 
+	<objectgroup height="64" name="Wave01" width="64">
+		
+  
+		<object name="Enemy00" type="Enemy" x="946" y="362"/>
+		
+  
+		<object name="Enemy01" type="Enemy" x="1006" y="320"/>
+		
+  
+		<object name="Enemy02" type="Enemy" x="1036" y="462"/>
+		
+  
+		<object name="Enemy03" type="Enemy" x="1058" y="384"/>
+		
+  
+		<object name="Enemy04" type="Enemy" x="1570" y="428"/>
+		
+  
+		<object name="Enemy05" type="Enemy" x="1620" y="354"/>
+		
+  
+		<object name="Enemy06" type="Enemy" x="1670" y="452"/>
+		
+  
+		<object name="Enemy07" type="Enemy" x="1880" y="292"/>
+		
+  
+		<object name="Enemy08" type="Enemy" x="1674" y="974"/>
+		
+  
+		<object name="Enemy09" type="Enemy" x="1704" y="796"/>
+		
+  
+		<object name="Enemy10" type="Enemy" x="1728" y="904"/>
+		
+  
+		<object name="Enemy11" type="Enemy" x="1574" y="948"/>
+		
+  
+		<object name="Enemy12" type="Enemy" x="896" y="1102"/>
+		
+  
+		<object name="Enemy13" type="Enemy" x="944" y="1006"/>
+		
+  
+		<object name="Enemy14" type="Enemy" x="1042" y="886"/>
+		
+  
+		<object name="Enemy15" type="Enemy" x="1072" y="1006"/>
+		
+  
+		<object name="Enemy16" type="Enemy" x="964" y="1096"/>
+		
+  
+		<object name="Enemy17" type="Enemy" x="1208" y="1180"/>
+		
+  
+		<object name="Enemy18" type="Enemy" x="1184" y="1008"/>
+		
+  
+		<object name="Enemy19" type="Enemy" x="848" y="700"/>
+		
+  
+		<object name="Enemy20" type="Enemy" x="852" y="654"/>
+		
+  
+		<object name="Enemy21" type="Enemy" x="920" y="612"/>
+		
+  
+		<object name="Enemy22" type="Enemy" x="930" y="670"/>
+		
+  
+		<object name="Enemy23" type="Enemy" x="1114" y="694"/>
+		
+  
+		<object name="Enemy24" type="Enemy" x="1168" y="640"/>
+		
+  
+		<object name="Enemy25" type="Enemy" x="1106" y="634"/>
+		
+  
+		<object name="Enemy26" type="Enemy" x="1190" y="720"/>
+		
+  
+		<object name="Enemy27" type="Enemy" x="1210" y="1476"/>
+		
+  
+		<object name="Enemy28" type="Enemy" x="1188" y="1394"/>
+		
+  
+		<object name="Enemy29" type="Enemy" x="1106" y="1452"/>
+		
+  
+		<object name="Enemy30" type="Enemy" x="1446" y="1416"/>
+		
+  
+		<object name="Enemy31" type="Enemy" x="856" y="1390"/>
+		
+  
+		<object name="Enemy32" type="Enemy" x="788" y="1442"/>
+		
+  
+		<object name="Enemy33" type="Enemy" x="578" y="1362"/>
+		
+  
+		<object name="Enemy34" type="Enemy" x="594" y="1456"/>
+		
+  
+		<object name="Enemy35" type="Enemy" x="308" y="1212"/>
+		
+  
+		<object name="Enemy36" type="Enemy" x="362" y="1096"/>
+		
+  
+		<object name="Enemy37" type="Enemy" x="454" y="1018"/>
+		
+  
+		<object name="Enemy38" type="Enemy" x="442" y="1174"/>
+		
+  
+		<object name="Enemy39" type="Enemy" x="482" y="1682"/>
+		
+  
+		<object name="Enemy40" type="Enemy" x="386" y="1564"/>
+		
+  
+		<object name="Enemy41" type="Enemy" x="488" y="1570"/>
+		
+  
+		<object name="Enemy42" type="Enemy" x="530" y="1636"/>
+		
+  
+		<object name="Enemy43" type="Enemy" x="988" y="1758"/>
+		
+  
+		<object name="Enemy44" type="Enemy" x="1082" y="1698"/>
+		
+  
+		<object name="Enemy45" type="Enemy" x="1016" y="1678"/>
+		
+  
+		<object name="Enemy46" type="Enemy" x="1582" y="1742"/>
+		
+  
+		<object name="Enemy47" type="Enemy" x="1612" y="1692"/>
+		
+  
+		<object name="Enemy48" type="Enemy" x="1558" y="1636"/>
+		
+  
+		<object name="Enemy49" type="Enemy" x="1628" y="1586"/>
+		
+  
+		<object name="Enemy50" type="Enemy" x="156" y="1790"/>
+		
+  
+		<object name="Enemy51" type="Enemy" x="1796" y="1896"/>
+		
+  
+		<object name="Enemy52" type="Enemy" x="666" y="1080"/>
+		
+  
+		<object name="Enemy53" type="Enemy" x="722" y="846"/>
+		
+ 
+	</objectgroup>
+	
+
 </map>
+

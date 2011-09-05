@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-using TRead = Map.Map;
+using TRead = MapData.Map;
 
-namespace Map
+namespace MapData
 {
     /// <summary>
     /// This class will be instantiated by the XNA Framework Content
