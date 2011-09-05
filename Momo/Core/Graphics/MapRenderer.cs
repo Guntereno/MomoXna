@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -22,7 +18,7 @@ namespace Momo.Core.Graphics
         BasicEffect m_effect = null;
 
         int m_patchSize = 8;
-        List<Patch>[] m_layers;
+        List<MapData.Patch>[] m_layers;
 
         SamplerState m_samplerState;
 
@@ -46,10 +42,10 @@ namespace Momo.Core.Graphics
             // Build the patches
             // Each layer consists of a list of patches
             int numLayers = m_map.TileLayers.Length;
-            m_layers = new List<Patch>[numLayers];
+            m_layers = new List<MapData.Patch>[numLayers];
             for (int layerIdx = 0; layerIdx < numLayers; ++layerIdx)
             {
-                m_layers[layerIdx] = new List<Patch>();
+                m_layers[layerIdx] = new List<MapData.Patch>();
                 MapData.TileLayer tileLayer = m_map.TileLayers[layerIdx];
 
                 int patchCountX = tileLayer.Dimensions.X / m_patchSize;
@@ -58,7 +54,7 @@ namespace Momo.Core.Graphics
                     int patchCountY = tileLayer.Dimensions.Y / m_patchSize;
                     for (int patchY = 0; patchY < patchCountX; ++patchY)
                     {
-                        Patch patch = BuildPatch(tileLayer, patchX * m_patchSize, patchY * m_patchSize);
+                        MapData.Patch patch = BuildPatch(tileLayer, patchX * m_patchSize, patchY * m_patchSize);
                         if (patch != null)
                         {
                             m_layers[layerIdx].Add(patch);
@@ -100,7 +96,7 @@ namespace Momo.Core.Graphics
             {
                 for (int patchIdx = 0; patchIdx < m_layers[layerIdx].Count; ++patchIdx)
                 {
-                    Patch patch = m_layers[layerIdx][patchIdx];
+                    MapData.Patch patch = m_layers[layerIdx][patchIdx];
                     if (m_viewFrustum.Intersects(patch.GetBoundingBox()))
                     {
                         patch.Render(m_effect, graphicsDevice);
@@ -132,7 +128,7 @@ namespace Momo.Core.Graphics
             public int m_y;
         };
 
-        private Patch BuildPatch(MapData.TileLayer tileLayer, int xMin, int yMin)
+        private MapData.Patch BuildPatch(MapData.TileLayer tileLayer, int xMin, int yMin)
         {
             // Create a dictionary of all neccessary tile info
             // indexed by the texture
@@ -160,7 +156,7 @@ namespace Momo.Core.Graphics
 
             if(tileDict.Count > 0)
             {
-                Patch patch = new Patch();
+                MapData.Patch patch = new MapData.Patch();
 
                 // Now iterate the dictionary, building a mesh for each texture
                 foreach (Texture2D texture in tileDict.Keys)
@@ -232,120 +228,6 @@ namespace Momo.Core.Graphics
         // --------------------------------------------------------------------
         // -- Private Classes
         // --------------------------------------------------------------------
-        private class Patch
-        {
-            public Patch()
-            {
-            }
 
-            public BoundingBox GetBoundingBox()
-            {
-                return m_boundingBox;
-            }
-
-            public void AddMesh(Texture2D texture, VFormat[] vertices)
-            {
-                m_meshes.Add(new Mesh(texture, vertices));
-                RecalculateBoundingBox();
-            }
-
-            public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
-            {
-                for(int i=0; i<m_meshes.Count; ++i)
-                {
-                    m_meshes[i].Render(effect, graphicsDevice);
-                }
-            }
-
-            private void RecalculateBoundingBox()
-            {
-                Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-                Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-                for (int i = 0; i < m_meshes.Count; ++i)
-                {
-                    Mesh mesh = m_meshes[i];
-                    BoundingBox boundingBox = mesh.GetBoundingBox();
-
-                    if (boundingBox.Min.X < min.X)
-                        min.X = boundingBox.Min.X;
-                    if (boundingBox.Min.Y < min.Y)
-                        min.Y = boundingBox.Min.Y;
-                    if (boundingBox.Min.Z < min.Z)
-                        min.Z = boundingBox.Min.Z;
-
-                    if (boundingBox.Max.X > max.X)
-                        max.X = boundingBox.Max.X;
-                    if (boundingBox.Max.Y > max.Y)
-                        max.Y = boundingBox.Max.Y;
-                    if (boundingBox.Max.Z > max.Z)
-                        max.Z = boundingBox.Max.Z;
-
-                    m_boundingBox = new BoundingBox(min, max);
-                }
-            }
-
-            private class Mesh
-            {
-                public Mesh(Texture2D texture, VFormat[] vertices)
-                {
-                    System.Diagnostics.Debug.Assert(texture != null);
-                    System.Diagnostics.Debug.Assert(vertices.Length > 0);
-
-                    m_texture = texture;
-                    m_vertices = vertices;
-
-                    CalculateBoundingBox();
-                }
-
-                public BoundingBox GetBoundingBox()
-                {
-                    return m_boundingBox;
-                }
-
-                public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
-                {
-                    effect.Texture = m_texture;
-
-                    for (int p = 0; p < effect.CurrentTechnique.Passes.Count; p++)
-                    {
-                        EffectPass pass = effect.CurrentTechnique.Passes[p];
-                        pass.Apply();
-
-                        graphicsDevice.DrawUserPrimitives<VFormat>(PrimitiveType.TriangleList, m_vertices, 0, m_vertices.Length / 3);
-                    }
-                }
-
-                private void CalculateBoundingBox()
-                {
-                    Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-                    Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-                    for (int i = 0; i < m_vertices.Length; ++i)
-                    {
-                        if (m_vertices[i].Position.X < min.X)
-                            min.X = m_vertices[i].Position.X;
-                        if (m_vertices[i].Position.Y < min.Y)
-                            min.Y = m_vertices[i].Position.Y;
-                        if (m_vertices[i].Position.Z < min.Z)
-                            min.Z = m_vertices[i].Position.Z;
-
-                        if (m_vertices[i].Position.X > max.X)
-                            max.X = m_vertices[i].Position.X;
-                        if (m_vertices[i].Position.Y > max.Y)
-                            max.Y = m_vertices[i].Position.Y;
-                        if (m_vertices[i].Position.Z > max.Z)
-                            max.Z = m_vertices[i].Position.Z;
-
-                        m_boundingBox = new BoundingBox(min, max);
-                    }
-                }
-
-                private Texture2D m_texture = null;
-                private VFormat[] m_vertices = null;
-                BoundingBox m_boundingBox;
-            }
-
-            List<Mesh> m_meshes = new List<Mesh>();
-            BoundingBox m_boundingBox;
-        }
     }
 }
