@@ -11,6 +11,21 @@ namespace TmxProcessorLib.Content
     {
         public uint[] Data { get; private set; }
 
+        public Tile[] Tiles { get; private set; }
+
+        private int m_index;
+
+        public TileLayer(int index)
+        {
+            m_index = index;
+        }
+
+        public int GetIndex()
+        {
+            return m_index;
+        }
+
+
         public override void ImportXmlNode(System.Xml.XmlNode layerNode, ContentImporterContext context)
         {
             base.ImportXmlNode(layerNode, context);
@@ -35,12 +50,7 @@ namespace TmxProcessorLib.Content
 
                         for (int i = 0; i < indices.Length; i++)
                         {
-                            uint value = uint.Parse(indices[i]);
-                            Data[i] = value & 0x3FFFFFFF;
-
-                            // These are currently ignored for now
-                            bool x = (value & 0x80000000) != 0;
-                            bool y = (value & 0x40000000) != 0;
+                            Data[i] = uint.Parse(indices[i]);
                         }
                     }
                     break;
@@ -53,7 +63,18 @@ namespace TmxProcessorLib.Content
 
         public override void Process(TmxData parent, ContentProcessorContext context)
         {
+            Tiles = new Tile[Data.Length];
+            for (int i = 0; i < Data.Length; ++i)
+            {
+                uint data = Data[i];
 
+                uint index = data & 0x3FFFFFFF;
+                Tiles[i] = parent.GetTile(index);
+
+                // These are currently ignored for now
+                //bool x = (value & 0x80000000) != 0;
+                //bool y = (value & 0x40000000) != 0;
+            }
         }
 
         public override void Write(ContentWriter output)

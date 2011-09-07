@@ -57,12 +57,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="maps\1_living_quarters\1_living_quarters.tmx">
+    <None Include="maps\1_living_quarters\1_living_quarters.tmx">
       <Name>1_living_quarters</Name>
       <Processor>TmxProcessor</Processor>
       <Importer>TmxImporter</Importer>
       <SubType>Designer</SubType>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FontProcessorLib\FontProcessorLib.csproj">

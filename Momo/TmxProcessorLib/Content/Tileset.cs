@@ -7,9 +7,24 @@ using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using System.IO;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
+using Microsoft.Xna.Framework;
 
 namespace TmxProcessorLib.Content
 {
+    public class Tile
+    {
+        public Tile(uint id, Tileset parent, Rectangle source)
+        {
+            Id = id;
+            Parent = parent;
+            Source = source;
+        }
+
+        public uint Id { get; private set; }
+        public Rectangle Source { get; private set; }
+        public Tileset Parent { get; private set; }
+    }
+
     public class Tileset
     {
         public uint FirstGid { get; private set; }
@@ -21,7 +36,10 @@ namespace TmxProcessorLib.Content
         public ExternalReference<TextureContent> DiffuseMap { get; private set; }
         public ExternalReference<TextureContent> NormalMap { get; private set; }
 
-        public List<Microsoft.Xna.Framework.Rectangle> Tiles { get; private set; }
+        public List<Tile> Tiles { get; private set; }
+
+        public float Width { get; private set; }
+        public float Height { get; private set; }
 
         public void ImportXmlNode(System.Xml.XmlNode tilesetNode, ContentImporterContext context)
         {
@@ -85,30 +103,31 @@ namespace TmxProcessorLib.Content
             int pointPos = diffusePath.LastIndexOf('.');
 
             // load the image so we can compute the individual tile source rectangles
-            int imageWidth = 0;
-            int imageHeight = 0;
+            Width = 0;
+            Height = 0;
             using (System.Drawing.Image image = System.Drawing.Image.FromFile(diffusePath))
             {
-                imageWidth = image.Width;
-                imageHeight = image.Height;
+                Width = image.Width;
+                Height = image.Height;
             }
 
             // figure out how many frames fit on the X axis
             int columns = 1;
-            while (columns * TileDimensions.X < imageWidth)
+            while (columns * TileDimensions.X < Width)
             {
                 columns++;
             }
 
             // figure out how many frames fit on the Y axis
             int rows = 1;
-            while (rows * TileDimensions.Y < imageHeight)
+            while (rows * TileDimensions.Y < Height)
             {
                 rows++;
             }
 
             // make our tiles. tiles are numbered by row, left to right.
-            Tiles = new List<Microsoft.Xna.Framework.Rectangle>();
+            Tiles = new List<Tile>();
+            uint curId = FirstGid;
             for (int y = 0; y < rows; y++)
             {
                 for (int x = 0; x < columns; x++)
@@ -117,9 +136,14 @@ namespace TmxProcessorLib.Content
 
                     int rx = x * TileDimensions.X;
                     int ry = y * TileDimensions.Y;
-                    Microsoft.Xna.Framework.Rectangle tile = new Microsoft.Xna.Framework.Rectangle(rx, ry, TileDimensions.X, TileDimensions.Y);
+                    Microsoft.Xna.Framework.Rectangle rect = new Microsoft.Xna.Framework.Rectangle(rx, ry, TileDimensions.X, TileDimensions.Y);
 
+                    Tile tile = new Tile(curId, this, rect);
                     Tiles.Add(tile);
+
+                    parent.Tiles[tile.Id] = tile;
+
+                    ++curId;
                 }
             }
         }
@@ -133,10 +157,11 @@ namespace TmxProcessorLib.Content
             output.WriteExternalReference(DiffuseMap);
 
             output.Write(Tiles.Count);
-            foreach (Microsoft.Xna.Framework.Rectangle tile in Tiles)
+            foreach (Tile tile in Tiles)
             {
-                output.WriteObject<Microsoft.Xna.Framework.Rectangle>(tile);
+                output.WriteObject<Microsoft.Xna.Framework.Rectangle>(tile.Source);
             }
         }
+
     }
 }

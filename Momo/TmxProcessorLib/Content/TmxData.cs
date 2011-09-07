@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
-using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
-using System.Xml;
-using Microsoft.Xna.Framework;
+using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionTexture;
 
 namespace TmxProcessorLib.Content
 {
@@ -29,9 +23,13 @@ namespace TmxProcessorLib.Content
 
         public String FileName { get; private set; }
 
-        public Dictionary<string, Tileset> Tilesets { get; private set; }
-        public Dictionary<string, TileLayer> TileLayers { get; private set; }
-        public Dictionary<string, ObjectGroup> ObjectGroups { get; private set; }
+        public Dictionary<string, Tileset> TilesetsDict { get; private set; }
+        public List<Tileset> Tilesets { get; private set; }
+        public Dictionary<string, TileLayer> TileLayersDict { get; private set; }
+        public List<TileLayer> TileLayers { get; private set; }
+        public Dictionary<string, ObjectGroup> ObjectGroupsDict { get; private set; }
+
+        public Dictionary<uint, Tile> Tiles { get; private set; }
 
         public List<Point[]> CollisionBoundaries { get; private set; }
 
@@ -42,6 +40,8 @@ namespace TmxProcessorLib.Content
 
         public List<ObjectGroup> Waves { get; private set; }
 
+        internal List<Patch>[] Patches { get; private set; }
+
         public TmxData(string fileName)
         {
             FileName = fileName;
@@ -50,8 +50,6 @@ namespace TmxProcessorLib.Content
         // Function initialises the map data from the given XmlDocument
         public void ImportXmlDoc(System.Xml.XmlDocument xmlDoc, ContentImporterContext context)
         {
-            string LightingXmlPath = Path.Combine(FileName.Remove(FileName.LastIndexOf('\\')), "lighting.xml");
-            context.AddDependency(LightingXmlPath);
 
             System.Xml.XmlNode mapNode = xmlDoc.GetElementsByTagName("map").Item(0);
 
@@ -90,46 +88,59 @@ namespace TmxProcessorLib.Content
 
             // Parse the tilesets
             System.Xml.XmlNodeList tilesetNodes = mapNode.SelectNodes("tileset");
-            Tilesets = new Dictionary<string, Tileset>();
+            TilesetsDict = new Dictionary<string, Tileset>();
+            Tilesets = new List<Tileset>();
             foreach (System.Xml.XmlNode tilesetNode in tilesetNodes)
             {
                 Tileset tileset = new Tileset();
                 tileset.ImportXmlNode(tilesetNode, context);
-                Tilesets[tileset.Name] = tileset;
+                TilesetsDict[tileset.Name] = tileset;
+                Tilesets.Add(tileset);
             }
 
             // Parse the layers
             System.Xml.XmlNodeList layerNodes = mapNode.SelectNodes("layer");
-            TileLayers = new Dictionary<string, TileLayer>();
+            TileLayersDict = new Dictionary<string, TileLayer>();
+            TileLayers = new List<TileLayer>();
+            int tileLayerIndex = 0;
             foreach (System.Xml.XmlNode layerNode in layerNodes)
             {
-                TileLayer tileLayer = new TileLayer();
+                TileLayer tileLayer = new TileLayer(tileLayerIndex);
                 tileLayer.ImportXmlNode(layerNode, context);
-                TileLayers[tileLayer.Name] = tileLayer;
+                TileLayersDict[tileLayer.Name] = tileLayer;
+                TileLayers.Add(tileLayer);
+                ++tileLayerIndex;
             }
              
             // Parse the object groups
             System.Xml.XmlNodeList objectgroupNodes = mapNode.SelectNodes("objectgroup");
             context.Logger.LogMessage("OBJECT GROUP NODES: {0} {1}", objectgroupNodes, objectgroupNodes.Count);
-            ObjectGroups = new Dictionary<string, ObjectGroup>();
+            ObjectGroupsDict = new Dictionary<string, ObjectGroup>();
             foreach (System.Xml.XmlNode objectGroupNode in objectgroupNodes)
             {
                 ObjectGroup objectGroup = new ObjectGroup();
                 objectGroup.ImportXmlNode(objectGroupNode, context);
-                ObjectGroups[objectGroup.Name] = objectGroup;
+                ObjectGroupsDict[objectGroup.Name] = objectGroup;
             }
         }
 
         public void Process(ContentProcessorContext context)
         {
-            foreach (string tilesetName in Tilesets.Keys)
+            Tiles = new Dictionary<uint, Tile>();
+
+            foreach (string tilesetName in TilesetsDict.Keys)
             {
-                Tilesets[tilesetName].Process(this, context);
+                TilesetsDict[tilesetName].Process(this, context);
             }
 
-            foreach (string tileLayerName in TileLayers.Keys)
+            foreach(uint key in Tiles.Keys)
             {
-                TileLayers[tileLayerName].Process(this, context);
+                context.Logger.LogMessage("HAVE TILE: {0}", key);
+            }
+
+            foreach (string tileLayerName in TileLayersDict.Keys)
+            {
+                TileLayersDict[tileLayerName].Process(this, context);
             }
 
             BuildCollisionStrip();
@@ -139,26 +150,28 @@ namespace TmxProcessorLib.Content
             CalculatePlayableArea();
 
             BuildWaveList();
+
+            BuildPatches();
         }
 
         private void BuildWaveList()
         {
             Waves = new List<ObjectGroup>();
 
-            foreach (String objGroupName in ObjectGroups.Keys)
+            foreach (String objGroupName in ObjectGroupsDict.Keys)
             {
                 if(objGroupName.StartsWith("Wave"))
                 {
-                    Waves.Add(ObjectGroups[objGroupName]);
+                    Waves.Add(ObjectGroupsDict[objGroupName]);
                 }
             }
         }
 
         private void CalculatePlayableArea()
         {
-            if (TileLayers.ContainsKey("Walls"))
+            if (TileLayersDict.ContainsKey("Walls"))
             {
-                TileLayer wallLayer = TileLayers["Walls"];
+                TileLayer wallLayer = TileLayersDict["Walls"];
 
                 Point min = new Point(int.MaxValue, int.MaxValue);
                 Point max = new Point(int.MinValue, int.MinValue);
@@ -195,9 +208,9 @@ namespace TmxProcessorLib.Content
 
         private void BuildPlayerSpawns()
         {
-            if (ObjectGroups.ContainsKey("Player"))
+            if (ObjectGroupsDict.ContainsKey("Player"))
             {
-                ObjectGroup playerGroup = ObjectGroups["Player"];
+                ObjectGroup playerGroup = ObjectGroupsDict["Player"];
 
                 PlayerSpawns = new List<Vector2>();
                 foreach(String objName in playerGroup.Objects.Keys)
@@ -210,7 +223,6 @@ namespace TmxProcessorLib.Content
                 }
             }
         }
-
 
         private struct Edge
         {
@@ -229,9 +241,9 @@ namespace TmxProcessorLib.Content
 
         private void BuildCollisionStrip()
         {
-            if (TileLayers.ContainsKey("Walls"))
+            if (TileLayersDict.ContainsKey("Walls"))
             {
-                TileLayer wallLayer = TileLayers["Walls"];
+                TileLayer wallLayer = TileLayersDict["Walls"];
                 List<Edge> edgeList = new List<Edge>();
 
                 // Iterate through each point
@@ -429,22 +441,184 @@ namespace TmxProcessorLib.Content
             }
         }
 
+        private void BuildPatches()
+        {
+            int numLayers = TileLayers.Count;
+            Patches = new List<Patch>[numLayers];
+
+            const int kPatchSize = 8;
+
+            for (int layerIdx = 0; layerIdx < numLayers; ++layerIdx)
+            {
+                Patches[layerIdx] = new List<Patch>();
+                TileLayer tileLayer = TileLayers[layerIdx];
+
+                int patchCountX = tileLayer.Dimensions.X / kPatchSize;
+                for (int patchX = 0; patchX < patchCountX; ++patchX)
+                {
+                    int patchCountY = tileLayer.Dimensions.Y / kPatchSize;
+                    for (int patchY = 0; patchY < patchCountX; ++patchY)
+                    {
+                        Patch patch = BuildPatch(tileLayer, patchX * kPatchSize, patchY * kPatchSize, kPatchSize);
+                        if (patch != null)
+                        {
+                            Patches[layerIdx].Add(patch);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        internal struct TileInfo
+        {
+            public TileInfo(Tile tile, int x, int y)
+            {
+                m_tile = tile;
+                m_x = x;
+                m_y = y;
+            }
+
+            public Tile m_tile;
+            public int m_x;
+            public int m_y;
+        };
+
+        internal class Mesh
+        {
+            private Tileset m_tileset;
+            private VFormat[] m_verts;
+            
+            public Mesh(Tileset tileset, VFormat[] verts)
+            {
+                m_tileset = tileset;
+                m_verts = verts;
+            }
+        }
+
+        internal class Patch
+        {
+            internal List<Mesh> Meshes { get; private set; }
+
+            public Patch()
+            {
+                Meshes = new List<Mesh>();
+            }
+        }
+
+        private Patch BuildPatch(TileLayer tileLayer, int xMin, int yMin, int patchSize)
+        {
+            // Create a dictionary of all neccessary tile info
+            // indexed by the texture
+            Dictionary<Tileset, List<TileInfo>> tileDict = new Dictionary<Tileset, List<TileInfo>>();
+            for (int x = xMin; x < (xMin + patchSize); ++x)
+            {
+                System.Diagnostics.Debug.Assert(x < Dimensions.X);
+
+                for (int y = yMin; y < (yMin + patchSize); ++y)
+                {
+                    System.Diagnostics.Debug.Assert(x < Dimensions.Y);
+
+                    Tile tile = tileLayer.Tiles[x + (y * tileLayer.Dimensions.X)];
+
+                    if (tile == null)
+                        continue;
+
+                    if (!tileDict.ContainsKey(tile.Parent))
+                    {
+                        tileDict.Add(tile.Parent, new List<TileInfo>());
+                    }
+                    tileDict[tile.Parent].Add(new TileInfo(tile, x, y));
+                }
+            }
+
+            if (tileDict.Count > 0)
+            {
+                Patch patch = new Patch();
+
+                // Now iterate the dictionary, building a mesh for each texture
+                foreach (Tileset tileset in tileDict.Keys)
+                {
+                    List<TileInfo> tileList = tileDict[tileset];
+
+                    int numVerts = tileList.Count * 6;
+                    VFormat[] vertList = new VFormat[numVerts];
+                    int currentVert = 0;
+
+                    for (int i = 0; i < tileList.Count; ++i)
+                    {
+                        TileInfo tileInfo = tileList[i];
+
+                        float left = (tileInfo.m_x * TileDimensions.X);
+                        float right = ((tileInfo.m_x + 1) * TileDimensions.X);
+                        float top = (tileInfo.m_y * TileDimensions.Y);
+                        float bottom = ((tileInfo.m_y + 1) * TileDimensions.Y);
+
+                        const float kEpsilon = 0.0f; // used to prevent colour bleeding
+                        float texLeft = (((float)tileInfo.m_tile.Source.Left + kEpsilon) / (float)tileset.Width);
+                        float texRight = (((float)tileInfo.m_tile.Source.Right - kEpsilon) / (float)tileset.Width);
+                        float texTop = (((float)tileInfo.m_tile.Source.Top + kEpsilon) / (float)tileset.Height);
+                        float texBottom = (((float)tileInfo.m_tile.Source.Bottom - kEpsilon) / (float)tileset.Height);
+
+                        vertList[currentVert].Position = new Vector3(left, top, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texTop);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+                        vertList[currentVert].Position = new Vector3(right, top, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+                        vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+
+                        vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+                        vertList[currentVert].Position = new Vector3(right, top, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+
+                        vertList[currentVert].Position = new Vector3(right, bottom, 0.0f);
+                        vertList[currentVert].TextureCoordinate = new Vector2(texRight, texBottom);
+                        //vertList[currentVert].Color = Color.White;
+                        ++currentVert;
+                    }
+
+                    patch.Meshes.Add(new Mesh(tileset, vertList));
+                }
+
+                return patch;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public void Write(ContentWriter output)
         {
             output.Write((byte)Type);
             output.WriteObject<Point>(Dimensions);
             output.WriteObject<Point>(TileDimensions);
 
-            output.Write(Tilesets.Count);
-            foreach (string tilesetName in Tilesets.Keys)
+            output.Write(TilesetsDict.Count);
+            foreach (string tilesetName in TilesetsDict.Keys)
             {
-                Tilesets[tilesetName].Write(output);
+                TilesetsDict[tilesetName].Write(output);
             }
 
-            output.Write(TileLayers.Count);
-            foreach (string tileLayerName in TileLayers.Keys)
+            output.Write(TileLayersDict.Count);
+            foreach (string tileLayerName in TileLayersDict.Keys)
             {
-                TileLayers[tileLayerName].Write(output);
+                TileLayersDict[tileLayerName].Write(output);
             }
 
             // Output the collision boundaries
@@ -503,6 +677,14 @@ namespace TmxProcessorLib.Content
                     }
                 }
             }
+        }
+
+        internal Tile GetTile(uint tileIdx)
+        {
+            if (tileIdx == 0)
+                return null;
+            else
+                return Tiles[tileIdx];
         }
     }
 }
