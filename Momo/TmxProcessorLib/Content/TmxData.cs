@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
-using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionTexture;
+
 
 namespace TmxProcessorLib.Content
 {
@@ -90,12 +90,14 @@ namespace TmxProcessorLib.Content
             System.Xml.XmlNodeList tilesetNodes = mapNode.SelectNodes("tileset");
             TilesetsDict = new Dictionary<string, Tileset>();
             Tilesets = new List<Tileset>();
+            int tileSetIndex = 0;
             foreach (System.Xml.XmlNode tilesetNode in tilesetNodes)
             {
-                Tileset tileset = new Tileset();
+                Tileset tileset = new Tileset(tileSetIndex);
                 tileset.ImportXmlNode(tilesetNode, context);
                 TilesetsDict[tileset.Name] = tileset;
                 Tilesets.Add(tileset);
+                ++tileSetIndex;
             }
 
             // Parse the layers
@@ -114,7 +116,6 @@ namespace TmxProcessorLib.Content
              
             // Parse the object groups
             System.Xml.XmlNodeList objectgroupNodes = mapNode.SelectNodes("objectgroup");
-            context.Logger.LogMessage("OBJECT GROUP NODES: {0} {1}", objectgroupNodes, objectgroupNodes.Count);
             ObjectGroupsDict = new Dictionary<string, ObjectGroup>();
             foreach (System.Xml.XmlNode objectGroupNode in objectgroupNodes)
             {
@@ -131,11 +132,6 @@ namespace TmxProcessorLib.Content
             foreach (string tilesetName in TilesetsDict.Keys)
             {
                 TilesetsDict[tilesetName].Process(this, context);
-            }
-
-            foreach(uint key in Tiles.Keys)
-            {
-                context.Logger.LogMessage("HAVE TILE: {0}", key);
             }
 
             foreach (string tileLayerName in TileLayersDict.Keys)
@@ -459,7 +455,7 @@ namespace TmxProcessorLib.Content
                     int patchCountY = tileLayer.Dimensions.Y / kPatchSize;
                     for (int patchY = 0; patchY < patchCountX; ++patchY)
                     {
-                        Patch patch = BuildPatch(tileLayer, patchX * kPatchSize, patchY * kPatchSize, kPatchSize);
+                        Patch patch = Patch.Build(this, tileLayer, patchX * kPatchSize, patchY * kPatchSize, kPatchSize);
                         if (patch != null)
                         {
                             Patches[layerIdx].Add(patch);
@@ -470,155 +466,14 @@ namespace TmxProcessorLib.Content
         }
 
 
-        internal struct TileInfo
-        {
-            public TileInfo(Tile tile, int x, int y)
-            {
-                m_tile = tile;
-                m_x = x;
-                m_y = y;
-            }
-
-            public Tile m_tile;
-            public int m_x;
-            public int m_y;
-        };
-
-        internal class Mesh
-        {
-            private Tileset m_tileset;
-            private VFormat[] m_verts;
-            
-            public Mesh(Tileset tileset, VFormat[] verts)
-            {
-                m_tileset = tileset;
-                m_verts = verts;
-            }
-        }
-
-        internal class Patch
-        {
-            internal List<Mesh> Meshes { get; private set; }
-
-            public Patch()
-            {
-                Meshes = new List<Mesh>();
-            }
-        }
-
-        private Patch BuildPatch(TileLayer tileLayer, int xMin, int yMin, int patchSize)
-        {
-            // Create a dictionary of all neccessary tile info
-            // indexed by the texture
-            Dictionary<Tileset, List<TileInfo>> tileDict = new Dictionary<Tileset, List<TileInfo>>();
-            for (int x = xMin; x < (xMin + patchSize); ++x)
-            {
-                System.Diagnostics.Debug.Assert(x < Dimensions.X);
-
-                for (int y = yMin; y < (yMin + patchSize); ++y)
-                {
-                    System.Diagnostics.Debug.Assert(x < Dimensions.Y);
-
-                    Tile tile = tileLayer.Tiles[x + (y * tileLayer.Dimensions.X)];
-
-                    if (tile == null)
-                        continue;
-
-                    if (!tileDict.ContainsKey(tile.Parent))
-                    {
-                        tileDict.Add(tile.Parent, new List<TileInfo>());
-                    }
-                    tileDict[tile.Parent].Add(new TileInfo(tile, x, y));
-                }
-            }
-
-            if (tileDict.Count > 0)
-            {
-                Patch patch = new Patch();
-
-                // Now iterate the dictionary, building a mesh for each texture
-                foreach (Tileset tileset in tileDict.Keys)
-                {
-                    List<TileInfo> tileList = tileDict[tileset];
-
-                    int numVerts = tileList.Count * 6;
-                    VFormat[] vertList = new VFormat[numVerts];
-                    int currentVert = 0;
-
-                    for (int i = 0; i < tileList.Count; ++i)
-                    {
-                        TileInfo tileInfo = tileList[i];
-
-                        float left = (tileInfo.m_x * TileDimensions.X);
-                        float right = ((tileInfo.m_x + 1) * TileDimensions.X);
-                        float top = (tileInfo.m_y * TileDimensions.Y);
-                        float bottom = ((tileInfo.m_y + 1) * TileDimensions.Y);
-
-                        const float kEpsilon = 0.0f; // used to prevent colour bleeding
-                        float texLeft = (((float)tileInfo.m_tile.Source.Left + kEpsilon) / (float)tileset.Width);
-                        float texRight = (((float)tileInfo.m_tile.Source.Right - kEpsilon) / (float)tileset.Width);
-                        float texTop = (((float)tileInfo.m_tile.Source.Top + kEpsilon) / (float)tileset.Height);
-                        float texBottom = (((float)tileInfo.m_tile.Source.Bottom - kEpsilon) / (float)tileset.Height);
-
-                        vertList[currentVert].Position = new Vector3(left, top, 0.0f);
-                        vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texTop);
-                        //vertList[currentVert].Color = Color.White;
-                        ++currentVert;
-
-                        vertList[currentVert].Position = new Vector3(right, top, 0.0f);
-                        vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
-                        //vertList[currentVert].Color = Color.White;
-                        ++currentVert;
-
-                        vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
-                        vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
-                        //vertList[currentVert].Color = Color.White;
-                        ++currentVert;
-
-
-                        vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
-                        vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
-                        //vertList[currentVert].Color = Color.White;
-                        ++currentVert;
-
-                        vertList[currentVert].Position = new Vector3(right, top, 0.0f);
-                        vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
-                        //vertList[currentVert].Color = Color.White;
-                        ++currentVert;
-
-                        vertList[currentVert].Position = new Vector3(right, bottom, 0.0f);
-                        vertList[currentVert].TextureCoordinate = new Vector2(texRight, texBottom);
-                        //vertList[currentVert].Color = Color.White;
-                        ++currentVert;
-                    }
-
-                    patch.Meshes.Add(new Mesh(tileset, vertList));
-                }
-
-                return patch;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         public void Write(ContentWriter output)
         {
-            output.Write((byte)Type);
-            output.WriteObject<Point>(Dimensions);
-            output.WriteObject<Point>(TileDimensions);
+            output.Write(TileLayers.Count);
 
             output.Write(TilesetsDict.Count);
             foreach (string tilesetName in TilesetsDict.Keys)
             {
                 TilesetsDict[tilesetName].Write(output);
-            }
-
-            output.Write(TileLayersDict.Count);
-            foreach (string tileLayerName in TileLayersDict.Keys)
-            {
-                TileLayersDict[tileLayerName].Write(output);
             }
 
             // Output the collision boundaries
@@ -677,6 +532,17 @@ namespace TmxProcessorLib.Content
                     }
                 }
             }
+
+            // Output the patch objects
+            for (int layerNum = 0; layerNum < TileLayers.Count; ++layerNum)
+            {
+                output.Write(Patches[layerNum].Count);
+                foreach (Patch patch in Patches[layerNum])
+                {
+                    patch.Write(output);
+                }
+            }
+
         }
 
         internal Tile GetTile(uint tileIdx)

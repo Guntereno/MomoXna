@@ -21,15 +21,9 @@ namespace MapData
             return m_boundingBox;
         }
 
-        public void AddMesh(Texture2D texture, VFormat[] vertices)
-        {
-            m_meshes.Add(new Mesh(texture, vertices));
-            RecalculateBoundingBox();
-        }
-
         public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
         {
-            for (int i = 0; i < m_meshes.Count; ++i)
+            for (int i = 0; i < m_meshes.Length; ++i)
             {
                 m_meshes[i].Render(effect, graphicsDevice);
             }
@@ -39,7 +33,7 @@ namespace MapData
         {
             Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-            for (int i = 0; i < m_meshes.Count; ++i)
+            for (int i = 0; i < m_meshes.Length; ++i)
             {
                 Mesh mesh = m_meshes[i];
                 BoundingBox boundingBox = mesh.GetBoundingBox();
@@ -93,7 +87,7 @@ namespace MapData
                 }
             }
 
-            private void CalculateBoundingBox()
+            public void CalculateBoundingBox()
             {
                 Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
                 Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
@@ -122,7 +116,31 @@ namespace MapData
             BoundingBox m_boundingBox;
         }
 
-        List<Mesh> m_meshes = new List<Mesh>();
+        Mesh[] m_meshes;
         BoundingBox m_boundingBox;
+
+        internal void Read(Map map, Microsoft.Xna.Framework.Content.ContentReader input)
+        {
+            int numMeshes = input.ReadInt32();
+
+            if (numMeshes > 100)
+                return;
+            m_meshes = new Mesh[numMeshes];
+            for (int meshId = 0; meshId < numMeshes; ++meshId)
+            {
+                int tilesetIdx = input.ReadInt32();
+                int vertexCount = input.ReadInt32();
+                VFormat[] vertices = new VFormat[vertexCount];
+                for (int vertId = 0; vertId < vertexCount; ++vertId)
+                {
+                    vertices[vertId] = input.ReadObject<VFormat>();
+                }
+
+                Texture2D texture = map.Tilesets[tilesetIdx].DiffuseMap;
+                m_meshes[meshId] = new Mesh(texture, vertices);
+            }
+
+            RecalculateBoundingBox();
+        }
     }
 }

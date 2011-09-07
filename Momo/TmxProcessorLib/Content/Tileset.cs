@@ -27,6 +27,7 @@ namespace TmxProcessorLib.Content
 
     public class Tileset
     {
+        public int Index { get; private set; }
         public uint FirstGid { get; private set; }
         public string Name { get; private set; }
         public string DiffuseName { get; private set; }
@@ -40,6 +41,11 @@ namespace TmxProcessorLib.Content
 
         public float Width { get; private set; }
         public float Height { get; private set; }
+
+        public Tileset(int index)
+        {
+            Index = index;
+        }
 
         public void ImportXmlNode(System.Xml.XmlNode tilesetNode, ContentImporterContext context)
         {
@@ -151,16 +157,8 @@ namespace TmxProcessorLib.Content
         public void Write(ContentWriter output)
         {
             output.Write(Name);
-            output.Write(FirstGid);
             output.Write(DiffuseName);
-            output.WriteObject<Microsoft.Xna.Framework.Point>(TileDimensions);
             output.WriteExternalReference(DiffuseMap);
-
-            output.Write(Tiles.Count);
-            foreach (Tile tile in Tiles)
-            {
-                output.WriteObject<Microsoft.Xna.Framework.Rectangle>(tile.Source);
-            }
         }
 
     }

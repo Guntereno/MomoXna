@@ -54,6 +54,7 @@
     <Compile Include="Content\LightTemplate.cs" />
     <Compile Include="Content\Object.cs" />
     <Compile Include="Content\ObjectGroup.cs" />
+    <Compile Include="Content\Patch.cs" />
     <Compile Include="Content\TileLayer.cs" />
     <Compile Include="Content\Tileset.cs" />
     <Compile Include="Content\PropertySheet.cs" />

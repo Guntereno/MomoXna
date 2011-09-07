@@ -66,9 +66,9 @@ namespace MapData
             graphicsDevice.RasterizerState = RasterizerState.CullNone;
             graphicsDevice.SamplerStates[0] = m_samplerState;
 
-            for (int layerIdx = 0; layerIdx < m_map.TileLayers.Length; ++layerIdx)
+            for (int layerIdx = 0; layerIdx < m_map.LayerCount; ++layerIdx)
             {
-                for (int patchIdx = 0; patchIdx < m_map.Patches[layerIdx].Count; ++patchIdx)
+                for (int patchIdx = 0; patchIdx < m_map.Patches[layerIdx].Length; ++patchIdx)
                 {
                     MapData.Patch patch = m_map.Patches[layerIdx][patchIdx];
                     if (m_viewFrustum.Intersects(patch.GetBoundingBox()))
