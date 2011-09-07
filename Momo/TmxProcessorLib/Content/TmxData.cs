@@ -47,6 +47,8 @@ namespace TmxProcessorLib.Content
             FileName = fileName;
         }
 
+        public Vector2 Offset = new Vector2(100.0f, 100.0f);
+
         // Function initialises the map data from the given XmlDocument
         public void ImportXmlDoc(System.Xml.XmlDocument xmlDoc, ContentImporterContext context)
         {
@@ -486,7 +488,7 @@ namespace TmxProcessorLib.Content
 
                     for (int i = 0; i < boundary.Length; ++i)
                     {
-                        Vector2 fBoundary = new Vector2(boundary[i].X, boundary[i].Y);
+                        Vector2 fBoundary = new Vector2(boundary[i].X + Offset.X, boundary[i].Y + Offset.Y);
                         output.WriteObject<Vector2>(fBoundary);
                     }
                 }
@@ -500,12 +502,12 @@ namespace TmxProcessorLib.Content
             output.Write(PlayerSpawns.Count);
             foreach (Vector2 pos in PlayerSpawns)
             {
-                output.Write(pos);
+                output.Write(pos + Offset);
             }
 
             // Output the play area definition
-            output.Write(MinPlayableArea);
-            output.Write(MaxPlayableArea);
+            output.Write(MinPlayableArea + Offset);
+            output.Write(MaxPlayableArea + Offset);
 
             // Output each wave
             output.Write(Waves.Count);
@@ -528,7 +530,7 @@ namespace TmxProcessorLib.Content
                     foreach (Object enemy in enemies)
                     {
                         output.Write(enemy.Name);
-                        output.WriteObject<Vector2>(enemy.Position);
+                        output.WriteObject<Vector2>(enemy.Position + Offset);
                     }
                 }
             }
@@ -539,7 +541,7 @@ namespace TmxProcessorLib.Content
                 output.Write(Patches[layerNum].Count);
                 foreach (Patch patch in Patches[layerNum])
                 {
-                    patch.Write(output);
+                    patch.Write(output, Offset);
                 }
             }
 

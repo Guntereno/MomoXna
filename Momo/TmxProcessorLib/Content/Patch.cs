@@ -19,13 +19,19 @@ namespace TmxProcessorLib.Content
             m_verts = verts;
         }
 
-        internal void Write(ContentWriter output)
+        internal void Write(ContentWriter output, Vector2 offset)
         {
             output.Write(m_tileset.Index);
             output.Write(m_verts.Length);
             for (int i = 0; i < m_verts.Length; ++i)
             {
-                output.WriteObject<VFormat>(m_verts[i]);
+                VFormat vert = m_verts[i];
+                Vector3 pos = vert.Position;
+                pos.X += offset.X;
+                pos.Y += offset.Y;
+                vert.Position = pos;
+
+                output.WriteObject<VFormat>(vert);
             }
         }
     }
@@ -39,12 +45,12 @@ namespace TmxProcessorLib.Content
             Meshes = new List<Mesh>();
         }
 
-        internal void Write(ContentWriter output)
+        internal void Write(ContentWriter output, Vector2 offset)
         {
             output.Write(Meshes.Count);
             foreach (Mesh mesh in Meshes)
             {
-                mesh.Write(output);
+                mesh.Write(output, offset);
             }
         }
 

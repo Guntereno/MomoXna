@@ -21,15 +21,6 @@ namespace TmxProcessorLib
     [ContentProcessor(DisplayName = "TmxProcessorLib.TmxProcessor")]
     public class TmxProcessor : ContentProcessor<TInput, TOutput>
     {
-        private Vector2 m_tileOffset = Vector2.Zero;
-
-        public Vector2 TileOffset
-        {
-            get { return m_tileOffset; }
-            set { m_tileOffset = value; }
-        }
-
-
         public override TOutput Process(TInput input, ContentProcessorContext context)
         {
             input.Process(context);

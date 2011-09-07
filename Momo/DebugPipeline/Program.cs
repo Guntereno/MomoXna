@@ -96,8 +96,8 @@ namespace DebugPipeline
         ///       Example:
         ///               private const string SingleItem = @"dude.fbx";
         /// </summary>
-        private const string SingleItem = @"maps/test_arena/test_arena.tmx";
-        //private const string SingleItem = @"";
+        //private const string SingleItem = @"maps/test_arena/test_arena.tmx";
+        private const string SingleItem = @"";
 
         /// <summary>
         /// TODO: Set the XnaProfile to HiDef or Reach, depending on your target graphics profile.
