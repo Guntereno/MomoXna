@@ -95,7 +95,8 @@ namespace TestGame
             m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/test_arena/test_arena");
 
 
-            m_bin.Init(50, 50, new Vector2(2500.0f, 2500.0f), 4, 6000, 1000, 1000);
+            //m_bin.Init(50, 50, new Vector2(2500.0f, 2500.0f), 4, 6000, 1000, 1000);
+            m_bin.Init(50, 50, m_map.PlayAreaMax + new Vector2(1000.0f, 1000.0f), 4, 6000, 1000, 1000);
 
 
             // ----------------------------------------------------------------
@@ -258,7 +259,7 @@ namespace TestGame
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[1], new Color(0.40f, 0.0f, 0.0f, 0.5f));
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[2], new Color(0.60f, 0.0f, 0.0f, 0.5f));
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
-            //m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange, Color.DarkRed);
+            m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange, Color.DarkRed);
 
 
             //BinLocation centre = new BinLocation(20, 20);

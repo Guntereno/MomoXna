@@ -47,7 +47,7 @@ namespace TmxProcessorLib.Content
             FileName = fileName;
         }
 
-        public Vector2 Offset = new Vector2(100.0f, 100.0f);
+        public Vector2 Offset = new Vector2(1000.0f, 1000.0f);
 
         // Function initialises the map data from the given XmlDocument
         public void ImportXmlDoc(System.Xml.XmlDocument xmlDoc, ContentImporterContext context)
