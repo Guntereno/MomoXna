@@ -455,7 +455,7 @@ namespace TmxProcessorLib.Content
                 for (int patchX = 0; patchX < patchCountX; ++patchX)
                 {
                     int patchCountY = tileLayer.Dimensions.Y / kPatchSize;
-                    for (int patchY = 0; patchY < patchCountX; ++patchY)
+                    for (int patchY = 0; patchY < patchCountY; ++patchY)
                     {
                         Patch patch = Patch.Build(this, tileLayer, patchX * kPatchSize, patchY * kPatchSize, kPatchSize);
                         if (patch != null)

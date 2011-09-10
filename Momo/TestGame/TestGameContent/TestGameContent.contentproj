@@ -63,6 +63,11 @@
       <Importer>TmxImporter</Importer>
       <SubType>Designer</SubType>
     </None>
+    <Compile Include="maps\test_arena2\test_arena2.tmx">
+      <Name>test_arena2</Name>
+      <Importer>TmxImporter</Importer>
+      <Processor>TmxProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FontProcessorLib\FontProcessorLib.csproj">

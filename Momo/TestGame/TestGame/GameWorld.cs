@@ -92,7 +92,7 @@ namespace TestGame
 
             m_cameraController.Camera = m_camera;
 
-            m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/test_arena/test_arena");
+            m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/test_arena2/test_arena2");
 
 
             //m_bin.Init(50, 50, new Vector2(2500.0f, 2500.0f), 4, 6000, 1000, 1000);
