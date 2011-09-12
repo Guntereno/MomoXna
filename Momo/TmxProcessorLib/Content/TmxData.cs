@@ -15,6 +15,13 @@ namespace TmxProcessorLib.Content
             Isometric = 1
         }
 
+        enum TriggerType
+        {
+            Invalid = -1,
+
+            KillCount = 0
+        }
+
         public TypeId Type { get; private set; }
         public Point Dimensions { get; private set; }
         public Point TileDimensions { get; private set; }
@@ -39,6 +46,8 @@ namespace TmxProcessorLib.Content
         public Vector2 MaxPlayableArea { get; private set; }
 
         public List<ObjectGroup> Waves { get; private set; }
+
+        public List<Object> Triggers { get; private set; }
 
         internal List<Patch>[] Patches { get; private set; }
 
@@ -150,6 +159,32 @@ namespace TmxProcessorLib.Content
             BuildWaveList();
 
             BuildPatches();
+
+            BuildTriggerList();
+        }
+
+        private void BuildTriggerList()
+        {
+            Triggers = new List<Object>();
+
+            if (ObjectGroupsDict.ContainsKey("Triggers"))
+            {
+                ObjectGroup triggerGroup = ObjectGroupsDict["Triggers"];
+                Dictionary<String, Object> triggerDict = triggerGroup.Objects;
+                foreach (String triggerName in triggerDict.Keys)
+                {
+                    Object triggerObject = triggerDict[triggerName];
+                    switch (triggerObject.Type)
+                    {
+                        case "KillCount":
+                            Triggers.Add(triggerObject);
+                            break;
+
+                        default:
+                            throw new InvalidContentException("Invalid trigger type!");
+                    }
+                }
+            }
         }
 
         private void BuildWaveList()
@@ -479,10 +514,10 @@ namespace TmxProcessorLib.Content
             }
 
             // Output the collision boundaries
-            if(CollisionBoundaries != null)
+            if (CollisionBoundaries != null)
             {
                 output.Write(CollisionBoundaries.Count);
-                foreach(Point[] boundary in CollisionBoundaries)
+                foreach (Point[] boundary in CollisionBoundaries)
                 {
                     output.Write(boundary.Length);
 
@@ -545,6 +580,49 @@ namespace TmxProcessorLib.Content
                 }
             }
 
+            // Output the triggers
+            output.Write(Triggers.Count);
+            foreach (Object triggerObject in Triggers)
+            {
+                TriggerType type = TriggerType.Invalid;
+                switch (triggerObject.Type)
+                {
+                    case "KillCount":
+                        type = TriggerType.KillCount;
+                        break;
+                }
+                output.Write((int)type);
+
+                output.Write(triggerObject.Name);
+                output.WriteObject<Vector2>(triggerObject.Position + Offset);
+
+                Dictionary<String, String> propertySheet = triggerObject.Properties.Properties;
+
+                float downTime = -1.0f;
+                if (propertySheet.ContainsKey("downTime"))
+                {
+                    downTime = float.Parse(propertySheet["downTime"]);
+                }
+                output.Write(downTime);
+
+                float triggerTime = -1.0f;
+                if (propertySheet.ContainsKey("triggerTime"))
+                {
+                    triggerTime = float.Parse(propertySheet["triggerTime"]);
+                }
+                output.Write(triggerTime);
+
+                switch (type)
+                {
+                    case TriggerType.KillCount:
+                    {
+                        string threshStr = propertySheet["threshold"];
+                        int thresh = int.Parse(threshStr);
+                        output.Write(thresh);
+                    }
+                    break;
+                }
+            }
         }
 
         internal Tile GetTile(uint tileIdx)

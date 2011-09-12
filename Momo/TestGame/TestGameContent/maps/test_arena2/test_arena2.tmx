@@ -628,6 +628,7 @@
  <objectgroup name="Triggers" width="64" height="128">
   <object name="KillCountTrigger10" type="KillCount" x="1520" y="3573">
    <properties>
+    <property name="downTime" value="10.0"/>
     <property name="threshold" value="10"/>
    </properties>
   </object>

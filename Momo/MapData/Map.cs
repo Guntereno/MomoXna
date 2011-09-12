@@ -34,6 +34,15 @@ namespace MapData
 
         public MapData.Patch[][] Patches { get; private set; }
 
+        public Trigger[] Triggers { get; private set; }
+
+        public enum TriggerType
+        {
+            Invalid = -1,
+
+            KillCount = 0
+        }
+
         public void Read(ContentReader input)
         {
             LayerCount = input.ReadInt32();
@@ -74,7 +83,6 @@ namespace MapData
             // Read the wave information
             int numWaves = input.ReadInt32();
             Waves = new Wave[numWaves];
-
             for (int waveIdx = 0; waveIdx < numWaves; ++waveIdx)
             {
                 int numEnemies = input.ReadInt32();
@@ -90,6 +98,7 @@ namespace MapData
                 Waves[waveIdx] = new Wave(enemies);
             }
 
+            // Read the patch information
             Patches = new Patch[LayerCount][];
             for (int layerIdx = 0; layerIdx < LayerCount; ++layerIdx)
             {
@@ -102,6 +111,32 @@ namespace MapData
 
                     Patches[layerIdx][patchIdx] = patch;
                 }
+            }
+
+            // Read the trigger information
+            int numTriggers = input.ReadInt32();
+            Triggers = new Trigger[numTriggers];
+            for (int triggerIdx = 0; triggerIdx < numTriggers; ++triggerIdx)
+            {
+                int type = input.ReadInt32();
+                string name = input.ReadString();
+                Vector2 pos = input.ReadObject<Vector2>();
+                float downTime = input.ReadSingle();
+                float triggerTime = input.ReadSingle();
+
+                switch (type)
+                {
+                    case (int)(TriggerType.KillCount):
+                        {
+                            int threshold = input.ReadInt32();
+                            Triggers[triggerIdx] = new KillCountTrigger(name, pos, downTime, triggerTime, threshold);
+                        }
+                        break;
+
+                    default:
+                        Debug.Assert(false, "Invalid trigger type found!");
+                        break;
+                };
             }
         }
     }
