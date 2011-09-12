@@ -28,7 +28,7 @@ namespace MapData
             m_threshold = threshold;
         }
 
-        int GetThreshold() { return m_threshold; }
+        public int GetThreshold() { return m_threshold; }
     }
 
 }

@@ -20,8 +20,11 @@ namespace TestGame.Entities
         }
 
         const int kMaxNameLength = 32;
-
         private MutableString m_name = new MutableString(kMaxNameLength);
+
+        const int kDebugStringLength = 64;
+        protected MutableString m_debugString = new MutableString(kDebugStringLength);
+
         private int m_nameHash = 0;
 
         private State m_state = State.Untriggered;
@@ -41,10 +44,26 @@ namespace TestGame.Entities
         float m_downTime = -1.0f;
 
 
-        public TriggerEntity(GameWorld world, String name): base(world)
+        public TriggerEntity(GameWorld world, String name, float triggeredTime, float downTime)
+            : base(world)
         {
             SetName(name);
-            m_debugText = new TextObject(GetName().ToString(), TestGame.Instance().GetDebugFont(), 800, kMaxNameLength, 1);
+
+            m_triggeredTime = triggeredTime;
+            m_downTime = downTime;
+
+            m_debugText = new TextObject("", TestGame.Instance().GetDebugFont(), 1024, kDebugStringLength, 1);
+        }
+
+        public TriggerEntity(GameWorld world, MapData.Trigger triggerData)
+            : base (world)
+        {
+            SetName(triggerData.GetName());
+
+            m_triggeredTime = triggerData.GetTriggerTime();
+            m_downTime = triggerData.GetDownTime();
+
+            m_debugText = new TextObject("", TestGame.Instance().GetDebugFont(), 800, kMaxNameLength, 1);
         }
 
         bool IsTriggered()
@@ -52,12 +71,12 @@ namespace TestGame.Entities
             return m_state == State.Triggered;
         }
 
-        bool GetActive()
+        public bool GetActive()
         {
             return (m_flags & Flags.Active) == Flags.Active;
         }
 
-        void SetActive(bool value)
+        public void SetActive(bool value)
         {
             if (value)
             {
@@ -120,19 +139,24 @@ namespace TestGame.Entities
             }
         }
 
-        private void SetDebugColour()
+        protected virtual void UpdateDebugColour()
         {
             if (!GetActive())
-                m_debugText.Colour = Color.Gray;
+                DebugColor = Color.Gray;
             else
             {
                 switch (m_state)
                 {
-                    case State.Untriggered: m_debugText.Colour = Color.Green; break;
-                    case State.Triggered: m_debugText.Colour = Color.White; break;
-                    case State.Disabled: m_debugText.Colour = Color.Red; break;
+                    case State.Untriggered: DebugColor = Color.Green; break;
+                    case State.Triggered: DebugColor = Color.White; break;
+                    case State.Disabled: DebugColor = Color.Red; break;
                 }
             }
+        }
+
+        protected virtual void UpdateDebugString()
+        {
+            m_debugString = GetName();
         }
 
         abstract protected bool TriggerCondition();
@@ -168,6 +192,12 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         public override void DebugRender(DebugRenderer debugRenderer)
         {
+            UpdateDebugColour();
+            UpdateDebugString();
+
+            m_debugText.SetText(m_debugString.GetCharacterArray());
+            m_debugText.Colour = DebugColor;
+            m_debugText.Position = GetPosition();
             GetWorld().GetTextPrinter().AddToDrawList(m_debugText);
         }
     }

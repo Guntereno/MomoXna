@@ -44,6 +44,7 @@ namespace TestGame
         ProjectileManager m_projectileManager = null;
         EnemyManager m_enemyManager = null;
         OsdManager m_osdManager = null;
+        TriggerController m_triggerController = null;
 
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
@@ -63,6 +64,7 @@ namespace TestGame
             m_enemyManager = new EnemyManager(this, m_bin);
             m_osdManager = new OsdManager(this);
             m_playerManager = new PlayerManager(this, m_bin);
+            m_triggerController = new TriggerController(this);
         }
 
 
@@ -143,6 +145,8 @@ namespace TestGame
             AddPathIslandToBin(m_pathIsland);
 
 
+            m_triggerController.LoadFromMapData(m_map);
+
             CollisionHelpers.Init();
             PathFindingHelpers.Init(400.0f, 3, m_bin);
         }
@@ -171,6 +175,7 @@ namespace TestGame
             m_projectileManager.Update(ref frameTime);
             m_osdManager.Update(ref frameTime);
 
+            m_triggerController.Update(ref frameTime);
 
             m_contactList.StartAddingContacts();
             CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList);
@@ -245,6 +250,8 @@ namespace TestGame
             m_enemyManager.DebugRender(m_debugRenderer);
             m_projectileManager.DebugRender(m_debugRenderer);
             m_osdManager.DebugRender(m_debugRenderer);
+
+            m_triggerController.DebugRender(m_debugRenderer);
 
 
             //m_pathIsland.DebugRender(m_debugRenderer);

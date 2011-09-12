@@ -628,8 +628,19 @@
  <objectgroup name="Triggers" width="64" height="128">
   <object name="KillCountTrigger10" type="KillCount" x="1520" y="3573">
    <properties>
-    <property name="downTime" value="10.0"/>
     <property name="threshold" value="10"/>
+   </properties>
+  </object>
+  <object name="KillCountTrigger5" type="KillCount" x="1520" y="3632">
+   <properties>
+    <property name="threshold" value="5"/>
+   </properties>
+  </object>
+  <object name="KillCountTrigger12" type="KillCount" x="1520" y="3699">
+   <properties>
+    <property name="downTime" value="10.0"/>
+    <property name="threshold" value="12"/>
+    <property name="triggerTime" value="5.0"/>
    </properties>
   </object>
  </objectgroup>

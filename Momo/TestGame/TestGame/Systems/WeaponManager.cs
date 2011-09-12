@@ -11,6 +11,13 @@ namespace TestGame.Systems
 {
     public class WeaponManager
     {
+
+        private GameWorld m_world;
+
+        private Pool<Pistol> m_pistols = new Pool<Pistol>(kWeaponMax[(int)WeaponType.Pistol]);
+        private Pool<Shotgun> m_shotguns = new Pool<Shotgun>(kWeaponMax[(int)WeaponType.Shotgun]);
+        private Pool<Minigun> m_miniguns = new Pool<Minigun>(kWeaponMax[(int)WeaponType.Minigun]);
+
         public enum WeaponType
         {
             Pistol = 0,
@@ -81,11 +88,5 @@ namespace TestGame.Systems
                 m_miniguns.AddItem(minigun, false);
             }
         }
-
-        private GameWorld m_world;
-
-        private Pool<Pistol> m_pistols = new Pool<Pistol>(kWeaponMax[(int)WeaponType.Pistol]);
-        private Pool<Shotgun> m_shotguns = new Pool<Shotgun>(kWeaponMax[(int)WeaponType.Shotgun]);
-        private Pool<Minigun> m_miniguns = new Pool<Minigun>(kWeaponMax[(int)WeaponType.Minigun]);
     }
 }

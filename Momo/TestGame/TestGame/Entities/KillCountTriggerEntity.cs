@@ -9,10 +9,16 @@ namespace TestGame.Entities
     {
         private int m_threshold;
 
-        public KillCountTriggerEntity(GameWorld world, String name, int threshold)
-            : base(world, name)
+        public KillCountTriggerEntity(GameWorld world, String name, float triggeredTime, float downTime, int threshold)
+            : base(world, name, triggeredTime, downTime)
         {
             m_threshold = threshold;
+        }
+
+        public KillCountTriggerEntity(GameWorld world, MapData.KillCountTrigger triggerData)
+            : base(world, triggerData)
+        {
+            m_threshold = triggerData.GetThreshold();
         }
 
         protected override bool TriggerCondition()
@@ -20,6 +26,19 @@ namespace TestGame.Entities
             return (GetWorld().GetEnemyManager().GetKillCount() >= m_threshold);
         }
 
+        protected override void UpdateDebugString()
+        {
+            m_debugString.Clear();
+            m_debugString.Append(GetName().GetCharacterArray());
+            m_debugString.Append("(");
+            m_debugString.Append(GetWorld().GetEnemyManager().GetKillCount());
+            m_debugString.Append("/");
+            m_debugString.Append(m_threshold);
+            m_debugString.Append(")");
+            m_debugString.EndAppend();
+
+            m_debugString = GetName();
+        }
     }
 
 

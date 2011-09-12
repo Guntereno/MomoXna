@@ -134,6 +134,7 @@
     <Compile Include="Systems\EnemyManager.cs" />
     <Compile Include="Systems\OsdManager.cs" />
     <Compile Include="Systems\PlayerManager.cs" />
+    <Compile Include="Systems\TriggerController.cs" />
     <Compile Include="TestGame.cs" />
     <Compile Include="TestWorldPathFinding.cs" />
     <Compile Include="Systems\ProjectileManager.cs" />
