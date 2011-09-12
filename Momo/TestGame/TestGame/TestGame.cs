@@ -6,6 +6,7 @@ using Momo.Core;
 using Momo.Debug;
 
 using TestGame.Input;
+using Momo.Fonts;
 
 
 
@@ -30,9 +31,15 @@ namespace TestGame
         private int m_cpuRenderProfileItemId = 0;
         private int m_cpuDebugRenderProfileItemId = 0;
 
-        public InputManager InputManager { get; private set; }
+        private Font m_debugFont = null;
 
         private WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
+
+
+
+        public InputManager InputManager { get; private set; }
+
+        public Font GetDebugFont() { return m_debugFont; }
 
 
         public TestGame()
@@ -51,10 +58,10 @@ namespace TestGame
             Content.RootDirectory = "Content";
 
             //Screwing up my work machine
-            //if (GraphicsAdapter.Adapters.Count > 1)
-            //{
-            //    graphics.IsFullScreen = true;
-            //}
+            if (GraphicsAdapter.Adapters.Count > 1)
+            {
+                graphics.IsFullScreen = true;
+            }
         }
 
         public void PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
@@ -87,6 +94,8 @@ namespace TestGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
 
             m_worldManager.LoadWorld("TestWorld");
             //m_worldManager.LoadWorld("TestWorldPathFinding");

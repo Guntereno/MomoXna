@@ -180,6 +180,7 @@ namespace TestGame.Entities
 
         internal void Kill()
         {
+            GetWorld().GetEnemyManager().IncrementKillCount();
             DestroyItem();
         }
     }

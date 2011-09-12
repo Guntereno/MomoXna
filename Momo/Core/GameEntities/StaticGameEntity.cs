@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Momo.Core.GameEntities
 {
-    public class StaticGameEntity : BaseEntity
+    public class StaticEntity : BaseEntity
     {
         // --------------------------------------------------------------------
         // -- Public Methods

@@ -24,6 +24,8 @@ namespace TestGame.Systems
 
         private Pool<AiEntity> m_enemies = new Pool<AiEntity>(2000);
 
+        private int m_killCounter = 0;
+
         public AiEntity Create(Vector2 pos)
         {
             AiEntity ai = new AiEntity(m_world);
@@ -69,5 +71,7 @@ namespace TestGame.Systems
 
         public Pool<AiEntity> GetEnemies() { return m_enemies; }
 
+        public void IncrementKillCount() { ++m_killCounter; }
+        public int GetKillCount() { return m_killCounter; }
     }
 }

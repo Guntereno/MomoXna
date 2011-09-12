@@ -549,7 +549,7 @@
   <object name="PlayerSpawn4" type="PlayerSpawn" x="1009" y="3857"/>
   <object name="PlayerSpawn3" type="PlayerSpawn" x="1134" y="3888"/>
  </objectgroup>
- <objectgroup name="Wave001" width="64" height="128">
+ <objectgroup name="Wave001" width="64" height="128" visible="0">
   <object name="Enemy00" type="Enemy" x="830" y="3586"/>
   <object name="Enemy01" type="Enemy" x="896" y="3526"/>
   <object name="Enemy02" type="Enemy" x="1024" y="3534"/>
@@ -624,5 +624,12 @@
   <object name="Enemy71" type="Enemy" x="1516" y="512"/>
   <object name="Enemy72" type="Enemy" x="1564" y="682"/>
   <object name="Enemy73" type="Enemy" x="1386" y="716"/>
+ </objectgroup>
+ <objectgroup name="Triggers" width="64" height="128">
+  <object name="KillCountTrigger10" type="KillCount" x="1520" y="3573">
+   <properties>
+    <property name="threshold" value="10"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
