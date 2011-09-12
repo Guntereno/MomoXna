@@ -63,6 +63,8 @@ namespace TestGame.Entities
             m_triggeredTime = triggerData.GetTriggerTime();
             m_downTime = triggerData.GetDownTime();
 
+            SetPosition(triggerData.GetPosition());
+
             m_debugText = new TextObject("", TestGame.Instance().GetDebugFont(), 800, kMaxNameLength, 1);
         }
 
@@ -195,9 +197,15 @@ namespace TestGame.Entities
             UpdateDebugColour();
             UpdateDebugString();
 
+            Vector2 worldPos2d = GetPosition();
+            Vector3 worldPos = new Vector3(worldPos2d.X, worldPos2d.Y, 0.0f);
+            Vector2 screenPos = GetWorld().GetCamera().GetNormalisedScreenPosition(worldPos);
+            screenPos.X *= TestGame.kBackBufferWidth;
+            screenPos.Y *= TestGame.kBackBufferHeight;
+
             m_debugText.SetText(m_debugString.GetCharacterArray());
             m_debugText.Colour = DebugColor;
-            m_debugText.Position = GetPosition();
+            m_debugText.Position = screenPos;
             GetWorld().GetTextPrinter().AddToDrawList(m_debugText);
         }
     }

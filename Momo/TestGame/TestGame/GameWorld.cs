@@ -67,6 +67,7 @@ namespace TestGame
             m_triggerController = new TriggerController(this);
         }
 
+        public OrthographicCameraNode GetCamera()               { return m_camera; }
 
         public PlayerManager GetPlayerManager()                 { return m_playerManager; }
         public WeaponManager GetWeaponManager()                 { return m_weaponManager; }
@@ -253,6 +254,8 @@ namespace TestGame
 
             m_triggerController.DebugRender(m_debugRenderer);
 
+
+            m_cameraController.DebugRender();
 
             //m_pathIsland.DebugRender(m_debugRenderer);
 

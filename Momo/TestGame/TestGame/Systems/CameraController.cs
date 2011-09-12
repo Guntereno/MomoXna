@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Momo.Core.Nodes.Cameras;
 using Momo.Core.GameEntities;
 using Momo.Core;
+using Momo.Fonts;
 
 namespace TestGame.Systems
 {
@@ -15,7 +16,6 @@ namespace TestGame.Systems
     {
         public OrthographicCameraNode Camera { get; set; }
         public Vector2 FollowPosition { get; set; }
-
 
         Vector3 m_cameraVelocity = Vector3.Zero;
 
@@ -31,10 +31,16 @@ namespace TestGame.Systems
         private  GameWorld m_world;
 
 
+        const int kDebugStringLength = 64;
+        protected MutableString m_debugString = new MutableString(kDebugStringLength);
+        private TextObject m_debugText = null;
+
 
         public CameraController(GameWorld world)
         {
             m_world = world;
+
+            m_debugText = new TextObject("", TestGame.Instance().GetDebugFont(), 500, kDebugStringLength, 1);
         }
 
         public void Update(ref FrameTime frameTime, ref Input.InputWrapper input)
@@ -78,6 +84,23 @@ namespace TestGame.Systems
             cameraMatrix.Translation = Camera.LocalTranslation;
 
             Camera.Matrix = cameraMatrix;
+        }
+
+        public void DebugRender()
+        {
+            Vector2 curPos = m_spring.GetCurrentValue();
+
+            m_debugString.Clear();
+            m_debugString.Append("(");
+            m_debugString.Append(curPos.X, 2);
+            m_debugString.Append(",");
+            m_debugString.Append(curPos.Y, 2);
+            m_debugString.Append(")");
+            m_debugString.EndAppend();
+
+            m_debugText.SetText(m_debugString.GetCharacterArray());
+
+            m_world.GetTextPrinter().AddToDrawList(m_debugText);
         }
 
         private void UpdateFollow()
