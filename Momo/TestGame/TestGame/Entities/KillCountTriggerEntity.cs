@@ -29,7 +29,7 @@ namespace TestGame.Entities
         protected override void UpdateDebugString()
         {
             m_debugString.Clear();
-            m_debugString.Append(GetName().GetCharacterArray());
+            m_debugString.Append(GetName());
             m_debugString.Append("(");
             m_debugString.Append(GetWorld().GetEnemyManager().GetKillCount());
             m_debugString.Append("/");

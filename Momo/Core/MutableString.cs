@@ -78,7 +78,14 @@ namespace Momo.Core
         {
             int valueLength = value.Length;
             value.CopyTo(0, m_string, m_length, valueLength);
-            m_length = m_length + valueLength;
+            m_length += valueLength;
+        }
+
+        public void Append(MutableString value)
+        {
+            int valueLength = value.GetLength();
+            Array.Copy(value.GetCharacterArray(), 0, m_string, m_length, valueLength);
+            m_length += valueLength;
         }
 
         public void Append(char value)
@@ -88,7 +95,8 @@ namespace Momo.Core
 
         public void Append(char[] value)
         {
-            value.CopyTo(m_string, 0);
+            value.CopyTo(m_string, m_length);
+            m_length += value.Length;
         }
 
         public void Append(bool value)
