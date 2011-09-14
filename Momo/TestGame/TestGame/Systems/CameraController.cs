@@ -92,9 +92,7 @@ namespace TestGame.Systems
 
             m_debugString.Clear();
             m_debugString.Append("(");
-            m_debugString.Append(curPos.X, 2);
-            m_debugString.Append(",");
-            m_debugString.Append(curPos.Y, 2);
+            m_debugString.Append(curPos, 2);
             m_debugString.Append(")");
             m_debugString.EndAppend();
 

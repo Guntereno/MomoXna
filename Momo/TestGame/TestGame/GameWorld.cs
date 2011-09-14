@@ -138,7 +138,7 @@ namespace TestGame
 
             PathRegion[] regions = new PathRegion[1];
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
-            regions[0].GenerateNodesFromBoundaries(15.0f, true, m_map.CollisionBoundaries);
+            regions[0].GenerateNodesFromBoundaries(15.0f, 35, true, m_map.CollisionBoundaries);
             regions[0].GenerateNodePaths(10.0f, m_bin, BinLayers.kBoundary);
 
             m_pathIsland.SetRegions(regions);
@@ -281,6 +281,10 @@ namespace TestGame
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
             m_debugRenderer.Clear();
+
+            // Render any debug text objects that where added.
+            m_textPrinter.Render(true, TestGame.Instance().GraphicsDevice);
+            m_textPrinter.ClearDrawList();
         }
 
 

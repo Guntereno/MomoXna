@@ -36,8 +36,6 @@ namespace TestGame.Entities
             m_debugString.Append(m_threshold);
             m_debugString.Append(")");
             m_debugString.EndAppend();
-
-            m_debugString = GetName();
         }
     }
 

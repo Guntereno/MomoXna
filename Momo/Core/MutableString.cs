@@ -153,6 +153,14 @@ namespace Momo.Core
         }
 
 
+        public void Append(Vector2 value, int decimalPlaces)
+        {
+            Append(value.X, decimalPlaces);
+            Append(", ");
+            Append(value.Y, decimalPlaces);
+        }
+
+
         public void Append(uint value, int padSize)
         {
             // Calculate length of integer when written out
@@ -187,21 +195,21 @@ namespace Momo.Core
         }
 
         
-        public void Append(float floatVal, int decimalPlaces)
+        public void Append(float value, int decimalPlaces)
         {
             if (decimalPlaces == 0)
             {
                 int intVal;
-                if (floatVal >= 0.0f)
-                    intVal = (int)(floatVal + 0.5f);
+                if (value >= 0.0f)
+                    intVal = (int)(value + 0.5f);
                 else
-                    intVal = (int)(floatVal - 0.5f);
+                    intVal = (int)(value - 0.5f);
 
                 Append(intVal);
             }
             else
             {
-                int intPart = (int)floatVal;
+                int intPart = (int)value;
 
                 // First part is easy, just cast to an integer
                 Append(intPart);
@@ -209,7 +217,7 @@ namespace Momo.Core
                 Append('.');
 
                 // Work out remainder we need to print after the d.p.
-                float remainder = Math.Abs(floatVal - intPart);
+                float remainder = Math.Abs(value - intPart);
 
                 // Multiply up to become an int that we can print
                 remainder = remainder * (float)Math.Pow(10, decimalPlaces);
