@@ -167,6 +167,7 @@ namespace Momo.Core.Nodes.Cameras
         //public abstract Ray GetRayFromCamera( Point point );
         //public abstract Ray GetRayFromCamera( float x, float y );
         public abstract Vector2 GetNormalisedScreenPosition( Vector3 worldPos );
+        public abstract Vector2 GetScreenPosition(Vector3 worldPos);
         public abstract bool IsVisible( Vector3 position, float radius );
 
 

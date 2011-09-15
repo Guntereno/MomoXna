@@ -3,6 +3,8 @@
 using Microsoft.Xna.Framework;
 
 using Momo.Maths;
+using Momo.Debug;
+
 using Momo.Core;
 using Momo.Core.GameEntities;
 using Momo.Core.Spatial;
@@ -10,6 +12,7 @@ using Momo.Core.Pathfinding;
 
 using Momo.Core.Primitive2D;
 using Momo.Core.Collision2D;
+
 
 using TestGame.Entities;
 using TestGame.Objects;
@@ -27,6 +30,9 @@ namespace TestGame
         private static float ms_maxCircularSearchRange = 0.0f;
         private static int m_maxCircularSearchRegions = 0;
         private static BinRegionSelection [] ms_circularSearchRegions = null;
+
+        private static PathFinder ms_pathFinder = null;
+
 
 
         public static void Init(float maxCircularSearchRange, int maxCircularSearchRegions, Bin bin)
@@ -56,6 +62,9 @@ namespace TestGame
                 ms_circularSearchRegions[i] = new BinRegionSelection(ref circularSelection);
                 circularSelection.Clear();
             }
+
+            ms_pathFinder = new PathFinder();
+            ms_pathFinder.Init(200);
         }
 
 
@@ -88,18 +97,20 @@ namespace TestGame
             GetClosestPathNode(startPos, bin, BinLayers.kPathNodes, ref startNode);
 
             if (startNode != null)
-                return CreatePathNoLineOfSight(startPos, startNode, endPos, endNode, bin, ref outRoute);
+                return CreatePathNoLineOfSight(startPos, startNode, endPos, endNode, ref outRoute);
 
             return false;
         }
 
 
         // Cheaper still...
-        public static bool CreatePathNoLineOfSight(Vector2 startPos, PathNode startNode, Vector2 endPos, PathNode endNode, Bin bin, ref PathRoute outRoute)
+        public static bool CreatePathNoLineOfSight(Vector2 startPos, PathNode startNode, Vector2 endPos, PathNode endNode, ref PathRoute outRoute)
         {
+
             // We have two nodes to form a path between.
             outRoute.SetPathInfo(startPos, endPos, startNode, endNode);
 
+            bool foundPath = ms_pathFinder.FindPath(startNode, endNode, ref outRoute);
 
             return true;
         }
@@ -142,6 +153,12 @@ namespace TestGame
             }
 
             return false;
+        }
+
+
+        public static void DebugRender(DebugRenderer debugRenderer)
+        {
+            ms_pathFinder.DebugRender(debugRenderer);
         }
     }
 }

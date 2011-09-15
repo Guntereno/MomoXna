@@ -95,6 +95,12 @@ namespace Momo.Core.Nodes.Cameras
         }
 
 
+        public override Vector2 GetScreenPosition(Vector3 worldPos)
+        {
+            return Vector2.Zero;
+        }
+
+
         public override bool IsVisible( Vector3 position, float radius )
         {
             float leftDistance = m_frustum.Left.DotCoordinate( position ) - radius;

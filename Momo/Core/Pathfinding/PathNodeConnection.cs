@@ -8,27 +8,23 @@ using Momo.Debug;
 
 namespace Momo.Core.Pathfinding
 {
-    public struct PathConnection
+    public class PathConnection
     {
-        internal PathNode m_toNode;
-        internal PathNode m_fromNode;
-
-        //internal float m_distanceEstimate;
+        internal PathNode m_toNode = null;
+        internal float m_distance = 0.0f;
 
 
 
-        public PathConnection(PathNode toNode, PathNode fromNode/*, float distanceEstimate*/)
+        public PathConnection(PathNode toNode, float distance)
         {
             m_toNode = toNode;
-            m_fromNode = fromNode;
-
-            //m_distanceEstimate = distanceEstimate;
+            m_distance = distance;
         }
 
 
-        public void DebugRender(DebugRenderer debugRenderer)
+        public void DebugRender(PathNode fromNode, DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawFilledLine(m_fromNode.m_position, m_toNode.m_position, new Color(0.0f, 1.0f, 1.0f, 0.05f), 7.5f);
+            debugRenderer.DrawFilledLine(fromNode.m_position, m_toNode.m_position, new Color(0.0f, 1.0f, 1.0f, 0.05f), 7.5f);
         }
     }
 }

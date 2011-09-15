@@ -9,8 +9,7 @@ namespace TestGame.Entities
 {
     class StaticGameEntity: StaticEntity
     {
-        GameWorld m_world;
-
+        private GameWorld m_world;
         private Color m_debugColor = Color.White;
 
 
@@ -19,11 +18,13 @@ namespace TestGame.Entities
             m_world = world;
         }
 
+
         public Color DebugColor
         {
             get { return m_debugColor; }
             set { m_debugColor = value; }
         }
+
 
         public GameWorld GetWorld()
         {

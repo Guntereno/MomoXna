@@ -22,7 +22,7 @@ namespace TestGame.Systems
 
         private GameWorld m_world = null;
 
-        private Font m_font = null;
+        private TextStyle m_textStyle = null;
         private TextObject[] m_weaponInfo = new TextObject[kMaxPlayers];
         private MutableString[] m_weaponString = new MutableString[kMaxPlayers];
 
@@ -31,7 +31,9 @@ namespace TestGame.Systems
         {
             m_world = world;
 
-            m_font = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
+            Font font = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
+            m_textStyle = new TextStyle(font, TextSecondaryDrawTechnique.kOutline);
+
 
             Vector2[] osdPositions = 
             {
@@ -43,7 +45,7 @@ namespace TestGame.Systems
 
             for (int i = 0; i < kMaxPlayers; ++i)
             {
-                m_weaponInfo[i] = new TextObject("", m_font, 500, 100, 3);
+                m_weaponInfo[i] = new TextObject(m_textStyle, 500, 100, 3);
                 m_weaponString[i] = new MutableString(40);
 
                 m_weaponInfo[i].Position = osdPositions[i];
@@ -70,7 +72,7 @@ namespace TestGame.Systems
                 }
 
                 m_weaponString[i].EndAppend();
-                m_weaponInfo[i].Colour = player.DebugColor;
+                m_weaponInfo[i].PrimaryColour = player.DebugColor;
                 m_weaponInfo[i].SetText(m_weaponString[i].GetCharacterArray());
             }
         }

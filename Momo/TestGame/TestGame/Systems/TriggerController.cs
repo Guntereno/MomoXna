@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+
 using Momo.Core;
-using TestGame.Entities;
 using Momo.Debug;
+using Momo.Fonts;
+
+using TestGame.Entities;
+
+
 
 namespace TestGame.Systems
 {
@@ -50,11 +55,11 @@ namespace TestGame.Systems
             }
         }
 
-        public void DebugRender(DebugRenderer debugRenderer)
+        public void DebugRender(DebugRenderer debugRenderer, TextBatchPrinter debugTextBatchPrinter, TextStyle debugTextStyle)
         {
             for (int i = 0; i < m_triggers.Length; ++i)
             {
-                m_triggers[i].DebugRender(debugRenderer);
+                m_triggers[i].DebugRender(debugRenderer, debugTextBatchPrinter, debugTextStyle);
             }
         }
     }

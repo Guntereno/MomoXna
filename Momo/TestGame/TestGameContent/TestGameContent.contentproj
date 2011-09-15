@@ -57,6 +57,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="fonts\Consolas_24_o2.fnt">
+      <Name>Consolas_24_o2</Name>
+      <Importer>FontImporter</Importer>
+      <Processor>FontProcessor</Processor>
+    </Compile>
     <None Include="maps\1_living_quarters\1_living_quarters.tmx">
       <Name>1_living_quarters</Name>
       <Processor>TmxProcessor</Processor>
@@ -130,6 +135,13 @@
       <Name>test_arena</Name>
       <Importer>TmxImporter</Importer>
       <Processor>TmxProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="fonts\Consolas_24_o2_0.png">
+      <Name>Consolas_24_o2_0</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

@@ -70,7 +70,7 @@ namespace TestGame.Weapons
             public float m_spread;
         }
 
-        public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 600, 750.0f, 45.0f, 23000.0f, 0.15f);
+        public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 600, 1400.0f, 45.0f, 23000.0f, 0.15f);
 
 
         public class ActiveState : State

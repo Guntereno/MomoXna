@@ -15,8 +15,8 @@ namespace Momo.Core.Pathfinding
         private Vector2 m_startPosition = Vector2.Zero;
         private Vector2 m_endPosition = Vector2.Zero;
 
-        private PathNode m_startNode = null;
-        private PathNode m_endNode = null;
+        private PathNode[] m_pathNodes = new PathNode[200];
+        private int m_pathNodeCnt = 0;
 
 
         public void SetPathInfo(Vector2 startPos, Vector2 endPos, PathNode startNode, PathNode endNode)
@@ -24,10 +24,26 @@ namespace Momo.Core.Pathfinding
             m_startPosition = startPos;
             m_endPosition = endPos;
 
-            m_startNode = startNode;
-            m_endNode = endNode;
+            //m_pathNodes[m_pathNodeCnt++] = startNode;
+            //m_endNode.m_node = endNode;
 
             m_valid = true;
+        }
+
+        public void AddNodeToPath(PathNode node)
+        {
+            m_pathNodes[m_pathNodeCnt++] = node;
+        }
+
+
+        public void Clear()
+        {
+            for (int i = 0; i < m_pathNodeCnt; ++i)
+            {
+                m_pathNodes[i] = null;
+            }
+
+            m_pathNodeCnt = 0;
         }
 
 
@@ -42,16 +58,17 @@ namespace Momo.Core.Pathfinding
                 debugRenderer.DrawCircle(m_startPosition, 15.0f, nodeFillColor, nodeOutlineColor, true, 4.0f, 16);
                 debugRenderer.DrawCircle(m_endPosition, 15.0f, nodeFillColor, nodeOutlineColor, true, 4.0f, 16);
 
+                Vector2 lastPosition = m_startPosition;
 
-                if (m_startNode != null && m_endNode != null)
+                for (int i = 0; i < m_pathNodeCnt; ++i)
                 {
-                    debugRenderer.DrawFilledLine(m_startPosition, m_startNode.GetPosition(), nodeConnectionLine, 5.0f);
-                    debugRenderer.DrawCircle(m_startNode.GetPosition(), 10.0f, nodeFillColor, nodeOutlineColor, true, 4.0f, 16);
+                    debugRenderer.DrawFilledLine(lastPosition, m_pathNodes[i].GetPosition(), nodeConnectionLine, 5.0f);
+                    debugRenderer.DrawCircle(m_pathNodes[i].GetPosition(), 10.0f, nodeFillColor, nodeOutlineColor, true, 4.0f, 16);
 
-                    debugRenderer.DrawFilledLine(m_endPosition, m_endNode.GetPosition(), nodeConnectionLine, 5.0f);
-                    debugRenderer.DrawCircle(m_endNode.GetPosition(), 10.0f, nodeFillColor, nodeOutlineColor, true, 4.0f, 16);
+                    lastPosition = m_pathNodes[i].GetPosition();
                 }
-                else
+
+                if(m_pathNodeCnt <= 2)
                 {
                     debugRenderer.DrawFilledLine(m_startPosition, m_endPosition, nodeConnectionLine, 5.0f);
                 }

@@ -18,13 +18,16 @@ namespace Momo.Fonts
 
         private Effect m_effect = null;
         private EffectParameter m_viewHalfDimensionParam = null;
+        private EffectParameter m_textOffsetParam = null;
         private EffectParameter[] m_colourParam = new EffectParameter[2];
         private EffectParameter m_fontPageTextureParam = null;
 
         private Vector2 m_targetResolution = Vector2.Zero;
         private Vector2 m_halfTargetResolution = Vector2.Zero;
 
-        private TextObject[] m_textObjects = null;
+        private TextObject[] m_textObjectsToRender = null;
+        private TextObject[] m_reusableTextObjects = null;
+        private int m_reusableTextObjectInUseCnt = 0;
 
         private TextVertexDeclaration[] m_textBatchVertices = null;
         private short[] m_textBatchIndices = null;
@@ -39,12 +42,18 @@ namespace Momo.Fonts
             m_maxCharacters = maxCharacters;
             m_maxPages = maxPages;
 
-            m_textObjects = new TextObject[m_maxTextObjects];
+            m_textObjectsToRender = new TextObject[m_maxTextObjects];
+            m_reusableTextObjects = new TextObject[m_maxTextObjects];
+            m_reusableTextObjectInUseCnt = 0;
+
+            for (int i = 0; i < m_maxTextObjects; ++i)
+            {
+                m_reusableTextObjects[i] = new TextObject(128, 1);
+            }
 
             m_textBatchVertices = new TextVertexDeclaration[m_maxCharacters * 4 * m_maxPages];
             m_textBatchIndices = new short[m_maxCharacters * 6];
             m_textBatchVertCnt = new int[m_maxPages];
-
 
             int vertIndex = 0;
             for (int i = 0; i < m_maxCharacters * 6; i += 6)
@@ -61,6 +70,7 @@ namespace Momo.Fonts
 
             m_effect = effect;
             m_viewHalfDimensionParam = m_effect.Parameters["gViewHalfDim"];
+            m_textOffsetParam = m_effect.Parameters["gTextOffset"];
             m_colourParam[0] = m_effect.Parameters["gColour"];
             m_colourParam[1] = m_effect.Parameters["gOutlineColour"];
             m_fontPageTextureParam = m_effect.Parameters["gTex"];
@@ -71,7 +81,20 @@ namespace Momo.Fonts
 
         public void AddToDrawList(TextObject textObject)
         {
-            m_textObjects[m_textObjectCnt++] = textObject;
+            m_textObjectsToRender[m_textObjectCnt++] = textObject;
+        }
+
+
+        public void AddToDrawList(char[] text, Color primaryColour, Color secondaryColour, Vector2 position, TextStyle style)
+        {
+            TextObject textObject = m_reusableTextObjects[m_reusableTextObjectInUseCnt++];
+
+            textObject.SetText(text, style, 1280);
+            textObject.Position = position;
+            textObject.PrimaryColour = primaryColour;
+            textObject.SecondaryColour = secondaryColour;
+
+            AddToDrawList(textObject);
         }
 
 
@@ -79,10 +102,16 @@ namespace Momo.Fonts
         {
             for (int i = 0; i < m_textObjectCnt; ++i)
             {
-                m_textObjects[i] = null;
+                m_textObjectsToRender[i] = null;
+            }
+
+            for (int i = 0; i < m_reusableTextObjectInUseCnt; ++i)
+            {
+                m_reusableTextObjects[i].Reset();
             }
 
             m_textObjectCnt = 0;
+            m_reusableTextObjectInUseCnt = 0;
         }
 
 
@@ -101,7 +130,7 @@ namespace Momo.Fonts
 
         public void Render(bool handleRenderStates, GraphicsDevice graphicsDevice)
         {
-            Render(m_textObjects, m_textObjectCnt, handleRenderStates, graphicsDevice);
+            Render(m_textObjectsToRender, m_textObjectCnt, handleRenderStates, graphicsDevice);
         }
 
 
@@ -112,7 +141,7 @@ namespace Momo.Fonts
 
             if (handleRenderStates)
             {
-                graphicsDevice.BlendState = BlendState.NonPremultiplied;
+                graphicsDevice.BlendState = BlendState.AlphaBlend;
                 graphicsDevice.DepthStencilState = DepthStencilState.None;
             }
 
@@ -125,12 +154,12 @@ namespace Momo.Fonts
             {
                 TextObject textObject = textObjects[t];
 
-                float scaledLineHeight = (float)textObject.Font.m_typeface.m_lineHeight * textObject.Scale.Y;
+                float scaledLineHeight = (float)textObject.TextStyle.Font.m_typeface.m_lineHeight * textObject.Scale.Y;
                 Vector2 screenPosition = new Vector2(textObject.Position.X, textObject.Position.Y);
                 screenPosition.Y += textObject.GetYInset();
                 float startX = screenPosition.X;
 
-                int pageCnt = textObject.Font.m_typeface.m_glyphPageCnt;
+                int pageCnt = textObject.TextStyle.Font.m_typeface.m_glyphPageCnt;
 
 
                 // Go through each line in the wordwrapper, building up a vertex array list.
@@ -189,45 +218,42 @@ namespace Momo.Fonts
 
                 // Do not draw the text object if the next one is the same settings.
                 if (t == textObjectCnt - 1 ||
-                    textObjects[t + 1].Font != textObject.Font ||
-                    textObjects[t + 1].Colours[0] != textObject.Colours[0] ||
-                    textObjects[t + 1].Colours[1] != textObject.Colours[1])
+                    textObjects[t + 1].TextStyle != textObject.TextStyle ||
+                    textObjects[t + 1].PrimaryColour != textObject.PrimaryColour ||
+                    textObjects[t + 1].SecondaryColour != textObject.SecondaryColour)
                 {
-                    // Work backwards, outlines first, fill second.
-                    for (int c = 1; c >= 0; --c)
+                    // Only draw it if its visible.
+                    if (textObject.SecondaryColour.A > 0)
                     {
-                        // Only draw it if its visible.
-                        if (textObject.Colours[c].A > 0)
+                        // Set text offset (useful for drop shadows)
+                        switch (textObject.TextStyle.SecondaryDrawTechnique)
                         {
-                            // Draw our batch of tris.
-                            for (int i = 0; i < pageCnt; ++i)
-                            {
-                                // Do not try and draw 0 primitives, it will fail and complain.
-                                if (m_textBatchVertCnt[i] == 0)
-                                    continue;
+                            case TextSecondaryDrawTechnique.kOutline:
+                                m_colourParam[1].SetValue(textObject.SecondaryColour.ToVector4());
+                                m_textOffsetParam.SetValue(new Vector2(0.0f, 0.0f));
+                                RenderTextBatchPass(textObject.TextStyle, 1, pageCnt, graphicsDevice);
+                                break;
 
-                                // Set the text objects colours.
-                                m_colourParam[c].SetValue(textObject.Colours[c].ToVector4());
-
-                                // Set the text page texture.
-                                m_fontPageTextureParam.SetValue(textObject.Font.m_typeface.m_glyphPageArray[i].m_texture);
-
-                                m_effect.CurrentTechnique.Passes[c].Apply();
-
-
-                                // Send the quad to the graphics card
-                                graphicsDevice.DrawUserIndexedPrimitives<TextVertexDeclaration>(PrimitiveType.TriangleList,
-                                                                                                    m_textBatchVertices,
-                                                                                                    m_maxCharacters * 4 * i,
-                                                                                                    m_textBatchVertCnt[i],
-                                                                                                    m_textBatchIndices,
-                                                                                                    0,
-                                                                                                    m_textBatchVertCnt[i] / 2);
-                            }
+                            case TextSecondaryDrawTechnique.kDropshadow:
+                                m_colourParam[0].SetValue(textObject.SecondaryColour.ToVector4());
+                                m_textOffsetParam.SetValue(textObject.TextStyle.DropShadowOffset);
+                                RenderTextBatchPass(textObject.TextStyle, 0, pageCnt, graphicsDevice);
+                                break;
                         }
                     }
 
 
+                    // Only draw it if its visible.
+                    if (textObject.PrimaryColour.A > 0)
+                    {
+                        m_colourParam[0].SetValue(textObject.PrimaryColour.ToVector4());
+                        m_textOffsetParam.SetValue(new Vector2(0.0f, 0.0f));
+
+                        RenderTextBatchPass(textObject.TextStyle, 0, pageCnt, graphicsDevice);
+                    }
+
+
+                    // Reset text batch
                     for (int i = 0; i < pageCnt; ++i)
                         m_textBatchVertCnt[i] = 0;
                 }
@@ -241,7 +267,35 @@ namespace Momo.Fonts
                 graphicsDevice.DepthStencilState = DepthStencilState.Default;
             }
         }
+
+
+
+        private void RenderTextBatchPass(TextStyle textStyle, int passIdx, int pageCnt, GraphicsDevice graphicsDevice)
+        {
+            // Draw our batch of tris.
+            for (int i = 0; i < pageCnt; ++i)
+            {
+                // Do not try and draw 0 primitives, it will fail and complain.
+                if (m_textBatchVertCnt[i] == 0)
+                    continue;
+
+                // Set the text page texture.
+                m_fontPageTextureParam.SetValue(textStyle.Font.m_typeface.m_glyphPageArray[i].m_texture);
+                m_effect.CurrentTechnique.Passes[passIdx].Apply();
+
+
+                // Send the quad to the graphics card
+                graphicsDevice.DrawUserIndexedPrimitives<TextVertexDeclaration>(PrimitiveType.TriangleList,
+                                                                                    m_textBatchVertices,
+                                                                                    m_maxCharacters * 4 * i,
+                                                                                    m_textBatchVertCnt[i],
+                                                                                    m_textBatchIndices,
+                                                                                    0,
+                                                                                    m_textBatchVertCnt[i] / 2);
+            }
+        }
     }
+
 
 
 

@@ -98,6 +98,14 @@ namespace Momo.Core.Nodes.Cameras
         }
 
 
+        public override Vector2 GetScreenPosition(Vector3 worldPos)
+        {
+            Vector3 screenSpacePosition = Vector3.Transform(worldPos, ViewMatrix);
+
+            return new Vector2(screenSpacePosition.X, -screenSpacePosition.Y);
+        }
+
+
         public override bool IsVisible( Vector3 position, float radius )
         {
             float left = position.X - radius;

@@ -4,6 +4,7 @@
 
 texture gTex			: TEXTURE1;
 float2 gViewHalfDim		: VIEWPORT_HALF_DIMENSION;
+float2 gTextOffset;
 float4 gColour			: COLOUR1;
 float4 gOutlineColour	: COLOUR2;
 
@@ -21,6 +22,7 @@ sampler TexSampler = sampler_state
 void TextVS(float2 posL : POSITION0, float2 uv : TEXCOORD0, 
 		  out float4 oPosH : POSITION0, out float2 oUv : TEXCOORD0)
 {
+	posL += gTextOffset;
 	posL.xy -= float2(0.5f + gViewHalfDim.x, 0.5f);
 	posL.y = gViewHalfDim.y - posL.y;
 	posL.xy /= gViewHalfDim;

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 
 using Momo.Debug;
 using Momo.Core.Spatial;
+using Momo.Core.ObjectPools;
 
 
 
@@ -19,21 +20,16 @@ namespace Momo.Core.Pathfinding
         private PathRegion[] m_regions = null;
 
 
-        public bool CreatePath(Vector2 startPos, Vector2 endPos, PathNode startNode, PathNode endNode, ref PathRoute outRoute)
+
+        public PathIsland()
         {
-            if(startNode != null)
-            {
-                if(endNode != null)
-                {
-                    // We have two nodes to form a path between.
-                    outRoute.SetPathInfo(startPos, endPos, startNode, endNode);
+
+        }
 
 
-                    return true;
-                }
-            }
+        public void Init(int maxPathRouteNodes)
+        {
 
-            return false;
         }
 
 
@@ -47,6 +43,7 @@ namespace Momo.Core.Pathfinding
         {
             return m_regions;
         }
+
 
 
         public void DebugRender(DebugRenderer debugRenderer)

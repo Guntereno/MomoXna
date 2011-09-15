@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Momo.Core.GameEntities;
+
+using Microsoft.Xna.Framework;
+
 using Momo.Core;
+using Momo.Core.GameEntities;
+
 using Momo.Debug;
 using Momo.Fonts;
-using Microsoft.Xna.Framework;
+
+
 
 namespace TestGame.Entities
 {
@@ -29,7 +31,6 @@ namespace TestGame.Entities
 
         private State m_state = State.Untriggered;
 
-        private TextObject m_debugText = null;
 
         enum Flags
         {
@@ -51,8 +52,6 @@ namespace TestGame.Entities
 
             m_triggeredTime = triggeredTime;
             m_downTime = downTime;
-
-            m_debugText = new TextObject("", TestGame.Instance().GetDebugFont(), 1024, kDebugStringLength, 1);
         }
 
         public TriggerEntity(GameWorld world, MapData.Trigger triggerData)
@@ -64,8 +63,6 @@ namespace TestGame.Entities
             m_downTime = triggerData.GetDownTime();
 
             SetPosition(triggerData.GetPosition());
-
-            m_debugText = new TextObject("", TestGame.Instance().GetDebugFont(), 800, kMaxNameLength, 1);
         }
 
         bool IsTriggered()
@@ -192,21 +189,16 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- BaseEntity implementation
         // --------------------------------------------------------------------
-        public override void DebugRender(DebugRenderer debugRenderer)
+        public void DebugRender(DebugRenderer debugRenderer, TextBatchPrinter debugTextBatchPrinter, TextStyle debugTextStyle)
         {
             UpdateDebugColour();
             UpdateDebugString();
 
             Vector2 worldPos2d = GetPosition();
             Vector3 worldPos = new Vector3(worldPos2d.X, worldPos2d.Y, 0.0f);
-            Vector2 screenPos = GetWorld().GetCamera().GetNormalisedScreenPosition(worldPos);
-            screenPos.X *= TestGame.kBackBufferWidth;
-            screenPos.Y *= TestGame.kBackBufferHeight;
+            Vector2 screenPos = GetWorld().GetCamera().GetScreenPosition(worldPos);
 
-            m_debugText.SetText(m_debugString.GetCharacterArray());
-            m_debugText.Colour = DebugColor;
-            m_debugText.Position = screenPos;
-            GetWorld().GetTextPrinter().AddToDrawList(m_debugText);
+            debugTextBatchPrinter.AddToDrawList(m_debugString.GetCharacterArray(), DebugColor, Color.Black, screenPos, debugTextStyle);
         }
     }
 }

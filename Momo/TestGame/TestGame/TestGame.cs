@@ -31,15 +31,10 @@ namespace TestGame
         private int m_cpuRenderProfileItemId = 0;
         private int m_cpuDebugRenderProfileItemId = 0;
 
-        private Font m_debugFont = null;
-
         private WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
-
-
 
         public InputManager InputManager { get; private set; }
 
-        public Font GetDebugFont() { return m_debugFont; }
 
 
         public TestGame()
@@ -57,7 +52,7 @@ namespace TestGame
 
             Content.RootDirectory = "Content";
 
-            //Screwing up my work machine
+            // Screwing up my work machine
             if (GraphicsAdapter.Adapters.Count > 1)
             {
                 graphics.IsFullScreen = true;
@@ -84,7 +79,6 @@ namespace TestGame
             m_cpuDebugRenderProfileItemId = m_profiler.RegisterProfileItem("DebugRender", new Color(1.0f, 0.0f, 0.0f, 0.5f));
 
             m_worldManager.RegisterWorld("TestWorld", GameWorld.WorldCreator);
-            //m_worldManager.RegisterWorld("TestWorldPathFinding", TestWorldPathFinding.WorldCreator);
 
             base.Initialize();
         }
@@ -95,17 +89,13 @@ namespace TestGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
-
             m_worldManager.LoadWorld("TestWorld");
-            //m_worldManager.LoadWorld("TestWorldPathFinding");
         }
 
 
         protected override void UnloadContent()
         {
             m_worldManager.FlushWorld("TestWorld");
-            //m_worldManager.FlushWorld("TestWorldPathFinding");
         }
 
 

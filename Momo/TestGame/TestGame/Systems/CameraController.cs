@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
+using Momo.Core;
 using Momo.Core.Nodes.Cameras;
 using Momo.Core.GameEntities;
-using Momo.Core;
 using Momo.Fonts;
+using Momo.Debug;
+
+
 
 namespace TestGame.Systems
 {
@@ -33,14 +34,11 @@ namespace TestGame.Systems
 
         const int kDebugStringLength = 64;
         protected MutableString m_debugString = new MutableString(kDebugStringLength);
-        private TextObject m_debugText = null;
 
 
         public CameraController(GameWorld world)
         {
             m_world = world;
-
-            m_debugText = new TextObject("", TestGame.Instance().GetDebugFont(), 500, kDebugStringLength, 1);
         }
 
         public void Update(ref FrameTime frameTime, ref Input.InputWrapper input)
@@ -86,19 +84,17 @@ namespace TestGame.Systems
             Camera.Matrix = cameraMatrix;
         }
 
-        public void DebugRender()
+        public void DebugRender(DebugRenderer debugRenderer, TextBatchPrinter debugTextBatchPrinter, TextStyle debugTextStyle)
         {
             Vector2 curPos = m_spring.GetCurrentValue();
 
             m_debugString.Clear();
             m_debugString.Append("(");
-            m_debugString.Append(curPos, 2);
+            m_debugString.Append(curPos, 0);
             m_debugString.Append(")");
             m_debugString.EndAppend();
 
-            m_debugText.SetText(m_debugString.GetCharacterArray());
-
-            m_world.GetTextPrinter().AddToDrawList(m_debugText);
+            debugTextBatchPrinter.AddToDrawList(m_debugString.GetCharacterArray(), Color.White, Color.Black, new Vector2(0.0f, 0.0f), debugTextStyle);
         }
 
         private void UpdateFollow()

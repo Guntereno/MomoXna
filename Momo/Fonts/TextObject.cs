@@ -14,11 +14,11 @@ namespace Momo.Fonts
         // --------------------------------------------------------------------
         // -- Protected Members
         // --------------------------------------------------------------------
-        public string m_stringText = null;
-        public char[] m_charArrayText = null;
+        protected string m_stringText = null;
+        protected char[] m_charArrayText = null;
 
-        protected Font m_font = null;
-        protected Color[] m_colour = new Color[2] { Color.White, Color.Black };
+        protected TextStyle m_textStyle = null;
+        protected Color[] m_colours = new Color[2] { Color.White, Color.Black };
 
         protected WordWrapper m_wordWrapper = null;
 
@@ -35,9 +35,27 @@ namespace Momo.Fonts
         // -- Public Properties
         // --------------------------------------------------------------------
         #region Properties       
-        public Font Font
+        public TextStyle TextStyle
         {
-            get { return m_font; }
+            get { return m_textStyle; }
+        }
+
+        public Color PrimaryColour
+        {
+            get { return m_colours[0]; }
+            set { m_colours[0] = value; }
+        }
+
+        public Color SecondaryColour
+        {
+            get { return m_colours[1]; }
+            set { m_colours[1] = value; }
+        }
+
+        public Color[] Colours
+        {
+            get { return m_colours; }
+            set { m_colours = value; }
         }
 
         public WordWrapper WordWrapper
@@ -71,55 +89,56 @@ namespace Momo.Fonts
             get { return m_horizontalAlignment; }
             set { m_horizontalAlignment = value; }
         }
-
-        public Color Colour
-        {
-            get { return m_colour[0]; }
-            set { m_colour[0] = value; }
-        }
-
-        public Color OutlineColour
-        {
-            get { return m_colour[1]; }
-            set { m_colour[1] = value; }
-        }
-
-        public Color[] Colours
-        {
-            get { return m_colour; }
-            set { m_colour = value; }
-        }
-
         #endregion
 
 
         // --------------------------------------------------------------------
         // -- Constructor/Deconstructor
         // --------------------------------------------------------------------
-        public TextObject(string text, Font font, int width, int maxChars, int maxLines)
+        public TextObject(int maxChars, int maxLines)
         {
             m_wordWrapper = new WordWrapper(maxChars, maxLines);
-            SetText(text, font, width);
+        }
+
+        public TextObject(TextStyle style, int width, int maxChars, int maxLines)
+        {
+            m_wordWrapper = new WordWrapper(maxChars, maxLines);
+            m_width = width;
+            m_textStyle = style;
+        }
+
+        public TextObject(string text, TextStyle style, int width, int maxChars, int maxLines)
+        {
+            m_wordWrapper = new WordWrapper(maxChars, maxLines);
+            SetText(text, style, width);
         }
 
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
+        public void Reset()
+        {
+            m_stringText = null;
+            m_charArrayText = null;
+            m_textStyle = null;
+        }
+
+
         public void SetText(string text)
         {
             m_stringText = text;
             m_charArrayText = null;
 
-            m_wordWrapper.SetText(text, m_font, (int)m_width, false);
+            m_wordWrapper.SetText(text, m_textStyle.Font, (int)m_width, false);
         }
 
 
-        public void SetText(string text, Font font, int width)
+        public void SetText(string text, TextStyle style, int width)
         {
             m_stringText = text;
             m_charArrayText = null;
-            m_font = font;
+            m_textStyle = style;
 
             SetWidth(width);
         }
@@ -130,15 +149,15 @@ namespace Momo.Fonts
             m_stringText = null;
             m_charArrayText = text;
 
-            m_wordWrapper.SetText(text, m_font, (int)m_width, false);
+            m_wordWrapper.SetText(text, m_textStyle.Font, (int)m_width, false);
         }
 
 
-        public void SetText(char[] text, Font font, int width)
+        public void SetText(char[] text, TextStyle style, int width)
         {
             m_stringText = null;
             m_charArrayText = text;
-            m_font = font;
+            m_textStyle = style;
 
             SetWidth(width);
         }
@@ -151,9 +170,9 @@ namespace Momo.Fonts
             int scaledWidth = (int)(width * invScaleX);
 
             if (m_stringText != null)
-                m_wordWrapper.SetText(m_stringText, m_font, scaledWidth, false);
+                m_wordWrapper.SetText(m_stringText, m_textStyle.Font, scaledWidth, false);
             else
-                m_wordWrapper.SetText(m_charArrayText, m_font, scaledWidth, false);
+                m_wordWrapper.SetText(m_charArrayText, m_textStyle.Font, scaledWidth, false);
         }
 
 
@@ -161,8 +180,8 @@ namespace Momo.Fonts
         {
             float inset = 0.0f;
 
-            float maxTextHeight = m_font.m_typeface.m_lineHeight * m_wordWrapper.MaxLines;
-            float height = m_font.m_typeface.m_lineHeight * m_wordWrapper.LineCount;
+            float maxTextHeight = m_textStyle.Font.m_typeface.m_lineHeight * m_wordWrapper.MaxLines;
+            float height = m_textStyle.Font.m_typeface.m_lineHeight * m_wordWrapper.LineCount;
 
             if (m_verticalAlignment == VerticalAlignment.kBottom)
                 inset = (float)Math.Round((maxTextHeight - (height * m_scale.Y)));

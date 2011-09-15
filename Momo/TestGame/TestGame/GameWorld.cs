@@ -37,7 +37,13 @@ namespace TestGame
         List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
 
         Random m_random = new Random();
+
+        // Debug
         DebugRenderer m_debugRenderer = new DebugRenderer();
+        Font m_debugFont = null;
+        TextStyle m_debugTextStyle = null;
+        TextBatchPrinter m_debugTextPrinter = new TextBatchPrinter();
+
 
         PlayerManager m_playerManager = null;
         WeaponManager m_weaponManager = null;
@@ -49,8 +55,7 @@ namespace TestGame
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
         PathIsland m_pathIsland = new PathIsland();
-        PathRoute m_pathRoute = new PathRoute();
-        PathRoute []m_testRoutes = new PathRoute[1000];
+        PathRoute m_testRoute = new PathRoute();
 
 
         // --------------------------------------------------------------------
@@ -83,11 +88,16 @@ namespace TestGame
 
         public override void Load()
         {
-            m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
-
-
             Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
+
+            // Debug
+            m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
+            m_debugTextPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 100, 1000, 1);
+            m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Consolas_24_o2");
+            m_debugTextStyle = new TextStyle(m_debugFont, TextSecondaryDrawTechnique.kDropshadow);
+
             m_textPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 100, 1000, 1);
+
 
             m_camera.ViewWidth = TestGame.kBackBufferWidth;
             m_camera.ViewHeight = TestGame.kBackBufferHeight;
@@ -114,8 +124,6 @@ namespace TestGame
             foreach (MapData.Enemy enemy in wave.GetEnemies())
             {
                 AiEntity ai = m_enemyManager.Create(enemy.GetPosition());
-
-                m_testRoutes[enemyIdx] = new PathRoute();
                 ++enemyIdx;
             }
 
@@ -178,6 +186,7 @@ namespace TestGame
 
             m_triggerController.Update(ref frameTime);
 
+            // Collision detection/resolution
             m_contactList.StartAddingContacts();
             CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList);
             CollisionHelpers.GenerateContacts(m_playerManager.GetPlayers().ActiveItemList, m_playerManager.GetPlayers().ActiveItemListCount, m_bin, m_contactList);
@@ -192,7 +201,7 @@ namespace TestGame
             m_cameraController.Update(ref frameTime, ref inputWrapper);
 
 
-            //PathFindingHelpers.CreatePath(m_playerManager.GetPlayers()[0].GetPosition(), new Vector2(1000.0f, 1000.0f), m_bin, ref m_pathRoute);
+            PathFindingHelpers.CreatePath(m_playerManager.GetPlayers()[0].GetPosition(), new Vector2(1610.0f, 3110.0f), m_bin, ref m_testRoute);
 
             //for (int i = 0; i < m_enemyManager.GetEnemies().ActiveItemListCount; ++i)
             //{
@@ -227,12 +236,13 @@ namespace TestGame
             m_osdManager.Render();
 
             m_textPrinter.Render(true, TestGame.Instance().GraphicsDevice);
+            m_textPrinter.ClearDrawList();
         }
 
 
         public override void PostRender()
         {
-            m_textPrinter.ClearDrawList();
+
         }
 
 
@@ -252,39 +262,28 @@ namespace TestGame
             m_projectileManager.DebugRender(m_debugRenderer);
             m_osdManager.DebugRender(m_debugRenderer);
 
-            m_triggerController.DebugRender(m_debugRenderer);
+            m_triggerController.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
+            m_cameraController.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
 
+            m_pathIsland.DebugRender(m_debugRenderer);
 
-            m_cameraController.DebugRender();
-
-            //m_pathIsland.DebugRender(m_debugRenderer);
-
-            //for (int i = 0; i < m_enemyManager.GetEnemies().ActiveItemListCount; ++i)
-            //{
-            //    m_testRoutes[i].DebugRender(m_debugRenderer);
-            //}
+            //m_testRoute.DebugRender(m_debugRenderer);
+            //PathFindingHelpers.DebugRender(m_debugRenderer);
 
             //m_bin.DebugRender(m_debugRenderer, 5, BinLayers.kPathNodes);
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[0], new Color(0.20f, 0.0f, 0.0f, 0.5f));
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[1], new Color(0.40f, 0.0f, 0.0f, 0.5f));
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[2], new Color(0.60f, 0.0f, 0.0f, 0.5f));
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
-            m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange, Color.DarkRed);
+            //m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange, Color.DarkRed);
 
-
-            //BinLocation centre = new BinLocation(20, 20);
-            //Vector2 centrePos = m_bin.GetCentrePositionOfBin(centre);
-            //m_debugRenderer.DrawOutlineCircle(centrePos, 150.0f, Color.Red, 2.0f);
-            //m_debugRenderer.DrawOutlineCircle(centrePos, 300.0f, Color.Red, 2.0f);
-            //m_debugRenderer.DrawOutlineCircle(centrePos, 450.0f, Color.Red, 2.0f);
-            //m_debugRenderer.DrawOutlineCircle(centrePos, 600.0f, Color.Red, 2.0f);
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
             m_debugRenderer.Clear();
 
             // Render any debug text objects that where added.
-            m_textPrinter.Render(true, TestGame.Instance().GraphicsDevice);
-            m_textPrinter.ClearDrawList();
+            m_debugTextPrinter.Render(true, TestGame.Instance().GraphicsDevice);
+            m_debugTextPrinter.ClearDrawList();
         }
 
 
