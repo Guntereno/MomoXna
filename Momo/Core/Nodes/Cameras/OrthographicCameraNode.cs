@@ -92,17 +92,17 @@ namespace Momo.Core.Nodes.Cameras
 
         public override Vector2 GetNormalisedScreenPosition(Vector3 worldPos)
         {
-            Vector3 screenSpacePosition = Vector3.Transform(worldPos, ViewMatrix);
+            Vector3 screenSpacePosition = Vector3.Transform(worldPos, ViewProjectionMatrix);
 
-            return new Vector2(screenSpacePosition.X / m_viewWidth, -screenSpacePosition.Y / m_viewHeight);
+            return new Vector2(screenSpacePosition.X, screenSpacePosition.Y);
         }
 
 
         public override Vector2 GetScreenPosition(Vector3 worldPos)
         {
-            Vector3 screenSpacePosition = Vector3.Transform(worldPos, ViewMatrix);
+            Vector3 screenSpacePosition = Vector3.Transform(worldPos, ViewProjectionMatrix);
 
-            return new Vector2(screenSpacePosition.X, -screenSpacePosition.Y);
+            return new Vector2(m_halfViewWidth + (screenSpacePosition.X * m_halfViewWidth), m_halfViewHeight - (screenSpacePosition.Y * m_halfViewHeight));
         }
 
 
