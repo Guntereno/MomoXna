@@ -21,8 +21,8 @@ namespace TestGame.Entities
         // -- Private Members
         // --------------------------------------------------------------------
         private bool m_destroyed = false;
+        private Params m_params;
 
-        Params m_params;
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -33,9 +33,9 @@ namespace TestGame.Entities
         }
 
 
-        public override void Update(ref FrameTime frameTime)
+        public override void Update(ref FrameTime frameTime, int updateToken)
         {
-            base.Update(ref frameTime);
+            base.Update(ref frameTime, updateToken);
         }
 
 

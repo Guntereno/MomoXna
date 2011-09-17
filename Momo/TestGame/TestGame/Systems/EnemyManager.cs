@@ -38,12 +38,12 @@ namespace TestGame.Systems
             return ai;
         }
 
-        public void Update(ref FrameTime frameTime)
+        public void Update(ref FrameTime frameTime, int updateToken)
         {
             bool needsCoalesce = false;
             for (int i = 0; i < m_enemies.ActiveItemListCount; ++i)
             {
-                m_enemies[i].Update(ref frameTime);
+                m_enemies[i].Update(ref frameTime, updateToken + i);
                 m_enemies[i].UpdateBinEntry();
 
                 m_enemies[i].UpdateSensoryData(m_world.GetPlayerManager().GetPlayers().ActiveItemList);

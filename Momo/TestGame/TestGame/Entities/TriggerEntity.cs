@@ -87,7 +87,7 @@ namespace TestGame.Entities
             }
         }
 
-        public override void Update(ref FrameTime frameTime)
+        public override void Update(ref FrameTime frameTime, int updateToken)
         {
             if (!GetActive())
             {

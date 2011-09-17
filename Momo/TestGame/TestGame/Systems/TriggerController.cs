@@ -14,13 +14,14 @@ namespace TestGame.Systems
     class TriggerController
     {
         private GameWorld m_world;
+        private TriggerEntity[] m_triggers;
 
-        TriggerEntity[] m_triggers;
 
         public TriggerController(GameWorld world)
         {
             m_world = world;
         }
+
 
         public void LoadFromMapData(MapData.Map mapData)
         {
@@ -47,13 +48,15 @@ namespace TestGame.Systems
             }
         }
 
+
         public void Update(ref FrameTime frameTime)
         {
             for (int i = 0; i < m_triggers.Length; ++i)
             {
-                m_triggers[i].Update(ref frameTime);
+                m_triggers[i].Update(ref frameTime, i);
             }
         }
+
 
         public void DebugRender(DebugRenderer debugRenderer, TextBatchPrinter debugTextBatchPrinter, TextStyle debugTextStyle)
         {

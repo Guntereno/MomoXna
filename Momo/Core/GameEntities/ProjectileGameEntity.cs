@@ -67,9 +67,9 @@ namespace Momo.Core.GameEntities
 
 
 
-        public override void Update(ref FrameTime frameTime)
+        public override void Update(ref FrameTime frameTime, int updateToken)
         {
-            base.Update(ref frameTime);
+            base.Update(ref frameTime, updateToken);
 
             m_lastFramePosition = m_position;
             m_position = m_position + (m_velocity * frameTime.Dt);

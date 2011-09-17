@@ -14,7 +14,7 @@ namespace TestGame.Entities
     public enum SensedType
     {
         kNone = -1,
-        kPlayer = 0,
+        kSeePlayer = 0,
         kNoise,
     }
 
@@ -37,6 +37,12 @@ namespace TestGame.Entities
             m_lastPosition = position;
             m_sensedDistanceSq = distanceSq;
             m_timeSensed = timeSensed;
+        }
+
+
+        public Vector2 GetLastPosition()
+        {
+            return m_lastPosition;
         }
     }
 
@@ -109,7 +115,7 @@ namespace TestGame.Entities
                 }
                 else
                 {
-                    m_sensePlayer |= (m_sensedObjects[i].m_type == SensedType.kPlayer);
+                    m_sensePlayer |= (m_sensedObjects[i].m_type == SensedType.kSeePlayer);
                 }
             }
         }
@@ -258,7 +264,7 @@ namespace TestGame.Entities
 
                     if (clearLineOfSight)
                     {
-                        AddSense(0, SensedType.kPlayer, entity.GetPosition(), distanceSq, 0.5f);
+                        AddSense(0, SensedType.kSeePlayer, entity.GetPosition(), distanceSq, 0.5f);
                         return true;
                     }
                 }

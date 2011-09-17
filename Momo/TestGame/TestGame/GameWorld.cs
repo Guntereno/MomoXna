@@ -55,6 +55,9 @@ namespace TestGame
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
         PathIsland m_pathIsland = new PathIsland();
+        PathRouteManager m_pathRouteManager = new PathRouteManager();
+
+        int m_updateTokenOffset = 0;
 
 
         // --------------------------------------------------------------------
@@ -82,7 +85,10 @@ namespace TestGame
         public Random GetRandom()                               { return m_random; }
         public DebugRenderer GetDebugRenderer()                 { return m_debugRenderer; }
 
-        public MapData.Map GetMap()                                 { return m_map; }
+        public MapData.Map GetMap()                             { return m_map; }
+
+        public PathRouteManager GetPathRouteManager()           { return m_pathRouteManager; }
+
 
 
         public override void Load()
@@ -143,14 +149,16 @@ namespace TestGame
             m_mapRenderer.Init(m_map, TestGame.Instance().GraphicsDevice, 16);
 
 
+            // Path stuff
             PathRegion[] regions = new PathRegion[1];
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
             regions[0].GenerateNodesFromBoundaries(15.0f, 35, true, m_map.CollisionBoundaries);
             regions[0].GenerateNodePaths(10.0f, m_bin, BinLayers.kBoundary);
-
             m_pathIsland.SetRegions(regions);
 
             AddPathIslandToBin(m_pathIsland);
+
+            m_pathRouteManager.Init(1000, 100, 200);
 
 
             m_triggerController.LoadFromMapData(m_map);
@@ -172,18 +180,25 @@ namespace TestGame
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
 
+            ++m_updateTokenOffset;
+
             Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper(0);
 
+
+            // --- Update ---
             m_playerManager.Update(ref frameTime);
 
             // Move the camera follow position
             m_cameraController.FollowPosition = m_playerManager.GetAveragePosition();
 
-            m_enemyManager.Update(ref frameTime);
+            m_enemyManager.Update(ref frameTime, m_updateTokenOffset);
             m_projectileManager.Update(ref frameTime);
             m_osdManager.Update(ref frameTime);
 
             m_triggerController.Update(ref frameTime);
+
+            m_pathRouteManager.Udpate(ref frameTime);
+
 
             // Collision detection/resolution
             m_contactList.StartAddingContacts();
@@ -193,7 +208,6 @@ namespace TestGame
             m_contactList.EndAddingContacts();
 
             m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
-
 
             m_projectileManager.EndFrame();
 
@@ -257,7 +271,7 @@ namespace TestGame
 
             //m_pathIsland.DebugRender(m_debugRenderer);
             //PathFindingHelpers.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
-
+            m_pathRouteManager.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
 
             //for (int i = 0; i < m_pathIsland.GetRegions()[0].GetNodeCount(); ++i)
             //{

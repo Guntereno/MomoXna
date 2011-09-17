@@ -40,9 +40,9 @@ namespace Momo.Core.Pathfinding
         public void DebugRender(DebugRenderer debugRenderer)
         {
             const float kNodeConnectionLineWidth = 3.0f;
-            const float kNodeRadius = 10.0f;
-            Color nodeFillColor = new Color(1.0f, 0.2f, 1.0f, 0.15f);
-            Color nodeConnectionLine = new Color(1.0f, 0.25f, 1.0f, 0.15f);
+            const float kNodeRadius = 8.0f;
+            Color nodeFillColor = new Color(1.0f, 0.25f, 1.0f, 0.10f);
+            Color nodeConnectionLine = new Color(1.0f, 0.25f, 1.0f, 0.10f);
 
 
 

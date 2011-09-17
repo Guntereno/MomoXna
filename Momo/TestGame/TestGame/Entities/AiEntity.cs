@@ -21,6 +21,9 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
+        private static readonly int kUpdatePathFrameFrequency = 3;
+
+
         private float m_turnVelocity = 0.0f;
         private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
 
@@ -31,7 +34,7 @@ namespace TestGame.Entities
         private StunnedState m_stateStunned = null;
         private DyingState m_stateDying = null;
 
-        //private PathRoute m_routeToPlayer = new PathRoute(100);
+        private PathRoute m_routeToPlayer = null;
 
 
 
@@ -72,14 +75,31 @@ namespace TestGame.Entities
         }
 
 
-        public override void Update(ref FrameTime frameTime)
+        public override void Update(ref FrameTime frameTime, int updateToken)
         {
-            base.Update(ref frameTime);
+            base.Update(ref frameTime, updateToken);
 
             m_sensoryData.Update(ref frameTime);
 
-            PlayerEntity closePlayerEntity = GetWorld().GetPlayerManager().GetPlayers().ActiveItemList[0];
-            //PathFindingHelpers.CreatePath(closePlayerEntity.GetPosition(), GetPosition(), GetBin(), ref m_routeToPlayer);
+
+            if (!m_sensoryData.SensePlayer)
+            {
+                PathNode myPathNode = null;
+                PathNode goalPathNode = null;
+
+                PathFindingHelpers.GetClosestPathNode(GetPosition(), GetBin(), BinLayers.kPathNodes, ref myPathNode);
+                PathFindingHelpers.GetClosestPathNode(GetWorld().GetPlayerManager().GetAveragePosition(), GetBin(), BinLayers.kPathNodes, ref goalPathNode);
+
+                //System.Diagnostics.Debug.Assert(myPathNode != null);
+                //System.Diagnostics.Debug.Assert(goalPathNode != null);
+
+                if (myPathNode != null && goalPathNode != null)
+                {
+                    bool cacheOnly = ((updateToken % kUpdatePathFrameFrequency) != 0);
+                    GetWorld().GetPathRouteManager().GetPathRoute(myPathNode, goalPathNode, ref m_routeToPlayer, cacheOnly);
+                }
+            }
+
 
             if (m_currentState != null)
             {
@@ -167,7 +187,9 @@ namespace TestGame.Entities
         public override void DebugRender(DebugRenderer debugRenderer)
         {
             base.DebugRender(debugRenderer);
-            //m_routeToPlayer.DebugRender(debugRenderer);
+
+            if(m_routeToPlayer != null)
+                m_routeToPlayer.DebugRender(debugRenderer);
         }
 
 

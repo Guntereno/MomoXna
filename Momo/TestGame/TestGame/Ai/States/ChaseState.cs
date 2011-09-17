@@ -35,9 +35,9 @@ namespace TestGame.Ai.States
             {
                 SensedObject obj = null;
 
-                if (entity.SensoryData.GetClosestSense(SensedType.kPlayer, ref obj))
+                if (entity.SensoryData.GetClosestSense(SensedType.kSeePlayer, ref obj))
                 {
-                    Vector2 direction = obj.m_lastPosition - GetEntity().GetPosition();
+                    Vector2 direction = obj.GetLastPosition() - GetEntity().GetPosition();
                     direction.Normalize();
 
                     GetEntity().FacingDirection = direction;

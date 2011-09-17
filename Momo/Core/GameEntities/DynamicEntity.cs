@@ -103,9 +103,9 @@ namespace Momo.Core.GameEntities
         }
 
 
-        public override void Update(ref FrameTime frameTime)
+        public override void Update(ref FrameTime frameTime, int updateToken)
         {
-            base.Update(ref frameTime);
+            base.Update(ref frameTime, updateToken);
 
             Vector2 newPosition = GetPosition() + (m_velocity * frameTime.Dt);
 

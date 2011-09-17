@@ -37,7 +37,7 @@ namespace Momo.Core.GameEntities
         }
 
 
-        public virtual void Update(ref FrameTime frameTime)
+        public virtual void Update(ref FrameTime frameTime, int updateToken)
         {
 
         }

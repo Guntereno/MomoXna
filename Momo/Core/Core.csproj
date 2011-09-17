@@ -143,6 +143,10 @@
       <Project>{347E5A57-7F1B-49A5-A637-D49BE71F6F1C}</Project>
       <Name>Debug</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Fonts\Fonts.csproj">
+      <Project>{1D5C61AC-DF07-4521-BE2C-EFA9D33914F7}</Project>
+      <Name>Fonts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MapData\MapData.csproj">
       <Project>{2A9FB9C8-0CD3-42F3-9343-6DABE152E5C2}</Project>
       <Name>MapData</Name>
