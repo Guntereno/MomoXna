@@ -55,7 +55,6 @@ namespace TestGame
         TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
         PathIsland m_pathIsland = new PathIsland();
-        PathRoute m_testRoute = new PathRoute();
 
 
         // --------------------------------------------------------------------
@@ -92,7 +91,7 @@ namespace TestGame
 
             // Debug
             m_debugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
-            m_debugTextPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 100, 1000, 1);
+            m_debugTextPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 500, 1000, 1);
             m_debugFont = TestGame.Instance().Content.Load<Font>("fonts/Consolas_24_o2");
             m_debugTextStyle = new TextStyle(m_debugFont, TextSecondaryDrawTechnique.kDropshadow);
 
@@ -109,7 +108,7 @@ namespace TestGame
 
 
             //m_bin.Init(50, 50, new Vector2(2500.0f, 2500.0f), 4, 6000, 1000, 1000);
-            m_bin.Init(50, 50, m_map.PlayAreaMax + new Vector2(1000.0f, 1000.0f), 4, 6000, 1000, 1000);
+            m_bin.Init(50, 50, m_map.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 6000, 1000, 1000);
 
 
             // ----------------------------------------------------------------
@@ -199,15 +198,6 @@ namespace TestGame
             m_projectileManager.EndFrame();
 
             m_cameraController.Update(ref frameTime, ref inputWrapper);
-
-
-            PathFindingHelpers.CreatePath(m_playerManager.GetPlayers()[0].GetPosition(), new Vector2(1610.0f, 3110.0f), m_bin, ref m_testRoute);
-
-            //for (int i = 0; i < m_enemyManager.GetEnemies().ActiveItemListCount; ++i)
-            //{
-            //    PathFindingHelpers.CreatePath(m_enemyManager.GetEnemies().ActiveItemList[i].GetPosition(), m_playerManager.GetPlayers()[0].GetPosition(), m_bin, ref m_testRoutes[i]);
-            //}
-
         }
 
 
@@ -265,10 +255,21 @@ namespace TestGame
             m_triggerController.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
             m_cameraController.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
 
-            m_pathIsland.DebugRender(m_debugRenderer);
+            //m_pathIsland.DebugRender(m_debugRenderer);
+            //PathFindingHelpers.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
 
-            //m_testRoute.DebugRender(m_debugRenderer);
-            //PathFindingHelpers.DebugRender(m_debugRenderer);
+
+            //for (int i = 0; i < m_pathIsland.GetRegions()[0].GetNodeCount(); ++i)
+            //{
+            //    PathNode node = m_pathIsland.GetRegions()[0].GetNodes()[i];
+
+            //    Vector2 worldPos2d = node.GetPosition();
+            //    Vector3 worldPos = new Vector3(worldPos2d.X, worldPos2d.Y, 0.0f);
+            //    Vector2 screenPos = GetCamera().GetScreenPosition(worldPos);
+
+            //    m_debugTextPrinter.AddToDrawList(node.GetUniqueId().ToString(), Color.White, Color.Black, screenPos, m_debugTextStyle);
+            //}
+
 
             //m_bin.DebugRender(m_debugRenderer, 5, BinLayers.kPathNodes);
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[0], new Color(0.20f, 0.0f, 0.0f, 0.5f));
@@ -290,7 +291,7 @@ namespace TestGame
         private void BuildCollisionBoundaries()
         {
             int numBoundries = m_map.CollisionBoundaries.Length;
-
+            //Momo.Maths.ExtendedMaths2D.ExtrudePointsAlongNormal
 
             for (int boundaryIdx = 0; boundaryIdx < numBoundries; ++boundaryIdx)
             {
@@ -306,7 +307,7 @@ namespace TestGame
 
                     LinePrimitive2D lineStrip = new LinePrimitive2D(lastPoint, pos);
                     BoundaryEntity boundaryEntity = new BoundaryEntity(lineStrip);
-                    boundaryEntity.AddToBin(m_bin);
+                    boundaryEntity.AddToBin(m_bin, BinLayers.kBoundary);
                     m_boundaries.Add(boundaryEntity);
 
                     lastPoint = pos;

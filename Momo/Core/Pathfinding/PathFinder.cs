@@ -11,105 +11,141 @@ namespace Momo.Core.Pathfinding
 {
     public class PathFinder
     {
-        private PathNode[] m_nodes = null;
-
-        private OpenList m_openList = null;
-        private ClosedList m_closedList = null;
+        private PathNodeList m_openList = null;
+        private PathNodeList m_closedList = null;
 
 
+        public PathNodeList OpenList
+        {
+            get { return m_openList; }
+        }
 
-        internal class OpenNode
+        public PathNodeList CloseList
+        {
+            get { return m_closedList; }
+        }
+
+
+
+        public struct PathFinderNode
         {
             internal PathNode m_node;
+            internal int m_fromClosedIdx;
+
             internal float m_costFromStart;
             internal float m_costToEnd;
             internal float m_estimatedTotalCost;
 
 
-            public void Set(OpenNode node)
+            public PathNode Node
+            {
+                get { return m_node; }
+            }
+
+
+            public void Set(PathFinderNode node)
             {
                 m_node = node.m_node;
+                m_fromClosedIdx = node.m_fromClosedIdx;
                 m_costFromStart = node.m_costFromStart;
                 m_costToEnd = node.m_costToEnd;
                 m_estimatedTotalCost = node.m_estimatedTotalCost;
             }
-        }
 
-
-        internal class ClosedNode
-        {
-            internal PathNode m_node;
-            internal ClosedNode m_fromNode;
-        }
-
-        internal class OpenList
-        {
-            internal OpenNode[] m_openNodes = null;
-            internal int m_openListCnt = 0;
-
-            public OpenList(int maxCapacity)
+            public void Set(PathNode node, int fromClosedIdx, float costFromStart, float costToEnd)
             {
-                m_openNodes = new OpenNode[maxCapacity];
+                m_node = node;
+                m_fromClosedIdx = fromClosedIdx;
+                m_costFromStart = costFromStart;
+                m_costToEnd = costToEnd;
+                m_estimatedTotalCost = costFromStart + costToEnd;
+            }
+        }
 
-                for (int i = 0; i < maxCapacity; ++i)
-                    m_openNodes[i] = new OpenNode();
 
-                m_openListCnt = 0;
+        public class PathNodeList
+        {
+            internal PathFinderNode[] m_pathFinderNodes = null;
+            internal int m_pathFinderNodeCnt = 0;
+
+
+            public PathFinderNode[] PathFinderNodes
+            {
+                get { return m_pathFinderNodes; }
+            }
+
+            public int PathFinderNodeCnt
+            {
+                get { return m_pathFinderNodeCnt; }
+            }
+
+
+            public PathNodeList(int maxCapacity)
+            {
+                m_pathFinderNodes = new PathFinderNode[maxCapacity];
+                m_pathFinderNodeCnt = 0;
             }
 
 
             public void Clear()
             {
-                for (int i = 0; i < m_openListCnt; ++i)
+                for (int i = 0; i < m_pathFinderNodeCnt; ++i)
                 {
-                    m_openNodes[i].m_node = null;
+                    m_pathFinderNodes[i].m_node = null;
                 }
 
-                m_openListCnt = 0;
+                m_pathFinderNodeCnt = 0;
             }
 
-            public OpenNode AddNode(PathNode node, float costToNode, float estimateCostToGoal)
-            {
-                OpenNode newOpenNode = m_openNodes[m_openListCnt++];
-                newOpenNode.m_node = node;
-                newOpenNode.m_costFromStart = costToNode;
-                newOpenNode.m_costToEnd = estimateCostToGoal;
-                newOpenNode.m_estimatedTotalCost = costToNode + estimateCostToGoal;
 
-                return newOpenNode;
+            public int AddNode(PathNode node, int fromClosedIdx, float costToNode, float estimateCostToGoal)
+            {
+                m_pathFinderNodes[m_pathFinderNodeCnt++].Set(node, fromClosedIdx, costToNode, estimateCostToGoal);
+
+                return m_pathFinderNodeCnt-1;
             }
 
-            public float RemoveNode(PathNode node)
+            public int AddNode(PathFinderNode node)
             {
-                float costToNode = float.MaxValue;
-                for (int i = 0; i < m_openListCnt; ++i)
+                m_pathFinderNodes[m_pathFinderNodeCnt++].Set(node);
+
+                return m_pathFinderNodeCnt-1;
+            }
+
+
+            public PathFinderNode RemoveNode(PathNode node)
+            {
+                for (int i = 0; i < m_pathFinderNodeCnt; ++i)
                 {
-                    if (m_openNodes[i].m_node == node)
+                    if (m_pathFinderNodes[i].m_node == node)
                     {
-                        costToNode = m_openNodes[i].m_costFromStart;
+                        PathFinderNode pathFinderNode = m_pathFinderNodes[i];
 
                         // Fill in hole left by this node with the last on hte list.
-                        if (i < m_openListCnt - 1)
-                            m_openNodes[i].Set(m_openNodes[m_openListCnt-1]);
+                        if (i < m_pathFinderNodeCnt - 1)
+                        {
+                            m_pathFinderNodes[i].Set(m_pathFinderNodes[m_pathFinderNodeCnt - 1]);
+                        }
 
-                        --m_openListCnt;
-                        break;
+                        --m_pathFinderNodeCnt;
+
+                        return pathFinderNode;
                     }
                 }
 
-                return costToNode;
+                return m_pathFinderNodes[0];
             }
 
 
-            public OpenNode GetNodeInList(PathNode node)
+            public int GetNodeIdx(PathNode node)
             {
-                for (int i = 0; i < m_openListCnt; ++i)
+                for (int i = 0; i < m_pathFinderNodeCnt; ++i)
                 {
-                    if (m_openNodes[i].m_node == node)
-                        return m_openNodes[i];
+                    if (m_pathFinderNodes[i].m_node == node)
+                        return i;
                 }
 
-                return null;
+                return -1;
             }
 
 
@@ -118,12 +154,12 @@ namespace Momo.Core.Pathfinding
                 float bestCost = float.MaxValue;
                 PathNode bestPathNode = null;
 
-                for (int i = 0; i < m_openListCnt; ++i)
+                for (int i = 0; i < m_pathFinderNodeCnt; ++i)
                 {
-                    if (m_openNodes[i].m_estimatedTotalCost < bestCost)
+                    if (m_pathFinderNodes[i].m_estimatedTotalCost < bestCost)
                     {
-                        bestCost = m_openNodes[i].m_estimatedTotalCost;
-                        bestPathNode = m_openNodes[i].m_node;
+                        bestCost = m_pathFinderNodes[i].m_estimatedTotalCost;
+                        bestPathNode = m_pathFinderNodes[i].m_node;
                     }
                 }
 
@@ -132,58 +168,11 @@ namespace Momo.Core.Pathfinding
         }
 
 
-        internal class ClosedList
-        {
-            internal ClosedNode[] m_closedNodes = null;
-            internal int m_closedNodeCnt = 0;
-
-            public ClosedList(int maxCapacity)
-            {
-                m_closedNodes = new ClosedNode[maxCapacity];
-
-                for (int i = 0; i < maxCapacity; ++i)
-                    m_closedNodes[i] = new ClosedNode();
-
-                m_closedNodeCnt = 0;
-            }
-
-
-            public void Clear()
-            {
-                for (int i = 0; i < m_closedNodeCnt; ++i)
-                {
-                    m_closedNodes[i].m_node = null;
-                }
-
-                m_closedNodeCnt = 0;
-            }
-
-            public ClosedNode AddNode(PathNode node, ClosedNode fromNode)
-            {
-                ClosedNode newClosedNode = m_closedNodes[m_closedNodeCnt++];
-                newClosedNode.m_node = node;
-                newClosedNode.m_fromNode = fromNode;
-
-                return newClosedNode;
-            }
-
-            public bool IsNodeInList(PathNode node)
-            {
-                for (int i = 0; i < m_closedNodeCnt; ++i)
-                {
-                    if (m_closedNodes[i].m_node == node)
-                        return true;
-                }
-
-                return false;
-            }
-        }
-
 
         public void Init(int maxOpenNodes)
         {
-            m_openList = new OpenList(maxOpenNodes);
-            m_closedList = new ClosedList(maxOpenNodes);
+            m_openList = new PathNodeList(maxOpenNodes);
+            m_closedList = new PathNodeList(maxOpenNodes);
         }
 
 
@@ -193,34 +182,35 @@ namespace Momo.Core.Pathfinding
             m_closedList.Clear();
 
 
+            // We search from the goal to the start, that way the formed route is the correct order and requires no
+            // flipping.
 
-
-            PathNode activeOpenNode = startNode;
-            ClosedNode lastClosedNode = null;
-            float costToNode = 0.0f;
+            PathNode activeOpenNode = endNode;
+            int lastClosedIdx = -1;
             float bestOpenNodeCost = float.MaxValue;
 
 
-            m_openList.AddNode(activeOpenNode, 0.0f, GetEstimatedCostToTravel(activeOpenNode, endNode));
+            m_openList.AddNode(endNode, -1, 0.0f, GetEstimatedCostToTravel(endNode, startNode));
 
 
             while (activeOpenNode != null)
             {
+                // Remove openNode from the linked list. Add it to the closed list.
+                PathFinderNode activePathFinderNode = m_openList.RemoveNode(activeOpenNode);
+                lastClosedIdx = m_closedList.AddNode(activePathFinderNode);
+
+
                 // Check if we have found the goal.
-                if (activeOpenNode == endNode)
+                if (activeOpenNode == startNode)
                 {
-                    path.Clear();
-                    //while (lastClosedNode != null)
-                    //{
-                    //    path.AddNodeToPath(lastClosedNode.m_node);
-                    //    lastClosedNode = lastClosedNode.m_fromNode;
-                    //}
+                    while (lastClosedIdx >= 0)
+                    {
+                        path.AddNodeToPath(m_closedList.m_pathFinderNodes[lastClosedIdx].m_node);
+                        lastClosedIdx = m_closedList.m_pathFinderNodes[lastClosedIdx].m_fromClosedIdx;
+                    }
                     return true;
                 }
 
-                // Remove openNode from the linked list. Add it to the closed list.
-                costToNode = m_openList.RemoveNode(activeOpenNode);
-                lastClosedNode = m_closedList.AddNode(activeOpenNode, lastClosedNode);
 
                 PathNode bestOpenNode = null;
 
@@ -231,22 +221,23 @@ namespace Momo.Core.Pathfinding
 
                     // If the connection is part of the closed list, then move on to the next
                     // connection.
-                    if (m_closedList.IsNodeInList(connectedToPathNode))
+                    if (m_closedList.GetNodeIdx(connectedToPathNode) >= 0)
                         continue;
 
 
-                    OpenNode connectedOpenNode = m_openList.GetNodeInList(connectedToPathNode);
-                    if (connectedOpenNode == null)
+                    int connectedOpenNodeIdx = m_openList.GetNodeIdx(connectedToPathNode);
+                    if (connectedOpenNodeIdx < 0)
                     {
-                        float connectNodeCostToNode = costToNode + connection.m_distance;
-                        float costToEnd = GetEstimatedCostToTravel(connectedToPathNode, endNode);
+                        float connectNodeCostToNode = activePathFinderNode.m_costFromStart + connection.m_distance;
+                        float costToEnd = GetEstimatedCostToTravel(connectedToPathNode, startNode);
 
-                        connectedOpenNode = m_openList.AddNode(connectedToPathNode, connectNodeCostToNode, costToEnd);
+                        connectedOpenNodeIdx = m_openList.AddNode(connectedToPathNode, lastClosedIdx, connectNodeCostToNode, costToEnd);
                     }
 
-                    if (connectedOpenNode.m_estimatedTotalCost < bestOpenNodeCost)
+                    float openNodeEstimatedTotalCost = m_openList.m_pathFinderNodes[connectedOpenNodeIdx].m_estimatedTotalCost;
+                    if (openNodeEstimatedTotalCost < bestOpenNodeCost)
                     {
-                        bestOpenNodeCost = connectedOpenNode.m_estimatedTotalCost;
+                        bestOpenNodeCost = openNodeEstimatedTotalCost;
                         bestOpenNode = connectedToPathNode;
                     }
                 }
@@ -269,21 +260,22 @@ namespace Momo.Core.Pathfinding
 
         public float GetEstimatedCostToTravel(PathNode node1, PathNode node2)
         {
+            //return Math.Abs(node1.m_position.X - node2.m_position.X) + Math.Abs(node1.m_position.Y - node2.m_position.Y);
             return (node1.m_position - node2.m_position).Length();
         }
 
 
         public void DebugRender(DebugRenderer debugRenderer)
         {
-            for (int i = 0; i < m_openList.m_openListCnt; ++i)
+            for (int i = 0; i < m_openList.m_pathFinderNodeCnt; ++i)
             {
-                PathNode node = m_openList.m_openNodes[i].m_node;
+                PathNode node = m_openList.m_pathFinderNodes[i].m_node;
                 debugRenderer.DrawOutlineCircle(node.GetPosition(), node.GetRadius() + 5.0f, new Color(0.0f, 1.0f, 0.5f, 0.55f), 5.0f);
             }
 
-            for (int i = 0; i < m_closedList.m_closedNodeCnt; ++i)
+            for (int i = 0; i < m_closedList.m_pathFinderNodeCnt; ++i)
             {
-                PathNode node = m_closedList.m_closedNodes[i].m_node;
+                PathNode node = m_closedList.m_pathFinderNodes[i].m_node;
                 debugRenderer.DrawOutlineCircle(node.GetPosition(), node.GetRadius() + 5.0f, new Color(1.0f, 0.0f, 0.5f, 0.55f), 5.0f);
             }
         }

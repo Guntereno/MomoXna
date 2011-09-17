@@ -119,6 +119,7 @@
     <Compile Include="Pathfinding\PathRegionConnection.cs" />
     <Compile Include="Pathfinding\PathRegion.cs" />
     <Compile Include="Pathfinding\PathRoute.cs" />
+    <Compile Include="Pathfinding\PathRouteManager.cs" />
     <Compile Include="Primitive2D\CirclePrimitive2D.cs" />
     <Compile Include="Primitive2D\LinePrimitive2D.cs" />
     <Compile Include="Primitive2D\LineStripPrimitive2D.cs" />

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 
 using Momo.Maths;
 using Momo.Debug;
+using Momo.Fonts;
 
 using Momo.Core;
 using Momo.Core.GameEntities;
@@ -12,7 +13,6 @@ using Momo.Core.Pathfinding;
 
 using Momo.Core.Primitive2D;
 using Momo.Core.Collision2D;
-
 
 using TestGame.Entities;
 using TestGame.Objects;
@@ -72,10 +72,12 @@ namespace TestGame
         // based on world positions.
         public static bool CreatePath(Vector2 startPos, Vector2 endPos, Bin bin, ref PathRoute outRoute)
         {
+            outRoute.Clear();
+
             // Check for direct line of sight
             if(CollisionHelpers.IsClearLineOfSight(startPos, endPos - startPos, bin))
             {
-                outRoute.SetPathInfo(startPos, endPos, null, null);
+                //outRoute.SetPathInfo(startPos, endPos, null, null);
                 return true;
             }
 
@@ -106,9 +108,8 @@ namespace TestGame
         // Cheaper still...
         public static bool CreatePathNoLineOfSight(Vector2 startPos, PathNode startNode, Vector2 endPos, PathNode endNode, ref PathRoute outRoute)
         {
-
             // We have two nodes to form a path between.
-            outRoute.SetPathInfo(startPos, endPos, startNode, endNode);
+            //outRoute.SetPathInfo(startPos, endPos, startNode, endNode);
 
             bool foundPath = ms_pathFinder.FindPath(startNode, endNode, ref outRoute);
 
@@ -156,7 +157,7 @@ namespace TestGame
         }
 
 
-        public static void DebugRender(DebugRenderer debugRenderer)
+        public static void DebugRender(DebugRenderer debugRenderer, TextBatchPrinter debugTextBatchPrinter, TextStyle debugTextStyle)
         {
             ms_pathFinder.DebugRender(debugRenderer);
         }

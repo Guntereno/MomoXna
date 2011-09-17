@@ -98,6 +98,19 @@ namespace Momo.Fonts
         }
 
 
+        public void AddToDrawList(string text, Color primaryColour, Color secondaryColour, Vector2 position, TextStyle style)
+        {
+            TextObject textObject = m_reusableTextObjects[m_reusableTextObjectInUseCnt++];
+
+            textObject.SetText(text, style, 1280);
+            textObject.Position = position;
+            textObject.PrimaryColour = primaryColour;
+            textObject.SecondaryColour = secondaryColour;
+
+            AddToDrawList(textObject);
+        }
+
+
         public void ClearDrawList()
         {
             for (int i = 0; i < m_textObjectCnt; ++i)

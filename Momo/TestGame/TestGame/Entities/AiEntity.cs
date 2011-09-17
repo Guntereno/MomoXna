@@ -1,10 +1,18 @@
 ﻿using System;
+
 using Microsoft.Xna.Framework;
+
 using Momo.Core;
 using Momo.Core.Collision2D;
 using Momo.Core.Spatial;
+using Momo.Core.Pathfinding;
+
+using Momo.Debug;
+
 using TestGame.Objects;
 using TestGame.Ai.States;
+
+
 
 namespace TestGame.Entities
 {
@@ -22,6 +30,9 @@ namespace TestGame.Entities
         private ChaseState m_stateChase = null;
         private StunnedState m_stateStunned = null;
         private DyingState m_stateDying = null;
+
+        //private PathRoute m_routeToPlayer = new PathRoute(100);
+
 
 
         // --------------------------------------------------------------------
@@ -66,6 +77,9 @@ namespace TestGame.Entities
             base.Update(ref frameTime);
 
             m_sensoryData.Update(ref frameTime);
+
+            PlayerEntity closePlayerEntity = GetWorld().GetPlayerManager().GetPlayers().ActiveItemList[0];
+            //PathFindingHelpers.CreatePath(closePlayerEntity.GetPosition(), GetPosition(), GetBin(), ref m_routeToPlayer);
 
             if (m_currentState != null)
             {
@@ -147,6 +161,13 @@ namespace TestGame.Entities
         public void OnExplosionEvent(ref Explosion explosion, Vector2 force)
         {
             AddForce(force);
+        }
+
+
+        public override void DebugRender(DebugRenderer debugRenderer)
+        {
+            base.DebugRender(debugRenderer);
+            //m_routeToPlayer.DebugRender(debugRenderer);
         }
 
 

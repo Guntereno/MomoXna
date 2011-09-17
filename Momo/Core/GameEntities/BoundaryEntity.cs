@@ -73,7 +73,7 @@ namespace Momo.Core.GameEntities
         }
 
 
-        public void AddToBin(Bin bin)
+        public void AddToBin(Bin bin, int layerIdx)
         {
             RecalculateBinRegion(bin);
 
@@ -82,9 +82,9 @@ namespace Momo.Core.GameEntities
             GetBinRegion(ref binRegion);
 
             if(m_collisionLineBinRegionsSelection.m_binIndices == null)
-                bin.UpdateBinItem(this, ref binRegion, 1);
+                bin.UpdateBinItem(this, ref binRegion, layerIdx);
             else
-                bin.UpdateBinItem(this, ref m_collisionLineBinRegionsSelection, 1);
+                bin.UpdateBinItem(this, ref m_collisionLineBinRegionsSelection, layerIdx);
         }
     }
 }

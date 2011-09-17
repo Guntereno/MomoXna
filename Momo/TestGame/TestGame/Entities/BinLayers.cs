@@ -9,7 +9,12 @@ namespace TestGame.Entities
     {
         public const int kAiEntity = 0;
         public const int kBoundary = 1;
-        public const int kBullet = 2;
-        public const int kPathNodes = 3;
+        public const int kBoundaryExpanded10 = 2;
+        public const int kBoundaryExpanded20 = 3;
+
+        public const int kBullet = 4;
+        public const int kPathNodes = 5;
+
+        public const int kLayerCount = kPathNodes + 1;
     }
 }
