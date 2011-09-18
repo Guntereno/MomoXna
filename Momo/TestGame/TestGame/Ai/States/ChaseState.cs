@@ -90,14 +90,12 @@ namespace TestGame.Ai.States
                 if (m_routeToPlayer != null)
                 {
                     Vector2 targetDirection;
-                    float estTargetDistSq;
                     m_tracker.Track(entity.GetPosition(),
                                         entity.GetWorld().GetPlayerManager().GetAveragePosition(),
                                         entity.GetBin(),
                                         entity.GetOccludingBinLayer(),
                                         ref m_routeToPlayer,
-                                        out targetDirection,
-                                        out estTargetDistSq);
+                                        out targetDirection);
 
 
                     GetEntity().TurnTowards(targetDirection, 0.11f);

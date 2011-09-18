@@ -128,7 +128,10 @@ namespace TestGame
             int enemyIdx = 0;
             foreach (MapData.Enemy enemy in wave.GetEnemies())
             {
-                AiEntity ai = m_enemyManager.Create(enemy.GetPosition());
+                //if (enemyIdx == 15)
+                {
+                    AiEntity ai = m_enemyManager.Create(enemy.GetPosition());
+                }
                 ++enemyIdx;
             }
 
