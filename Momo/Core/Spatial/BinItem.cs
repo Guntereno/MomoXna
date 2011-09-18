@@ -9,7 +9,6 @@ namespace Momo.Core.Spatial
     public abstract class BinItem
     {
         internal Bin m_bin = null;
-        internal int m_occludingBinLayer = -1;
         internal BinRegionUniform m_region = BinRegionUniform.kInvalidBinRegionUniform;
 
 
@@ -29,18 +28,6 @@ namespace Momo.Core.Spatial
         public void SetBin(Bin bin)
         {
             m_bin = bin;
-        }
-
-
-        public int GetOccludingBinLayer()
-        {
-            return m_occludingBinLayer;
-        }
-
-
-        public void SetOccludingBinLayer(int layer)
-        {
-            m_occludingBinLayer = layer;
         }
 
 

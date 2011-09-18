@@ -182,15 +182,13 @@ namespace Momo.Core.Pathfinding
             m_closedList.Clear();
 
 
-            // We search from the goal to the start, that way the formed route is the correct order and requires no
-            // flipping.
 
-            PathNode activeOpenNode = endNode;
+            PathNode activeOpenNode = startNode;
             int lastClosedIdx = -1;
             float bestOpenNodeCost = float.MaxValue;
 
 
-            m_openList.AddNode(endNode, -1, 0.0f, GetEstimatedCostToTravel(endNode, startNode));
+            m_openList.AddNode(startNode, -1, 0.0f, GetEstimatedCostToTravel(startNode, endNode));
 
 
             while (activeOpenNode != null)
@@ -201,13 +199,15 @@ namespace Momo.Core.Pathfinding
 
 
                 // Check if we have found the goal.
-                if (activeOpenNode == startNode)
+                if (activeOpenNode == endNode)
                 {
                     while (lastClosedIdx >= 0)
                     {
                         path.AddNodeToPath(m_closedList.m_pathFinderNodes[lastClosedIdx].m_node);
                         lastClosedIdx = m_closedList.m_pathFinderNodes[lastClosedIdx].m_fromClosedIdx;
                     }
+
+                    path.ReversePath();
                     return true;
                 }
 
@@ -229,7 +229,7 @@ namespace Momo.Core.Pathfinding
                     if (connectedOpenNodeIdx < 0)
                     {
                         float connectNodeCostToNode = activePathFinderNode.m_costFromStart + connection.m_distance;
-                        float costToEnd = GetEstimatedCostToTravel(connectedToPathNode, startNode);
+                        float costToEnd = GetEstimatedCostToTravel(connectedToPathNode, endNode);
 
                         connectedOpenNodeIdx = m_openList.AddNode(connectedToPathNode, lastClosedIdx, connectNodeCostToNode, costToEnd);
                     }

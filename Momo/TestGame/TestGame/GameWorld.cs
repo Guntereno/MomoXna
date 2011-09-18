@@ -148,18 +148,21 @@ namespace TestGame
             m_mapRenderer.Init(m_map, TestGame.Instance().GraphicsDevice, 16);
 
 
+            float smallPathNodeRadius = 25.0f;
             BuildCollisionBoundaries(0.0f, BinLayers.kBoundary);
-            Vector2[][] extrudeBoundariesSmallUnit = BuildCollisionBoundaries(12.0f, BinLayers.kBoundaryExtrudedSmallUnit);
-            Vector2[][] extrudeBoundariesLargeUnit = BuildCollisionBoundaries(25.0f, BinLayers.kBoundaryExtrudedLargeUnit);
 
-            Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(25.0f);
-            Vector2[][] extrudeBoundariesLargePath = ExtrudeCollisionBoundaries(45.0f);
+            BuildCollisionBoundaries(13.0f, BinLayers.kBoundaryViewSmall);
+            BuildCollisionBoundaries(18.0f, BinLayers.kBoundaryPathFindingSmall);
+            BuildCollisionBoundaries(smallPathNodeRadius - 1, BinLayers.kBoundaryNodeConnectiongSmall);
+
+            Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius);
+   
 
             // Path stuff
             PathRegion[] regions = new PathRegion[1];
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
-            regions[0].GenerateNodesFromBoundaries(24.0f, 30, true, extrudeBoundariesSmallPath);
-            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryExtrudedSmallUnit);
+            regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 30, true, extrudeBoundariesSmallPath);
+            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryNodeConnectiongSmall);
             m_pathIsland.SetRegions(regions);
 
             AddPathIslandToBin(m_pathIsland);
@@ -276,8 +279,7 @@ namespace TestGame
             m_cameraController.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
 
             //m_pathIsland.DebugRender(m_debugRenderer);
-            //PathFindingHelpers.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
-            m_pathRouteManager.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
+            //m_pathRouteManager.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
 
             //for (int i = 0; i < m_pathIsland.GetRegions()[0].GetNodeCount(); ++i)
             //{

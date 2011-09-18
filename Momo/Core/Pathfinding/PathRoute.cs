@@ -14,6 +14,8 @@ namespace Momo.Core.Pathfinding
         private int m_pathNodeCnt = 0;
 
 
+
+
         public PathRoute(int maxNodes)
         {
             m_pathNodes = new PathNode[maxNodes];
@@ -26,6 +28,20 @@ namespace Momo.Core.Pathfinding
         }
 
 
+        public void ReversePath()
+        {
+            int pathNodeCntMinusOne = m_pathNodeCnt - 1;
+            int halfPathNodeCnt = m_pathNodeCnt >> 1;
+
+            for (int i = 0; i < halfPathNodeCnt; ++i)
+            {
+                PathNode swapNode = m_pathNodes[i];
+                m_pathNodes[i] = m_pathNodes[pathNodeCntMinusOne - i];
+                m_pathNodes[pathNodeCntMinusOne - i] = swapNode;
+            }
+        }
+
+
         public void Clear()
         {
             for (int i = 0; i < m_pathNodeCnt; ++i)
@@ -34,6 +50,18 @@ namespace Momo.Core.Pathfinding
             }
 
             m_pathNodeCnt = 0;
+        }
+
+
+        public PathNode[] GetPathNodes()
+        {
+            return m_pathNodes;
+        }
+
+
+        public int GetPathNodeCount()
+        {
+            return m_pathNodeCnt;
         }
 
 
@@ -57,8 +85,6 @@ namespace Momo.Core.Pathfinding
 
                 lastPosition = m_pathNodes[i].GetPosition();
             }
-
-            //debugRenderer.DrawFilledLine(lastPosition, m_endPosition, nodeConnectionLine, kNodeConnectionLineWidth);
         }
     }
 }

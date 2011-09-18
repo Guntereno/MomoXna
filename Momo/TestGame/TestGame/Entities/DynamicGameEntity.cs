@@ -6,6 +6,7 @@ using Momo.Core;
 using Momo.Core.GameEntities;
 using Momo.Core.ObjectPools;
 using Momo.Debug;
+using Momo.Maths;
 
 
 
@@ -19,6 +20,7 @@ namespace TestGame.Entities
         private int m_nameHash = 0;
 
         private RadiusInfo m_contactRadiusInfo;
+
         private float m_facingAngle = 0.0f;
         private Vector2 m_facingDirection = Vector2.Zero;
 
@@ -85,6 +87,36 @@ namespace TestGame.Entities
 
             debugRenderer.DrawCircle(GetPosition(), GetContactRadiusInfo().Radius, fillColour, outlineColour, true, 2, 8);
             debugRenderer.DrawLine(GetPosition(), GetPosition() + (m_facingDirection * m_contactRadiusInfo.Radius * 1.5f), outlineColour);
+        }
+
+
+        public void TurnTowards(Vector2 targetDirection, float speed)
+        {
+            Vector2 normalToFacing = Maths2D.Perpendicular(m_facingDirection);
+            float dotNormalTargetDirection = Vector2.Dot(normalToFacing, targetDirection);
+
+            Vector2 newFacing = m_facingDirection;
+
+            if (dotNormalTargetDirection > 0.0f)
+            {
+                newFacing += (normalToFacing * speed);
+
+                if (Vector2.Dot(Maths2D.Perpendicular(newFacing), targetDirection) < 0.0f)
+                    newFacing = targetDirection;
+                else
+                    newFacing.Normalize();
+            }
+            else
+            {
+                newFacing -= (normalToFacing * speed);
+
+                if (Vector2.Dot(Maths2D.Perpendicular(newFacing), targetDirection) > 0.0f)
+                    newFacing = targetDirection;
+                else
+                    newFacing.Normalize();
+            }
+
+            FacingDirection = newFacing;
         }
 
 

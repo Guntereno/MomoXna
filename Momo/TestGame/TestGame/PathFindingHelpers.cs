@@ -31,8 +31,6 @@ namespace TestGame
         private static int m_maxCircularSearchRegions = 0;
         private static BinRegionSelection [] ms_circularSearchRegions = null;
 
-        private static PathFinder ms_pathFinder = null;
-
 
 
         public static void Init(float maxCircularSearchRange, int maxCircularSearchRegions, Bin bin)
@@ -62,9 +60,6 @@ namespace TestGame
                 ms_circularSearchRegions[i] = new BinRegionSelection(ref circularSelection);
                 circularSelection.Clear();
             }
-
-            ms_pathFinder = new PathFinder();
-            ms_pathFinder.Init(200);
         }
 
 
@@ -154,12 +149,6 @@ namespace TestGame
             }
 
             return false;
-        }
-
-
-        public static void DebugRender(DebugRenderer debugRenderer, TextBatchPrinter debugTextBatchPrinter, TextStyle debugTextStyle)
-        {
-            ms_pathFinder.DebugRender(debugRenderer);
         }
     }
 }

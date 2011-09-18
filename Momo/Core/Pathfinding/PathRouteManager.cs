@@ -98,14 +98,14 @@ namespace Momo.Core.Pathfinding
 
 
         // Do not hang on to the route, the manager owns these. Request per frame.
-        public bool GetPathRoute(PathNode node1, PathNode node2, ref PathRoute route, bool cacheOnly)
+        public bool GetPathRoute(PathNode node1, PathNode node2, bool cacheOnly, ref PathRoute outRoute)
         {
-            route = RequestCachedPathRoute(node1.GetUniqueId(), node2.GetUniqueId());
+            outRoute = RequestCachedPathRoute(node1.GetUniqueId(), node2.GetUniqueId());
 
             ++m_debugAvgCacheRequestsAcc;
 
 
-            if (route == null && !cacheOnly)
+            if (outRoute == null && !cacheOnly)
             {
                 ++m_debugAvgCacheMissAcc;
 
@@ -119,11 +119,11 @@ namespace Momo.Core.Pathfinding
                     bool sucessfullyCached = CachePathRoute(node1.GetUniqueId(), node2.GetUniqueId(), newRoute);
                     System.Diagnostics.Debug.Assert(sucessfullyCached);
 
-                    route = newRoute;
+                    outRoute = newRoute;
                 }
             }
 
-            return (route != null);
+            return (outRoute != null);
         }
 
 
@@ -212,6 +212,8 @@ namespace Momo.Core.Pathfinding
         {
             Vector2 kInfoPanelTopLeftCorner = new Vector2(10.0f, 600.0f);
             const float kLineHeight = 20.0f;
+
+            m_pathFinder.DebugRender(debugRenderer);
 
             m_debugString.Clear();
             m_debugString.Append("Cached routes: ");

@@ -23,7 +23,7 @@ namespace TestGame.Ai.States
             m_timer = GetTime();
         }
 
-        public override void Update(ref FrameTime frameTime)
+        public override void Update(ref FrameTime frameTime, int updateToken)
         {
             m_timer -= frameTime.Dt;
             if (m_timer <= 0.0f)

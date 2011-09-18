@@ -21,20 +21,15 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private static readonly int kUpdatePathFrameFrequency = 3;
-
-
-        private float m_turnVelocity = 0.0f;
         private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
 
         private State m_currentState = null;
+        private int m_occludingBinLayer = -1;
 
         private RandomWanderState m_stateRandomWander = null;
         private ChaseState m_stateChase = null;
         private StunnedState m_stateStunned = null;
         private DyingState m_stateDying = null;
-
-        private PathRoute m_routeToPlayer = null;
 
 
 
@@ -53,10 +48,10 @@ namespace TestGame.Entities
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
-            SetContactRadiusInfo(new RadiusInfo(13.0f + ((float)random.NextDouble() * 3.0f)));
+            SetContactRadiusInfo(new RadiusInfo(14.0f + ((float)random.NextDouble() * 3.0f)));
             SetMass(GetContactRadiusInfo().Radius * 0.5f);
 
-            SetOccludingBinLayer(BinLayers.kBoundaryExtrudedSmallUnit);
+            SetOccludingBinLayer(BinLayers.kBoundaryViewSmall);
 
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -84,28 +79,9 @@ namespace TestGame.Entities
             m_sensoryData.Update(ref frameTime);
 
 
-            if (!m_sensoryData.SensePlayer)
-            {
-                PathNode myPathNode = null;
-                PathNode goalPathNode = null;
-
-                PathFindingHelpers.GetClosestPathNode(GetPosition(), GetBin(), BinLayers.kPathNodes, BinLayers.kBoundaryExtrudedSmallUnit, ref myPathNode);
-                PathFindingHelpers.GetClosestPathNode(GetWorld().GetPlayerManager().GetAveragePosition(), GetBin(), BinLayers.kPathNodes, BinLayers.kBoundaryExtrudedSmallUnit, ref goalPathNode);
-
-                //System.Diagnostics.Debug.Assert(myPathNode != null);
-                //System.Diagnostics.Debug.Assert(goalPathNode != null);
-
-                if (myPathNode != null && goalPathNode != null)
-                {
-                    bool cacheOnly = ((updateToken % kUpdatePathFrameFrequency) != 0);
-                    GetWorld().GetPathRouteManager().GetPathRoute(myPathNode, goalPathNode, ref m_routeToPlayer, cacheOnly);
-                }
-            }
-
-
             if (m_currentState != null)
             {
-                m_currentState.Update(ref frameTime);
+                m_currentState.Update(ref frameTime, updateToken);
             }
         }
 
@@ -190,8 +166,8 @@ namespace TestGame.Entities
         {
             base.DebugRender(debugRenderer);
 
-            if(m_routeToPlayer != null)
-                m_routeToPlayer.DebugRender(debugRenderer);
+            if (m_currentState != null)
+                m_currentState.DebugRender(debugRenderer);
         }
 
 
@@ -220,8 +196,19 @@ namespace TestGame.Entities
             return m_currentState.ToString();
         }
 
-        public float GetTurnVelocity() { return m_turnVelocity; }
-        public void SetTurnVelocity(float value) { m_turnVelocity = value; }
+
+        public int GetOccludingBinLayer()
+        {
+            return m_occludingBinLayer;
+        }
+
+
+        public void SetOccludingBinLayer(int layer)
+        {
+            m_occludingBinLayer = layer;
+        }
+
+
 
         internal void Kill()
         {

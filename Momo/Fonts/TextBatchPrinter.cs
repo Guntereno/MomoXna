@@ -304,7 +304,7 @@ namespace Momo.Fonts
                                                                                     m_textBatchVertCnt[i],
                                                                                     m_textBatchIndices,
                                                                                     0,
-                                                                                    m_textBatchVertCnt[i] / 2);
+                                                                                    m_textBatchVertCnt[i] >> 1);
             }
         }
     }

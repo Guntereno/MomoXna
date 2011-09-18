@@ -7,19 +7,27 @@ namespace TestGame.Ai.States
 {
     public class RandomWanderState : State
     {
+        private float m_wanderTurnVelocity = 0.0f;
+
+
         public RandomWanderState(AiEntity entity) :
             base(entity)
-        { }
+        {
+        
+        }
+
 
         public override string ToString()
         {
             return "Random Wander";
         }
 
+
         public void Init(State foundPlayerState)
         {
             m_foundPlayerState = foundPlayerState;
         }
+
 
         public override void OnEnter()
         {
@@ -28,7 +36,8 @@ namespace TestGame.Ai.States
             GetEntity().DebugColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
         }
 
-        public override void Update(ref FrameTime frameTime)
+
+        public override void Update(ref FrameTime frameTime, int updateToken)
         {
             GameWorld world = GetEntity().GetWorld();
 
@@ -40,13 +49,11 @@ namespace TestGame.Ai.States
             {
                 Random random = world.GetRandom();
 
-                float turnVelocity = GetEntity().GetTurnVelocity();
-                turnVelocity += ((float)random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
-                turnVelocity = MathHelper.Clamp(turnVelocity, -1.0f, 1.0f);
-                GetEntity().SetTurnVelocity(turnVelocity);
+                m_wanderTurnVelocity += ((float)random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
+                m_wanderTurnVelocity = MathHelper.Clamp(m_wanderTurnVelocity, -1.0f, 1.0f);
 
                 float facingAngle = GetEntity().FacingAngle;
-                facingAngle += turnVelocity * frameTime.Dt;
+                facingAngle += m_wanderTurnVelocity * frameTime.Dt;
                 GetEntity().FacingAngle = facingAngle;
 
                 Vector2 direction = new Vector2((float)Math.Sin(facingAngle), (float)Math.Cos(facingAngle));
