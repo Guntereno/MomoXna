@@ -118,7 +118,7 @@ namespace TestGame
         }
 
 
-        public static bool IsClearLineOfSight(Vector2 position, Vector2 dPos, Bin bin)
+        public static bool IsClearLineOfSight(Vector2 position, Vector2 dPos, Bin bin, int binLayer)
         {
             BinRegionUniform boundaryRegion = new BinRegionUniform();
 
@@ -127,7 +127,7 @@ namespace TestGame
             // Boundaries
             BinQueryResults queryResults = bin.GetShaderQueryResults();
             queryResults.StartQuery();
-            bin.Query(ref ms_tempBinRegionSelection, BinLayers.kBoundary, queryResults);
+            bin.Query(ref ms_tempBinRegionSelection, binLayer, queryResults);
             queryResults.EndQuery();
 
             for (int j = 0; j < queryResults.BinItemCount; ++j)
@@ -136,7 +136,7 @@ namespace TestGame
                 checkBoundary.GetBinRegion(ref boundaryRegion);
 
                 LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                bool contact = Maths2D.DoesIntersect(    position,
+                bool contact = Maths2D.DoesIntersect(   position,
                                                         dPos,
                                                         linePrimitive2D.Point,
                                                         linePrimitive2D.Difference );

@@ -111,9 +111,6 @@ namespace Momo.Core.Pathfinding
             m_nodes = new PathNode[nodesRequired];
             m_nodeCnt = 0;
 
-            float radiusSq = radius * radius;
-            float offset = (float)Math.Sqrt(radiusSq + radiusSq);
-
 
             // Test
             //m_nodes[m_nodeCnt++] = new PathNode(new Vector2(750.0f, 250.0f), radius, maxConnections);
@@ -130,36 +127,48 @@ namespace Momo.Core.Pathfinding
                 Vector2[] innerBoundaryPositions = boundardPositions[i];
                 int innerBoundaryPositionCount = innerBoundaryPositions.Length;
 
-                if (innerBoundaryPositionCount < 2)
-                    continue;
 
-
-                Vector2 boundaryPos = innerBoundaryPositions[1];
-                Vector2 lastBoundaryPos = innerBoundaryPositions[0];
-
-                Vector2 lastBoundaryNormal = (boundaryPos - lastBoundaryPos);
-                lastBoundaryNormal.Normalize();
-                lastBoundaryPos = boundaryPos;
-
-                Vector2 firstBoundaryNormal = lastBoundaryNormal;
-
-
-                for (int j = 2; j < innerBoundaryPositionCount; ++j)
+                for (int j = 0; j < innerBoundaryPositionCount - 1; ++j)
                 {
-                    boundaryPos = innerBoundaryPositions[j];
-                    Vector2 boundaryNormal = boundaryPos - lastBoundaryPos;
-                    boundaryNormal.Normalize();
+                    Vector2 boundaryPos = innerBoundaryPositions[j];
 
-                    m_nodes[m_nodeCnt++] = new PathNode(nodeCnt++, ExtendedMaths2D.ExtrudePoint(lastBoundaryPos, lastBoundaryNormal, boundaryNormal, radius), radius, maxConnections);
+                    m_nodes[m_nodeCnt++] = new PathNode(nodeCnt++, boundaryPos, radius, maxConnections);
+                }
+
+
+                //Vector2[] innerBoundaryPositions = boundardPositions[i];
+                //int innerBoundaryPositionCount = innerBoundaryPositions.Length;
+
+                //if (innerBoundaryPositionCount < 2)
+                //    continue;
+
+
+                //Vector2 boundaryPos = innerBoundaryPositions[1];
+                //Vector2 lastBoundaryPos = innerBoundaryPositions[0];
+
+                //Vector2 lastBoundaryNormal = (boundaryPos - lastBoundaryPos);
+                //lastBoundaryNormal.Normalize();
+                //lastBoundaryPos = boundaryPos;
+
+                //Vector2 firstBoundaryNormal = lastBoundaryNormal;
+
+
+                //for (int j = 2; j < innerBoundaryPositionCount; ++j)
+                //{
+                //    boundaryPos = innerBoundaryPositions[j];
+                //    Vector2 boundaryNormal = boundaryPos - lastBoundaryPos;
+                //    boundaryNormal.Normalize();
+
+                //    m_nodes[m_nodeCnt++] = new PathNode(nodeCnt++, ExtendedMaths2D.ExtrudePoint(lastBoundaryPos, lastBoundaryNormal, boundaryNormal, radius), radius, maxConnections);
    
-                    lastBoundaryPos = boundaryPos;
-                    lastBoundaryNormal = boundaryNormal;
-                }
+                //    lastBoundaryPos = boundaryPos;
+                //    lastBoundaryNormal = boundaryNormal;
+                //}
 
-                if (closedLoop && innerBoundaryPositionCount > 3)
-                {
-                    m_nodes[m_nodeCnt++] = new PathNode(nodeCnt++, ExtendedMaths2D.ExtrudePoint(lastBoundaryPos, lastBoundaryNormal, firstBoundaryNormal, radius), radius, maxConnections);
-                }
+                //if (closedLoop && innerBoundaryPositionCount > 3)
+                //{
+                //    m_nodes[m_nodeCnt++] = new PathNode(nodeCnt++, ExtendedMaths2D.ExtrudePoint(lastBoundaryPos, lastBoundaryNormal, firstBoundaryNormal, radius), radius, maxConnections);
+                //}
             }
         }
 
@@ -209,7 +218,7 @@ namespace Momo.Core.Pathfinding
 
 
         // Generates garbage
-        public void GenerateNodePaths(float radius, Bin bin, int boundaryLayer)
+        public void GenerateNodePaths(Bin bin, int boundaryLayer)
         {
             const int kBinSelectionCapacity = 500;
             BinRegionSelection tempBinRegionSelection = new BinRegionSelection(kBinSelectionCapacity);
@@ -257,7 +266,6 @@ namespace Momo.Core.Pathfinding
                         LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
                         contact |= Maths2D.DoesIntersect(       node1.m_position,
                                                                 dNodePos,
-                                                                radius,
                                                                 linePrimitive2D.Point,
                                                                 linePrimitive2D.Difference);
 
@@ -335,7 +343,7 @@ namespace Momo.Core.Pathfinding
                         {
                             float distanceRatio = shortestDistance / searchForNodeShortestDist;
 
-                            if (distanceRatio < 1.1f)
+                            if (distanceRatio < 1.15f)
                             {
                                 linkInfo[linkIdx].m_valid = false;
                             }

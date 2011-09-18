@@ -243,7 +243,7 @@ namespace TestGame.Entities
 
                 if (checkLineOfSight)
                 {
-                    bool clearLineOfSight = CollisionHelpers.IsClearLineOfSight(myPosition, dPos, entity.GetBin());
+                    bool clearLineOfSight = CollisionHelpers.IsClearLineOfSight(myPosition, dPos, entity.GetBin(), BinLayers.kBoundary);
 
                     //if (clearLineOfSight)
                     //    entity.GetWorld().GetDebugRenderer().DrawFilledLine(myPosition, entity.GetPosition(), new Color(0.0f, 1.0f, 0.0f, 0.2f), 2.0f);

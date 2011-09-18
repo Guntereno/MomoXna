@@ -8,10 +8,12 @@ namespace Momo.Maths
     public class ExtendedMaths2D
     {
         // Points must be a series of connected points.
-        public static void ExtrudePointsAlongNormal(Vector2[] points, int pointCnt, bool closedLoop, float amount)
+        public static bool ExtrudePointsAlongNormal(Vector2[] points, int pointCnt, bool closedLoop, float amount, out Vector2[] outExtrudedPoints)
         {
+            outExtrudedPoints = new Vector2[pointCnt];
+
             if (pointCnt < 2)
-                return;
+                return false;
 
             Vector2 lastPoint = points[0];
             Vector2 point = points[1];
@@ -26,8 +28,8 @@ namespace Momo.Maths
             if (pointCnt == 2)
             {
                 Vector2 offset = Maths2D.Perpendicular(lastEdgeDirection) * amount;
-                points[0] += offset;
-                points[1] += offset;
+                outExtrudedPoints[0] = points[0] + offset;
+                outExtrudedPoints[1] = points[1] + offset;
             }
             else
             {
@@ -37,7 +39,7 @@ namespace Momo.Maths
                     Vector2 edgeDirection = point - lastPoint;
                     edgeDirection.Normalize();
 
-                    points[i - 1] = ExtrudePoint(points[i - 1], lastEdgeDirection, edgeDirection, amount);
+                    outExtrudedPoints[i - 1] = ExtrudePoint(points[i - 1], lastEdgeDirection, edgeDirection, amount);
 
                     lastPoint = point;
                     lastEdgeDirection = edgeDirection;
@@ -46,16 +48,17 @@ namespace Momo.Maths
                 // Finally sort out the first and last point. This will depend on if its closed loop or not.
                 if (closedLoop)
                 {
-                    points[0] = ExtrudePoint(points[0], lastEdgeDirection, firstEdgeDirection, amount);
-                    points[pointCnt - 1] = points[0];
+                    outExtrudedPoints[0] = ExtrudePoint(points[0], lastEdgeDirection, firstEdgeDirection, amount);
+                    outExtrudedPoints[pointCnt - 1] = outExtrudedPoints[0];
                 }
                 else
                 {
-                    points[0] += Maths2D.Perpendicular(firstEdgeDirection) * amount;
-                    points[pointCnt - 1] += Maths2D.Perpendicular(lastEdgeDirection) * amount;
+                    outExtrudedPoints[0] = points[0] + Maths2D.Perpendicular(firstEdgeDirection) * amount;
+                    outExtrudedPoints[pointCnt - 1] += points[pointCnt - 1] + Maths2D.Perpendicular(lastEdgeDirection) * amount;
                 }
             }
 
+            return true;
         }
 
 

@@ -70,55 +70,55 @@ namespace TestGame
 
         // Most expensive version. Line of sight checks plus re-searches for the start and end node
         // based on world positions.
-        public static bool CreatePath(Vector2 startPos, Vector2 endPos, Bin bin, ref PathRoute outRoute)
-        {
-            outRoute.Clear();
+        //public static bool CreatePath(Vector2 startPos, Vector2 endPos, Bin bin, ref PathRoute outRoute)
+        //{
+        //    outRoute.Clear();
 
-            // Check for direct line of sight
-            if(CollisionHelpers.IsClearLineOfSight(startPos, endPos - startPos, bin))
-            {
-                //outRoute.SetPathInfo(startPos, endPos, null, null);
-                return true;
-            }
-
-
-            PathNode endNode = null;
-            GetClosestPathNode(endPos, bin, BinLayers.kPathNodes, ref endNode);
-
-            if (endNode != null)
-                return CreatePathNoLineOfSight(startPos, endPos, endNode, bin, ref outRoute);
-
-            return false;
-        }
+        //    // Check for direct line of sight
+        //    //if(CollisionHelpers.IsClearLineOfSight(startPos, endPos - startPos, bin))
+        //    //{
+        //    //    //outRoute.SetPathInfo(startPos, endPos, null, null);
+        //    //    return true;
+        //    //}
 
 
-        // Cheaper...
-        public static bool CreatePathNoLineOfSight(Vector2 startPos, Vector2 endPos, PathNode endNode, Bin bin, ref PathRoute outRoute)
-        {
-            PathNode startNode = null;
-            GetClosestPathNode(startPos, bin, BinLayers.kPathNodes, ref startNode);
+        //    PathNode endNode = null;
+        //    GetClosestPathNode(endPos, bin, BinLayers.kPathNodes, ref endNode);
 
-            if (startNode != null)
-                return CreatePathNoLineOfSight(startPos, startNode, endPos, endNode, ref outRoute);
+        //    if (endNode != null)
+        //        return CreatePathNoLineOfSight(startPos, endPos, endNode, bin, ref outRoute);
 
-            return false;
-        }
+        //    return false;
+        //}
 
 
-        // Cheaper still...
-        public static bool CreatePathNoLineOfSight(Vector2 startPos, PathNode startNode, Vector2 endPos, PathNode endNode, ref PathRoute outRoute)
-        {
-            // We have two nodes to form a path between.
-            //outRoute.SetPathInfo(startPos, endPos, startNode, endNode);
+        //// Cheaper...
+        //public static bool CreatePathNoLineOfSight(Vector2 startPos, Vector2 endPos, PathNode endNode, Bin bin, ref PathRoute outRoute)
+        //{
+        //    PathNode startNode = null;
+        //    GetClosestPathNode(startPos, bin, BinLayers.kPathNodes, ref startNode);
 
-            bool foundPath = ms_pathFinder.FindPath(startNode, endNode, ref outRoute);
+        //    if (startNode != null)
+        //        return CreatePathNoLineOfSight(startPos, startNode, endPos, endNode, ref outRoute);
 
-            return true;
-        }
+        //    return false;
+        //}
+
+
+        //// Cheaper still...
+        //public static bool CreatePathNoLineOfSight(Vector2 startPos, PathNode startNode, Vector2 endPos, PathNode endNode, ref PathRoute outRoute)
+        //{
+        //    // We have two nodes to form a path between.
+        //    //outRoute.SetPathInfo(startPos, endPos, startNode, endNode);
+
+        //    bool foundPath = ms_pathFinder.FindPath(startNode, endNode, ref outRoute);
+
+        //    return true;
+        //}
 
 
         // Use this wisely. Try to cache results for a frame etc. Its ok... but not amazingly quick.
-        public static bool GetClosestPathNode(Vector2 pos, Bin bin, int layer, ref PathNode outNode)
+        public static bool GetClosestPathNode(Vector2 pos, Bin bin, int nodeBinLayer, int boundaryBinLayer, ref PathNode outNode)
         {
             // Use bins to track down limited selection of nodes.
             BinLocation binLocation = new BinLocation();
@@ -131,7 +131,7 @@ namespace TestGame
                 BinQueryLocalityResults queryResults = bin.GetShaderQueryLocalityResults();
                 queryResults.SetLocalityInfo(pos);
                 queryResults.StartQuery();
-                bin.Query(ref ms_circularSearchRegions[i], posBinIndex, layer, queryResults);
+                bin.Query(ref ms_circularSearchRegions[i], posBinIndex, nodeBinLayer, queryResults);
                 queryResults.EndQuery();
 
 
@@ -141,7 +141,7 @@ namespace TestGame
 
                     PathNode pathNode = (PathNode)queryResults.BinItemQueryResults[closestBinItemIdx];
 
-                    if (CollisionHelpers.IsClearLineOfSight(pos, pathNode.GetPosition() - pos, bin))
+                    if (CollisionHelpers.IsClearLineOfSight(pos, pathNode.GetPosition() - pos, bin, boundaryBinLayer))
                     {
                         outNode = pathNode;
                         return true;

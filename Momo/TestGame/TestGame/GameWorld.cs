@@ -144,16 +144,22 @@ namespace TestGame
                 m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(1));
             }
 
-            BuildCollisionBoundaries();
 
             m_mapRenderer.Init(m_map, TestGame.Instance().GraphicsDevice, 16);
 
 
+            BuildCollisionBoundaries(0.0f, BinLayers.kBoundary);
+            Vector2[][] extrudeBoundariesSmallUnit = BuildCollisionBoundaries(12.0f, BinLayers.kBoundaryExtrudedSmallUnit);
+            Vector2[][] extrudeBoundariesLargeUnit = BuildCollisionBoundaries(25.0f, BinLayers.kBoundaryExtrudedLargeUnit);
+
+            Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(25.0f);
+            Vector2[][] extrudeBoundariesLargePath = ExtrudeCollisionBoundaries(45.0f);
+
             // Path stuff
             PathRegion[] regions = new PathRegion[1];
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
-            regions[0].GenerateNodesFromBoundaries(15.0f, 35, true, m_map.CollisionBoundaries);
-            regions[0].GenerateNodePaths(10.0f, m_bin, BinLayers.kBoundary);
+            regions[0].GenerateNodesFromBoundaries(24.0f, 30, true, extrudeBoundariesSmallPath);
+            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryExtrudedSmallUnit);
             m_pathIsland.SetRegions(regions);
 
             AddPathIslandToBin(m_pathIsland);
@@ -252,10 +258,10 @@ namespace TestGame
 
         public override void DebugRender()
         {
-            for (int i = 0; i < m_boundaries.Count; ++i)
-            {
-                m_boundaries[i].DebugRender(m_debugRenderer);
-            }
+            //for (int i = 0; i < m_boundaries.Count; ++i)
+            //{
+            //    m_boundaries[i].DebugRender(m_debugRenderer);
+            //}
 
             for (int i = 0; i < m_playerManager.GetPlayers().ActiveItemListCount; ++i)
             {
@@ -302,31 +308,47 @@ namespace TestGame
         }
 
 
-        private void BuildCollisionBoundaries()
+        private Vector2[][] BuildCollisionBoundaries(float extrudeAmount, int binLayer)
         {
             int numBoundries = m_map.CollisionBoundaries.Length;
-            //Momo.Maths.ExtendedMaths2D.ExtrudePointsAlongNormal
+            Vector2[][] extrudedCollisionBoundary = ExtrudeCollisionBoundaries(extrudeAmount);
 
-            for (int boundaryIdx = 0; boundaryIdx < numBoundries; ++boundaryIdx)
+
+            for (int i = 0; i < numBoundries; ++i)
             {
-                int numNodes = m_map.CollisionBoundaries[boundaryIdx].Length;
+                int numNodes = m_map.CollisionBoundaries[i].Length;
 
+                Vector2 lastPoint = extrudedCollisionBoundary[i][0];
 
-                Vector2 lastPoint = m_map.CollisionBoundaries[boundaryIdx][0];
-                                      
 
                 for (int nodeIdx = 1; nodeIdx < numNodes; ++nodeIdx)
                 {
-                    Vector2 pos = m_map.CollisionBoundaries[boundaryIdx][nodeIdx];
+                    Vector2 pos = extrudedCollisionBoundary[i][nodeIdx];
 
                     LinePrimitive2D lineStrip = new LinePrimitive2D(lastPoint, pos);
                     BoundaryEntity boundaryEntity = new BoundaryEntity(lineStrip);
-                    boundaryEntity.AddToBin(m_bin, BinLayers.kBoundary);
+                    boundaryEntity.AddToBin(m_bin, binLayer);
                     m_boundaries.Add(boundaryEntity);
 
                     lastPoint = pos;
                 }
             }
+
+            return extrudedCollisionBoundary;
+        }
+
+
+        private Vector2[][] ExtrudeCollisionBoundaries(float extrudeAmount)
+        {
+            int numBoundries = m_map.CollisionBoundaries.Length;
+            Vector2[][] extrudedCollisionBoundary = new Vector2[numBoundries][];
+
+            for (int i = 0; i < numBoundries; ++i)
+            {
+                Momo.Maths.ExtendedMaths2D.ExtrudePointsAlongNormal(m_map.CollisionBoundaries[i], m_map.CollisionBoundaries[i].Length, true, extrudeAmount, out extrudedCollisionBoundary[i]);
+            }
+
+            return extrudedCollisionBoundary;
         }
 
 

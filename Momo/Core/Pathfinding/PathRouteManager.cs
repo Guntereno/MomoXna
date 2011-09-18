@@ -83,7 +83,7 @@ namespace Momo.Core.Pathfinding
         public void Udpate(ref FrameTime frameTime)
         {
             m_debugAvgTimer += frameTime.Dt;
-            if (m_debugAvgTimer > 0.5f)
+            if (m_debugAvgTimer > 1.0f)
             {
                 m_debugAvgCacheMiss = m_debugAvgCacheMissAcc;
                 m_debugAvgCacheRequests = m_debugAvgCacheRequestsAcc;

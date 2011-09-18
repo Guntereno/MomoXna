@@ -56,6 +56,8 @@ namespace TestGame.Entities
             SetContactRadiusInfo(new RadiusInfo(13.0f + ((float)random.NextDouble() * 3.0f)));
             SetMass(GetContactRadiusInfo().Radius * 0.5f);
 
+            SetOccludingBinLayer(BinLayers.kBoundaryExtrudedSmallUnit);
+
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
             m_stateRandomWander = new RandomWanderState(this);
@@ -87,8 +89,8 @@ namespace TestGame.Entities
                 PathNode myPathNode = null;
                 PathNode goalPathNode = null;
 
-                PathFindingHelpers.GetClosestPathNode(GetPosition(), GetBin(), BinLayers.kPathNodes, ref myPathNode);
-                PathFindingHelpers.GetClosestPathNode(GetWorld().GetPlayerManager().GetAveragePosition(), GetBin(), BinLayers.kPathNodes, ref goalPathNode);
+                PathFindingHelpers.GetClosestPathNode(GetPosition(), GetBin(), BinLayers.kPathNodes, BinLayers.kBoundaryExtrudedSmallUnit, ref myPathNode);
+                PathFindingHelpers.GetClosestPathNode(GetWorld().GetPlayerManager().GetAveragePosition(), GetBin(), BinLayers.kPathNodes, BinLayers.kBoundaryExtrudedSmallUnit, ref goalPathNode);
 
                 //System.Diagnostics.Debug.Assert(myPathNode != null);
                 //System.Diagnostics.Debug.Assert(goalPathNode != null);
