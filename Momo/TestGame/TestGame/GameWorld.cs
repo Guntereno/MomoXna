@@ -155,7 +155,7 @@ namespace TestGame
 
             BuildCollisionBoundaries(13.0f, BinLayers.kBoundaryViewSmall);
             BuildCollisionBoundaries(18.0f, BinLayers.kBoundaryPathFindingSmall);
-            BuildCollisionBoundaries(smallPathNodeRadius - 1, BinLayers.kBoundaryNodeConnectiongSmall);
+            BuildCollisionBoundaries(smallPathNodeRadius - 1, BinLayers.kBoundaryNodeConnectingSmall);
 
             Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius);
    
@@ -164,7 +164,7 @@ namespace TestGame
             PathRegion[] regions = new PathRegion[1];
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
             regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 30, true, extrudeBoundariesSmallPath);
-            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryNodeConnectiongSmall);
+            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryNodeConnectingSmall);
             m_pathIsland.SetRegions(regions);
 
             AddPathIslandToBin(m_pathIsland);

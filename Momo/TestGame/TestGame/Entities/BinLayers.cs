@@ -13,9 +13,9 @@ namespace TestGame.Entities
 
         public const int kBoundaryViewSmall = 4;
         public const int kBoundaryPathFindingSmall = 5;
-        public const int kBoundaryNodeConnectiongSmall = 6;
+        public const int kBoundaryNodeConnectingSmall = 6;
 
 
-        public const int kLayerCount = kBoundaryNodeConnectiongSmall + 1;
+        public const int kLayerCount = kBoundaryNodeConnectingSmall + 1;
     }
 }
