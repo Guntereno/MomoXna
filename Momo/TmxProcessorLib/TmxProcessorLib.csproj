@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Content\Events.cs" />
     <Compile Include="Content\Layer.cs" />
     <Compile Include="Content\LightTemplate.cs" />
     <Compile Include="Content\Object.cs" />

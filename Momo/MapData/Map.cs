@@ -30,11 +30,14 @@ namespace MapData
         public Vector2 PlayAreaMin { get; private set; }
         public Vector2 PlayAreaMax { get; private set; }
 
-        public SpawnGroup[] Waves { get; private set; }
+        public SpawnGroup[] SpawnGroups { get; private set; }
 
         public MapData.Patch[][] Patches { get; private set; }
 
         public Trigger[] Triggers { get; private set; }
+
+        public TimerEventData[] TimerEvents { get; private set; }
+        public SpawnEventData[] SpawnEvents { get; private set; }
 
         public enum TriggerType
         {
@@ -80,10 +83,10 @@ namespace MapData
             PlayAreaMin = input.ReadVector2();
             PlayAreaMax = input.ReadVector2();
 
-            // Read the wave information
-            int numWaves = input.ReadInt32();
-            Waves = new SpawnGroup[numWaves];
-            for (int waveIdx = 0; waveIdx < numWaves; ++waveIdx)
+            // Read the spawn group information
+            int numSpawnGroups = input.ReadInt32();
+            SpawnGroups = new SpawnGroup[numSpawnGroups];
+            for (int spawnGroupIdx = 0; spawnGroupIdx < numSpawnGroups; ++spawnGroupIdx)
             {
                 int numEnemies = input.ReadInt32();
                 SpawnPoint[] enemies = new SpawnPoint[numEnemies];
@@ -95,7 +98,7 @@ namespace MapData
                     enemies[enemyIdx] = new SpawnPoint(name, pos);
                 }
 
-                Waves[waveIdx] = new SpawnGroup(enemies);
+                SpawnGroups[spawnGroupIdx] = new SpawnGroup(enemies);
             }
 
             // Read the patch information
@@ -113,30 +116,42 @@ namespace MapData
                 }
             }
 
-            // Read the trigger information
-            int numTriggers = input.ReadInt32();
-            Triggers = new Trigger[numTriggers];
-            for (int triggerIdx = 0; triggerIdx < numTriggers; ++triggerIdx)
+            // Read the event information
+            int numTimers = input.ReadInt32();
+            TimerEvents = new TimerEventData[numTimers];
+            for (int timerIdx = 0; timerIdx < numTimers; ++timerIdx)
             {
-                int type = input.ReadInt32();
                 string name = input.ReadString();
-                Vector2 pos = input.ReadObject<Vector2>();
-                float downTime = input.ReadSingle();
-                float triggerTime = input.ReadSingle();
+                string startTrigger = input.ReadString();
+                string endTrigger = input.ReadString();
 
-                switch (type)
-                {
-                    case (int)(TriggerType.KillCount):
-                        {
-                            int threshold = input.ReadInt32();
-                            Triggers[triggerIdx] = new KillCountTrigger(name, pos, downTime, triggerTime, threshold);
-                        }
-                        break;
+                float time = input.ReadSingle();
 
-                    default:
-                        Debug.Assert(false, "Invalid trigger type found!");
-                        break;
-                };
+                if (startTrigger == "")
+                    startTrigger = null;
+                if (endTrigger == "")
+                    endTrigger = null;
+
+                TimerEvents[timerIdx] = new TimerEventData(name, startTrigger, endTrigger, time);
+            }
+
+            int numSpawns = input.ReadInt32();
+            SpawnEvents = new SpawnEventData[numSpawns];
+            for (int spawnIdx = 0; spawnIdx < numSpawns; ++spawnIdx)
+            {
+                string name = input.ReadString();
+                string startTrigger = input.ReadString();
+                string endTrigger = input.ReadString();
+
+                int count = input.ReadInt32();
+                float delay = input.ReadSingle();
+
+                if (startTrigger == "")
+                    startTrigger = null;
+                if (endTrigger == "")
+                    endTrigger = null;
+
+                SpawnEvents[spawnIdx] = new SpawnEventData(name, startTrigger, endTrigger, count, delay);
             }
         }
     }

@@ -123,9 +123,9 @@ namespace TestGame
             m_playerManager.Load();
 
             // Create the enemies
-            MapData.SpawnGroup wave = m_map.Waves[0];
+            MapData.SpawnGroup spawnGroup = m_map.SpawnGroups[0];
             int enemyIdx = 0;
-            foreach (MapData.SpawnPoint enemy in wave.GetEnemies())
+            foreach (MapData.SpawnPoint enemy in spawnGroup.GetEnemies())
             {
                 //if (enemyIdx == 15)
                 {

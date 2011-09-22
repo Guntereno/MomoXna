@@ -25,7 +25,7 @@ namespace TestGame.Events
         public override void Begin(MapData.EventData data)
         {
             // For debugging simply use the first spawn group
-            m_spawnGroup = GetWorld().GetMap().Waves[0];
+            m_spawnGroup = GetWorld().GetMap().SpawnGroups[0];
 
             System.Diagnostics.Debug.Assert(GetData() != null);
             m_spawnData = (MapData.SpawnEventData)(GetData());

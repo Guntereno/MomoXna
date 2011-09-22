@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="64" height="128" tilewidth="32" tileheight="32">
  <properties>
+  <property name="events" value="events.xml"/>
   <property name="lightFactor" value="4"/>
  </properties>
  <tileset firstgid="1" name="livingquaters" tilewidth="32" tileheight="32">
@@ -549,7 +550,7 @@
   <object name="PlayerSpawn4" type="PlayerSpawn" x="1009" y="3857"/>
   <object name="PlayerSpawn3" type="PlayerSpawn" x="1134" y="3888"/>
  </objectgroup>
- <objectgroup name="Wave001" width="64" height="128" visible="0">
+ <objectgroup name="SpawnGroup001" width="64" height="128" visible="0">
   <object name="Enemy00" type="Enemy" x="830" y="3586"/>
   <object name="Enemy01" type="Enemy" x="896" y="3526"/>
   <object name="Enemy02" type="Enemy" x="1024" y="3534"/>

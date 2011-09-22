@@ -293,7 +293,7 @@
 	</objectgroup>
 	
  
-	<objectgroup height="64" name="Wave01" width="64">
+	<objectgroup height="64" name="SpawnGroup01" width="64">
 		
   
 		<object name="Enemy00" type="Enemy" x="946" y="362"/>

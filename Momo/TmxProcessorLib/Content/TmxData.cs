@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
+using System.IO;
+using System.Xml;
 
 
 namespace TmxProcessorLib.Content
@@ -45,11 +47,14 @@ namespace TmxProcessorLib.Content
         public Vector2 MinPlayableArea { get; private set; }
         public Vector2 MaxPlayableArea { get; private set; }
 
-        public List<ObjectGroup> Waves { get; private set; }
+        public List<ObjectGroup> SpawnGroups { get; private set; }
 
         public List<Object> Triggers { get; private set; }
 
         internal List<Patch>[] Patches { get; private set; }
+
+        internal List<TimerEvent> TimerEvents { get; private set; }
+        internal List<SpawnEvent> SpawnEvents { get; private set; }
 
         public TmxData(string fileName)
         {
@@ -134,6 +139,38 @@ namespace TmxProcessorLib.Content
                 objectGroup.ImportXmlNode(objectGroupNode, context);
                 ObjectGroupsDict[objectGroup.Name] = objectGroup;
             }
+
+            // Add dependancy to events xml if defined
+            TimerEvents = new List<TimerEvent>();
+            SpawnEvents = new List<SpawnEvent>();
+            if (Properties.Properties.ContainsKey("events"))
+            {
+                string eventsPath = Path.Combine(FileName.Remove(FileName.LastIndexOf('\\')), Properties.Properties["events"]);
+                context.AddDependency(eventsPath);
+
+                if (File.Exists(eventsPath))
+                {
+                    XmlDocument eventsXml = new XmlDocument();
+                    eventsXml.Load(eventsPath);
+
+                    XmlNodeList timerNodes = eventsXml.SelectNodes("/Events/Timer");
+                    foreach (XmlNode node in timerNodes)
+                    {
+                        TimerEvent timerEvent = new TimerEvent();
+                        timerEvent.ImportXmlNode(node, context);
+                        TimerEvents.Add(timerEvent);
+                    }
+
+                    XmlNodeList spawnNodes = eventsXml.SelectNodes("/Events/Spawn");
+                    foreach (XmlNode node in spawnNodes)
+                    {
+                        SpawnEvent spawnEvent = new SpawnEvent();
+                        spawnEvent.ImportXmlNode(node, context);
+                        SpawnEvents.Add(spawnEvent);
+                    }
+
+                }
+            }
         }
 
         public void Process(ContentProcessorContext context)
@@ -156,7 +193,7 @@ namespace TmxProcessorLib.Content
 
             CalculatePlayableArea();
 
-            BuildWaveList();
+            BuildSpawnGroupList();
 
             BuildPatches();
 
@@ -187,15 +224,15 @@ namespace TmxProcessorLib.Content
             }
         }
 
-        private void BuildWaveList()
+        private void BuildSpawnGroupList()
         {
-            Waves = new List<ObjectGroup>();
+            SpawnGroups = new List<ObjectGroup>();
 
             foreach (String objGroupName in ObjectGroupsDict.Keys)
             {
-                if(objGroupName.StartsWith("Wave"))
+                if (objGroupName.StartsWith("SpawnGroup"))
                 {
-                    Waves.Add(ObjectGroupsDict[objGroupName]);
+                    SpawnGroups.Add(ObjectGroupsDict[objGroupName]);
                 }
             }
         }
@@ -544,17 +581,17 @@ namespace TmxProcessorLib.Content
             output.Write(MinPlayableArea + Offset);
             output.Write(MaxPlayableArea + Offset);
 
-            // Output each wave
-            output.Write(Waves.Count);
-            foreach (ObjectGroup wave in Waves)
+            // Output each spawn group
+            output.Write(SpawnGroups.Count);
+            foreach (ObjectGroup spawnGroup in SpawnGroups)
             {
                 // Ouput enemies
                 {
                     // Build enemy list
                     List<Object> enemies = new List<Object>();
-                    foreach (string objName in wave.Objects.Keys)
+                    foreach (string objName in spawnGroup.Objects.Keys)
                     {
-                        Object obj = wave.Objects[objName];
+                        Object obj = spawnGroup.Objects[objName];
                         if (obj.Type == "Enemy")
                         {
                             enemies.Add(obj);
@@ -580,49 +617,21 @@ namespace TmxProcessorLib.Content
                 }
             }
 
-            // Output the triggers
-            output.Write(Triggers.Count);
-            foreach (Object triggerObject in Triggers)
+            // Output the events
+            // Timers
+            output.Write(TimerEvents.Count);
+            foreach( TimerEvent timerEvent in TimerEvents)
             {
-                TriggerType type = TriggerType.Invalid;
-                switch (triggerObject.Type)
-                {
-                    case "KillCount":
-                        type = TriggerType.KillCount;
-                        break;
-                }
-                output.Write((int)type);
-
-                output.Write(triggerObject.Name);
-                output.WriteObject<Vector2>(triggerObject.Position + Offset);
-
-                Dictionary<String, String> propertySheet = triggerObject.Properties.Properties;
-
-                float downTime = -1.0f;
-                if (propertySheet.ContainsKey("downTime"))
-                {
-                    downTime = float.Parse(propertySheet["downTime"]);
-                }
-                output.Write(downTime);
-
-                float triggerTime = -1.0f;
-                if (propertySheet.ContainsKey("triggerTime"))
-                {
-                    triggerTime = float.Parse(propertySheet["triggerTime"]);
-                }
-                output.Write(triggerTime);
-
-                switch (type)
-                {
-                    case TriggerType.KillCount:
-                    {
-                        string threshStr = propertySheet["threshold"];
-                        int thresh = int.Parse(threshStr);
-                        output.Write(thresh);
-                    }
-                    break;
-                }
+                timerEvent.Write(output);
             }
+
+            // Spawns
+            output.Write(SpawnEvents.Count);
+            foreach (SpawnEvent spawnEvent in SpawnEvents)
+            {
+                spawnEvent.Write(output);
+            }
+
         }
 
         internal Tile GetTile(uint tileIdx)
