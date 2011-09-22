@@ -50,15 +50,17 @@ namespace TmxProcessorLib.Content
 
     internal class SpawnEvent : Event
     {
-        public int m_spawnCount;
-        public float m_spawnDelay;
+        public int m_spawnCount = 0;
+        public float m_spawnDelay = 0.0f;
 
         internal override void ImportXmlNode(System.Xml.XmlNode node, Microsoft.Xna.Framework.Content.Pipeline.ContentImporterContext context)
         {
             base.ImportXmlNode(node, context);
 
             m_spawnCount = int.Parse(node.Attributes["count"].Value);
-            m_spawnDelay = float.Parse(node.Attributes["timer"].Value);
+
+            if (node.Attributes["timer"] != null)
+                m_spawnDelay = float.Parse(node.Attributes["timer"].Value);
         }
 
 

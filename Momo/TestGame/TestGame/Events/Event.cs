@@ -28,6 +28,7 @@ namespace TestGame.Events
         public virtual void Begin(MapData.EventData data)
         {
             m_data = data;
+            Console.Out.WriteLine("Event {0} began", m_data.GetName());
         }
 
         public abstract void Update(ref FrameTime frameTime);
@@ -52,6 +53,8 @@ namespace TestGame.Events
 
         public void DestroyItem()
         {
+            Console.Out.WriteLine("Event {0} ended", m_data.GetName());
+
             m_isFinished = true;
 
             if (m_data.GetEndTrigger() != null)

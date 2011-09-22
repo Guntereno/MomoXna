@@ -5,26 +5,29 @@ using System.Text;
 
 namespace Momo.Core.Triggers
 {
-    public class Trigger : INamed
+    public class Trigger /*: INamed*/
     {
         List<ITriggerListener> m_listeners = new List<ITriggerListener>();
 
-        const int kMaxNameLength = 32;
-        private MutableString m_name = new MutableString(kMaxNameLength);
-        private int m_nameHash = 0;
+        private string m_name;
 
         public Trigger(string name)
         {
-            m_name.Set(name);
+            m_name = name;
         }
 
         public void RegisterListener(ITriggerListener listener)
         {
-            m_listeners.Add(listener);
+            if (!m_listeners.Contains(listener))
+            {
+                m_listeners.Add(listener);
+            }
         }
 
         public void Activate()
         {
+            Console.Out.WriteLine("Trigger {0} activated", m_name);
+            
             for(int l=0; l<m_listeners.Count; ++l)
             {
                 m_listeners[l].OnReceiveTrigger(this);
@@ -34,26 +37,16 @@ namespace Momo.Core.Triggers
         // --------------------------------------------------------------------
         // -- INamed interface implementation
         // --------------------------------------------------------------------
-        public void SetName(MutableString name)
-        {
-            m_name.Set(name);
-            m_nameHash = Hashing.GenerateHash(m_name.GetCharacterArray(), m_name.GetLength());
-        }
+        // Not currently using the INamed as I've had some problems with the mutable string
 
-        public void SetName(string name)
-        {
-            m_name.Set(name);
-            m_nameHash = Hashing.GenerateHash(m_name.GetCharacterArray(), m_name.GetLength());
-        }
-
-        public MutableString GetName()
+        public string GetName()
         {
             return m_name;
         }
 
         public int GetNameHash()
         {
-            return m_nameHash;
+            return m_name.GetHashCode();
         }
 
     }

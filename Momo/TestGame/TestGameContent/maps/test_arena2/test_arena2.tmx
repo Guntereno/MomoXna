@@ -550,83 +550,14 @@
   <object name="PlayerSpawn4" type="PlayerSpawn" x="1009" y="3857"/>
   <object name="PlayerSpawn3" type="PlayerSpawn" x="1134" y="3888"/>
  </objectgroup>
- <objectgroup name="SpawnGroup001" width="64" height="128" visible="0">
-  <object name="Enemy00" type="Enemy" x="830" y="3586"/>
-  <object name="Enemy01" type="Enemy" x="896" y="3526"/>
-  <object name="Enemy02" type="Enemy" x="1024" y="3534"/>
-  <object name="Enemy03" type="Enemy" x="1202" y="3498"/>
-  <object name="Enemy04" type="Enemy" x="1260" y="3584"/>
-  <object name="Enemy05" type="Enemy" x="832" y="2992"/>
-  <object name="Enemy06" type="Enemy" x="932" y="2922"/>
-  <object name="Enemy07" type="Enemy" x="1134" y="2920"/>
-  <object name="Enemy08" type="Enemy" x="1226" y="3004"/>
-  <object name="Enemy09" type="Enemy" x="1262" y="3106"/>
-  <object name="Enemy10" type="Enemy" x="1560" y="3446"/>
-  <object name="Enemy11" type="Enemy" x="1658" y="3362"/>
-  <object name="Enemy12" type="Enemy" x="1822" y="3232"/>
-  <object name="Enemy13" type="Enemy" x="1786" y="3070"/>
-  <object name="Enemy14" type="Enemy" x="1646" y="3000"/>
-  <object name="Enemy15" type="Enemy" x="1538" y="2984"/>
-  <object name="Enemy16" type="Enemy" x="1610" y="3156"/>
-  <object name="Enemy17" type="Enemy" x="1522" y="3298"/>
-  <object name="Enemy18" type="Enemy" x="576" y="3140"/>
-  <object name="Enemy19" type="Enemy" x="568" y="3268"/>
-  <object name="Enemy20" type="Enemy" x="302" y="3242"/>
-  <object name="Enemy21" type="Enemy" x="434" y="3064"/>
-  <object name="Enemy22" type="Enemy" x="418" y="3244"/>
-  <object name="Enemy23" type="Enemy" x="338" y="3430"/>
-  <object name="Enemy24" type="Enemy" x="220" y="3108"/>
-  <object name="Enemy25" type="Enemy" x="182" y="2724"/>
-  <object name="Enemy26" type="Enemy" x="210" y="2196"/>
-  <object name="Enemy27" type="Enemy" x="168" y="2232"/>
-  <object name="Enemy28" type="Enemy" x="1864" y="2184"/>
-  <object name="Enemy29" type="Enemy" x="1902" y="2260"/>
-  <object name="Enemy30" type="Enemy" x="1820" y="2672"/>
-  <object name="Enemy31" type="Enemy" x="1500" y="2748"/>
-  <object name="Enemy32" type="Enemy" x="1768" y="2838"/>
-  <object name="Enemy33" type="Enemy" x="1644" y="2738"/>
-  <object name="Enemy34" type="Enemy" x="1392" y="2196"/>
-  <object name="Enemy35" type="Enemy" x="1526" y="2148"/>
-  <object name="Enemy36" type="Enemy" x="1538" y="2392"/>
-  <object name="Enemy37" type="Enemy" x="1516" y="2270"/>
-  <object name="Enemy38" type="Enemy" x="1350" y="2490"/>
-  <object name="Enemy39" type="Enemy" x="912" y="2364"/>
-  <object name="Enemy40" type="Enemy" x="998" y="2222"/>
-  <object name="Enemy41" type="Enemy" x="1156" y="2326"/>
-  <object name="Enemy42" type="Enemy" x="490" y="2346"/>
-  <object name="Enemy43" type="Enemy" x="600" y="2210"/>
-  <object name="Enemy44" type="Enemy" x="636" y="2470"/>
-  <object name="Enemy45" type="Enemy" x="512" y="1746"/>
-  <object name="Enemy46" type="Enemy" x="408" y="1566"/>
-  <object name="Enemy47" type="Enemy" x="542" y="1420"/>
-  <object name="Enemy48" type="Enemy" x="408" y="1192"/>
-  <object name="Enemy49" type="Enemy" x="1496" y="1170"/>
-  <object name="Enemy50" type="Enemy" x="1630" y="1286"/>
-  <object name="Enemy51" type="Enemy" x="1514" y="1446"/>
-  <object name="Enemy52" type="Enemy" x="1584" y="1580"/>
-  <object name="Enemy53" type="Enemy" x="1474" y="1862"/>
-  <object name="Enemy54" type="Enemy" x="1588" y="1898"/>
-  <object name="Enemy55" type="Enemy" x="1104" y="1662"/>
-  <object name="Enemy56" type="Enemy" x="942" y="1546"/>
-  <object name="Enemy57" type="Enemy" x="976" y="1318"/>
-  <object name="Enemy58" type="Enemy" x="1072" y="1402"/>
-  <object name="Enemy59" type="Enemy" x="1154" y="1354"/>
-  <object name="Enemy60" type="Enemy" x="1080" y="1174"/>
-  <object name="Enemy61" type="Enemy" x="920" y="1188"/>
-  <object name="Enemy62" type="Enemy" x="412" y="712"/>
-  <object name="Enemy63" type="Enemy" x="686" y="448"/>
-  <object name="Enemy64" type="Enemy" x="902" y="220"/>
-  <object name="Enemy65" type="Enemy" x="1126" y="196"/>
-  <object name="Enemy66" type="Enemy" x="1112" y="372"/>
-  <object name="Enemy67" type="Enemy" x="944" y="472"/>
-  <object name="Enemy68" type="Enemy" x="692" y="688"/>
-  <object name="Enemy69" type="Enemy" x="1078" y="682"/>
-  <object name="Enemy70" type="Enemy" x="1276" y="500"/>
-  <object name="Enemy71" type="Enemy" x="1516" y="512"/>
-  <object name="Enemy72" type="Enemy" x="1564" y="682"/>
-  <object name="Enemy73" type="Enemy" x="1386" y="716"/>
+ <objectgroup name="SpawnGroup001" width="64" height="128">
+  <object name="Enemy00" type="Enemy" x="912" y="3484"/>
+  <object name="Enemy01" type="Enemy" x="966" y="3397"/>
+  <object name="Enemy02" type="Enemy" x="1024" y="3497"/>
+  <object name="Enemy03" type="Enemy" x="1096" y="3401"/>
+  <object name="Enemy04" type="Enemy" x="1159" y="3496"/>
  </objectgroup>
- <objectgroup name="Triggers" width="64" height="128">
+ <objectgroup name="Triggers" width="64" height="128" visible="0">
   <object name="KillCountTrigger10" type="KillCount" x="1520" y="3573">
    <properties>
     <property name="threshold" value="10"/>

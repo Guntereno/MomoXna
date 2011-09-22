@@ -24,6 +24,8 @@ namespace TestGame.Events
 
         public override void Begin(MapData.EventData data)
         {
+            base.Begin(data);
+
             // For debugging simply use the first spawn group
             m_spawnGroup = GetWorld().GetMap().SpawnGroups[0];
 
@@ -32,8 +34,6 @@ namespace TestGame.Events
 
             m_spawnCounter = m_spawnData.GetSpawnCount();
             m_spawnTimer = 0.0f; // Ensure a spawn on the next frame
-
-            base.Begin(data);
         }
 
         public override void Update(ref FrameTime frameTime)

@@ -80,7 +80,7 @@ namespace Momo.Core.Pathfinding
         }
 
 
-        public void Udpate(ref FrameTime frameTime)
+        public void Update(ref FrameTime frameTime)
         {
             m_debugAvgTimer += frameTime.Dt;
             if (m_debugAvgTimer > 1.0f)

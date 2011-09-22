@@ -50,7 +50,8 @@ namespace TestGame
         private ProjectileManager m_projectileManager = null;
         private EnemyManager m_enemyManager = null;
         private OsdManager m_osdManager = null;
-        private TriggerManager m_triggerManager;
+        private TriggerManager m_triggerManager = null;
+        private EventManager m_eventManager = null;
 
         private TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
@@ -72,6 +73,7 @@ namespace TestGame
             m_osdManager = new OsdManager(this);
             m_playerManager = new PlayerManager(this, m_bin);
             m_triggerManager = new TriggerManager();
+            m_eventManager = new EventManager(this);
         }
 
         public OrthographicCameraNode GetCamera()               { return m_camera; }
@@ -81,6 +83,7 @@ namespace TestGame
         public ProjectileManager GetProjectileManager()         { return m_projectileManager; }
         public EnemyManager GetEnemyManager()                   { return m_enemyManager; }
         public TriggerManager GetTriggerManager()               { return m_triggerManager; }
+        public EventManager GetEventManager()                   { return m_eventManager; }
 
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
         public Random GetRandom()                               { return m_random; }
@@ -121,19 +124,6 @@ namespace TestGame
             // ----------------------------------------------------------------
 
             m_playerManager.Load();
-
-            // Create the enemies
-            MapData.SpawnGroup spawnGroup = m_map.SpawnGroups[0];
-            int enemyIdx = 0;
-            foreach (MapData.SpawnPoint enemy in spawnGroup.GetEnemies())
-            {
-                //if (enemyIdx == 15)
-                {
-                    AiEntity ai = m_enemyManager.Create(enemy.GetPosition());
-                }
-                ++enemyIdx;
-            }
-
             m_weaponManager.Load();
             m_projectileManager.Load();
 
@@ -173,12 +163,15 @@ namespace TestGame
 
             CollisionHelpers.Init();
             PathFindingHelpers.Init(400.0f, 3, m_bin);
+
+            // Load the events
+            m_eventManager.LoadEvents(m_map);
         }
 
 
         public override void Enter()
         {
-
+            m_triggerManager.GetTrigger(TriggerManager.kDefaultTriggerName).Activate();
         }
 
 
@@ -201,8 +194,9 @@ namespace TestGame
             m_projectileManager.Update(ref frameTime);
             m_osdManager.Update(ref frameTime);
 
-            m_pathRouteManager.Udpate(ref frameTime);
+            m_pathRouteManager.Update(ref frameTime);
 
+            m_eventManager.Update(ref frameTime);
 
             // Collision detection/resolution
             m_contactList.StartAddingContacts();

@@ -9,36 +9,34 @@ namespace TestGame.Systems
 {
     public class TriggerManager
     {
-        List<Trigger> m_triggers = new List<Trigger>();
+        Dictionary<string, Trigger> m_triggers = new Dictionary<string, Trigger>();
 
-        MutableString lookupBuffer = new MutableString(128);
+        MutableString m_lookupBuffer = new MutableString(128);
+
+        Trigger m_defaultTrigger = null;
+        public static readonly string kDefaultTriggerName = "worldStart";
+
 
         public TriggerManager()
         {
             // Default trigger called at start of stage
-            Trigger defaultTrigger = new Trigger("worldStart");
-            m_triggers.Add(defaultTrigger);
+            m_defaultTrigger = new Trigger(kDefaultTriggerName);
+            m_triggers[kDefaultTriggerName] = m_defaultTrigger;
         }
 
         public Trigger GetTrigger(string name)
         {
-            // TODO: This is horrible
-            lookupBuffer.Set(name);
-            return GetTrigger(lookupBuffer);
-        }
-
-        public Trigger GetTrigger(MutableString name)
-        {
-            int hash = name.GetHashCode();
-            for (int t = 0; t < m_triggers.Count; ++t)
+            if (m_triggers.ContainsKey(name))
             {
-                if (m_triggers[t].GetHashCode() == hash)
-                {
-                    return m_triggers[t];
-                }
+                return m_triggers[name];
             }
-
-            return null;
+            else
+            {
+                // If the trigger doesn't exist yet, create it
+                Trigger newTrigger = new Trigger(name);
+                m_triggers[name] = newTrigger;
+                return newTrigger;
+            }
         }
     }
 }

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Events>
 
-    <Spawn name="firstSpawn" count="8" timer="2.0"/>
+    <Timer name="firstSpawnTimer" time="5.0" endTrigger="firstSpawnTrigger"/>
+    <Spawn name="firstSpawn" startTrigger="firstSpawnTrigger" count="1"/>
 
-    <Timer name="secondSpawnTimer" time="20.0" endTrigger="secondSpawnTrigger"/>
-    <Spawn name="secondSpawn" startTrigger="secondSpawnTrigger" count="4" timer="0.0"/>
+    <Timer name="secondSpawnTimer" startTrigger="firstSpawnTrigger" time="10.0" endTrigger="secondSpawnTrigger"/>
+    <Spawn name="secondSpawn" startTrigger="secondSpawnTrigger" count="1"/>
 
-    <Timer name="thirdSpawnTimer" startTrigger="secondSpawnTrigger" time="30.0" endTrigger="thirdSpawnTrigger"/>
-    <Spawn name="thirdSpawn" startTrigger="thirdSpawnTrigger" count="8" timer="2.0"/>
+    <Timer name="thirdSpawnTimer" startTrigger="secondSpawnTrigger" time="10.0" endTrigger="thirdSpawnTrigger"/>
+    <Spawn name="thirdSpawn" startTrigger="thirdSpawnTrigger" count="1"/>
 
-    <Timer name="forthSpawnTimer" startTrigger="secondSpawnTrigger" time="40.0" endTrigger="forthSpawnTrigger"/>
-    <Spawn name="forthSpawn" startTrigger="forthSpawnTrigger" count="8" timer="2.0"/>
+    <Timer name="forthSpawnTimer" startTrigger="thirdSpawnTrigger" time="10.0" endTrigger="forthSpawnTrigger"/>
+    <Spawn name="forthSpawn" startTrigger="forthSpawnTrigger" count="1"/>
 
 </Events>
