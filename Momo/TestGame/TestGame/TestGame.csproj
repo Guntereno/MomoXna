@@ -124,6 +124,9 @@
     <Compile Include="Entities\PlayerEntity.cs" />
     <Compile Include="Entities\StaticGameEntity.cs" />
     <Compile Include="Entities\TriggerEntity.cs" />
+    <Compile Include="Events\Event.cs" />
+    <Compile Include="Events\SpawnEvent.cs" />
+    <Compile Include="Events\TimerEvent.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\InputWrapper.cs" />
@@ -133,9 +136,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Systems\CameraController.cs" />
     <Compile Include="Systems\EnemyManager.cs" />
+    <Compile Include="Systems\EventManager.cs" />
     <Compile Include="Systems\OsdManager.cs" />
     <Compile Include="Systems\PlayerManager.cs" />
     <Compile Include="Systems\TriggerController.cs" />
+    <Compile Include="Systems\TriggerManager.cs" />
     <Compile Include="TestGame.cs" />
     <Compile Include="TestWorldPathFinding.cs" />
     <Compile Include="Systems\ProjectileManager.cs" />

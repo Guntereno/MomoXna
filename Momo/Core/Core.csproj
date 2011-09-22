@@ -137,6 +137,8 @@
     <Compile Include="Spatial\BinQueryResults.cs" />
     <Compile Include="Spatial\BinRegionSelection.cs" />
     <Compile Include="Spatial\BinRegionUniform.cs" />
+    <Compile Include="Triggers\Trigger.cs" />
+    <Compile Include="Triggers\ITriggerListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Debug\Debug.csproj">
@@ -146,10 +148,6 @@
     <ProjectReference Include="..\Fonts\Fonts.csproj">
       <Project>{1D5C61AC-DF07-4521-BE2C-EFA9D33914F7}</Project>
       <Name>Fonts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MapData\MapData.csproj">
-      <Project>{2A9FB9C8-0CD3-42F3-9343-6DABE152E5C2}</Project>
-      <Name>MapData</Name>
     </ProjectReference>
     <ProjectReference Include="..\Maths\Maths.csproj">
       <Project>{5E15C6DB-4C37-4B3F-8D66-05DB0EDD8104}</Project>

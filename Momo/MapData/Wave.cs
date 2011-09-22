@@ -5,15 +5,15 @@ using System.Text;
 
 namespace MapData
 {
-    public struct Wave
+    public class SpawnGroup
     {
-        private Enemy[] m_enemies;
+        private SpawnPoint[] m_enemies;
 
-        public Wave(Enemy[] enemies)
+        public SpawnGroup(SpawnPoint[] enemies)
         {
             m_enemies = enemies;
         }
 
-        public Enemy[] GetEnemies() { return m_enemies; }
+        public SpawnPoint[] GetEnemies() { return m_enemies; }
     }
 }

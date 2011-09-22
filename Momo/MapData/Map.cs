@@ -30,7 +30,7 @@ namespace MapData
         public Vector2 PlayAreaMin { get; private set; }
         public Vector2 PlayAreaMax { get; private set; }
 
-        public Wave[] Waves { get; private set; }
+        public SpawnGroup[] Waves { get; private set; }
 
         public MapData.Patch[][] Patches { get; private set; }
 
@@ -82,20 +82,20 @@ namespace MapData
 
             // Read the wave information
             int numWaves = input.ReadInt32();
-            Waves = new Wave[numWaves];
+            Waves = new SpawnGroup[numWaves];
             for (int waveIdx = 0; waveIdx < numWaves; ++waveIdx)
             {
                 int numEnemies = input.ReadInt32();
-                Enemy[] enemies = new Enemy[numEnemies];
+                SpawnPoint[] enemies = new SpawnPoint[numEnemies];
                 for(int enemyIdx = 0; enemyIdx < numEnemies; ++enemyIdx)
                 {
                     string name = input.ReadString();
                     Vector2 pos = input.ReadObject<Vector2>();
 
-                    enemies[enemyIdx] = new Enemy(name, pos);
+                    enemies[enemyIdx] = new SpawnPoint(name, pos);
                 }
 
-                Waves[waveIdx] = new Wave(enemies);
+                Waves[waveIdx] = new SpawnGroup(enemies);
             }
 
             // Read the patch information

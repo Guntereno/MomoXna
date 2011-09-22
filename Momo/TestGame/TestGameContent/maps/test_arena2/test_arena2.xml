@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Level>
+
+    <Events>
+
+        <Spawn name="firstSpawn" count="8" timer="2.0"/>
+
+        <Timer name="secondSpawnTimer" time="20.0" endTrigger="secondSpawnTrigger"/>
+        <Spawn name="secondSpawn" startOn="secondSpawnTrigger" count="4" timer="0.0"/>
+
+        <Timer name="thirdSpawnTimer" startOn="secondSpawnTrigger" time="30.0" endTrigger="thirdSpawnTrigger"/>
+        <Spawn name="thirdSpawn" startOn="thirdSpawnTrigger" count="8" timer="2.0"/>
+
+        <Timer name="forthSpawnTimer" startOn="secondSpawnTrigger" time="40.0" endTrigger="forthSpawnTrigger"/>
+        <Spawn name="forthSpawn" startOn="forthSpawnTrigger" count="8" timer="2.0"/>
+
+    </Events>
+
+</Level>

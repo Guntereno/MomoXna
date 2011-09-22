@@ -2,9 +2,9 @@
 
 namespace MapData
 {
-    public class Enemy: Object
+    public class SpawnPoint: Object
     {
-        public Enemy(string name, Vector2 position): base(name, position)
+        public SpawnPoint(string name, Vector2 position): base(name, position)
         {
         }
     }

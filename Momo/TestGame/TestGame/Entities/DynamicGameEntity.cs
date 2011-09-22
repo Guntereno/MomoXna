@@ -15,7 +15,6 @@ namespace TestGame.Entities
     public class DynamicGameEntity : DynamicEntity, INamed, IPoolItem
     {
         const int kMaxNameLength = 32;
-
         private MutableString m_name = new MutableString(kMaxNameLength);
         private int m_nameHash = 0;
 

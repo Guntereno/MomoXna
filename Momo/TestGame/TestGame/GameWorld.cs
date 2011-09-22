@@ -24,40 +24,40 @@ namespace TestGame
     {
         public static World WorldCreator() { return new GameWorld(); }
 
-        OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
-        CameraController m_cameraController = null;
+        private OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
+        private CameraController m_cameraController = null;
 
-        Bin m_bin = new Bin();
-        ContactList m_contactList = new ContactList(4000);
-        ContactResolver m_contactResolver = new ContactResolver();
+        private Bin m_bin = new Bin();
+        private ContactList m_contactList = new ContactList(4000);
+        private ContactResolver m_contactResolver = new ContactResolver();
 
-        MapData.Map m_map = null;
-        MapData.Renderer m_mapRenderer = new MapData.Renderer();
+        private MapData.Map m_map = null;
+        private MapData.Renderer m_mapRenderer = new MapData.Renderer();
 
-        List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
+        private List<BoundaryEntity> m_boundaries = new List<BoundaryEntity>(2000);
 
-        Random m_random = new Random();
+        private Random m_random = new Random();
 
         // Debug
-        DebugRenderer m_debugRenderer = new DebugRenderer();
-        Font m_debugFont = null;
-        TextStyle m_debugTextStyle = null;
-        TextBatchPrinter m_debugTextPrinter = new TextBatchPrinter();
+        private DebugRenderer m_debugRenderer = new DebugRenderer();
+        private Font m_debugFont = null;
+        private TextStyle m_debugTextStyle = null;
+        private TextBatchPrinter m_debugTextPrinter = new TextBatchPrinter();
 
 
-        PlayerManager m_playerManager = null;
-        WeaponManager m_weaponManager = null;
-        ProjectileManager m_projectileManager = null;
-        EnemyManager m_enemyManager = null;
-        OsdManager m_osdManager = null;
-        TriggerController m_triggerController = null;
+        private PlayerManager m_playerManager = null;
+        private WeaponManager m_weaponManager = null;
+        private ProjectileManager m_projectileManager = null;
+        private EnemyManager m_enemyManager = null;
+        private OsdManager m_osdManager = null;
+        private TriggerManager m_triggerManager;
 
-        TextBatchPrinter m_textPrinter = new TextBatchPrinter();
+        private TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
-        PathIsland m_pathIsland = new PathIsland();
-        PathRouteManager m_pathRouteManager = new PathRouteManager();
+        private PathIsland m_pathIsland = new PathIsland();
+        private PathRouteManager m_pathRouteManager = new PathRouteManager();
 
-        int m_updateTokenOffset = 0;
+        private int m_updateTokenOffset = 0;
 
 
         // --------------------------------------------------------------------
@@ -71,7 +71,7 @@ namespace TestGame
             m_enemyManager = new EnemyManager(this, m_bin);
             m_osdManager = new OsdManager(this);
             m_playerManager = new PlayerManager(this, m_bin);
-            m_triggerController = new TriggerController(this);
+            m_triggerManager = new TriggerManager();
         }
 
         public OrthographicCameraNode GetCamera()               { return m_camera; }
@@ -80,6 +80,7 @@ namespace TestGame
         public WeaponManager GetWeaponManager()                 { return m_weaponManager; }
         public ProjectileManager GetProjectileManager()         { return m_projectileManager; }
         public EnemyManager GetEnemyManager()                   { return m_enemyManager; }
+        public TriggerManager GetTriggerManager()               { return m_triggerManager; }
 
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
         public Random GetRandom()                               { return m_random; }
@@ -112,8 +113,6 @@ namespace TestGame
 
             m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/test_arena2/test_arena2");
 
-
-            //m_bin.Init(50, 50, new Vector2(2500.0f, 2500.0f), 4, 6000, 1000, 1000);
             m_bin.Init(50, 50, m_map.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 6000, 1000, 1000);
 
 
@@ -124,9 +123,9 @@ namespace TestGame
             m_playerManager.Load();
 
             // Create the enemies
-            MapData.Wave wave = m_map.Waves[0];
+            MapData.SpawnGroup wave = m_map.Waves[0];
             int enemyIdx = 0;
-            foreach (MapData.Enemy enemy in wave.GetEnemies())
+            foreach (MapData.SpawnPoint enemy in wave.GetEnemies())
             {
                 //if (enemyIdx == 15)
                 {
@@ -172,9 +171,6 @@ namespace TestGame
 
             m_pathRouteManager.Init(1000, 100, 200);
 
-
-            m_triggerController.LoadFromMapData(m_map);
-
             CollisionHelpers.Init();
             PathFindingHelpers.Init(400.0f, 3, m_bin);
         }
@@ -196,8 +192,6 @@ namespace TestGame
 
             Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper(0);
 
-
-            // --- Update ---
             m_playerManager.Update(ref frameTime);
 
             // Move the camera follow position
@@ -206,8 +200,6 @@ namespace TestGame
             m_enemyManager.Update(ref frameTime, m_updateTokenOffset);
             m_projectileManager.Update(ref frameTime);
             m_osdManager.Update(ref frameTime);
-
-            m_triggerController.Update(ref frameTime);
 
             m_pathRouteManager.Udpate(ref frameTime);
 
@@ -278,7 +270,7 @@ namespace TestGame
             m_projectileManager.DebugRender(m_debugRenderer);
             m_osdManager.DebugRender(m_debugRenderer);
 
-            m_triggerController.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
+            //m_triggerController.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
             m_cameraController.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
 
             //m_pathIsland.DebugRender(m_debugRenderer);
