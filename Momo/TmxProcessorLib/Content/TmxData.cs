@@ -55,6 +55,7 @@ namespace TmxProcessorLib.Content
 
         internal List<TimerEvent> TimerEvents { get; private set; }
         internal List<SpawnEvent> SpawnEvents { get; private set; }
+        internal List<TriggerCounterEvent> TriggerCounterEvents { get; private set; }
 
         public TmxData(string fileName)
         {
@@ -143,6 +144,7 @@ namespace TmxProcessorLib.Content
             // Add dependancy to events xml if defined
             TimerEvents = new List<TimerEvent>();
             SpawnEvents = new List<SpawnEvent>();
+            TriggerCounterEvents = new List<TriggerCounterEvent>();
             if (Properties.Properties.ContainsKey("events"))
             {
                 string eventsPath = Path.Combine(FileName.Remove(FileName.LastIndexOf('\\')), Properties.Properties["events"]);
@@ -169,6 +171,13 @@ namespace TmxProcessorLib.Content
                         SpawnEvents.Add(spawnEvent);
                     }
 
+                    XmlNodeList triggerCounterNodes = eventsXml.SelectNodes("/Events/TriggerCounter");
+                    foreach (XmlNode node in triggerCounterNodes)
+                    {
+                        TriggerCounterEvent triggerCounterEvent = new TriggerCounterEvent();
+                        triggerCounterEvent.ImportXmlNode(node, context);
+                        TriggerCounterEvents.Add(triggerCounterEvent);
+                    }
                 }
             }
         }
@@ -631,6 +640,12 @@ namespace TmxProcessorLib.Content
                 spawnEvent.Write(output);
             }
 
+            // Trigger Counters
+            output.Write(TriggerCounterEvents.Count);
+            foreach (TriggerCounterEvent triggerCounterEvent in TriggerCounterEvents)
+            {
+                triggerCounterEvent.Write(output);
+            }
         }
 
         internal Tile GetTile(uint tileIdx)

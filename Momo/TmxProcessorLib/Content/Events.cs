@@ -71,4 +71,25 @@ namespace TmxProcessorLib.Content
             output.Write(m_spawnDelay);
         }
     }
+
+    internal class TriggerCounterEvent : Event
+    {
+        public string m_countTrigger = "";
+        public int m_count = 0;
+
+        internal override void ImportXmlNode(System.Xml.XmlNode node, Microsoft.Xna.Framework.Content.Pipeline.ContentImporterContext context)
+        {
+            base.ImportXmlNode(node, context);
+
+            m_countTrigger = node.Attributes["countTrigger"].Value;
+            m_count = int.Parse(node.Attributes["count"].Value);
+        }
+
+        internal override void Write(Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler.ContentWriter output)
+        {
+            base.Write(output);
+            output.Write(m_countTrigger);
+            output.Write(m_count);
+        }
+    }
 }

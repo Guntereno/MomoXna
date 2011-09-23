@@ -2,8 +2,10 @@
 <Events>
 
     <Timer name="firstSpawnTimer" time="5.0" endTrigger="firstSpawnTrigger"/>
-    <Spawn name="firstSpawn" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnComplete" count="3" timer="1.0"/>
-
+    <Spawn name="firstSpawn1" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnCount" count="3" timer="1.0"/>
+    <Spawn name="firstSpawn2" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnCount" count="3" timer="1.0"/>
+    <TriggerCounter name="firstSpawnGroup" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnComplete" countTrigger="firstSpawnCount" count="2"/>
+    
     <Timer name="secondSpawnTimer" startTrigger="firstSpawnComplete" time="3.0" endTrigger="secondSpawnTrigger"/>
     
     <Spawn name="secondSpawn" startTrigger="secondSpawnTrigger" endTrigger="secondSpawnComplete" count="4" timer="0.7"/>

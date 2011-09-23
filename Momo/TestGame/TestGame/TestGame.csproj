@@ -126,6 +126,7 @@
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\SpawnEvent.cs" />
     <Compile Include="Events\TimerEvent.cs" />
+    <Compile Include="Events\TriggerCounterEvent.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\InputWrapper.cs" />

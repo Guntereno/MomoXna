@@ -98,7 +98,7 @@
     <Compile Include="SpawnEventData.cs" />
     <Compile Include="Tileset.cs" />
     <Compile Include="TimerEventData.cs" />
-    <Compile Include="Trigger.cs" />
+    <Compile Include="TriggerCounterEventData.cs" />
     <Compile Include="Wave.cs" />
   </ItemGroup>
   <ItemGroup>

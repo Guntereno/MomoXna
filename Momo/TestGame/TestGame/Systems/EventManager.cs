@@ -15,6 +15,7 @@ namespace TestGame.Systems
 
         private TimerEvent[] m_timerEvents = null;
         private SpawnEvent[] m_spawnEvents = null;
+        private TriggerCounterEvent[] m_triggerCounterEvents = null;
 
         Dictionary<Trigger, List<Event>> m_triggerDict = new Dictionary<Trigger, List<Event>>();
 
@@ -38,6 +39,12 @@ namespace TestGame.Systems
                 m_spawnEvents[i] = new SpawnEvent(m_world, map.SpawnEvents[i]);
                 RegisterEventData(m_spawnEvents[i]);
             }
+            m_triggerCounterEvents = new TriggerCounterEvent[map.TriggerCounterEvents.Length];
+            for (int i = 0; i < map.TriggerCounterEvents.Length; ++i)
+            {
+                m_triggerCounterEvents[i] = new TriggerCounterEvent(m_world, map.TriggerCounterEvents[i]);
+                RegisterEventData(m_triggerCounterEvents[i]);
+            }
         }
 
         public void Update(ref FrameTime frameTime)
@@ -50,6 +57,10 @@ namespace TestGame.Systems
             for (int i = 0; i < m_spawnEvents.Length; ++i)
             {
                 m_spawnEvents[i].Update(ref frameTime);
+            }
+            for (int i = 0; i < m_triggerCounterEvents.Length; ++i)
+            {
+                m_triggerCounterEvents[i].Update(ref frameTime);
             }
         }
 

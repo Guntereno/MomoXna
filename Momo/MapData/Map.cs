@@ -35,10 +35,9 @@ namespace MapData
 
         public MapData.Patch[][] Patches { get; private set; }
 
-        public Trigger[] Triggers { get; private set; }
-
         public TimerEventData[] TimerEvents { get; private set; }
         public SpawnEventData[] SpawnEvents { get; private set; }
+        public TriggerCounterEventData[] TriggerCounterEvents { get; private set; }
 
         public enum TriggerType
         {
@@ -155,6 +154,23 @@ namespace MapData
                     endTrigger = null;
 
                 SpawnEvents[spawnIdx] = new SpawnEventData(name, startTrigger, endTrigger, count, delay);
+            }
+
+            int numTriggerCounters = input.ReadInt32();
+            TriggerCounterEvents = new TriggerCounterEventData[numTriggerCounters];
+            for (int triggerCounterIdx = 0; triggerCounterIdx < numTriggerCounters; ++triggerCounterIdx)
+            {
+                string name = input.ReadString();
+                string startTrigger = input.ReadString();
+                string endTrigger = input.ReadString();
+
+                string countTrigger = input.ReadString();
+                int count = input.ReadInt32();
+
+                if (startTrigger == "")
+                    startTrigger = null;
+
+                TriggerCounterEvents[triggerCounterIdx] = new TriggerCounterEventData(name, startTrigger, endTrigger, countTrigger, count);
             }
         }
     }

@@ -7,6 +7,11 @@ namespace Momo.Core.Triggers
 {
     public class Trigger /*: INamed*/
     {
+        public static void Log(string format, params object[] arg)
+        {
+            //Console.Out.WriteLine(format, arg);
+        }
+
         List<ITriggerListener> m_listeners = new List<ITriggerListener>();
 
         private string m_name;
@@ -26,7 +31,7 @@ namespace Momo.Core.Triggers
 
         public void Activate()
         {
-            //Console.Out.WriteLine("Trigger {0} activated", m_name);
+            Log("Trigger {0} activated", m_name);
             
             for(int l=0; l<m_listeners.Count; ++l)
             {

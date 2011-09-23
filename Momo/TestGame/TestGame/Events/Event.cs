@@ -29,7 +29,7 @@ namespace TestGame.Events
 
         public virtual void Begin()
         {
-            //Console.Out.WriteLine("Event {0} began", m_data.GetName());
+            Trigger.Log("Event {0} began", m_data.GetName());
             m_isActive = true;
         }
 
@@ -47,7 +47,7 @@ namespace TestGame.Events
 
         protected virtual void End()
         {
-            //Console.Out.WriteLine("Event {0} ended", m_data.GetName());
+            Trigger.Log("Event {0} ended", m_data.GetName());
 
             m_isActive = false;
 
