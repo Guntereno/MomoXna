@@ -19,7 +19,7 @@ namespace TestGame.Events
         {
             m_triggerCounterData = triggerCounterEventData;
 
-            m_countTrigger = world.GetTriggerManager().GetTrigger(m_triggerCounterData.GetCountTrigger());
+            m_countTrigger = world.GetTriggerManager().RegisterTrigger(m_triggerCounterData.GetCountTrigger());
             m_countTrigger.RegisterListener(this);
         }
 

@@ -30,6 +30,16 @@ namespace TestGame.Systems
             {
                 return m_triggers[name];
             }
+
+            return null;
+        }
+
+        public Trigger RegisterTrigger(string name)
+        {
+            if (m_triggers.ContainsKey(name))
+            {
+                return m_triggers[name];
+            }
             else
             {
                 // If the trigger doesn't exist yet, create it

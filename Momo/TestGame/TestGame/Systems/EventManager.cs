@@ -70,11 +70,11 @@ namespace TestGame.Systems
             Trigger trigger = null;
             if (eventInst.GetData().GetStartTrigger() != null)
             {
-                trigger = m_world.GetTriggerManager().GetTrigger(eventInst.GetData().GetStartTrigger());
+                trigger = m_world.GetTriggerManager().RegisterTrigger(eventInst.GetData().GetStartTrigger());
             }
             else
             {
-                trigger = m_world.GetTriggerManager().GetTrigger(TriggerManager.kDefaultTriggerName);
+                trigger = m_world.GetTriggerManager().RegisterTrigger(TriggerManager.kDefaultTriggerName);
             }
 
             RegisterTriggerEvent(trigger, eventInst);

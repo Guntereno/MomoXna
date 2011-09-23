@@ -30,7 +30,7 @@ namespace TestGame.Events
             : base(world, data)
         {
             string deathTriggerName = data.GetName() + "Kill";
-            m_killTrigger = world.GetTriggerManager().GetTrigger(deathTriggerName);
+            m_killTrigger = world.GetTriggerManager().RegisterTrigger(deathTriggerName);
             m_killTrigger.RegisterListener(this);
         }
 
