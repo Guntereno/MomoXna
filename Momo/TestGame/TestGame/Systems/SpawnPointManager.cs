@@ -33,6 +33,9 @@ namespace TestGame.Systems
             const float kMaxDistance = 500.0f;
             const float kMaxDistanceSq = kMaxDistance * kMaxDistance;
 
+            const float kRadiusPadding = 100.0f;
+            const float kRadiusPaddingSq = kRadiusPadding * kRadiusPadding;
+
             float closestValidDistance = float.MaxValue;
             int closestValidIndex = -1;
             for (int i = 0; i < m_spawnGroups.Length; ++i)
@@ -42,7 +45,7 @@ namespace TestGame.Systems
 
                 float sqDist = m_spawnGroups[i].GetSquaredDistanceToPlayers();
 
-                if ((sqDist < m_spawnGroups[i].GetData().GetRadius().RadiusSq) || (sqDist > kMaxDistanceSq))
+                if ((sqDist < (m_spawnGroups[i].GetData().GetRadius().RadiusSq + kRadiusPaddingSq)) || (sqDist > kMaxDistanceSq))
                     continue;
 
                 if (sqDist < closestValidDistance)
