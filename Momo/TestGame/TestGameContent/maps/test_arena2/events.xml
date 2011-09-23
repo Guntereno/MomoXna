@@ -50,9 +50,25 @@
     <Timer name="fifthSpawn3Timer" startTrigger="fifthSpawnTrigger" time="3.7" endTrigger="fifthSpawn3Trigger"/>
     <Spawn name="fifthSpawn3" startTrigger="fifthSpawn3Trigger" endTrigger="fifthSpawnCount" count="8" timer="2.0"/>
     <Timer name="fifthSpawn4Timer" startTrigger="fifthSpawnTrigger" time="5.7" endTrigger="fifthSpawn4Trigger"/>
-    <Spawn name="fifthSpawn4" startTrigger="fifthSpawn3Trigger" endTrigger="fifthSpawnCount" count="8" timer="2.1"/>
+    <Spawn name="fifthSpawn4" startTrigger="fifthSpawn4Trigger" endTrigger="fifthSpawnCount" count="8" timer="2.1"/>
     
     <TriggerCounter name="fifthSpawnGroup" startTrigger="fifthSpawnTrigger" endTrigger="fifthSpawnComplete" countTrigger="fifthSpawnCount" count="4"/>
     
+    <!-- Sixth wave -->
+    <Timer name="sixthSpawnTimer" startTrigger="fifthSpawnComplete" time="8.0" endTrigger="sixthSpawnTrigger"/>
+    
+    <Spawn name="sixthSpawn1" startTrigger="sixthSpawnTrigger" endTrigger="sixthSpawnCount" count="8" timer="1.0"/>
+    <Timer name="sixthSpawn2Timer" startTrigger="sixthSpawnTrigger" time="1.0" endTrigger="sixthSpawn2Trigger"/>
+    <Spawn name="sixthSpawn2" startTrigger="sixthSpawn2Trigger" endTrigger="sixthSpawnCount" count="8" timer="1.0"/>
+    <Timer name="sixthSpawn3Timer" startTrigger="sixthSpawnTrigger" time="1.5" endTrigger="sixthSpawn3Trigger"/>
+    <Spawn name="sixthSpawn3" startTrigger="sixthSpawn3Trigger" endTrigger="sixthSpawnCount" count="6" timer="0.0"/>
+    <Timer name="sixthSpawn4Timer" startTrigger="sixthSpawnTrigger" time="2.0" endTrigger="sixthSpawn4Trigger"/>
+    <Spawn name="sixthSpawn4" startTrigger="sixthSpawn3Trigger" endTrigger="sixthSpawnCount" count="8" timer="1.0"/>
+    <Timer name="sixthSpawn5Timer" startTrigger="sixthSpawnTrigger" time="2.5" endTrigger="sixthSpawn5Trigger"/>
+    <Spawn name="sixthSpawn5" startTrigger="sixthSpawn5Trigger" endTrigger="sixthSpawnCount" count="6" timer="0"/>
+    <Timer name="sixthSpawn6Timer" startTrigger="sixthSpawnTrigger" time="3.0" endTrigger="sixthSpawn6Trigger"/>
+    <Spawn name="sixthSpawn6" startTrigger="sixthSpawn6Trigger" endTrigger="sixthSpawnCount" count="8" timer="1.0"/>
+    
+    <TriggerCounter name="sixthSpawnGroup" startTrigger="sixthSpawnTrigger" endTrigger="sixthSpawnComplete" countTrigger="sixthSpawnCount" count="6"/>
     
 </Events>
