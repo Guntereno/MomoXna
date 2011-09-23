@@ -14,6 +14,6 @@ namespace MapData
             m_enemies = enemies;
         }
 
-        public SpawnPoint[] GetEnemies() { return m_enemies; }
+        public SpawnPoint[] GetSpawnPoints() { return m_enemies; }
     }
 }
