@@ -119,11 +119,10 @@
     <Compile Include="CollisionHelpers.cs" />
     <Compile Include="Entities\DynamicGameEntity.cs" />
     <Compile Include="Entities\EntitySensoryData.cs" />
-    <Compile Include="Entities\KillCountTriggerEntity.cs" />
     <Compile Include="Entities\PathTracker.cs" />
     <Compile Include="Entities\PlayerEntity.cs" />
+    <Compile Include="Entities\SpawnGroup.cs" />
     <Compile Include="Entities\StaticGameEntity.cs" />
-    <Compile Include="Entities\TriggerEntity.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\SpawnEvent.cs" />
     <Compile Include="Events\TimerEvent.cs" />
@@ -139,6 +138,7 @@
     <Compile Include="Systems\EventManager.cs" />
     <Compile Include="Systems\OsdManager.cs" />
     <Compile Include="Systems\PlayerManager.cs" />
+    <Compile Include="Systems\SpawnPointManager.cs" />
     <Compile Include="Systems\TriggerController.cs" />
     <Compile Include="Systems\TriggerManager.cs" />
     <Compile Include="TestGame.cs" />

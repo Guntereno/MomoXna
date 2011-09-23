@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Media;
 namespace MapData
 {
     using VFormat = VertexPositionTexture;
+    using Momo.Core;
 
     public class Map
     {
@@ -30,7 +31,7 @@ namespace MapData
         public Vector2 PlayAreaMin { get; private set; }
         public Vector2 PlayAreaMax { get; private set; }
 
-        public SpawnGroup[] SpawnGroups { get; private set; }
+        public SpawnGroupData[] SpawnGroups { get; private set; }
 
         public MapData.Patch[][] Patches { get; private set; }
 
@@ -85,9 +86,13 @@ namespace MapData
 
             // Read the spawn group information
             int numSpawnGroups = input.ReadInt32();
-            SpawnGroups = new SpawnGroup[numSpawnGroups];
+            SpawnGroups = new SpawnGroupData[numSpawnGroups];
             for (int spawnGroupIdx = 0; spawnGroupIdx < numSpawnGroups; ++spawnGroupIdx)
             {
+                Vector2 center = input.ReadObject<Vector2>();
+                float boundingRadius = input.ReadSingle();
+                RadiusInfo radiusInfo = new RadiusInfo(boundingRadius);
+
                 int numEnemies = input.ReadInt32();
                 SpawnPoint[] spawnPoints = new SpawnPoint[numEnemies];
                 for(int enemyIdx = 0; enemyIdx < numEnemies; ++enemyIdx)
@@ -96,7 +101,7 @@ namespace MapData
                     spawnPoints[enemyIdx] = new SpawnPoint(pos);
                 }
 
-                SpawnGroups[spawnGroupIdx] = new SpawnGroup(spawnPoints);
+                SpawnGroups[spawnGroupIdx] = new SpawnGroupData(spawnPoints, center, radiusInfo);
             }
 
             // Read the patch information

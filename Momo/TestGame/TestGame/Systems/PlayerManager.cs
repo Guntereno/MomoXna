@@ -20,6 +20,9 @@ namespace TestGame.Systems
 
         private Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers);
 
+        Vector2 m_cachedAveragePosition = new Vector2();
+        bool m_averageCached = false;
+
         public PlayerManager(GameWorld world, Bin bin)
         {
             m_world = world;
@@ -67,21 +70,27 @@ namespace TestGame.Systems
                 m_players[i].Update(ref frameTime, i);
                 m_players[i].UpdateBinEntry();
             }
+            m_averageCached = false;
         }
 
-        // TODO: Cache this
         public Vector2 GetAveragePosition()
         {
-            // Calculate the center point of the players
-            Vector2 averagePosition = Vector2.Zero;
-            int playerCount = m_players.ActiveItemListCount;
-            for (int i = 0; i < playerCount; ++i)
+            if (!m_averageCached)
             {
-                averagePosition += m_players[i].GetPosition();
-            }
-            averagePosition *= 1.0f / playerCount;
+                // Calculate the center point of the players
+                m_cachedAveragePosition = Vector2.Zero;
+                int playerCount = m_players.ActiveItemListCount;
+                for (int i = 0; i < playerCount; ++i)
+                {
+                    m_cachedAveragePosition += m_players[i].GetPosition();
+                }
+                m_cachedAveragePosition *= 1.0f / playerCount;
 
-            return averagePosition;
+                m_averageCached = true;
+
+            }
+
+            return m_cachedAveragePosition;
         }
 
         public Pool<PlayerEntity> GetPlayers() { return m_players; }

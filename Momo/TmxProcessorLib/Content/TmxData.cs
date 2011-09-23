@@ -47,7 +47,7 @@ namespace TmxProcessorLib.Content
         public Vector2 MinPlayableArea { get; private set; }
         public Vector2 MaxPlayableArea { get; private set; }
 
-        public List<ObjectGroup> SpawnGroups { get; private set; }
+        public List<SpawnGroup> SpawnGroups { get; private set; }
 
         public List<Object> Triggers { get; private set; }
 
@@ -226,13 +226,13 @@ namespace TmxProcessorLib.Content
 
         private void BuildSpawnGroupList()
         {
-            SpawnGroups = new List<ObjectGroup>();
+            SpawnGroups = new List<SpawnGroup>();
 
             foreach (String objGroupName in ObjectGroupsDict.Keys)
             {
                 if (objGroupName.StartsWith("SpawnGroup"))
                 {
-                    SpawnGroups.Add(ObjectGroupsDict[objGroupName]);
+                    SpawnGroups.Add(new SpawnGroup(ObjectGroupsDict[objGroupName]));
                 }
             }
         }
@@ -583,15 +583,18 @@ namespace TmxProcessorLib.Content
 
             // Output each spawn group
             output.Write(SpawnGroups.Count);
-            foreach (ObjectGroup spawnGroup in SpawnGroups)
+            foreach (SpawnGroup spawnGroup in SpawnGroups)
             {
+                output.WriteObject<Vector2>(spawnGroup.GetCenter() + Offset);
+                output.Write(spawnGroup.GetBoundingRadius());
+
                 // Ouput enemies
                 {
                     // Build enemy list
                     List<Object> spawnObjects = new List<Object>();
-                    foreach (string objName in spawnGroup.Objects.Keys)
+                    foreach (string objName in spawnGroup.GetSpawnObjects().Objects.Keys)
                     {
-                        Object obj = spawnGroup.Objects[objName];
+                        Object obj = spawnGroup.GetSpawnObjects().Objects[objName];
                         spawnObjects.Add(obj);
                     }
 

@@ -14,7 +14,7 @@ namespace TestGame.Events
     {
         public static readonly int kMaxSpawns = 8;
 
-        private MapData.SpawnGroup m_spawnGroup = null;
+        private SpawnGroup m_spawnGroup = null;
 
         private MapData.SpawnEventData m_spawnData = null;
 
@@ -39,11 +39,6 @@ namespace TestGame.Events
         {
             base.Begin();
 
-            // For debugging simply use the first spawn group
-            m_spawnGroup = GetWorld().GetMap().SpawnGroups[0];
-
-            GenerateSpawnOrder();
-
             System.Diagnostics.Debug.Assert(GetData() != null);
             m_spawnData = (MapData.SpawnEventData)(GetData());
 
@@ -67,6 +62,21 @@ namespace TestGame.Events
             if (!GetIsActive())
                 return;
 
+            if (m_spawnGroup == null)
+            {
+                // For debugging simply use the first spawn group
+                m_spawnGroup = GetWorld().GetSpawnPointManager().GetNextSpawnGroup();
+
+                if (m_spawnGroup == null)
+                {
+                    // Try again next frame
+                    return;
+                }
+
+                m_spawnGroup.TakeOwnership(this);
+                GenerateSpawnOrder();
+            }
+
             if (m_spawnCounter > 0)
             {
                 m_spawnTimer -= frameTime.Dt;
@@ -78,13 +88,14 @@ namespace TestGame.Events
             }
             else if (m_killCount >= m_spawnData.GetSpawnCount())
             {
+                m_spawnGroup.RelinquishOwnership(this);
                 End();
             }
         }
 
         private void SpawnEnemy()
         {
-            MapData.SpawnPoint[] spawnPoints = m_spawnGroup.GetSpawnPoints();
+            MapData.SpawnPoint[] spawnPoints = m_spawnGroup.GetData().GetSpawnPoints();
             int pointIdx = m_spawnOrder[m_spawnData.GetSpawnCount() - m_spawnCounter];
             MapData.SpawnPoint spawnPoint = spawnPoints[pointIdx];
 

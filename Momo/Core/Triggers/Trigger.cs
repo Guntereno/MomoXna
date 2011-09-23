@@ -26,7 +26,7 @@ namespace Momo.Core.Triggers
 
         public void Activate()
         {
-            Console.Out.WriteLine("Trigger {0} activated", m_name);
+            //Console.Out.WriteLine("Trigger {0} activated", m_name);
             
             for(int l=0; l<m_listeners.Count; ++l)
             {

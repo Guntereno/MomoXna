@@ -52,6 +52,7 @@ namespace TestGame
         private OsdManager m_osdManager = null;
         private TriggerManager m_triggerManager = null;
         private EventManager m_eventManager = null;
+        private SpawnPointManager m_spawnGroupManager = null;
 
         private TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
@@ -60,6 +61,7 @@ namespace TestGame
 
         private int m_updateTokenOffset = 0;
 
+        float m_elapsedTime = 0.0f;
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -74,7 +76,10 @@ namespace TestGame
             m_playerManager = new PlayerManager(this, m_bin);
             m_triggerManager = new TriggerManager();
             m_eventManager = new EventManager(this);
+            m_spawnGroupManager = new SpawnPointManager(this);
         }
+
+
 
         public OrthographicCameraNode GetCamera()               { return m_camera; }
 
@@ -84,6 +89,7 @@ namespace TestGame
         public EnemyManager GetEnemyManager()                   { return m_enemyManager; }
         public TriggerManager GetTriggerManager()               { return m_triggerManager; }
         public EventManager GetEventManager()                   { return m_eventManager; }
+        public SpawnPointManager GetSpawnPointManager()         { return m_spawnGroupManager; }
 
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
         public Random GetRandom()                               { return m_random; }
@@ -92,6 +98,8 @@ namespace TestGame
         public MapData.Map GetMap()                             { return m_map; }
 
         public PathRouteManager GetPathRouteManager()           { return m_pathRouteManager; }
+
+        public float GetElapsedTime()                           { return m_elapsedTime; }
 
 
 
@@ -164,8 +172,8 @@ namespace TestGame
             CollisionHelpers.Init();
             PathFindingHelpers.Init(400.0f, 3, m_bin);
 
-            // Load the events
             m_eventManager.LoadEvents(m_map);
+            m_spawnGroupManager.LoadSpawnGroups(m_map);
         }
 
 
@@ -177,6 +185,8 @@ namespace TestGame
 
         public override void Update(float dt)
         {
+            m_elapsedTime += dt;
+
             // More time related numbers will eventually be added to the FrameTime structure. Its worth passing
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
@@ -289,6 +299,8 @@ namespace TestGame
             //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
             //m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange, Color.DarkRed);
 
+
+            //m_spawnGroupManager.DebugRender(m_debugRenderer);
 
             m_debugRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
             m_debugRenderer.Clear();
