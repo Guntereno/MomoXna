@@ -2,15 +2,16 @@
 <Events>
 
     <Timer name="firstSpawnTimer" time="5.0" endTrigger="firstSpawnTrigger"/>
-    <Spawn name="firstSpawn" startTrigger="firstSpawnTrigger" count="3" timer="1.0"/>
+    <Spawn name="firstSpawn" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnComplete" count="3" timer="1.0"/>
 
-    <Timer name="secondSpawnTimer" startTrigger="firstSpawnTrigger" time="10.0" endTrigger="secondSpawnTrigger"/>
-    <Spawn name="secondSpawn" startTrigger="secondSpawnTrigger" count="4" timer="0.7"/>
+    <Timer name="secondSpawnTimer" startTrigger="firstSpawnComplete" time="3.0" endTrigger="secondSpawnTrigger"/>
+    
+    <Spawn name="secondSpawn" startTrigger="secondSpawnTrigger" endTrigger="secondSpawnComplete" count="4" timer="0.7"/>
 
-    <Timer name="thirdSpawnTimer" startTrigger="secondSpawnTrigger" time="10.0" endTrigger="thirdSpawnTrigger"/>
-    <Spawn name="thirdSpawn" startTrigger="thirdSpawnTrigger" count="6" timer="0.5"/>
+    <Timer name="thirdSpawnTimer" startTrigger="secondSpawnComplete" time="3.0" endTrigger="thirdSpawnTrigger"/>
+    <Spawn name="thirdSpawn" startTrigger="thirdSpawnTrigger" endTrigger="thirdSpawnComplete" count="6" timer="0.5"/>
 
-    <Timer name="forthSpawnTimer" startTrigger="thirdSpawnTrigger" time="10.0" endTrigger="forthSpawnTrigger"/>
+    <Timer name="forthSpawnTimer" startTrigger="thirdSpawnComplete" time="3.0" endTrigger="forthSpawnTrigger"/>
     <Spawn name="forthSpawn" startTrigger="forthSpawnTrigger" count="8" timer="0.3"/>
 
 </Events>

@@ -5,25 +5,33 @@ using System.Text;
 using Momo.Core;
 using TestGame.Systems;
 using Momo.Maths;
+using Momo.Core.Triggers;
+using TestGame.Entities;
 
 namespace TestGame.Events
 {
-    public class SpawnEvent : Event
+    public class SpawnEvent : Event, ITriggerListener
     {
         public static readonly int kMaxSpawns = 8;
 
-        MapData.SpawnGroup m_spawnGroup = null;
+        private MapData.SpawnGroup m_spawnGroup = null;
 
-        MapData.SpawnEventData m_spawnData = null;
+        private MapData.SpawnEventData m_spawnData = null;
 
-        int m_spawnCounter = 0;
-        float m_spawnTimer = 0.0f;
+        private int m_spawnCounter = 0;
+        private float m_spawnTimer = 0.0f;
 
-        int[] m_spawnOrder = new int[kMaxSpawns];
+        private int[] m_spawnOrder = new int[kMaxSpawns];
+
+        private Trigger m_killTrigger = null;
+        private int m_killCount = 0;
 
         public SpawnEvent(GameWorld world, MapData.EventData data)
             : base(world, data)
         {
+            string deathTriggerName = data.GetName() + "Kill";
+            m_killTrigger = world.GetTriggerManager().GetTrigger(deathTriggerName);
+            m_killTrigger.RegisterListener(this);
         }
 
 
@@ -59,16 +67,18 @@ namespace TestGame.Events
             if (!GetIsActive())
                 return;
 
-            m_spawnTimer -= frameTime.Dt;
-            if (m_spawnTimer <= 0.0f)
+            if (m_spawnCounter > 0)
             {
-                SpawnEnemy();
-                m_spawnTimer = m_spawnData.GetSpawnDelay();
-
-                if (--m_spawnCounter <= 0)
+                m_spawnTimer -= frameTime.Dt;
+                if (m_spawnTimer <= 0.0f)
                 {
-                    End();
+                    SpawnEnemy();
+                    m_spawnTimer = m_spawnData.GetSpawnDelay();
                 }
+            }
+            else if (m_killCount >= m_spawnData.GetSpawnCount())
+            {
+                End();
             }
         }
 
@@ -79,7 +89,21 @@ namespace TestGame.Events
             MapData.SpawnPoint spawnPoint = spawnPoints[pointIdx];
 
             EnemyManager enemyManager = GetWorld().GetEnemyManager();
-            enemyManager.Create(spawnPoint.GetPosition());
+            AiEntity enemy = enemyManager.Create(spawnPoint.GetPosition());
+            enemy.SetDeathTrigger(m_killTrigger);
+
+            --m_spawnCounter;
+        }
+
+        // --------------------------------------------------------------------
+        // -- ITriggerListener interface implementation
+        // --------------------------------------------------------------------
+        public void OnReceiveTrigger(Trigger trigger)
+        {
+            if (trigger == m_killTrigger)
+            {
+                ++m_killCount;
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ using Momo.Debug;
 
 using TestGame.Objects;
 using TestGame.Ai.States;
+using Momo.Core.Triggers;
 
 
 
@@ -31,7 +32,7 @@ namespace TestGame.Entities
         private StunnedState m_stateStunned = null;
         private DyingState m_stateDying = null;
 
-
+        private Trigger m_deathTrigger = null;
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -65,6 +66,10 @@ namespace TestGame.Entities
             m_stateStunned.Init(m_stateRandomWander);
         }
 
+        public void SetDeathTrigger(Trigger trigger)
+        {
+            m_deathTrigger = trigger;
+        }
 
         public void Init()
         {
@@ -212,6 +217,12 @@ namespace TestGame.Entities
 
         internal void Kill()
         {
+            if (m_deathTrigger != null)
+            {
+                m_deathTrigger.Activate();
+                m_deathTrigger = null;
+            }
+
             GetWorld().GetEnemyManager().IncrementKillCount();
             DestroyItem();
         }
