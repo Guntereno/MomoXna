@@ -89,16 +89,14 @@ namespace MapData
             for (int spawnGroupIdx = 0; spawnGroupIdx < numSpawnGroups; ++spawnGroupIdx)
             {
                 int numEnemies = input.ReadInt32();
-                SpawnPoint[] enemies = new SpawnPoint[numEnemies];
+                SpawnPoint[] spawnPoints = new SpawnPoint[numEnemies];
                 for(int enemyIdx = 0; enemyIdx < numEnemies; ++enemyIdx)
                 {
-                    string name = input.ReadString();
                     Vector2 pos = input.ReadObject<Vector2>();
-
-                    enemies[enemyIdx] = new SpawnPoint(name, pos);
+                    spawnPoints[enemyIdx] = new SpawnPoint(pos);
                 }
 
-                SpawnGroups[spawnGroupIdx] = new SpawnGroup(enemies);
+                SpawnGroups[spawnGroupIdx] = new SpawnGroup(spawnPoints);
             }
 
             // Read the patch information

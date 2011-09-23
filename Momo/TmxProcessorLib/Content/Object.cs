@@ -22,13 +22,12 @@ namespace TmxProcessorLib.Content
 
         public void ImportXmlNode(System.Xml.XmlNode objectNode, ContentImporterContext context)
         {
-            Debug.Assert(objectNode.Attributes["name"] != null);
-            Name = objectNode.Attributes["name"].Value;
-
             context.Logger.LogMessage("OBJECT: {0}", Name);
 
-            Debug.Assert(objectNode.Attributes["type"] != null);
-            Type = objectNode.Attributes["type"].Value;
+            if (objectNode.Attributes["type"] != null)
+                Type = objectNode.Attributes["type"].Value;
+            else
+                Type = null;
 
             Microsoft.Xna.Framework.Vector2 position = new Microsoft.Xna.Framework.Vector2();
             

@@ -551,13 +551,16 @@
   <object name="PlayerSpawn3" type="PlayerSpawn" x="1134" y="3888"/>
  </objectgroup>
  <objectgroup name="SpawnGroup001" width="64" height="128">
-  <object name="Enemy00" type="Enemy" x="912" y="3484"/>
-  <object name="Enemy01" type="Enemy" x="966" y="3397"/>
-  <object name="Enemy02" type="Enemy" x="1024" y="3497"/>
-  <object name="Enemy03" type="Enemy" x="1096" y="3401"/>
-  <object name="Enemy04" type="Enemy" x="1159" y="3496"/>
+  <object x="912" y="3484"/>
+  <object x="966" y="3397"/>
+  <object x="1024" y="3497"/>
+  <object x="1096" y="3401"/>
+  <object x="1159" y="3496"/>
+  <object x="1025" y="3334"/>
+  <object x="1173" y="3423"/>
+  <object x="878" y="3389"/>
  </objectgroup>
- <objectgroup name="Triggers" width="64" height="128" visible="0">
+ <objectgroup name="Triggers" width="64" height="128">
   <object name="KillCountTrigger10" type="KillCount" x="1520" y="3573">
    <properties>
     <property name="threshold" value="10"/>
@@ -575,5 +578,155 @@
     <property name="triggerTime" value="5.0"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup name="SpawnGroup002" width="64" height="128">
+  <object x="832" y="3861"/>
+  <object x="941" y="3778"/>
+  <object x="991" y="3889"/>
+  <object x="1110" y="3761"/>
+  <object x="1167" y="3890"/>
+  <object x="1262" y="3832"/>
+  <object x="1293" y="3935"/>
+  <object x="760" y="3950"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup003" width="64" height="128">
+  <object x="1878" y="3430"/>
+  <object x="1878" y="3305"/>
+  <object x="1753" y="3438"/>
+  <object x="1777" y="3327"/>
+  <object x="1603" y="3426"/>
+  <object x="1705" y="3263"/>
+  <object x="1883" y="3218"/>
+  <object x="1681" y="3360"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup004" width="64" height="128">
+  <object x="144" y="3423"/>
+  <object x="141" y="3313"/>
+  <object x="221" y="3371"/>
+  <object x="356" y="3443"/>
+  <object x="309" y="3327"/>
+  <object x="220" y="3242"/>
+  <object x="165" y="3129"/>
+  <object x="399" y="3270"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup005" width="64" height="128">
+  <object x="884" y="3094"/>
+  <object x="960" y="3023"/>
+  <object x="879" y="2941"/>
+  <object x="1003" y="2913"/>
+  <object x="1079" y="3016"/>
+  <object x="1183" y="2928"/>
+  <object x="1206" y="3112"/>
+  <object x="1031" y="3103"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup006" width="64" height="128">
+  <object x="1504" y="2831"/>
+  <object x="1536" y="2749"/>
+  <object x="1492" y="2649"/>
+  <object x="1608" y="2652"/>
+  <object x="1598" y="2745"/>
+  <object x="1654" y="2853"/>
+  <object x="1700" y="2739"/>
+  <object x="1714" y="2647"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup007" width="64" height="128">
+  <object x="645" y="2836"/>
+  <object x="636" y="2673"/>
+  <object x="558" y="2810"/>
+  <object x="553" y="2720"/>
+  <object x="471" y="2652"/>
+  <object x="462" y="2761"/>
+  <object x="362" y="2830"/>
+  <object x="379" y="2681"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup008" width="64" height="128">
+  <object x="402" y="2168"/>
+  <object x="530" y="2117"/>
+  <object x="684" y="2174"/>
+  <object x="595" y="2247"/>
+  <object x="450" y="2234"/>
+  <object x="520" y="2309"/>
+  <object x="671" y="2300"/>
+  <object x="502" y="2442"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup009" width="64" height="128">
+  <object x="1374" y="2247"/>
+  <object x="1458" y="2176"/>
+  <object x="1595" y="2186"/>
+  <object x="1580" y="2304"/>
+  <object x="1484" y="2288"/>
+  <object x="1417" y="2427"/>
+  <object x="1510" y="2408"/>
+  <object x="1594" y="2489"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup010" width="64" height="128">
+  <object x="959" y="2215"/>
+  <object x="1106" y="2154"/>
+  <object x="1052" y="2319"/>
+  <object x="934" y="2379"/>
+  <object x="1036" y="2437"/>
+  <object x="1168" y="2353"/>
+  <object x="960" y="2531"/>
+  <object x="1138" y="2495"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup011" width="64" height="128">
+  <object x="409" y="1554"/>
+  <object x="469" y="1437"/>
+  <object x="575" y="1549"/>
+  <object x="485" y="1706"/>
+  <object x="410" y="1849"/>
+  <object x="558" y="1972"/>
+  <object x="583" y="1806"/>
+  <object x="582" y="1347"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup012" width="64" height="128">
+  <object x="1590" y="1872"/>
+  <object x="1502" y="1530"/>
+  <object x="1597" y="1384"/>
+  <object x="1597" y="1198"/>
+  <object x="1509" y="1742"/>
+  <object x="1610" y="1627"/>
+  <object x="1501" y="1290"/>
+  <object x="1614" y="1510"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup013" width="64" height="128">
+  <object x="916" y="1341"/>
+  <object x="1032" y="1232"/>
+  <object x="1133" y="1325"/>
+  <object x="1048" y="1413"/>
+  <object x="949" y="1491"/>
+  <object x="1135" y="1515"/>
+  <object x="1031" y="1611"/>
+  <object x="918" y="1616"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup014" width="64" height="128">
+  <object x="1330" y="505"/>
+  <object x="1565" y="495"/>
+  <object x="1452" y="545"/>
+  <object x="1353" y="668"/>
+  <object x="1564" y="611"/>
+  <object x="1479" y="732"/>
+  <object x="1308" y="776"/>
+  <object x="1218" y="600"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup015" width="64" height="128">
+  <object x="924" y="167"/>
+  <object x="1130" y="148"/>
+  <object x="1031" y="202"/>
+  <object x="913" y="287"/>
+  <object x="1174" y="260"/>
+  <object x="1048" y="336"/>
+  <object x="834" y="225"/>
+  <object x="823" y="337"/>
+ </objectgroup>
+ <objectgroup name="SpawnGroup016" width="64" height="128">
+  <object x="377" y="784"/>
+  <object x="382" y="654"/>
+  <object x="493" y="559"/>
+  <object x="460" y="712"/>
+  <object x="560" y="788"/>
+  <object x="550" y="648"/>
+  <object x="597" y="468"/>
+  <object x="645" y="696"/>
  </objectgroup>
 </map>

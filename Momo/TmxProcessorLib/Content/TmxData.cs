@@ -588,20 +588,16 @@ namespace TmxProcessorLib.Content
                 // Ouput enemies
                 {
                     // Build enemy list
-                    List<Object> enemies = new List<Object>();
+                    List<Object> spawnObjects = new List<Object>();
                     foreach (string objName in spawnGroup.Objects.Keys)
                     {
                         Object obj = spawnGroup.Objects[objName];
-                        if (obj.Type == "Enemy")
-                        {
-                            enemies.Add(obj);
-                        }
+                        spawnObjects.Add(obj);
                     }
 
-                    output.Write(enemies.Count);
-                    foreach (Object enemy in enemies)
+                    output.Write(spawnObjects.Count);
+                    foreach (Object enemy in spawnObjects)
                     {
-                        output.Write(enemy.Name);
                         output.WriteObject<Vector2>(enemy.Position + Offset);
                     }
                 }
