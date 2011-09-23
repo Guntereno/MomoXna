@@ -16,6 +16,7 @@ namespace TestGame.Events
 
         MapData.EventData m_data = null;
 
+        Trigger m_endTrigger = null;
 
 
 
@@ -23,6 +24,11 @@ namespace TestGame.Events
         {
             m_world = world;
             m_data = data;
+
+            if (m_data.GetEndTrigger() != null)
+            {
+                m_endTrigger = world.GetTriggerManager().RegisterTrigger(m_data.GetEndTrigger());
+            }
         }
 
         public bool GetIsActive() { return m_isActive; }
@@ -51,10 +57,9 @@ namespace TestGame.Events
 
             m_isActive = false;
 
-            if (m_data.GetEndTrigger() != null)
+            if (m_endTrigger != null)
             {
-                Trigger onFinish = m_world.GetTriggerManager().GetTrigger(m_data.GetEndTrigger());
-                onFinish.Activate();
+                m_endTrigger.Activate();
             }
         }
     }

@@ -1,19 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Events>
 
+    <!-- First wave -->
     <Timer name="firstSpawnTimer" time="5.0" endTrigger="firstSpawnTrigger"/>
-    <Spawn name="firstSpawn1" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnCount" count="3" timer="1.0"/>
-    <Spawn name="firstSpawn2" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnCount" count="3" timer="1.0"/>
+    <Spawn name="firstSpawn1" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnCount" count="3" timer="2.0"/>
+    <Timer name="firstSpawn2Timer" startTrigger="firstSpawnTrigger" time="1.0" endTrigger="firstSpawn2Trigger"/>
+    <Spawn name="firstSpawn2" startTrigger="firstSpawn2Trigger" endTrigger="firstSpawnCount" count="3" timer="2.0"/>
     <TriggerCounter name="firstSpawnGroup" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnComplete" countTrigger="firstSpawnCount" count="2"/>
     
-    <Timer name="secondSpawnTimer" startTrigger="firstSpawnComplete" time="3.0" endTrigger="secondSpawnTrigger"/>
     
-    <Spawn name="secondSpawn" startTrigger="secondSpawnTrigger" endTrigger="secondSpawnComplete" count="4" timer="0.7"/>
+    <!-- Second wave -->    
+    <Timer name="secondSpawnTimer" startTrigger="firstSpawnComplete" time="5.0" endTrigger="secondSpawnTrigger"/>
+    
+    <Spawn name="secondSpawn1" startTrigger="secondSpawnTrigger" endTrigger="secondSpawnCount" count="3" timer="2.0"/>
+    <Timer name="secondSpawn2Timer" startTrigger="secondSpawnTrigger" time="1.0" endTrigger="secondSpawn2Trigger"/>
+    <Spawn name="secondSpawn2" startTrigger="secondSpawn2Trigger" endTrigger="secondSpawnCount" count="3" timer="2.0"/>
+    
+    <TriggerCounter name="secondSpawnGroup" startTrigger="secondSpawnTrigger" endTrigger="secondSpawnComplete" countTrigger="secondSpawnCount" count="2"/>
+    
+    <!-- Third wave -->
+    <Timer name="thirdSpawnTimer" startTrigger="secondSpawnComplete" time="5.0" endTrigger="thirdSpawnTrigger"/>
+    
+    <Spawn name="thirdSpawn1" startTrigger="thirdSpawnTrigger" endTrigger="thirdSpawnCount" count="4" timer="0.7"/>
+    <Timer name="thirdSpawn2Timer" startTrigger="thirdSpawnTrigger" time="1.5" endTrigger="thirdSpawn2Trigger"/>
+    <Spawn name="thirdSpawn2" startTrigger="thirdSpawn2Trigger" endTrigger="thirdSpawnCount" count="4" timer="0.7"/>
+    <Timer name="thirdSpawn3Timer" startTrigger="thirdSpawnTrigger" time="3.0" endTrigger="thirdSpawn3Trigger"/>
+    <Spawn name="thirdSpawn3" startTrigger="thirdSpawn3Trigger" endTrigger="thirdSpawnCount" count="4" timer="0.7"/>
+        
+    <TriggerCounter name="thirdSpawnGroup" startTrigger="thirdSpawnTrigger" endTrigger="thirdSpawnComplete" countTrigger="thirdSpawnCount" count="3"/>
 
-    <Timer name="thirdSpawnTimer" startTrigger="secondSpawnComplete" time="3.0" endTrigger="thirdSpawnTrigger"/>
-    <Spawn name="thirdSpawn" startTrigger="thirdSpawnTrigger" endTrigger="thirdSpawnComplete" count="6" timer="0.5"/>
+    
+    <!-- Forth wave -->
+    <Timer name="forthSpawnTimer" startTrigger="thirdSpawnComplete" time="6.0" endTrigger="forthSpawnTrigger"/>
+    
+    <Spawn name="forthSpawn1" startTrigger="forthSpawnTrigger" endTrigger="forthSpawnCount" count="6" timer="1.5"/>
+    <Timer name="forthSpawn2Timer" startTrigger="forthSpawnTrigger" time="1.5" endTrigger="forthSpawn2Trigger"/>
+    <Spawn name="forthSpawn2" startTrigger="forthSpawn2Trigger" endTrigger="forthSpawnCount" count="6" timer="1.6"/>
+    <Timer name="forthSpawn3Timer" startTrigger="forthSpawnTrigger" time="3.0" endTrigger="forthSpawn3Trigger"/>
+    <Spawn name="forthSpawn3" startTrigger="forthSpawn3Trigger" endTrigger="forthSpawnCount" count="6" timer="1.7"/>
+    
+    <TriggerCounter name="forthSpawnGroup" startTrigger="forthSpawnTrigger" endTrigger="forthSpawnComplete" countTrigger="forthSpawnCount" count="3"/>
 
-    <Timer name="forthSpawnTimer" startTrigger="thirdSpawnComplete" time="3.0" endTrigger="forthSpawnTrigger"/>
-    <Spawn name="forthSpawn" startTrigger="forthSpawnTrigger" count="8" timer="0.3"/>
-
+    <!-- Fifth wave -->
+    <Timer name="fifthSpawnTimer" startTrigger="forthSpawnComplete" time="8.0" endTrigger="fifthSpawnTrigger"/>
+    
+    <Spawn name="fifthSpawn1" startTrigger="fifthSpawnTrigger" endTrigger="fifthSpawnCount" count="8" timer="1.8"/>
+    <Timer name="fifthSpawn2Timer" startTrigger="fifthSpawnTrigger" time="1.8" endTrigger="fifthSpawn2Trigger"/>
+    <Spawn name="fifthSpawn2" startTrigger="fifthSpawn2Trigger" endTrigger="fifthSpawnCount" count="8" timer="1.9"/>
+    <Timer name="fifthSpawn3Timer" startTrigger="fifthSpawnTrigger" time="3.7" endTrigger="fifthSpawn3Trigger"/>
+    <Spawn name="fifthSpawn3" startTrigger="fifthSpawn3Trigger" endTrigger="fifthSpawnCount" count="8" timer="2.0"/>
+    <Timer name="fifthSpawn4Timer" startTrigger="fifthSpawnTrigger" time="5.7" endTrigger="fifthSpawn4Trigger"/>
+    <Spawn name="fifthSpawn4" startTrigger="fifthSpawn3Trigger" endTrigger="fifthSpawnCount" count="8" timer="2.1"/>
+    
+    <TriggerCounter name="fifthSpawnGroup" startTrigger="fifthSpawnTrigger" endTrigger="fifthSpawnComplete" countTrigger="fifthSpawnCount" count="4"/>
+    
+    
 </Events>

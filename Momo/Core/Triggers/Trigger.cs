@@ -9,7 +9,7 @@ namespace Momo.Core.Triggers
     {
         public static void Log(string format, params object[] arg)
         {
-            //Console.Out.WriteLine(format, arg);
+            Console.Out.WriteLine(format, arg);
         }
 
         List<ITriggerListener> m_listeners = new List<ITriggerListener>();
