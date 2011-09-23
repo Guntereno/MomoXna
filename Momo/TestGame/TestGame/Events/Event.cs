@@ -8,27 +8,29 @@ using Momo.Core;
 
 namespace TestGame.Events
 {
-    public abstract class Event : IPoolItem
+    public abstract class Event
     {
         private GameWorld m_world;
 
-        private bool m_isFinished = true;
+        private bool m_isActive = false;
 
         MapData.EventData m_data = null;
 
 
 
 
-        public Event(GameWorld world)
+        public Event(GameWorld world, MapData.EventData data)
         {
             m_world = world;
+            m_data = data;
         }
 
+        public bool GetIsActive() { return m_isActive; }
 
-        public virtual void Begin(MapData.EventData data)
+        public virtual void Begin()
         {
-            m_data = data;
             Console.Out.WriteLine("Event {0} began", m_data.GetName());
+            m_isActive = true;
         }
 
         public abstract void Update(ref FrameTime frameTime);
@@ -43,31 +45,17 @@ namespace TestGame.Events
             return m_data;
         }
 
-        // --------------------------------------------------------------------
-        // -- IPool interface implementation
-        // --------------------------------------------------------------------
-        public bool IsDestroyed()
-        {
-            return m_isFinished;
-        }
-
-        public void DestroyItem()
+        protected virtual void End()
         {
             Console.Out.WriteLine("Event {0} ended", m_data.GetName());
 
-            m_isFinished = true;
+            m_isActive = false;
 
             if (m_data.GetEndTrigger() != null)
             {
                 Trigger onFinish = m_world.GetTriggerManager().GetTrigger(m_data.GetEndTrigger());
                 onFinish.Activate();
             }
-        }
-
-        public void ResetItem()
-        {
-            m_isFinished = false;
-            m_data = null;
         }
     }
 }

@@ -20,15 +20,16 @@ namespace TestGame.Events
         float m_spawnTimer = 0.0f;
 
         int[] m_spawnOrder = new int[kMaxSpawns];
-        
-        public SpawnEvent(GameWorld world) : base(world)
+
+        public SpawnEvent(GameWorld world, MapData.EventData data)
+            : base(world, data)
         {
         }
 
 
-        public override void Begin(MapData.EventData data)
+        public override void Begin()
         {
-            base.Begin(data);
+            base.Begin();
 
             // For debugging simply use the first spawn group
             m_spawnGroup = GetWorld().GetMap().SpawnGroups[0];
@@ -55,6 +56,9 @@ namespace TestGame.Events
 
         public override void Update(ref FrameTime frameTime)
         {
+            if (!GetIsActive())
+                return;
+
             m_spawnTimer -= frameTime.Dt;
             if (m_spawnTimer <= 0.0f)
             {
@@ -63,7 +67,7 @@ namespace TestGame.Events
 
                 if (--m_spawnCounter <= 0)
                 {
-                    DestroyItem();
+                    End();
                 }
             }
         }

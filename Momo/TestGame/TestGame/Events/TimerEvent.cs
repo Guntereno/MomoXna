@@ -14,16 +14,15 @@ namespace TestGame.Events
 
         MapData.TimerEventData m_timerData = null;
 
-        public TimerEvent(GameWorld world)
-            : base(world)
+        public TimerEvent(GameWorld world, MapData.EventData data)
+            : base(world, data)
         {
         }
 
-        public override void Begin(MapData.EventData data)
+        public override void Begin()
         {
-            base.Begin(data);
+            base.Begin();
 
-            System.Diagnostics.Debug.Assert(GetData() != null);
             m_timerData = (MapData.TimerEventData)(GetData());
 
             m_time = m_timerData.GetTime();
@@ -31,10 +30,13 @@ namespace TestGame.Events
 
         public override void Update(ref FrameTime frameTime)
         {
+            if (!GetIsActive())
+                return;
+
             m_time -= frameTime.Dt;
             if (m_time <= 0.0f)
             {
-                DestroyItem();
+                End();
             }
         }
     }
