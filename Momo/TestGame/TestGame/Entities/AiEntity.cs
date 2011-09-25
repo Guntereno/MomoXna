@@ -27,13 +27,10 @@ namespace TestGame.Entities
         private State m_currentState = null;
         private int m_occludingBinLayer = -1;
 
-        private RandomWanderState m_stateRandomWander = null;
-        private FindState m_stateFind = null;
-        private ChaseState m_stateChase = null;
-        private StunnedState m_stateStunned = null;
-        private DyingState m_stateDying = null;
-
         private Trigger m_deathTrigger = null;
+
+        protected StunnedState m_stateStunned = null;
+        protected DyingState m_stateDying = null;
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -42,6 +39,7 @@ namespace TestGame.Entities
         {
             get { return m_sensoryData; }
         }
+
 
 
         public AiEntity(GameWorld world): base(world)
@@ -56,17 +54,6 @@ namespace TestGame.Entities
             SetOccludingBinLayer(BinLayers.kBoundaryViewSmall);
 
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-
-            m_stateRandomWander = new RandomWanderState(this);
-            m_stateFind = new FindState(this);
-            m_stateChase = new ChaseState(this);
-            m_stateStunned = new StunnedState(this);
-            m_stateDying = new DyingState(this);
-
-            m_stateRandomWander.Init(m_stateChase);
-            m_stateFind.Init(m_stateChase);
-            m_stateChase.Init(m_stateFind);
-            m_stateStunned.Init(m_stateChase);
         }
 
         public void SetDeathTrigger(Trigger trigger)
@@ -74,18 +61,11 @@ namespace TestGame.Entities
             m_deathTrigger = trigger;
         }
 
-        public void Init()
-        {
-            SetCurrentState(m_stateFind);
-        }
-
-
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
             base.Update(ref frameTime, updateToken);
 
             m_sensoryData.Update(ref frameTime);
-
 
             if (m_currentState != null)
             {
@@ -194,6 +174,7 @@ namespace TestGame.Entities
             }
         }
 
+
         public String GetCurrentStateName()
         {
             if (m_currentState == null)
@@ -215,7 +196,6 @@ namespace TestGame.Entities
         {
             m_occludingBinLayer = layer;
         }
-
 
 
         internal void Kill()

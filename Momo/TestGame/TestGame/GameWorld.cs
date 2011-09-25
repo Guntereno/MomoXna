@@ -210,7 +210,7 @@ namespace TestGame
 
             // Collision detection/resolution
             m_contactList.StartAddingContacts();
-            CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList);
+            CollisionHelpers.GenerateContacts(m_enemyManager.GetMeleeEnemies().ActiveItemList, m_enemyManager.GetMeleeEnemies().ActiveItemListCount, m_bin, m_contactList);
             CollisionHelpers.GenerateContacts(m_playerManager.GetPlayers().ActiveItemList, m_playerManager.GetPlayers().ActiveItemListCount, m_bin, m_contactList);
             CollisionHelpers.UpdateBulletContacts(m_projectileManager.GetBullets().ActiveItemList, m_projectileManager.GetBullets().ActiveItemListCount, m_bin);
             m_contactList.EndAddingContacts();
