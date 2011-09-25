@@ -28,6 +28,7 @@ namespace TestGame.Entities
         private int m_occludingBinLayer = -1;
 
         private RandomWanderState m_stateRandomWander = null;
+        private FindState m_stateFind = null;
         private ChaseState m_stateChase = null;
         private StunnedState m_stateStunned = null;
         private DyingState m_stateDying = null;
@@ -57,13 +58,15 @@ namespace TestGame.Entities
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
             m_stateRandomWander = new RandomWanderState(this);
+            m_stateFind = new FindState(this);
             m_stateChase = new ChaseState(this);
             m_stateStunned = new StunnedState(this);
             m_stateDying = new DyingState(this);
 
             m_stateRandomWander.Init(m_stateChase);
-            m_stateChase.Init(m_stateRandomWander);
-            m_stateStunned.Init(m_stateRandomWander);
+            m_stateFind.Init(m_stateChase);
+            m_stateChase.Init(m_stateFind);
+            m_stateStunned.Init(m_stateChase);
         }
 
         public void SetDeathTrigger(Trigger trigger)
@@ -73,7 +76,7 @@ namespace TestGame.Entities
 
         public void Init()
         {
-            m_currentState = m_stateChase;
+            SetCurrentState(m_stateFind);
         }
 
 

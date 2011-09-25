@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="Ai\States\ChaseState.cs" />
     <Compile Include="Ai\States\DyingState.cs" />
+    <Compile Include="Ai\States\FindState.cs" />
     <Compile Include="Ai\States\RandomWanderState.cs" />
     <Compile Include="Ai\States\State.cs" />
     <Compile Include="Ai\States\StunnedState.cs" />

@@ -9,6 +9,8 @@ namespace TestGame.Ai.States
     {
         private float m_wanderTurnVelocity = 0.0f;
 
+        private State m_foundPlayerState = null;
+
 
         public RandomWanderState(AiEntity entity) :
             base(entity)
@@ -16,26 +18,22 @@ namespace TestGame.Ai.States
         
         }
 
-
         public override string ToString()
         {
             return "Random Wander";
         }
-
 
         public void Init(State foundPlayerState)
         {
             m_foundPlayerState = foundPlayerState;
         }
 
-
         public override void OnEnter()
         {
             base.OnEnter();
 
-            GetEntity().DebugColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+            GetEntity().DebugColor = new Color(0.22f, 0.8f, 0.22f, 0.5f);
         }
-
 
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
@@ -62,7 +60,5 @@ namespace TestGame.Ai.States
                 GetEntity().SetPosition(newPosition);
             }
         }
-
-        State m_foundPlayerState = null;
     }
 }
