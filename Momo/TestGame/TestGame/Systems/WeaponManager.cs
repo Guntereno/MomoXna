@@ -63,9 +63,9 @@ namespace TestGame.Systems
 
         public static readonly int[] kWeaponMax = new int[(int)WeaponType.Count]
         {
-            8,  // Pistol
-            8,  // Shotgun
-            8   // Minigun
+            32,  // Pistol
+            32,  // Shotgun
+            32   // Minigun
         };
 
         public void Load()
