@@ -6,11 +6,12 @@ using Momo.Core.Collision2D;
 using Momo.Core.Spatial;
 using TestGame.Objects;
 using Momo.Fonts;
+using TestGame.Weapons;
 
 
 namespace TestGame.Entities
 {
-    public class PlayerEntity : DynamicGameEntity
+    public class PlayerEntity : DynamicGameEntity, IWeaponUser
     {
         static readonly int kNumWeaponSlots = 3;
 
@@ -36,7 +37,6 @@ namespace TestGame.Entities
             DebugColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
         }
 
-        public Weapons.Weapon GetCurrentWeapon() { return m_currentWeapon; }
         public Input.InputWrapper GetInputWrapper() { return m_input; }
 
         public void SetInputWrapper(Input.InputWrapper value) { m_input = value; }
@@ -47,6 +47,11 @@ namespace TestGame.Entities
             m_arsenal[0] = weaponMan.Create(Systems.WeaponManager.WeaponType.Pistol);
             m_arsenal[1] = weaponMan.Create(Systems.WeaponManager.WeaponType.Shotgun);
             m_arsenal[2] = weaponMan.Create(Systems.WeaponManager.WeaponType.Minigun);
+
+            for (int i = 0; i < kNumWeaponSlots; ++i)
+            {
+                m_arsenal[i].SetOwner(this);
+            }
 
             m_currentWeaponIdx = 0;
         }
@@ -163,6 +168,19 @@ namespace TestGame.Entities
             m_triggerState = m_input.GetRightTrigger();
         }
 
+        // --------------------------------------------------------------------
+        // -- IWeaponUser interface implementation
+        // --------------------------------------------------------------------
+        public BulletEntity.Flags GetBulletFlags()
+        {
+            return BulletEntity.Flags.HarmsEnemies;
+        }
+
+        public Weapon GetCurrentWeapon() { return m_currentWeapon; }
+        public void SetCurrentWeapon(Weapon value)
+        {
+            throw new System.Exception("It's not possible to set the player's weapon externally!");
+        }
 
     }
 }

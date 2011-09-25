@@ -20,11 +20,11 @@ namespace TestGame
         public static TestGame Instance() { return ms_instance; }
         private static TestGame ms_instance = null;
 
-        //public const int kBackBufferWidth = 1280;
-        //public const int kBackBufferHeight = 720;
+        public const int kBackBufferWidth = 1280;
+        public const int kBackBufferHeight = 720;
 
-        public const int kBackBufferWidth = 1980;
-        public const int kBackBufferHeight = 1080;
+        //public const int kBackBufferWidth = 1980;
+        //public const int kBackBufferHeight = 1080;
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -55,10 +55,10 @@ namespace TestGame
 
             Content.RootDirectory = "Content";
 
-            if (GraphicsAdapter.Adapters.Count > 1)
-            {
-                graphics.IsFullScreen = true;
-            }
+            //if (GraphicsAdapter.Adapters.Count > 1)
+            //{
+            //    graphics.IsFullScreen = true;
+            //}
         }
 
         public void PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)

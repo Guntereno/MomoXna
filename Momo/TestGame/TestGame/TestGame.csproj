@@ -110,6 +110,8 @@
     <Compile Include="Ai\States\ChaseState.cs" />
     <Compile Include="Ai\States\DyingState.cs" />
     <Compile Include="Ai\States\FindState.cs" />
+    <Compile Include="Ai\States\FireProjectileWeaponState.cs" />
+    <Compile Include="Ai\States\GetInRangeState.cs" />
     <Compile Include="Ai\States\RandomWanderState.cs" />
     <Compile Include="Ai\States\State.cs" />
     <Compile Include="Ai\States\StunnedState.cs" />
@@ -148,6 +150,7 @@
     <Compile Include="TestGame.cs" />
     <Compile Include="TestWorldPathFinding.cs" />
     <Compile Include="Systems\ProjectileManager.cs" />
+    <Compile Include="Weapons\IWeaponUser.cs" />
     <Compile Include="Weapons\Minigun.cs" />
     <Compile Include="Weapons\Pistol.cs" />
     <Compile Include="Weapons\Shotgun.cs" />

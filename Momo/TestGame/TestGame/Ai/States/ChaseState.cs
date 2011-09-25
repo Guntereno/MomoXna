@@ -20,30 +20,33 @@ namespace TestGame.Ai.States
         {
         }
 
+
         public override string ToString()
         {
             return "Chase";
         }
+
 
         public void Init(State lostPlayerState)
         {
             m_lostPlayerState = lostPlayerState;
         }
 
+
         public override void OnEnter()
         {
             base.OnEnter();
 
-            GetEntity().DebugColor = new Color(0.875f, 0.05f, 0.05f, 0.5f);
+            GetEntity().DebugColor = new Color(0.9f, 0.23f, 0.03f, 0.5f);
         }
+
 
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
             AiEntity entity = GetEntity();
 
-            SensedObject obj = null;
-
-            if (entity.SensoryData.GetClosestSense(SensedType.kSeePlayer, ref obj))
+            SensedObject obj = entity.GetSensedPlayer();
+            if (obj != null)
             {
                 Vector2 targetDirection = obj.GetLastPosition() - GetEntity().GetPosition();
                 targetDirection.Normalize();

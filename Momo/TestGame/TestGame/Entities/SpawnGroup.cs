@@ -13,7 +13,6 @@ namespace TestGame.Entities
 {
     public class SpawnGroup
     {
-        private static readonly float kCollisionCheckPadding = 32.0f;
         private GameWorld m_world;
         private SpawnGroupData m_data;
         private SpawnEvent m_owner = null;

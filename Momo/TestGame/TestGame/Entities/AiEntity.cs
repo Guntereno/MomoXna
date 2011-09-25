@@ -12,12 +12,13 @@ using Momo.Debug;
 using TestGame.Objects;
 using TestGame.Ai.States;
 using Momo.Core.Triggers;
+using TestGame.Weapons;
 
 
 
 namespace TestGame.Entities
 {
-    public class AiEntity : DynamicGameEntity
+    public class AiEntity : DynamicGameEntity, IWeaponUser
     {
         // --------------------------------------------------------------------
         // -- Private Members
@@ -25,22 +26,33 @@ namespace TestGame.Entities
         private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
 
         private State m_currentState = null;
+
+        #region State Machine
+        protected StunnedState m_stateStunned = null;
+        protected DyingState m_stateDying = null;
+        #endregion
+
         private int m_occludingBinLayer = -1;
 
         private Trigger m_deathTrigger = null;
 
-        protected StunnedState m_stateStunned = null;
-        protected DyingState m_stateDying = null;
+        private SensedObject m_sensedPlayer = null;
+
+        private Weapon m_weapon = null;
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
+
         public EntitySensoryData SensoryData
         {
             get { return m_sensoryData; }
         }
 
-
+        public SensedObject GetSensedPlayer()
+        {
+            return m_sensedPlayer;
+        }
 
         public AiEntity(GameWorld world): base(world)
         {
@@ -66,6 +78,8 @@ namespace TestGame.Entities
             base.Update(ref frameTime, updateToken);
 
             m_sensoryData.Update(ref frameTime);
+
+            bool playerSensed = m_sensoryData.GetSensedPlayer(SensedType.kSeePlayer, ref m_sensedPlayer);
 
             if (m_currentState != null)
             {
@@ -119,26 +133,30 @@ namespace TestGame.Entities
 
         public void OnCollisionEvent(ref BulletEntity bullet)
         {
-            float damage = bullet.GetParams().m_damage;
-            Vector2 direction = bullet.GetPositionDifferenceFromLastFrame();
-            direction.Normalize();
-
-            AddForce(direction * (damage * 500.0f));
-
-
-            if (m_currentState != m_stateDying)
+            if ( (bullet.GetFlags() & BulletEntity.Flags.HarmsEnemies) == BulletEntity.Flags.HarmsEnemies )
             {
-                // Take damage from the bullet
-                m_health -= damage;
-                if (m_health <= 0.0f)
-                {
-                    m_health = 0.0f;
 
-                    SetCurrentState(m_stateDying);
-                }
-                else
+                float damage = bullet.GetParams().m_damage;
+                Vector2 direction = bullet.GetPositionDifferenceFromLastFrame();
+                direction.Normalize();
+
+                AddForce(direction * (damage * 500.0f));
+
+
+                if (m_currentState != m_stateDying)
                 {
-                    SetCurrentState(m_stateStunned);
+                    // Take damage from the bullet
+                    m_health -= damage;
+                    if (m_health <= 0.0f)
+                    {
+                        m_health = 0.0f;
+
+                        SetCurrentState(m_stateDying);
+                    }
+                    else
+                    {
+                        SetCurrentState(m_stateStunned);
+                    }
                 }
             }
         }
@@ -206,8 +224,24 @@ namespace TestGame.Entities
                 m_deathTrigger = null;
             }
 
+            if (m_weapon != null)
+            {
+                m_weapon.DestroyItem();
+            }
+
             GetWorld().GetEnemyManager().IncrementKillCount();
             DestroyItem();
         }
+
+        // --------------------------------------------------------------------
+        // -- IWeaponUser interface implementation
+        // --------------------------------------------------------------------
+        public BulletEntity.Flags GetBulletFlags()
+        {
+            return BulletEntity.Flags.HarmsPlayer;
+        }
+
+        public Weapon GetCurrentWeapon() { return m_weapon; }
+        public void SetCurrentWeapon(Weapon value) { m_weapon = value; }
     }
 }

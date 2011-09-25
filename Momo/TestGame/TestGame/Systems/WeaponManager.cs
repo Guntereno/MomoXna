@@ -6,6 +6,7 @@ using System.Text;
 using Momo.Core.ObjectPools;
 
 using TestGame.Weapons;
+using Momo.Core;
 
 namespace TestGame.Systems
 {
@@ -17,6 +18,8 @@ namespace TestGame.Systems
         private Pool<Pistol> m_pistols = new Pool<Pistol>(kWeaponMax[(int)WeaponType.Pistol]);
         private Pool<Shotgun> m_shotguns = new Pool<Shotgun>(kWeaponMax[(int)WeaponType.Shotgun]);
         private Pool<Minigun> m_miniguns = new Pool<Minigun>(kWeaponMax[(int)WeaponType.Minigun]);
+
+        bool m_needsCoalesce = false;
 
         public enum WeaponType
         {
@@ -88,5 +91,20 @@ namespace TestGame.Systems
                 m_miniguns.AddItem(minigun, false);
             }
         }
+
+        public void Update(ref FrameTime frameTime)
+        {
+            // TODO: Coallesce only the pool which needs it
+            if (m_needsCoalesce)
+            {
+                m_pistols.CoalesceActiveList(false);
+                m_shotguns.CoalesceActiveList(false);
+                m_miniguns.CoalesceActiveList(false);
+
+                m_needsCoalesce = false;
+            }
+        }
+
+        public void TriggerCoalesce() { m_needsCoalesce = true; }
     }
 }

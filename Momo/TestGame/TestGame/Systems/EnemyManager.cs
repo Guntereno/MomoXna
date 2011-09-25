@@ -31,14 +31,29 @@ namespace TestGame.Systems
 
         public AiEntity Create(Vector2 pos)
         {
-            MeleeEnemy ai = new MeleeEnemy(m_world);
-            ai.SetPosition(pos);
-            ai.AddToBin(m_bin);
-            m_meleeEnemies.AddItem(ai, true);
+            AiEntity createdEntity = null;
 
-            ai.Init();
+            // TEMP: Until pipeline in place for enemy types
+            bool missileEnemy = true;
+            if (missileEnemy)
+            {
+                MissileEnemy ai = new MissileEnemy(m_world);
+                m_meleeEnemies.AddItem(ai, true);
+                createdEntity = ai;
+                ai.Init();
+            }
+            else
+            {
+                MeleeEnemy ai = new MeleeEnemy(m_world);
+                m_meleeEnemies.AddItem(ai, true);
+                createdEntity = ai;
+                ai.Init();
+            }
 
-            return ai;
+            createdEntity.SetPosition(pos);
+            createdEntity.AddToBin(m_bin);
+
+            return createdEntity;
         }
 
         public void Update(ref FrameTime frameTime, int updateToken)

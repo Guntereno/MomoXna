@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Events>
 
+<HideThis>
+    <!-- I use this for debbuging with a single enemy -->
+    <Spawn name="firstSpawn1" count="1"/>
+</HideThis>
+
+
     <!-- First wave -->
     <Timer name="firstSpawnTimer" time="5.0" endTrigger="firstSpawnTrigger"/>
     <Spawn name="firstSpawn1" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnCount" count="3" timer="2.0"/>
@@ -70,5 +76,5 @@
     <Spawn name="sixthSpawn6" startTrigger="sixthSpawn6Trigger" endTrigger="sixthSpawnCount" count="8" timer="1.0"/>
     
     <TriggerCounter name="sixthSpawnGroup" startTrigger="sixthSpawnTrigger" endTrigger="sixthSpawnComplete" countTrigger="sixthSpawnCount" count="6"/>
-    
+
 </Events>

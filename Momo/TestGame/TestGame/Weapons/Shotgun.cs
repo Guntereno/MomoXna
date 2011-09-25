@@ -108,7 +108,12 @@ namespace TestGame.Weapons
 
                             velocity *= param.m_speed + (param.m_speed * ((float)random.NextDouble() * 0.08f));
 
-                            world.GetProjectileManager().AddBullet(pos, velocity, m_bulletParams);
+                            world.GetProjectileManager().AddBullet(
+                                pos,
+                                velocity,
+                                m_bulletParams,
+                                weapon.GetOwner().GetBulletFlags()
+                                );
                         }
 
 

@@ -10,6 +10,15 @@ namespace TestGame.Weapons
 {
     public abstract class Weapon : IPoolItem
     {
+        protected bool m_isDestroyed = true;
+        protected Params m_params = null;
+
+        private GameWorld m_world = null;
+        private State m_currentState = null;
+        private int m_ammoInClip = 0;
+
+        IWeaponUser m_owner = null;
+
         public class Params
         {
             public Params(float reloadTime, int clipSize, float speed, float fireRate, float recoil)
@@ -42,6 +51,9 @@ namespace TestGame.Weapons
 
         public GameWorld GetWorld() { return m_world; }
         public Params GetParams() { return m_params; }
+
+        public IWeaponUser GetOwner() { return m_owner; }
+        public void SetOwner(IWeaponUser owner) { m_owner = owner; }
 
         public int GetAmmoInClip() { return m_ammoInClip; }
         public void SetAmmoInClip(int ammo) { m_ammoInClip = ammo; }
@@ -99,20 +111,13 @@ namespace TestGame.Weapons
         public void DestroyItem()
         {
             m_isDestroyed = true;
+            GetWorld().GetWeaponManager().TriggerCoalesce();
         }
 
         public void ResetItem()
         {
             m_isDestroyed = false;
         }
-
-        protected bool m_isDestroyed = true;
-        protected Params m_params = null;
-
-        private GameWorld m_world = null;
-        private State m_currentState = null;
-        private int m_ammoInClip = 0;
-
 
         #region State classes
 

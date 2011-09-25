@@ -204,6 +204,8 @@ namespace TestGame
             m_projectileManager.Update(ref frameTime);
             m_osdManager.Update(ref frameTime);
 
+            m_weaponManager.Update(ref frameTime);
+
             m_pathRouteManager.Update(ref frameTime);
 
             m_eventManager.Update(ref frameTime);

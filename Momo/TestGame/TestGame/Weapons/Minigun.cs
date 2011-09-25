@@ -116,7 +116,11 @@ namespace TestGame.Weapons
 
                         velocity *= param.m_speed;
 
-                        world.GetProjectileManager().AddBullet(pos, velocity, m_bulletParams);
+                        world.GetProjectileManager().AddBullet(
+                            pos,
+                            velocity,
+                            m_bulletParams,
+                            weapon.GetOwner().GetBulletFlags());
 
                         --ammoInClip;
                         weapon.SetAmmoInClip(ammoInClip);

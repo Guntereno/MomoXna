@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TestGame.Ai.States;
+﻿using TestGame.Ai.States;
 
 namespace TestGame.Entities.Enemies
 {
@@ -15,16 +11,20 @@ namespace TestGame.Entities.Enemies
         public MeleeEnemy(GameWorld world)
             : base(world)
         {
+            m_stateStunned = new StunnedState(this);
+            m_stateDying = new DyingState(this);
+
             m_stateRandomWander = new RandomWanderState(this);
             m_stateFind = new FindState(this);
             m_stateChase = new ChaseState(this);
-            m_stateStunned = new StunnedState(this);
-            m_stateDying = new DyingState(this);
+
+
+            m_stateStunned.Init(m_stateRandomWander);
 
             m_stateRandomWander.Init(m_stateChase);
             m_stateFind.Init(m_stateChase);
             m_stateChase.Init(m_stateFind);
-            m_stateStunned.Init(m_stateChase);
+
         }
 
         public void Init()

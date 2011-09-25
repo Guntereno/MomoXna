@@ -17,12 +17,22 @@ namespace TestGame.Entities
 {
     public class BulletEntity : ProjectileGameEntity, IPoolItem
     {
+        public enum Flags
+        {
+            None = 0x0,
+
+            HarmsPlayer = 0x1,
+            HarmsEnemies = 0x2,
+
+            HarmsEverything = HarmsPlayer | HarmsEnemies
+        }
+
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
         private bool m_destroyed = false;
         private Params m_params;
-
+        Flags m_flags;
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -32,6 +42,15 @@ namespace TestGame.Entities
             m_params = kDefaultParams;
         }
 
+        public void SetFlags(Flags flags)
+        {
+            m_flags = flags;
+        }
+
+        public Flags GetFlags()
+        {
+            return m_flags;
+        }
 
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
@@ -74,8 +93,11 @@ namespace TestGame.Entities
 
         public void OnCollisionEvent(ref AiEntity entity)
         {
-            RemoveFromBin(BinLayers.kBullet);
-            DestroyItem();
+            if ((m_flags & Flags.HarmsEnemies) == Flags.HarmsEnemies)
+            {
+                RemoveFromBin(BinLayers.kBullet);
+                DestroyItem();
+            }
         }
 
 

@@ -154,7 +154,7 @@ namespace TestGame.Entities
         }
 
 
-        public bool GetClosestSense(SensedType type, ref SensedObject obj)
+        public bool GetSensedPlayer(SensedType type, ref SensedObject obj)
         {
             int closestIndex = GetClosestSenseIndex(type);
 
