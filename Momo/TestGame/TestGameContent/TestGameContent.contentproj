@@ -73,6 +73,11 @@
       <Importer>TmxImporter</Importer>
       <Processor>TmxProcessor</Processor>
     </Compile>
+    <Compile Include="maps\tom_owes_me\tom_owes_me.tmx">
+      <Name>tom_owes_me</Name>
+      <Importer>TmxImporter</Importer>
+      <Processor>TmxProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FontProcessorLib\FontProcessorLib.csproj">
@@ -107,6 +112,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="maps\NewFolder1\" />
     <Folder Include="maps\tilesets\" />
   </ItemGroup>
   <ItemGroup>
