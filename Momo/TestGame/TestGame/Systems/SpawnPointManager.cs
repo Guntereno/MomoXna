@@ -11,7 +11,7 @@ namespace TestGame.Systems
     public class SpawnPointManager
     {
         GameWorld m_world = null;
-        SpawnGroup[] m_spawnGroups = null;
+        SpawnPoint[] m_spawnPoints = null;
 
         internal SpawnPointManager(GameWorld world)
         {
@@ -21,31 +21,32 @@ namespace TestGame.Systems
         internal void LoadSpawnGroups(MapData.Map map)
         {
             // Add the objects
-            m_spawnGroups = new SpawnGroup[map.SpawnGroups.Length];
-            for (int i = 0; i < map.SpawnGroups.Length; ++i)
+            int count = map.SpawnPoints.Length;
+            m_spawnPoints = new SpawnPoint[count];
+            for (int i = 0; i < count; ++i)
             {
-                m_spawnGroups[i] = new SpawnGroup(m_world, map.SpawnGroups[i]);
+                m_spawnPoints[i] = new SpawnPoint(m_world, map.SpawnPoints[i]);
             }
         }
 
-        internal SpawnGroup GetNextSpawnGroup()
+        internal SpawnPoint GetNextSpawnPoint()
         {
-            const float kMaxDistance = 500.0f;
+            const float kMaxDistance = 300.0f;
             const float kMaxDistanceSq = kMaxDistance * kMaxDistance;
 
-            const float kRadiusPadding = 100.0f;
-            const float kRadiusPaddingSq = kRadiusPadding * kRadiusPadding;
+            const float kMinDistance = 100.0f;
+            const float kMinDistanceSq = kMinDistance * kMinDistance;
 
             float closestValidDistance = float.MaxValue;
             int closestValidIndex = -1;
-            for (int i = 0; i < m_spawnGroups.Length; ++i)
+            for (int i = 0; i < m_spawnPoints.Length; ++i)
             {
-                if (m_spawnGroups[i].IsOwned())
+                if (m_spawnPoints[i].IsOwned())
                     continue;
 
-                float sqDist = m_spawnGroups[i].GetSquaredDistanceToPlayers();
+                float sqDist = m_spawnPoints[i].GetSquaredDistanceToPlayers();
 
-                if ((sqDist < (m_spawnGroups[i].GetData().GetRadius().RadiusSq + kRadiusPaddingSq)) || (sqDist > kMaxDistanceSq))
+                if ((sqDist < kMinDistanceSq) || (sqDist > kMaxDistanceSq))
                     continue;
 
                 if (sqDist < closestValidDistance)
@@ -57,7 +58,7 @@ namespace TestGame.Systems
 
             if (closestValidIndex != -1)
             {
-                return m_spawnGroups[closestValidIndex];
+                return m_spawnPoints[closestValidIndex];
             }
             else
             {
@@ -68,9 +69,9 @@ namespace TestGame.Systems
 
         public void DebugRender(DebugRenderer debugRenderer)
         {
-            for (int i = 0; i < m_spawnGroups.Length; ++i)
+            for (int i = 0; i < m_spawnPoints.Length; ++i)
             {
-                m_spawnGroups[i].DebugRender(debugRenderer);
+                m_spawnPoints[i].DebugRender(debugRenderer);
             }
         }
     }

@@ -8,45 +8,30 @@ using TestGame.Systems;
 using Momo.Maths;
 using Microsoft.Xna.Framework;
 using Momo.Debug;
+using System.Diagnostics;
 
 namespace TestGame.Entities
 {
-    public class SpawnGroup
+    public class SpawnPoint
     {
-        private GameWorld m_world;
-        private SpawnGroupData m_data;
-        private SpawnEvent m_owner = null;
+        GameWorld m_world = null;
 
-        internal SpawnGroup(GameWorld world, SpawnGroupData data)
+        private SpawnPointData m_data;
+        private SpawnEvent m_owner;
+
+        internal SpawnPoint(GameWorld world, SpawnPointData data)
         {
             m_world = world;
             m_data = data;
         }
 
-        internal SpawnGroupData GetData() { return m_data; }
-
-        internal void TakeOwnership(SpawnEvent owner)
-        {
-            System.Diagnostics.Debug.Assert(m_owner == null);
-            m_owner = owner;
-        }
-
-        internal void RelinquishOwnership(SpawnEvent owner)
-        {
-            System.Diagnostics.Debug.Assert(m_owner == owner);
-            m_owner = null;
-        }
-
-        internal bool IsOwned()
-        {
-            return m_owner != null;
-        }
+        internal SpawnPointData GetData() { return m_data; }
 
         internal float GetSquaredDistanceToPlayers()
         {
             PlayerManager playerManager = m_world.GetPlayerManager();
             Vector2 screenCenter = playerManager.GetAveragePosition();
-            return (screenCenter - m_data.GetCenter()).LengthSquared();
+            return (screenCenter - m_data.GetPosition()).LengthSquared();
         }
 
         internal void DebugRender(DebugRenderer debugRenderer)
@@ -56,20 +41,25 @@ namespace TestGame.Entities
             Color debugColourFill = Color.Cyan;
             debugColour.A = 64;
 
-            for (int i = 0; i < m_data.GetSpawnPoints().Length; ++i)
-            {
-                SpawnPoint spawnPoint = m_data.GetSpawnPoints()[i];
-                debugRenderer.DrawLine(m_data.GetCenter(), spawnPoint.GetPosition(), debugColour);
-            }
+            const float kPointRadius = 8.0f;
+            debugRenderer.DrawCircle(m_data.GetPosition(), kPointRadius, debugColour, debugColour, true, 2, 8);
+        }
 
-            for (int i = 0; i < m_data.GetSpawnPoints().Length; ++i)
-            {
-                SpawnPoint spawnPoint = m_data.GetSpawnPoints()[i];
-                const float kPointRadius = 8.0f;
-                debugRenderer.DrawCircle(spawnPoint.GetPosition(), kPointRadius, debugColour, debugColour, true, 2, 8);
-            }
+        internal bool IsOwned()
+        {
+            return m_owner != null;
+        }
 
-            debugRenderer.DrawCircle(m_data.GetCenter(), m_data.GetRadius().Radius, debugColour, debugColourFill, true, 3, 14);
+        internal void RelinquishOwnership(SpawnEvent spawnEvent)
+        {
+            Debug.Assert(m_owner == spawnEvent);
+            m_owner = null;
+        }
+
+        internal void TakeOwnership(SpawnEvent spawnEvent)
+        {
+            Debug.Assert(m_owner == null);
+            m_owner = spawnEvent;
         }
     }
 }

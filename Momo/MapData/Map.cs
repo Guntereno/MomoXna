@@ -31,7 +31,7 @@ namespace MapData
         public Vector2 PlayAreaMin { get; private set; }
         public Vector2 PlayAreaMax { get; private set; }
 
-        public SpawnGroupData[] SpawnGroups { get; private set; }
+        public SpawnPointData[] SpawnPoints { get; private set; }
 
         public MapData.Patch[][] Patches { get; private set; }
 
@@ -72,9 +72,9 @@ namespace MapData
             }
 
             // Read in the player spawn objects
-            int numSpawnPoints = input.ReadInt32();
-            PlayerSpawnPoints = new Vector2[numSpawnPoints];
-            for (int i = 0; i < numSpawnPoints; ++i)
+            int numPlayerSpawnPoints = input.ReadInt32();
+            PlayerSpawnPoints = new Vector2[numPlayerSpawnPoints];
+            for (int i = 0; i < numPlayerSpawnPoints; ++i)
             {
                 PlayerSpawnPoints[i] = input.ReadVector2();
             }
@@ -84,23 +84,12 @@ namespace MapData
             PlayAreaMax = input.ReadVector2();
 
             // Read the spawn group information
-            int numSpawnGroups = input.ReadInt32();
-            SpawnGroups = new SpawnGroupData[numSpawnGroups];
-            for (int spawnGroupIdx = 0; spawnGroupIdx < numSpawnGroups; ++spawnGroupIdx)
+            int numSpawnPoints = input.ReadInt32();
+            SpawnPoints = new SpawnPointData[numSpawnPoints];
+            for (int spawnPointIdx = 0; spawnPointIdx < numSpawnPoints; ++spawnPointIdx)
             {
-                Vector2 center = input.ReadObject<Vector2>();
-                float boundingRadius = input.ReadSingle();
-                RadiusInfo radiusInfo = new RadiusInfo(boundingRadius);
-
-                int numEnemies = input.ReadInt32();
-                SpawnPoint[] spawnPoints = new SpawnPoint[numEnemies];
-                for(int enemyIdx = 0; enemyIdx < numEnemies; ++enemyIdx)
-                {
-                    Vector2 pos = input.ReadObject<Vector2>();
-                    spawnPoints[enemyIdx] = new SpawnPoint(pos);
-                }
-
-                SpawnGroups[spawnGroupIdx] = new SpawnGroupData(spawnPoints, center, radiusInfo);
+                Vector2 pos = input.ReadVector2();
+                SpawnPoints[spawnPointIdx] = new SpawnPointData(pos);
             }
 
             // Read the patch information

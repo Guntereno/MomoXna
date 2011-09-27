@@ -47,7 +47,7 @@ namespace TmxProcessorLib.Content
         public Vector2 MinPlayableArea { get; private set; }
         public Vector2 MaxPlayableArea { get; private set; }
 
-        public List<SpawnGroup> SpawnGroups { get; private set; }
+        public List<Vector2> SpawnPoints { get; private set; }
 
         public List<Object> Triggers { get; private set; }
 
@@ -202,7 +202,7 @@ namespace TmxProcessorLib.Content
 
             CalculatePlayableArea();
 
-            BuildSpawnGroupList();
+            BuildSpawnPoints();
 
             BuildPatches();
 
@@ -233,15 +233,20 @@ namespace TmxProcessorLib.Content
             }
         }
 
-        private void BuildSpawnGroupList()
+        private void BuildSpawnPoints()
         {
-            SpawnGroups = new List<SpawnGroup>();
+            SpawnPoints = new List<Vector2>();
 
             foreach (String objGroupName in ObjectGroupsDict.Keys)
             {
-                if (objGroupName.StartsWith("SpawnGroup"))
+                if (objGroupName == "SpawnPoints")
                 {
-                    SpawnGroups.Add(new SpawnGroup(ObjectGroupsDict[objGroupName]));
+                    ObjectGroup spawnGroup = ObjectGroupsDict[objGroupName];
+                    foreach (String spawnPointName in spawnGroup.Objects.Keys)
+                    {
+                        Object spawnPoint = spawnGroup.Objects[spawnPointName];
+                        SpawnPoints.Add(spawnPoint.Position);
+                    }
                 }
             }
         }
@@ -590,29 +595,11 @@ namespace TmxProcessorLib.Content
             output.Write(MinPlayableArea + Offset);
             output.Write(MaxPlayableArea + Offset);
 
-            // Output each spawn group
-            output.Write(SpawnGroups.Count);
-            foreach (SpawnGroup spawnGroup in SpawnGroups)
+            // Output each spawn point
+            output.Write(SpawnPoints.Count);
+            foreach (Vector2 spawnPoint in SpawnPoints)
             {
-                output.WriteObject<Vector2>(spawnGroup.GetCenter() + Offset);
-                output.Write(spawnGroup.GetBoundingRadius());
-
-                // Ouput enemies
-                {
-                    // Build enemy list
-                    List<Object> spawnObjects = new List<Object>();
-                    foreach (string objName in spawnGroup.GetSpawnObjects().Objects.Keys)
-                    {
-                        Object obj = spawnGroup.GetSpawnObjects().Objects[objName];
-                        spawnObjects.Add(obj);
-                    }
-
-                    output.Write(spawnObjects.Count);
-                    foreach (Object enemy in spawnObjects)
-                    {
-                        output.WriteObject<Vector2>(enemy.Position + Offset);
-                    }
-                }
+                output.Write(spawnPoint);
             }
 
             // Output the patch objects
