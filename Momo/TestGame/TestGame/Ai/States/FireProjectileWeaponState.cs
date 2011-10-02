@@ -36,7 +36,7 @@ namespace TestGame.Ai.States
         {
             AiEntity entity = GetEntity();
 
-            SensedObject sensedPlayer = entity.SensedPlayer;
+            SensedObject sensedPlayer = entity.SensoryData.SeePlayerSense;
 
             // I've we've lost the player
             if (sensedPlayer == null)

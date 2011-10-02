@@ -45,7 +45,8 @@ namespace TestGame.Ai.States
         {
             AiEntity entity = GetEntity();
 
-            SensedObject obj = entity.SensedPlayer;
+            SensedObject obj = entity.SensoryData.StraightPathToPlayerSense;
+
             if (obj != null)
             {
                 Vector2 targetDirection = obj.GetLastPosition() - GetEntity().GetPosition();

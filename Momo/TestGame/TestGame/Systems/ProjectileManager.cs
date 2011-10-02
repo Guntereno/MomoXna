@@ -16,7 +16,7 @@ namespace TestGame.Systems
         static readonly int kMaxBullets = 1000;
 
         private GameWorld m_world = null;
-        private Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(kMaxBullets);
+        private Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(kMaxBullets, 1);
 
         Bin m_bin = null;
 
@@ -24,6 +24,8 @@ namespace TestGame.Systems
         {
             m_world = world;
             m_bin = bin;
+
+            m_bullets.RegisterPoolObjectType(typeof(BulletEntity), kMaxBullets);
         }
 
         public void Load()
@@ -59,7 +61,7 @@ namespace TestGame.Systems
 
         public void AddBullet(Vector2 startPos, Vector2 velocity, BulletEntity.Params param, BulletEntity.Flags flags)
         {
-            BulletEntity bullet = m_bullets.CreateItem();
+            BulletEntity bullet = m_bullets.CreateItem(typeof(BulletEntity));
             bullet.SetPosition(startPos);
             bullet.SetVelocity(velocity);
             bullet.SetParams(param);

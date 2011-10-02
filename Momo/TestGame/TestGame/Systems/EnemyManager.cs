@@ -18,23 +18,35 @@ namespace TestGame.Systems
         private Bin m_bin;
 
         static readonly int kMaxEnemies = 1000;
-        private Pool<AiEntity> m_meleeEnemies = new Pool<AiEntity>(kMaxEnemies);
-        private Pool<AiEntity> m_missileEnemies = new Pool<AiEntity>(kMaxEnemies);
+        private Pool<AiEntity> m_enemies = new Pool<AiEntity>(kMaxEnemies, 2);
 
         private int m_killCounter = 0;
+
+
+
+        public Pool<AiEntity> GetEnemies() { return m_enemies; }
+
+        public void IncrementKillCount() { ++m_killCounter; }
+        public int GetKillCount() { return m_killCounter; }
+
+
 
         public EnemyManager(GameWorld world, Bin bin)
         {
             m_world = world;
             m_bin = bin;
+
+            m_enemies.RegisterPoolObjectType(typeof(MeleeEnemy), kMaxEnemies);
+            m_enemies.RegisterPoolObjectType(typeof(MissileEnemy), kMaxEnemies);
         }
+
 
         public void Load()
         {
             for (int i = 0; i < kMaxEnemies; ++i)
             {
-                m_meleeEnemies.AddItem(new MeleeEnemy(m_world), false);
-                m_missileEnemies.AddItem(new MissileEnemy(m_world), false);
+                m_enemies.AddItem(new MeleeEnemy(m_world), false);
+                m_enemies.AddItem(new MissileEnemy(m_world), false);
             }
         }
 
@@ -47,7 +59,7 @@ namespace TestGame.Systems
             {
                 case MapData.EnemyData.Species.Melee:
                     {
-                        createdEntity = m_meleeEnemies.CreateItem();
+                        createdEntity = m_enemies.CreateItem(typeof(MeleeEnemy));
                         createdEntity.Init(data);
                     }
                     break;
@@ -55,7 +67,7 @@ namespace TestGame.Systems
 
                 case MapData.EnemyData.Species.Missile:
                     {
-                        createdEntity = m_missileEnemies.CreateItem();
+                        createdEntity = m_enemies.CreateItem(typeof(MissileEnemy));
                         createdEntity.Init(data);
                     }
                     break;
@@ -67,11 +79,12 @@ namespace TestGame.Systems
             return createdEntity;
         }
 
+
         public void Update(ref FrameTime frameTime, int updateToken)
         {
-            UpdateEnemyPool(m_meleeEnemies, ref frameTime, updateToken);
-            UpdateEnemyPool(m_missileEnemies, ref frameTime, updateToken);
+            UpdateEnemyPool(m_enemies, ref frameTime, updateToken);
         }
+
 
         private void UpdateEnemyPool(Pool<AiEntity> pool, ref FrameTime frameTime, int updateToken)
         {
@@ -96,22 +109,13 @@ namespace TestGame.Systems
             }
         }
 
+
         public void DebugRender(DebugRenderer debugRenderer)
         {
-            for (int i = 0; i < m_meleeEnemies.ActiveItemListCount; ++i)
+            for (int i = 0; i < m_enemies.ActiveItemListCount; ++i)
             {
-                m_meleeEnemies[i].DebugRender(debugRenderer);
-            }
-            for (int i = 0; i < m_missileEnemies.ActiveItemListCount; ++i)
-            {
-                m_missileEnemies[i].DebugRender(debugRenderer);
+                m_enemies[i].DebugRender(debugRenderer);
             }
         }
-
-        public Pool<AiEntity> GetMeleeEnemies() { return m_meleeEnemies; }
-        public Pool<AiEntity> GetMissileEnemies() { return m_missileEnemies; }
-
-        public void IncrementKillCount() { ++m_killCounter; }
-        public int GetKillCount() { return m_killCounter; }
     }
 }

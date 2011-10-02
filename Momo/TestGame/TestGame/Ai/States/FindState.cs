@@ -43,7 +43,7 @@ namespace TestGame.Ai.States
             AiEntity entity = GetEntity();
 
             // If we've found the player, go into the found player state
-            if (entity.SensoryData.SeePlayer)
+            if (entity.SensoryData.StraightPathToPlayerSense != null)
             {
                 entity.SetCurrentState(m_foundPlayerState);
             }
@@ -52,8 +52,8 @@ namespace TestGame.Ai.States
                 PathNode myPathNode = null;
                 PathNode goalPathNode = null;
 
-                PathFindingHelpers.GetClosestPathNode(entity.GetPosition(), entity.GetBin(), BinLayers.kPathNodes, entity.GetOccludingBinLayer(), ref myPathNode);
-                PathFindingHelpers.GetClosestPathNode(entity.GetWorld().GetPlayerManager().GetAveragePosition(), entity.GetBin(), BinLayers.kPathNodes, entity.GetOccludingBinLayer(), ref goalPathNode);
+                PathFindingHelpers.GetClosestPathNode(entity.GetPosition(), entity.GetBin(), BinLayers.kPathNodes, entity.GetObstructionBinLayer(), ref myPathNode);
+                PathFindingHelpers.GetClosestPathNode(entity.GetWorld().GetPlayerManager().GetAveragePosition(), entity.GetBin(), BinLayers.kPathNodes, entity.GetObstructionBinLayer(), ref goalPathNode);
 
                 if (myPathNode != null && goalPathNode != null)
                 {
@@ -72,7 +72,7 @@ namespace TestGame.Ai.States
                     m_tracker.Track(entity.GetPosition(),
                                         entity.GetWorld().GetPlayerManager().GetAveragePosition(),
                                         entity.GetBin(),
-                                        entity.GetOccludingBinLayer(),
+                                        entity.GetObstructionBinLayer(),
                                         ref m_routeToPlayer,
                                         out targetDirection);
 

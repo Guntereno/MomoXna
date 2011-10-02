@@ -14,7 +14,7 @@ namespace TestGame.Systems
 
         public static readonly int kMaxPlayers = 2;
 
-        private Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers);
+        private Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers, 1);
 
         Vector2 m_cachedAveragePosition = new Vector2();
         bool m_averageCached = false;
@@ -23,6 +23,8 @@ namespace TestGame.Systems
         {
             m_world = world;
             m_bin = bin;
+
+            m_players.RegisterPoolObjectType(typeof(PlayerEntity), kMaxPlayers);
         }
 
         public void Load()

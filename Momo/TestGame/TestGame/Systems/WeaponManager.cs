@@ -15,15 +15,17 @@ namespace TestGame.Systems
 
         private GameWorld m_world;
 
-        private Pool<Pistol> m_pistols = new Pool<Pistol>(kWeaponMax[(int)MapData.Weapon.Design.Pistol]);
-        private Pool<Shotgun> m_shotguns = new Pool<Shotgun>(kWeaponMax[(int)MapData.Weapon.Design.Shotgun]);
-        private Pool<Minigun> m_miniguns = new Pool<Minigun>(kWeaponMax[(int)MapData.Weapon.Design.Minigun]);
-
+        private Pool<Weapon> m_weapons = new Pool<Weapon>(300, 3);
         bool m_needsCoalesce = false;
+
 
         public WeaponManager(GameWorld world)
         {
             m_world = world;
+
+            m_weapons.RegisterPoolObjectType(typeof(Pistol), kWeaponMax[(int)MapData.Weapon.Design.Pistol]);
+            m_weapons.RegisterPoolObjectType(typeof(Shotgun), kWeaponMax[(int)MapData.Weapon.Design.Shotgun]);
+            m_weapons.RegisterPoolObjectType(typeof(Minigun), kWeaponMax[(int)MapData.Weapon.Design.Minigun]);
         }
 
         public Weapon Create(MapData.Weapon.Design type)
@@ -33,15 +35,15 @@ namespace TestGame.Systems
             switch (type)
             {
                 case MapData.Weapon.Design.Pistol:
-                    weapon = m_pistols.CreateItem();
+                    weapon = m_weapons.CreateItem(typeof(Pistol));
                     break;
 
                 case MapData.Weapon.Design.Shotgun:
-                    weapon = m_shotguns.CreateItem();
+                    weapon = m_weapons.CreateItem(typeof(Shotgun));
                     break;
 
                 case MapData.Weapon.Design.Minigun:
-                    weapon = m_miniguns.CreateItem();
+                    weapon = m_weapons.CreateItem(typeof(Minigun));
                     break;
 
                 default:
@@ -65,21 +67,21 @@ namespace TestGame.Systems
             for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Pistol]; ++i)
             {
                 Pistol pistol = new Pistol(m_world);
-                m_pistols.AddItem(pistol, false);
+                m_weapons.AddItem(pistol, false);
             }
 
             // Shotguns
             for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Pistol]; ++i)
             {
                 Shotgun shotgun = new Shotgun(m_world);
-                m_shotguns.AddItem(shotgun, false);
+                m_weapons.AddItem(shotgun, false);
             }
 
             // Miniguns
             for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Minigun]; ++i)
             {
                 Minigun minigun = new Minigun(m_world);
-                m_miniguns.AddItem(minigun, false);
+                m_weapons.AddItem(minigun, false);
             }
         }
 
@@ -88,9 +90,7 @@ namespace TestGame.Systems
             // TODO: Coallesce only the pool which needs it
             if (m_needsCoalesce)
             {
-                m_pistols.CoalesceActiveList(false);
-                m_shotguns.CoalesceActiveList(false);
-                m_miniguns.CoalesceActiveList(false);
+                m_weapons.CoalesceActiveList(false);
 
                 m_needsCoalesce = false;
             }

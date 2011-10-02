@@ -12,10 +12,9 @@ namespace TestGame.Entities
         public const int kPathNodes = 3;
         public const int kBoundary = 4;
 
-        public const int kBoundaryViewSmall = 5;
-        public const int kBoundaryNodeConnectingSmall = 6;
+        public const int kBoundaryOcclusionSmall = 5;
+        public const int kBoundaryObstructionSmall = 6;
 
-
-        public const int kLayerCount = kBoundaryNodeConnectingSmall + 1;
+        public const int kLayerCount = kBoundaryObstructionSmall + 1;
     }
 }

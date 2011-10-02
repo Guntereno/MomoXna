@@ -29,7 +29,7 @@ namespace TestGame.Ai.States
 
             // Until the range is reached
             AiEntity entity = GetEntity();
-            SensedObject sensedPlayer = entity.SensedPlayer;
+            SensedObject sensedPlayer = entity.SensoryData.SeePlayerSense;
 
             if (sensedPlayer != null)
             {

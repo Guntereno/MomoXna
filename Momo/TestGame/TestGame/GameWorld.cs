@@ -153,17 +153,16 @@ namespace TestGame
             float smallPathNodeRadius = 25.0f;
             BuildCollisionBoundaries(0.0f, BinLayers.kBoundary, false);
 
-            BuildCollisionBoundaries(12.0f, BinLayers.kBoundaryViewSmall, true);
+            BuildCollisionBoundaries(5.0f, BinLayers.kBoundaryOcclusionSmall, true);
+            BuildCollisionBoundaries(12.0f, BinLayers.kBoundaryObstructionSmall, true);
 
-            BuildCollisionBoundaries(smallPathNodeRadius - 1, BinLayers.kBoundaryNodeConnectingSmall, true);
-            Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius, false);
-   
 
             // Path stuff
             PathRegion[] regions = new PathRegion[1];
+            Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius, false);
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
             regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 30, true, extrudeBoundariesSmallPath);
-            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryNodeConnectingSmall);
+            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryObstructionSmall);
             m_pathIsland.SetRegions(regions);
 
             AddPathIslandToBin(m_pathIsland);
@@ -211,6 +210,10 @@ namespace TestGame
 
             m_eventManager.Update(ref frameTime);
 
+            m_cameraController.Update(ref frameTime, ref inputWrapper);
+
+
+
             // Collision detection/resolution
             m_contactList.StartAddingContacts();
 
@@ -221,15 +224,14 @@ namespace TestGame
 
             m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
 
+            // End frame updates
             m_projectileManager.EndFrame();
-
-            m_cameraController.Update(ref frameTime, ref inputWrapper);
         }
+
 
         private void AddContacts(int layer)
         {
-            CollisionHelpers.GenerateContacts(m_enemyManager.GetMeleeEnemies().ActiveItemList, m_enemyManager.GetMeleeEnemies().ActiveItemListCount, m_bin, m_contactList, layer);
-            CollisionHelpers.GenerateContacts(m_enemyManager.GetMissileEnemies().ActiveItemList, m_enemyManager.GetMissileEnemies().ActiveItemListCount, m_bin, m_contactList, layer);
+            CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList, layer);
             CollisionHelpers.GenerateContacts(m_playerManager.GetPlayers().ActiveItemList, m_playerManager.GetPlayers().ActiveItemListCount, m_bin, m_contactList, layer);
             CollisionHelpers.UpdateBulletContacts(m_projectileManager.GetBullets().ActiveItemList, m_projectileManager.GetBullets().ActiveItemListCount, m_bin, layer);
         }

@@ -28,12 +28,13 @@ namespace TestGame.Entities
         #endregion
 
         private int m_occludingBinLayer = -1;
+        private int m_obstructionBinLayer = -1;
 
         private MapData.EnemyData m_data = null;
 
         private Trigger m_deathTrigger = null;
 
-        private SensedObject m_sensedPlayer = null;
+        //private SensedObject m_sensedPlayer = null;
 
         private Weapon m_weapon = null;
 
@@ -51,7 +52,8 @@ namespace TestGame.Entities
             SetContactRadiusInfo(new RadiusInfo(14.0f + ((float)random.NextDouble() * 3.0f)));
             SetMass(GetContactRadiusInfo().Radius * 0.5f);
 
-            SetOccludingBinLayer(BinLayers.kBoundaryViewSmall);
+            SetOccludingBinLayer(BinLayers.kBoundaryOcclusionSmall);
+            SetObstructionBinLayer(BinLayers.kBoundaryObstructionSmall);
 
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
@@ -62,7 +64,7 @@ namespace TestGame.Entities
 
             m_currentState = null;
             m_deathTrigger = null;
-            m_sensedPlayer = null;
+            //m_sensedPlayer = null;
             m_weapon = null;
             m_ownedSpawnPoint = null;
         }
@@ -72,10 +74,10 @@ namespace TestGame.Entities
             get { return m_sensoryData; }
         }
 
-        public SensedObject SensedPlayer
-        {
-            get { return m_sensedPlayer; }
-        }
+        //public SensedObject SensedPlayer
+        //{
+        //    get { return m_sensedPlayer; }
+        //}
 
         public MapData.EnemyData GetData() { return m_data; }
 
@@ -97,7 +99,7 @@ namespace TestGame.Entities
 
             m_sensoryData.Update(ref frameTime);
 
-            bool playerSensed = m_sensoryData.GetSensedObject(SensedType.kSeePlayer, ref m_sensedPlayer);
+            //bool playerSensed = m_sensoryData.GetSensedObject(SensedType.kSeePlayer, ref m_sensedPlayer);
 
             if (m_currentState != null)
             {
@@ -111,7 +113,7 @@ namespace TestGame.Entities
         {
             for(int i = 0; i < players.Length; ++i)
             {
-                m_sensoryData.UpdateSensoryData(m_position, FacingDirection, players);
+                m_sensoryData.UpdateSensoryData(this, players);
             }
         }
 
@@ -231,6 +233,18 @@ namespace TestGame.Entities
         public void SetOccludingBinLayer(int layer)
         {
             m_occludingBinLayer = layer;
+        }
+
+
+        public int GetObstructionBinLayer()
+        {
+            return m_obstructionBinLayer;
+        }
+
+
+        public void SetObstructionBinLayer(int layer)
+        {
+            m_obstructionBinLayer = layer;
         }
 
 

@@ -14,6 +14,9 @@ namespace TestGame.Entities
         kNone = -1,
         kSeePlayer = 0,
         kSawPlayer,
+
+        kStraightPathToPlayer,
+
         kNoise,
     }
 
@@ -59,13 +62,19 @@ namespace TestGame.Entities
         private SensedObject[] m_sensedObjects = new SensedObject[kMaxSensedObjects];
         private int m_sensedObjectCnt = 0;
 
-        private bool m_seePlayer = false;
+        private SensedObject m_seePlayerSense = null;
+        private SensedObject m_straightPathToPlayerSense = null;
 
 
 
-        public bool SeePlayer
+        public SensedObject SeePlayerSense
         {
-            get { return m_seePlayer; }
+            get { return m_seePlayerSense; }
+        }
+
+        public SensedObject StraightPathToPlayerSense
+        {
+            get { return m_straightPathToPlayerSense; }
         }
 
 
@@ -88,13 +97,15 @@ namespace TestGame.Entities
 
             m_sensedObjectCnt = 0;
 
-            m_seePlayer = false;
+            m_seePlayerSense = null;
+            m_straightPathToPlayerSense = null;
         }
 
 
         public void Update(ref FrameTime frameTime)
         {
-            m_seePlayer = false;
+            m_seePlayerSense = null;
+            m_straightPathToPlayerSense = null;
 
 
             for (int i = 0; i < m_sensedObjectCnt; ++i)
@@ -119,18 +130,22 @@ namespace TestGame.Entities
                 }
                 else
                 {
-                    m_seePlayer |= (m_sensedObjects[i].m_type == SensedType.kSeePlayer);
+                    if (m_sensedObjects[i].m_type == SensedType.kSeePlayer)
+                        m_seePlayerSense = m_sensedObjects[i];
+
+                    if(m_sensedObjects[i].m_type == SensedType.kStraightPathToPlayer)
+                        m_straightPathToPlayerSense = m_sensedObjects[i];
                 }
             }
         }
 
 
-        public void UpdateSensoryData(Vector2 myPosition, Vector2 myDirection, PlayerEntity[] playerEntites)
+        public void UpdateSensoryData(AiEntity aiEntity, PlayerEntity[] playerEntites)
         {
             for (int i = 0; i < playerEntites.Length; ++i)
             {
                 if (playerEntites[i] != null)
-                    UpdateSense(myPosition, myDirection, playerEntites[i]);
+                    UpdatePlayerSense(aiEntity, playerEntites[i]);
             }
         }
 
@@ -227,9 +242,9 @@ namespace TestGame.Entities
         }
 
 
-        private bool UpdateSense(Vector2 myPosition, Vector2 myDirection, DynamicGameEntity entity)
+        private void UpdatePlayerSense(AiEntity aiEntity, PlayerEntity playerEntity)
         {
-            Vector2 dPos = entity.GetPosition() - myPosition;
+            Vector2 dPos = playerEntity.GetPosition() - aiEntity.GetPosition();
             float distanceSq = dPos.LengthSquared();
 
 
@@ -241,14 +256,15 @@ namespace TestGame.Entities
                 {
                     float distance = (float)Math.Sqrt(distanceSq);
                     Vector2 normlisedDPos = dPos / distance;
-                    float angleToEntity = Vector2.Dot(normlisedDPos, myDirection);
+                    float angleToEntity = Vector2.Dot(normlisedDPos, aiEntity.FacingDirection);
 
                     checkLineOfSight = angleToEntity > m_invHalfSightFov;
                 }
 
                 if (checkLineOfSight)
                 {
-                    bool clearLineOfSight = CollisionHelpers.IsClearLineOfSight(myPosition, dPos, entity.GetBin(), BinLayers.kBoundary);
+                    bool clearLineOfSight = CollisionHelpers.IsClearLineOfSight(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.GetOccludingBinLayer());
+                    bool clearLineOfPath = CollisionHelpers.IsClearLineOfSight(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.GetObstructionBinLayer());
 
                     //if (clearLineOfSight)
                     //    entity.GetWorld().GetDebugRenderer().DrawFilledLine(myPosition, entity.GetPosition(), new Color(0.0f, 1.0f, 0.0f, 0.2f), 2.0f);
@@ -268,14 +284,12 @@ namespace TestGame.Entities
 
 
                     if (clearLineOfSight)
-                    {
-                        AddSense(0, SensedType.kSeePlayer, entity.GetPosition(), distanceSq, 0.1f);
-                        return true;
-                    }
+                        AddSense(0, SensedType.kSeePlayer, playerEntity.GetPosition(), distanceSq, 0.05f);
+
+                    if (clearLineOfPath)
+                        AddSense(0, SensedType.kStraightPathToPlayer, playerEntity.GetPosition(), distanceSq, 0.05f);
                 }
             }
-
-            return false;
         }
     }
 }
