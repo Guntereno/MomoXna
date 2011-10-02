@@ -59,7 +59,7 @@ namespace TestGame.Events
                     SpawnPoint spawnPoint = GetWorld().GetSpawnPointManager().GetNextSpawnPoint();
                     if (spawnPoint != null)
                     {
-                        m_ownedSpawnPoints[m_spawnCounter] = spawnPoint;
+                        m_ownedSpawnPoints[m_spawnCounter-1] = spawnPoint;
                         spawnPoint.TakeOwnership(this);
                         SpawnEnemy(spawnPoint);
                         m_spawnTimer = m_spawnData.GetSpawnDelay();

@@ -599,7 +599,7 @@ namespace TmxProcessorLib.Content
             output.Write(SpawnPoints.Count);
             foreach (Vector2 spawnPoint in SpawnPoints)
             {
-                output.Write(spawnPoint);
+                output.Write(spawnPoint + Offset);
             }
 
             // Output the patch objects

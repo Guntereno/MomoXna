@@ -31,10 +31,10 @@ namespace TestGame.Systems
 
         internal SpawnPoint GetNextSpawnPoint()
         {
-            const float kMaxDistance = 300.0f;
+            const float kMaxDistance = 500.0f;
             const float kMaxDistanceSq = kMaxDistance * kMaxDistance;
 
-            const float kMinDistance = 100.0f;
+            const float kMinDistance = 300.0f;
             const float kMinDistanceSq = kMinDistance * kMinDistance;
 
             float closestValidDistance = float.MaxValue;
