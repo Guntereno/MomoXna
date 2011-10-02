@@ -31,6 +31,9 @@ namespace TestGame.Systems
 
         internal SpawnPoint GetNextSpawnPoint()
         {
+            if (m_spawnPoints == null)
+                return null;
+
             const float kMaxDistance = 500.0f;
             const float kMaxDistanceSq = kMaxDistance * kMaxDistance;
 
