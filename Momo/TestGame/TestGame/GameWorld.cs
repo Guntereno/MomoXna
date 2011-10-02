@@ -122,7 +122,7 @@ namespace TestGame
 
             m_cameraController.Camera = m_camera;
 
-            m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/test_arena2/test_arena2");
+            m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/tom_owes_me/tom_owes_me");
 
             m_bin.Init(50, 50, m_map.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 6000, 1000, 1000);
 
@@ -161,8 +161,8 @@ namespace TestGame
             // Path stuff
             PathRegion[] regions = new PathRegion[1];
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
-            regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 30, true, extrudeBoundariesSmallPath);
-            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryNodeConnectingSmall);
+            //regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 30, true, extrudeBoundariesSmallPath);
+            //regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryNodeConnectingSmall);
             m_pathIsland.SetRegions(regions);
 
             AddPathIslandToBin(m_pathIsland);
@@ -173,7 +173,7 @@ namespace TestGame
             PathFindingHelpers.Init(400.0f, 3, m_bin);
 
             m_eventManager.LoadEvents(m_map);
-            m_spawnGroupManager.LoadSpawnGroups(m_map);
+            //m_spawnGroupManager.LoadSpawnGroups(m_map);
         }
 
 
@@ -262,10 +262,10 @@ namespace TestGame
 
         public override void DebugRender()
         {
-            //for (int i = 0; i < m_boundaries.Count; ++i)
-            //{
-            //    m_boundaries[i].DebugRender(m_debugRenderer);
-            //}
+            for (int i = 0; i < m_boundaries.Count; ++i)
+            {
+                m_boundaries[i].DebugRender(m_debugRenderer);
+            }
 
             for (int i = 0; i < m_playerManager.GetPlayers().ActiveItemListCount; ++i)
             {
@@ -350,7 +350,7 @@ namespace TestGame
 
             for (int i = 0; i < numBoundries; ++i)
             {
-                Momo.Maths.ExtendedMaths2D.ExtrudePointsAlongNormal(m_map.CollisionBoundaries[i], m_map.CollisionBoundaries[i].Length, true, extrudeAmount, out extrudedCollisionBoundary[i]);
+                Momo.Maths.ExtendedMaths2D.ExtrudePointsAlongNormalRounded(m_map.CollisionBoundaries[i], m_map.CollisionBoundaries[i].Length, true, extrudeAmount, 0.45f, out extrudedCollisionBoundary[i]);
             }
 
             return extrudedCollisionBoundary;
