@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Events>
-
+<!--
     <EventGroup name="testWave">
         <Spawn name="spawn1" timer="0.0">
             <Enemy type="missile" weapon="pistol" />
@@ -8,8 +8,8 @@
             <Enemy type="missile" weapon="minigun" />
         </Spawn>       
     </EventGroup>
+-->
 
-<!--
     <EventGroup name="firstWave">
         <Timer name="startTimer" time="5.0" endTrigger="startTimerOver"/>
         <Spawn name="spawn1" startTrigger="startTimerOver" endTrigger="spawnOver" timer="2.0">
@@ -190,7 +190,5 @@
         
         <TriggerCounter name="eventCounter" startTrigger="startTimerOver" endTrigger="complete" countTrigger="spawnOver" count="6"/>
     </EventGroup>
-
-!-->
 
 </Events>
