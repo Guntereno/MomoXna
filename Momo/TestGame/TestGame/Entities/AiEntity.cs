@@ -77,9 +77,9 @@ namespace TestGame.Entities
             get { return m_sensoryData; }
         }
 
-        public SensedObject GetSensedPlayer()
+        public SensedObject SensedPlayer
         {
-            return m_sensedPlayer;
+            get { return m_sensedPlayer; }
         }
 
         public MapData.EnemyData GetData() { return m_data; }
@@ -102,7 +102,7 @@ namespace TestGame.Entities
 
             m_sensoryData.Update(ref frameTime);
 
-            bool playerSensed = m_sensoryData.GetSensedPlayer(SensedType.kSeePlayer, ref m_sensedPlayer);
+            bool playerSensed = m_sensoryData.GetSensedObject(SensedType.kSeePlayer, ref m_sensedPlayer);
 
             if (m_currentState != null)
             {

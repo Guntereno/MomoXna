@@ -15,6 +15,7 @@ namespace TestGame.Entities
     {
         kNone = -1,
         kSeePlayer = 0,
+        kSawPlayer,
         kNoise,
     }
 
@@ -60,13 +61,13 @@ namespace TestGame.Entities
         private SensedObject[] m_sensedObjects = new SensedObject[kMaxSensedObjects];
         private int m_sensedObjectCnt = 0;
 
-        private bool m_sensePlayer = false;
+        private bool m_seePlayer = false;
 
 
 
-        public bool SensePlayer
+        public bool SeePlayer
         {
-            get { return m_sensePlayer; }
+            get { return m_seePlayer; }
         }
 
 
@@ -89,13 +90,13 @@ namespace TestGame.Entities
 
             m_sensedObjectCnt = 0;
 
-            m_sensePlayer = false;
+            m_seePlayer = false;
         }
 
 
         public void Update(ref FrameTime frameTime)
         {
-            m_sensePlayer = false;
+            m_seePlayer = false;
 
 
             for (int i = 0; i < m_sensedObjectCnt; ++i)
@@ -104,6 +105,11 @@ namespace TestGame.Entities
 
                 if (m_sensedObjects[i].m_timeSensed < 0.0f)
                 {
+                    if (m_sensedObjects[i].m_type == SensedType.kSeePlayer)
+                    {
+                        AddSense(0, SensedType.kSawPlayer, m_sensedObjects[i].m_lastPosition, m_sensedObjects[i].m_sensedDistanceSq, 3.0f);
+                    }
+
                     m_sensedObjects[i].m_type = SensedType.kNone;
 
                     if (i < m_sensedObjectCnt - 2)
@@ -115,7 +121,7 @@ namespace TestGame.Entities
                 }
                 else
                 {
-                    m_sensePlayer |= (m_sensedObjects[i].m_type == SensedType.kSeePlayer);
+                    m_seePlayer |= (m_sensedObjects[i].m_type == SensedType.kSeePlayer);
                 }
             }
         }
@@ -154,7 +160,7 @@ namespace TestGame.Entities
         }
 
 
-        public bool GetSensedPlayer(SensedType type, ref SensedObject obj)
+        public bool GetSensedObject(SensedType type, ref SensedObject obj)
         {
             int closestIndex = GetClosestSenseIndex(type);
 
@@ -164,6 +170,7 @@ namespace TestGame.Entities
                 return true;
             }
 
+            obj = null;
             return false;
         }
 
@@ -264,7 +271,7 @@ namespace TestGame.Entities
 
                     if (clearLineOfSight)
                     {
-                        AddSense(0, SensedType.kSeePlayer, entity.GetPosition(), distanceSq, 0.5f);
+                        AddSense(0, SensedType.kSeePlayer, entity.GetPosition(), distanceSq, 0.1f);
                         return true;
                     }
                 }

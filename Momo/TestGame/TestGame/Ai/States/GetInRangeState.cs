@@ -29,12 +29,15 @@ namespace TestGame.Ai.States
 
             // Until the range is reached
             AiEntity entity = GetEntity();
-            SensedObject sensedPlayer = entity.GetSensedPlayer();
+            SensedObject sensedPlayer = entity.SensedPlayer;
 
-            Vector2 offset = sensedPlayer.GetLastPosition() - entity.GetPosition();
-            if (offset.LengthSquared() <= m_range.RadiusSq)
+            if (sensedPlayer != null)
             {
-                entity.SetCurrentState(m_inRangeState);
+                Vector2 offset = sensedPlayer.GetLastPosition() - entity.GetPosition();
+                if (offset.LengthSquared() <= m_range.RadiusSq)
+                {
+                    entity.SetCurrentState(m_inRangeState);
+                }
             }
         }
     }

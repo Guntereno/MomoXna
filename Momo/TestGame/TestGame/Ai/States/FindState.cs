@@ -43,7 +43,7 @@ namespace TestGame.Ai.States
             AiEntity entity = GetEntity();
 
             // If we've found the player, go into the found player state
-            if (entity.SensoryData.SensePlayer)
+            if (entity.SensoryData.SeePlayer)
             {
                 entity.SetCurrentState(m_foundPlayerState);
             }

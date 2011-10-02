@@ -39,7 +39,7 @@ namespace TestGame.Ai.States
         {
             GameWorld world = GetEntity().GetWorld();
 
-            if (GetEntity().SensoryData.SensePlayer)
+            if (GetEntity().SensoryData.SeePlayer)
             {
                 GetEntity().SetCurrentState(m_foundPlayerState);
             }
