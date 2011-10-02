@@ -13,13 +13,16 @@ namespace MapData
             Missile = 1
         }
 
-        public EnemyData(Species type)
+        public EnemyData(Species type, Weapon.Design weapon)
         {
             m_type = type;
+            m_weapon = weapon;
         }
 
         private Species m_type;
+        private Weapon.Design m_weapon;
 
         public Species GetSpecies() { return m_type; }
+        public Weapon.Design GetWeapon() { return m_weapon; }
     }
 }

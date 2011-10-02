@@ -146,7 +146,8 @@ namespace MapData
                 for (int i = 0; i < enemyCount; ++i)
                 {
                     EnemyData.Species species = (EnemyData.Species)(input.ReadInt32());
-                    enemies[i] = new EnemyData(species);
+                    Weapon.Design weapon = (Weapon.Design)(input.ReadInt32());
+                    enemies[i] = new EnemyData(species, weapon);
                 }
 
                 SpawnEvents[spawnIdx] = new SpawnEventData(name, startTrigger, endTrigger, delay, enemies);

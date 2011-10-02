@@ -34,6 +34,8 @@ namespace TestGame.Entities
 
         private int m_occludingBinLayer = -1;
 
+        private MapData.EnemyData m_data = null;
+
         private Trigger m_deathTrigger = null;
 
         private SensedObject m_sensedPlayer = null;
@@ -45,7 +47,6 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-
         public AiEntity(GameWorld world): base(world)
         {
             Random random = GetWorld().GetRandom();
@@ -60,6 +61,17 @@ namespace TestGame.Entities
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
 
+        public virtual void Init(MapData.EnemyData data)
+        {
+            m_data = data;
+
+            m_currentState = null;
+            m_deathTrigger = null;
+            m_sensedPlayer = null;
+            m_weapon = null;
+            m_ownedSpawnPoint = null;
+        }
+
         public EntitySensoryData SensoryData
         {
             get { return m_sensoryData; }
@@ -69,6 +81,8 @@ namespace TestGame.Entities
         {
             return m_sensedPlayer;
         }
+
+        public MapData.EnemyData GetData() { return m_data; }
 
         public void TakeOwnershipOf(SpawnPoint spawnPoint)
         {

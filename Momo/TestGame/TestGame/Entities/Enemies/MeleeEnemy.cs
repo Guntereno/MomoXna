@@ -27,7 +27,7 @@ namespace TestGame.Entities.Enemies
 
         }
 
-        public void Init()
+        public override void Init(MapData.EnemyData data)
         {
             SetCurrentState(m_stateFind);
         }

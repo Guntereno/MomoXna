@@ -133,7 +133,7 @@ namespace TestGame.Entities
             m_destroyed = true;
         }
 
-        public void ResetItem()
+        public virtual void ResetItem()
         {
             m_destroyed = false;
         }

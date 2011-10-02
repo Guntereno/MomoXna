@@ -32,13 +32,18 @@ namespace TestGame.Entities.Enemies
             m_stateFireWeapon.Init(m_stateGetInRange, m_stateFind, kMinRange);
         }
 
-        public void Init()
+        public override void Init(MapData.EnemyData data)
         {
+            base.Init(data);
+
             System.Diagnostics.Debug.Assert(GetCurrentWeapon() == null);
-            int typeIdx = GetWorld().GetRandom().Next((int)Systems.WeaponManager.WeaponType.Count);
-            Weapon weapon = GetWorld().GetWeaponManager().Create((Systems.WeaponManager.WeaponType)(typeIdx));
-            SetCurrentWeapon(weapon);
-            weapon.SetOwner(this);
+
+            if (GetData().GetWeapon() != MapData.Weapon.Design.None)
+            {
+                Weapon weapon = GetWorld().GetWeaponManager().Create(GetData().GetWeapon());
+                SetCurrentWeapon(weapon);
+                weapon.SetOwner(this);
+            }
 
             SetCurrentState(m_stateFind);
         }

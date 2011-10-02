@@ -135,6 +135,7 @@ namespace TestGame
             m_playerManager.Load();
             m_weaponManager.Load();
             m_projectileManager.Load();
+            m_enemyManager.Load();
 
             m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(0));
 

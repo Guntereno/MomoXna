@@ -17,8 +17,9 @@ namespace TestGame.Systems
         private GameWorld m_world;
         private Bin m_bin;
 
-        private Pool<AiEntity> m_meleeEnemies = new Pool<AiEntity>(1000);
-        private Pool<AiEntity> m_misileEnemies = new Pool<AiEntity>(1000);
+        static readonly int kMaxEnemies = 1000;
+        private Pool<AiEntity> m_meleeEnemies = new Pool<AiEntity>(kMaxEnemies);
+        private Pool<AiEntity> m_missileEnemies = new Pool<AiEntity>(kMaxEnemies);
 
         private int m_killCounter = 0;
 
@@ -28,29 +29,34 @@ namespace TestGame.Systems
             m_bin = bin;
         }
 
+        public void Load()
+        {
+            for (int i = 0; i < kMaxEnemies; ++i)
+            {
+                m_meleeEnemies.AddItem(new MeleeEnemy(m_world), false);
+                m_missileEnemies.AddItem(new MissileEnemy(m_world), false);
+            }
+        }
 
-        public AiEntity Create(MapData.EnemyData.Species species, Vector2 pos)
+
+        public AiEntity Create(MapData.EnemyData data, Vector2 pos)
         {
             AiEntity createdEntity = null;
 
-            switch (species)
+            switch (data.GetSpecies())
             {
                 case MapData.EnemyData.Species.Melee:
                     {
-                        MeleeEnemy ai = new MeleeEnemy(m_world);
-                        m_meleeEnemies.AddItem(ai, true);
-                        createdEntity = ai;
-                        ai.Init();
+                        createdEntity = m_meleeEnemies.CreateItem();
+                        createdEntity.Init(data);
                     }
                     break;
 
 
                 case MapData.EnemyData.Species.Missile:
                     {
-                        MissileEnemy ai = new MissileEnemy(m_world);
-                        m_meleeEnemies.AddItem(ai, true);
-                        createdEntity = ai;
-                        ai.Init();
+                        createdEntity = m_missileEnemies.CreateItem();
+                        createdEntity.Init(data);
                     }
                     break;
             }
@@ -64,7 +70,7 @@ namespace TestGame.Systems
         public void Update(ref FrameTime frameTime, int updateToken)
         {
             UpdateEnemyPool(m_meleeEnemies, ref frameTime, updateToken);
-            UpdateEnemyPool(m_misileEnemies, ref frameTime, updateToken);
+            UpdateEnemyPool(m_missileEnemies, ref frameTime, updateToken);
         }
 
         private void UpdateEnemyPool(Pool<AiEntity> pool, ref FrameTime frameTime, int updateToken)
@@ -96,14 +102,14 @@ namespace TestGame.Systems
             {
                 m_meleeEnemies[i].DebugRender(debugRenderer);
             }
-            for (int i = 0; i < m_misileEnemies.ActiveItemListCount; ++i)
+            for (int i = 0; i < m_missileEnemies.ActiveItemListCount; ++i)
             {
-                m_misileEnemies[i].DebugRender(debugRenderer);
+                m_missileEnemies[i].DebugRender(debugRenderer);
             }
         }
 
         public Pool<AiEntity> GetMeleeEnemies() { return m_meleeEnemies; }
-        public Pool<AiEntity> GetMisileEnemies() { return m_misileEnemies; }
+        public Pool<AiEntity> GetMisileEnemies() { return m_missileEnemies; }
 
         public void IncrementKillCount() { ++m_killCounter; }
         public int GetKillCount() { return m_killCounter; }

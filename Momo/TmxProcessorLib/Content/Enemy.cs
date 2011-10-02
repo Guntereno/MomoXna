@@ -7,23 +7,24 @@ namespace TmxProcessorLib.Content
 {
     class Enemy
     {
-        enum Species
-        {
-            Melee = 0,
-            Missile = 1
-        }
-
         public int m_type = 0;
+        public int m_weapon = -1;
 
         internal virtual void ImportXmlNode(System.Xml.XmlNode node, Microsoft.Xna.Framework.Content.Pipeline.ContentImporterContext context)
         {
             string type = node.Attributes["type"].Value;
-            m_type = (int)(Enum.Parse(typeof(Species), type, true));
+            m_type = (int)(Enum.Parse(typeof(MapData.EnemyData.Species), type, true));
+
+            if (node.Attributes["weapon"] != null)
+            {
+                m_weapon = (int)Enum.Parse(typeof(MapData.Weapon.Design), node.Attributes["weapon"].Value, true);
+            }
         }
 
         internal virtual void Write(Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler.ContentWriter output)
         {
             output.Write(m_type);
+            output.Write(m_weapon);
         }
     }
 }

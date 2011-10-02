@@ -71,8 +71,8 @@ namespace TestGame.Events
         private AiEntity SpawnEnemy(SpawnPoint spawnPoint)
         {
             EnemyManager enemyManager = GetWorld().GetEnemyManager();
-            MapData.EnemyData.Species species = m_spawnData.GetEnemies()[m_spawnCounter].GetSpecies();
-            AiEntity enemy = enemyManager.Create(species, spawnPoint.GetData().GetPosition());
+            MapData.EnemyData enemyData = m_spawnData.GetEnemies()[m_spawnCounter];
+            AiEntity enemy = enemyManager.Create(enemyData, spawnPoint.GetData().GetPosition());
             enemy.SetDeathTrigger(m_killTrigger);
 
             ++m_spawnCounter;

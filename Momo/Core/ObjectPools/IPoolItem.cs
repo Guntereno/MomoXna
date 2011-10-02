@@ -12,6 +12,5 @@ namespace Momo.Core.ObjectPools
 
         void DestroyItem();
         void ResetItem();
-
     }
 }

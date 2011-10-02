@@ -44,9 +44,9 @@ namespace TestGame.Entities
         public void Init()
         {
             Systems.WeaponManager weaponMan = GetWorld().GetWeaponManager();
-            m_arsenal[0] = weaponMan.Create(Systems.WeaponManager.WeaponType.Pistol);
-            m_arsenal[1] = weaponMan.Create(Systems.WeaponManager.WeaponType.Shotgun);
-            m_arsenal[2] = weaponMan.Create(Systems.WeaponManager.WeaponType.Minigun);
+            m_arsenal[0] = weaponMan.Create(MapData.Weapon.Design.Pistol);
+            m_arsenal[1] = weaponMan.Create(MapData.Weapon.Design.Shotgun);
+            m_arsenal[2] = weaponMan.Create(MapData.Weapon.Design.Minigun);
 
             for (int i = 0; i < kNumWeaponSlots; ++i)
             {
