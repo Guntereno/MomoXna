@@ -150,35 +150,71 @@ namespace TmxProcessorLib.Content
                 string eventsPath = Path.Combine(FileName.Remove(FileName.LastIndexOf('\\')), Properties.Properties["events"]);
                 context.AddDependency(eventsPath);
 
+                Stack<EventGroup> nameStack = new Stack<EventGroup>();
+
                 if (File.Exists(eventsPath))
                 {
                     XmlDocument eventsXml = new XmlDocument();
                     eventsXml.Load(eventsPath);
 
-                    XmlNodeList timerNodes = eventsXml.SelectNodes("/Events/Timer");
-                    foreach (XmlNode node in timerNodes)
+                    XmlNodeList nodes = eventsXml.SelectNodes("Events/*");
+                    foreach (XmlNode node in nodes)
                     {
-                        TimerEvent timerEvent = new TimerEvent();
-                        timerEvent.ImportXmlNode(node, context);
-                        TimerEvents.Add(timerEvent);
-                    }
+                        string name = node.Name;
+                        Console.Out.WriteLine(name);
 
-                    XmlNodeList spawnNodes = eventsXml.SelectNodes("/Events/Spawn");
-                    foreach (XmlNode node in spawnNodes)
-                    {
-                        SpawnEvent spawnEvent = new SpawnEvent();
-                        spawnEvent.ImportXmlNode(node, context);
-                        SpawnEvents.Add(spawnEvent);
-                    }
-
-                    XmlNodeList triggerCounterNodes = eventsXml.SelectNodes("/Events/TriggerCounter");
-                    foreach (XmlNode node in triggerCounterNodes)
-                    {
-                        TriggerCounterEvent triggerCounterEvent = new TriggerCounterEvent();
-                        triggerCounterEvent.ImportXmlNode(node, context);
-                        TriggerCounterEvents.Add(triggerCounterEvent);
+                        CheckEventNode(node, nameStack, context);
                     }
                 }
+            }
+        }
+        void CheckEventNode(XmlNode node, Stack<EventGroup> groupStack, ContentImporterContext context)
+        {
+            switch (node.Name)
+            {
+                case "EventGroup":
+                    {
+                        EventGroup eventGroup = new EventGroup();
+                        eventGroup.ImportXmlNode(node, context);
+                        groupStack.Push(eventGroup);
+
+                        XmlNodeList childNodes = node.ChildNodes;
+                        foreach (XmlNode childNode in childNodes)
+                        {
+                            string name = node.Name;
+                            Console.Out.WriteLine(name);
+
+                            // Recursively check this groups children
+                            CheckEventNode(childNode, groupStack, context);
+                        }
+
+                        groupStack.Pop();
+                    }
+                    break;
+
+                case "Timer":
+                    {
+                        TimerEvent timerEvent = new TimerEvent();
+                        timerEvent.ImportXmlNode(node, groupStack, context);
+                        TimerEvents.Add(timerEvent);
+                    }
+                    break;
+
+                case "Spawn":
+                    {
+                        SpawnEvent spawnEvent = new SpawnEvent();
+                        spawnEvent.ImportXmlNode(node, groupStack, context);
+                        SpawnEvents.Add(spawnEvent);
+                    }
+                    break;
+
+                case "TriggerCounter":
+                    {
+                        TriggerCounterEvent triggerCounterEvent = new TriggerCounterEvent();
+                        triggerCounterEvent.ImportXmlNode(node, groupStack, context);
+                        TriggerCounterEvents.Add(triggerCounterEvent);
+                    }
+                    break;
             }
         }
 

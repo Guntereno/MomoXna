@@ -3,209 +3,233 @@
 
 <HideThis>
     <!-- I use this for debbuging with a single enemy -->
-    <Spawn name="firstSpawn1" count="1"/>
+    <Spawn name="spawn1" count="1"/>
 </HideThis>
 
 
     <!-- First wave -->
-    <Timer name="firstSpawnTimer" time="5.0" endTrigger="firstSpawnTrigger"/>
-    <Spawn name="firstSpawn1" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnCount" timer="2.0">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    <Timer name="firstSpawn2Timer" startTrigger="firstSpawnTrigger" time="1.0" endTrigger="firstSpawn2Trigger"/>
-    <Spawn name="firstSpawn2" startTrigger="firstSpawn2Trigger" endTrigger="firstSpawnCount" timer="2.0">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    <TriggerCounter name="firstSpawnGroup" startTrigger="firstSpawnTrigger" endTrigger="firstSpawnComplete" countTrigger="firstSpawnCount" count="2"/>
-    
+    <EventGroup name="firstWave">
+        <Timer name="startTimer" time="5.0" endTrigger="startTimerOver"/>
+        <Spawn name="spawn1" startTrigger="startTimerOver" endTrigger="spawnOver" timer="2.0">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        
+        <Timer name="spawn2Timer" startTrigger="startTimerOver" time="1.0" endTrigger="spawn2TimerOver"/>
+        <Spawn name="spawn2" startTrigger="spawn2TimerOver" endTrigger="spawnOver" timer="2.0">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        
+        <TriggerCounter name="eventCounter" startTrigger="startTimerOver" endTrigger="complete" countTrigger="spawnOver" count="2"/>
+    </EventGroup>
     
     <!-- Second wave -->    
-    <Timer name="secondSpawnTimer" startTrigger="firstSpawnComplete" time="5.0" endTrigger="secondSpawnTrigger"/>
-    
-    <Spawn name="secondSpawn1" startTrigger="secondSpawnTrigger" endTrigger="secondSpawnCount" timer="2.0">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    
-    <Timer name="secondSpawn2Timer" startTrigger="secondSpawnTrigger" time="1.0" endTrigger="secondSpawn2Trigger"/>
-    <Spawn name="secondSpawn2" startTrigger="secondSpawn2Trigger" endTrigger="secondSpawnCount" timer="2.0">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="missile" />
-    </Spawn>
-    
-    <TriggerCounter name="secondSpawnGroup" startTrigger="secondSpawnTrigger" endTrigger="secondSpawnComplete" countTrigger="secondSpawnCount" count="2"/>
+    <EventGroup name="secondWave" startTrigger="firstWave:complete">
+        <Timer name="startTimer" time="5.0" endTrigger="startTimerOver"/>
+        
+        <Spawn name="spawn1" startTrigger="startTimerOver" endTrigger="spawnOver" timer="2.0">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        
+        <Timer name="spawn2Timer" startTrigger="startTimerOver" time="1.0" endTrigger="spawn2TimerOver"/>
+        <Spawn name="spawn2" startTrigger="spawn2TimerOver" endTrigger="spawnOver" timer="2.0">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="missile" />
+        </Spawn>
+        
+        <TriggerCounter name="eventCounter" startTrigger="startTimerOver" endTrigger="complete" countTrigger="spawnOver" count="2"/>
+    </EventGroup>
     
     <!-- Third wave -->
-    <Timer name="thirdSpawnTimer" startTrigger="secondSpawnComplete" time="5.0" endTrigger="thirdSpawnTrigger"/>
-    
-    <Spawn name="thirdSpawn1" startTrigger="thirdSpawnTrigger" endTrigger="thirdSpawnCount" timer="0.7">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    <Timer name="thirdSpawn2Timer" startTrigger="thirdSpawnTrigger" time="1.5" endTrigger="thirdSpawn2Trigger"/>
-    <Spawn name="thirdSpawn2" startTrigger="thirdSpawn2Trigger" endTrigger="thirdSpawnCount" timer="0.7">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="missile" />
-    </Spawn>
-    <Timer name="thirdSpawn3Timer" startTrigger="thirdSpawnTrigger" time="3.0" endTrigger="thirdSpawn3Trigger"/>
-    <Spawn name="thirdSpawn3" startTrigger="thirdSpawn3Trigger" endTrigger="thirdSpawnCount" timer="0.7">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="missile" />
-    </Spawn>
+    <EventGroup name="thirdWave" startTrigger="secondWave:complete">
+        <Timer name="startTimer" time="5.0" endTrigger="startTimerOver"/>
         
-    <TriggerCounter name="thirdSpawnGroup" startTrigger="thirdSpawnTrigger" endTrigger="thirdSpawnComplete" countTrigger="thirdSpawnCount" count="3"/>
-
+        <Spawn name="spawn1" startTrigger="startTimerOver" endTrigger="spawnOver" timer="0.7">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        
+        <Timer name="spawn2Timer" startTrigger="startTimerOver" time="1.5" endTrigger="spawn2TimerOver"/>
+        <Spawn name="spawn2" startTrigger="spawn2TimerOver" endTrigger="spawnOver" timer="0.7">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="missile" />
+        </Spawn>
+        
+        <Timer name="spawn3Timer" startTrigger="startTimerOver" time="3.0" endTrigger="spawn3TimerOver"/>
+        <Spawn name="spawn3" startTrigger="spawn3TimerOver" endTrigger="spawnOver" timer="0.7">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="missile" />
+        </Spawn>
+            
+        <TriggerCounter name="eventCounter" startTrigger="startTimerOver" endTrigger="complete" countTrigger="spawnOver" count="3"/>
+    </EventGroup>
     
     <!-- Forth wave -->
-    <Timer name="forthSpawnTimer" startTrigger="thirdSpawnComplete" time="6.0" endTrigger="forthSpawnTrigger"/>
+    <EventGroup name="forthWave" startTrigger="thirdWave:complete">
+        <Timer name="startTimer" time="6.0" endTrigger="startTimerOver"/>
+        
+        <Spawn name="spawn1" startTrigger="startTimerOver" endTrigger="spawnOver" timer="1.5">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="missile" />
+        </Spawn>
+        
+        <Timer name="spawn2Timer" startTrigger="startTimerOver" time="1.5" endTrigger="spawn2TimerOver"/>
+        <Spawn name="spawn2" startTrigger="spawn2TimerOver" endTrigger="spawnOver" timer="1.6">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="missile" />
+        </Spawn>
+        
+        <Timer name="spawn3Timer" startTrigger="startTimerOver" time="3.0" endTrigger="spawn3TimerOver"/>
+        <Spawn name="spawn3" startTrigger="spawn3TimerOver" endTrigger="spawnOver" timer="1.7">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="missile" />
+        </Spawn>
+        
+        <TriggerCounter name="eventCounter" startTrigger="startTimerOver" endTrigger="complete" countTrigger="spawnOver" count="3"/>
+    </EventGroup>
     
-    <Spawn name="forthSpawn1" startTrigger="forthSpawnTrigger" endTrigger="forthSpawnCount" timer="1.5">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="missile" />
-    </Spawn>
-    <Timer name="forthSpawn2Timer" startTrigger="forthSpawnTrigger" time="1.5" endTrigger="forthSpawn2Trigger"/>
-    <Spawn name="forthSpawn2" startTrigger="forthSpawn2Trigger" endTrigger="forthSpawnCount" timer="1.6">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="missile" />
-    </Spawn>
-    <Timer name="forthSpawn3Timer" startTrigger="forthSpawnTrigger" time="3.0" endTrigger="forthSpawn3Trigger"/>
-    <Spawn name="forthSpawn3" startTrigger="forthSpawn3Trigger" endTrigger="forthSpawnCount" timer="1.7">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="missile" />
-    </Spawn>
-    
-    <TriggerCounter name="forthSpawnGroup" startTrigger="forthSpawnTrigger" endTrigger="forthSpawnComplete" countTrigger="forthSpawnCount" count="3"/>
+
 
     <!-- Fifth wave -->
-    <Timer name="fifthSpawnTimer" startTrigger="forthSpawnComplete" time="8.0" endTrigger="fifthSpawnTrigger"/>
-    
-    <Spawn name="fifthSpawn1" startTrigger="fifthSpawnTrigger" endTrigger="fifthSpawnCount" timer="1.8">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    <Timer name="fifthSpawn2Timer" startTrigger="fifthSpawnTrigger" time="1.8" endTrigger="fifthSpawn2Trigger"/>
-    <Spawn name="fifthSpawn2" startTrigger="fifthSpawn2Trigger" endTrigger="fifthSpawnCount" timer="1.9">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="missile" />
-    </Spawn>
-    <Timer name="fifthSpawn3Timer" startTrigger="fifthSpawnTrigger" time="3.7" endTrigger="fifthSpawn3Trigger"/>
-    <Spawn name="fifthSpawn3" startTrigger="fifthSpawn3Trigger" endTrigger="fifthSpawnCount" timer="2.0">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    <Timer name="fifthSpawn4Timer" startTrigger="fifthSpawnTrigger" time="5.7" endTrigger="fifthSpawn4Trigger"/>
-    <Spawn name="fifthSpawn4" startTrigger="fifthSpawn4Trigger" endTrigger="fifthSpawnCount" timer="2.1">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="missile" />
-    </Spawn>
-    
-    <TriggerCounter name="fifthSpawnGroup" startTrigger="fifthSpawnTrigger" endTrigger="fifthSpawnComplete" countTrigger="fifthSpawnCount" count="4"/>
+    <EventGroup name="fifthWave" startTrigger="forthWave:complete">
+        <Timer name="startTimer" time="8.0" endTrigger="startTimerOver"/>
+        
+        <Spawn name="spawn1" startTrigger="startTimerOver" endTrigger="spawnOver" timer="1.8">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        
+        <Timer name="spawn2Timer" startTrigger="startTimerOver" time="1.8" endTrigger="spawn2TimerOver"/>
+        <Spawn name="spawn2" startTrigger="spawn2TimerOver" endTrigger="spawnOver" timer="1.9">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="missile" />
+        </Spawn>
+        
+        <Timer name="spawn3Timer" startTrigger="startTimerOver" time="3.7" endTrigger="spawn3TimerOver"/>
+        <Spawn name="spawn3" startTrigger="spawn3TimerOver" endTrigger="spawnOver" timer="2.0">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        
+        <Timer name="spawn4Timer" startTrigger="startTimerOver" time="5.7" endTrigger="spawn4TimerOver"/>
+        <Spawn name="spawn4" startTrigger="spawn4TimerOver" endTrigger="spawnOver" timer="2.1">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="missile" />
+        </Spawn>
+        
+        <TriggerCounter name="eventCounter" startTrigger="startTimerOver" endTrigger="complete" countTrigger="spawnOver" count="4"/>
+    </EventGroup>
     
     <!-- Sixth wave -->
-    <Timer name="sixthSpawnTimer" startTrigger="fifthSpawnComplete" time="8.0" endTrigger="sixthSpawnTrigger"/>
-    
-    <Spawn name="sixthSpawn1" startTrigger="sixthSpawnTrigger" endTrigger="sixthSpawnCount" timer="1.0">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    <Timer name="sixthSpawn2Timer" startTrigger="sixthSpawnTrigger" time="1.0" endTrigger="sixthSpawn2Trigger"/>
-    <Spawn name="sixthSpawn2" startTrigger="sixthSpawn2Trigger" endTrigger="sixthSpawnCount" timer="1.0">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    <Timer name="sixthSpawn3Timer" startTrigger="sixthSpawnTrigger" time="1.5" endTrigger="sixthSpawn3Trigger"/>
-    <Spawn name="sixthSpawn3" startTrigger="sixthSpawn3Trigger" endTrigger="sixthSpawnCount" timer="0.0">
-        <Enemy type="missile" />
-        <Enemy type="missile" />
-    </Spawn>
-    <Timer name="sixthSpawn4Timer" startTrigger="sixthSpawnTrigger" time="2.0" endTrigger="sixthSpawn4Trigger"/>
-    <Spawn name="sixthSpawn4" startTrigger="sixthSpawn3Trigger" endTrigger="sixthSpawnCount" timer="1.0">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    <Timer name="sixthSpawn5Timer" startTrigger="sixthSpawnTrigger" time="2.5" endTrigger="sixthSpawn5Trigger"/>
-    <Spawn name="sixthSpawn5" startTrigger="sixthSpawn5Trigger" endTrigger="sixthSpawnCount" timer="0">
-        <Enemy type="missile" />
-        <Enemy type="missile" />
-    </Spawn>
-    <Timer name="sixthSpawn6Timer" startTrigger="sixthSpawnTrigger" time="3.0" endTrigger="sixthSpawn6Trigger"/>
-    <Spawn name="sixthSpawn6" startTrigger="sixthSpawn6Trigger" endTrigger="sixthSpawnCount" timer="1.0">
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-        <Enemy type="melee" />
-    </Spawn>
-    
-    <TriggerCounter name="sixthSpawnGroup" startTrigger="sixthSpawnTrigger" endTrigger="sixthSpawnComplete" countTrigger="sixthSpawnCount" count="6"/>
-
+    <EventGroup name="sixthWave" startTrigger="fifthWave:complete">
+        <Timer name="startTimer" time="8.0" endTrigger="startTimerOver"/>
+        
+        <Spawn name="spawn1" startTrigger="startTimerOver" endTrigger="spawnOver" timer="1.0">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        
+        <Timer name="spawn2Timer" startTrigger="startTimerOver" time="1.0" endTrigger="spawn2TimerOver"/>
+        <Spawn name="spawn2" startTrigger="spawn2TimerOver" endTrigger="spawnOver" timer="1.0">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        <Timer name="spawn3Timer" startTrigger="startTimerOver" time="1.5" endTrigger="spawn3TimerOver"/>
+        <Spawn name="spawn3" startTrigger="spawn3TimerOver" endTrigger="spawnOver" timer="0.0">
+            <Enemy type="missile" />
+            <Enemy type="missile" />
+        </Spawn>
+        
+        <Timer name="spawn4Timer" startTrigger="startTimerOver" time="2.0" endTrigger="spawn4TimerOver"/>
+        <Spawn name="spawn4" startTrigger="spawn3TimerOver" endTrigger="spawnOver" timer="1.0">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        
+        <Timer name="spawn5Timer" startTrigger="startTimerOver" time="2.5" endTrigger="spawn5TimerOver"/>
+        <Spawn name="sixthSpawn5" startTrigger="spawn5TimerOver" endTrigger="spawnOver" timer="0">
+            <Enemy type="missile" />
+            <Enemy type="missile" />
+        </Spawn>
+        
+        <Timer name="spawn6Timer" startTrigger="startTimerOver" time="3.0" endTrigger="spawn6TimerOver"/>
+        <Spawn name="spawn6" startTrigger="spawn6TimerOver" endTrigger="spawnOver" timer="1.0">
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+            <Enemy type="melee" />
+        </Spawn>
+        
+        <TriggerCounter name="eventCounter" startTrigger="startTimerOver" endTrigger="complete" countTrigger="spawnOver" count="6"/>
+    </EventGroup> 
 </Events>

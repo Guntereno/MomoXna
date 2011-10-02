@@ -73,11 +73,11 @@
       <Importer>TmxImporter</Importer>
       <Processor>TmxProcessor</Processor>
     </Compile>
-    <Compile Include="maps\tom_owes_me\tom_owes_me.tmx">
+    <None Include="maps\tom_owes_me\tom_owes_me.tmx">
       <Name>tom_owes_me</Name>
       <Importer>TmxImporter</Importer>
       <Processor>TmxProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FontProcessorLib\FontProcessorLib.csproj">
@@ -112,7 +112,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="maps\NewFolder1\" />
     <Folder Include="maps\tilesets\" />
   </ItemGroup>
   <ItemGroup>
@@ -137,11 +136,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="maps\test_arena\test_arena.tmx">
+    <None Include="maps\test_arena\test_arena.tmx">
       <Name>test_arena</Name>
       <Importer>TmxImporter</Importer>
       <Processor>TmxProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="fonts\Consolas_24_o2_0.png">
