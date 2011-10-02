@@ -67,7 +67,7 @@ namespace TestGame.Systems
                 }
 
                 m_weaponString[i].EndAppend();
-                m_weaponInfo[i].PrimaryColour = player.DebugColor;
+                m_weaponInfo[i].PrimaryColour = player.GetPlayerColour();
                 m_weaponInfo[i].SetText(m_weaponString[i].GetCharacterArray());
             }
         }

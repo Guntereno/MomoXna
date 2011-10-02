@@ -137,6 +137,9 @@
     <Compile Include="Spatial\BinQueryResults.cs" />
     <Compile Include="Spatial\BinRegionSelection.cs" />
     <Compile Include="Spatial\BinRegionUniform.cs" />
+    <Compile Include="StateMachine\State.cs" />
+    <Compile Include="StateMachine\StateMachine.cs" />
+    <Compile Include="StateMachine\TimedState.cs" />
     <Compile Include="Triggers\Trigger.cs" />
     <Compile Include="Triggers\ITriggerListener.cs" />
   </ItemGroup>

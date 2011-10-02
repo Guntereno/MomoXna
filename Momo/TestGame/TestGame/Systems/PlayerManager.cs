@@ -43,7 +43,7 @@ namespace TestGame.Systems
                 Color.LightYellow
             };
 
-            player.DebugColor = debugColours[m_players.ActiveItemListCount];
+            player.SetPlayerColour( debugColours[m_players.ActiveItemListCount] );
 
             // Spawn at a spawn point
             MapData.Map map = m_world.GetMap();

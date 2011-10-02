@@ -28,7 +28,9 @@ namespace TestGame.Entities
 
         private GameWorld m_world;
 
-        protected float m_health = 100.0f;
+        static readonly float kDefaultHealth = 100.0f;
+        protected float m_maxHealth = kDefaultHealth;
+        protected float m_health = kDefaultHealth;
 
 
 
@@ -61,6 +63,8 @@ namespace TestGame.Entities
             set { m_debugColor = value; }
         }
 
+        public float GetHealth() { return m_health; }
+
         public GameWorld GetWorld()
         {
             return m_world;
@@ -86,6 +90,21 @@ namespace TestGame.Entities
 
             debugRenderer.DrawCircle(GetPosition(), GetContactRadiusInfo().Radius, fillColour, outlineColour, true, 2, 8);
             debugRenderer.DrawLine(GetPosition(), GetPosition() + (m_facingDirection * m_contactRadiusInfo.Radius * 1.5f), outlineColour);
+
+            // Render health bar
+            {
+                const float kBarWidth = 32.0f;
+                const float kBarHeight = 4.0f;
+                Vector2 start = GetPosition();
+                Vector2 end = GetPosition();
+                end.X += kBarWidth;
+                Vector2 healthEnd = GetPosition();
+                healthEnd.X += kBarWidth * (m_health / m_maxHealth);
+
+                Vector2 offset = new Vector2(-4.0f, 16.0f);
+                debugRenderer.DrawFilledLine(start + offset, end + offset, Color.Black, kBarHeight);
+                debugRenderer.DrawFilledLine(start + offset, healthEnd + offset, Color.Green, kBarHeight - 2.0f);
+            }
         }
 
 

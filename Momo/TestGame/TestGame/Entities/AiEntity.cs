@@ -6,7 +6,6 @@ using Momo.Core.Spatial;
 using Momo.Core.Triggers;
 using Momo.Debug;
 using TestGame.Ai.States;
-using TestGame.Entities.Players;
 using TestGame.Objects;
 using TestGame.Weapons;
 
@@ -108,7 +107,7 @@ namespace TestGame.Entities
 
 
         // Temporary until we work out how the player visually will update the aiEntity
-        public void UpdateSensoryData(PlayerEntity[] players)
+        public void UpdateSensoryData(Players.PlayerEntity[] players)
         {
             for(int i = 0; i < players.Length; ++i)
             {

@@ -126,6 +126,7 @@
     <Compile Include="Entities\EntitySensoryData.cs" />
     <Compile Include="Entities\PathTracker.cs" />
     <Compile Include="Entities\Players\PlayerEntity.cs" />
+    <Compile Include="Entities\Players\PlayerStates.cs" />
     <Compile Include="Entities\SpawnGroup.cs" />
     <Compile Include="Entities\StaticGameEntity.cs" />
     <Compile Include="Events\Event.cs" />
