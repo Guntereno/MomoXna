@@ -7,17 +7,17 @@ namespace MapData
 {
     public class SpawnEventData : EventData
     {
-        private int m_spawnCount;
         private float m_spawnDelay;
+        private EnemyData[] m_enemies = null;
 
-        public SpawnEventData(string name, string startTrigger, string endTrigger, int spawnCount, float spawnDelay)
+        public SpawnEventData(string name, string startTrigger, string endTrigger, float spawnDelay, EnemyData[] enemies)
             : base(name, startTrigger, endTrigger)
         {
-            m_spawnCount = spawnCount;
             m_spawnDelay = spawnDelay;
+            m_enemies = enemies;
         }
 
-        public int GetSpawnCount() { return m_spawnCount; }
         public float GetSpawnDelay() { return m_spawnDelay; }
+        public EnemyData[] GetEnemies() { return m_enemies; }
     }
 }

@@ -134,7 +134,6 @@ namespace MapData
                 string startTrigger = input.ReadString();
                 string endTrigger = input.ReadString();
 
-                int count = input.ReadInt32();
                 float delay = input.ReadSingle();
 
                 if (startTrigger == "")
@@ -142,7 +141,15 @@ namespace MapData
                 if (endTrigger == "")
                     endTrigger = null;
 
-                SpawnEvents[spawnIdx] = new SpawnEventData(name, startTrigger, endTrigger, count, delay);
+                int enemyCount = input.ReadInt32();
+                EnemyData[] enemies = new EnemyData[enemyCount];
+                for (int i = 0; i < enemyCount; ++i)
+                {
+                    EnemyData.Species species = (EnemyData.Species)(input.ReadInt32());
+                    enemies[i] = new EnemyData(species);
+                }
+
+                SpawnEvents[spawnIdx] = new SpawnEventData(name, startTrigger, endTrigger, delay, enemies);
             }
 
             int numTriggerCounters = input.ReadInt32();

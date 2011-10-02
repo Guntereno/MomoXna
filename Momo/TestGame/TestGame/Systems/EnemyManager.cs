@@ -29,25 +29,30 @@ namespace TestGame.Systems
         }
 
 
-        public AiEntity Create(Vector2 pos)
+        public AiEntity Create(MapData.EnemyData.Species species, Vector2 pos)
         {
             AiEntity createdEntity = null;
 
-            // TEMP: Until pipeline in place for enemy types
-            bool missileEnemy = true;
-            if (missileEnemy)
+            switch (species)
             {
-                MissileEnemy ai = new MissileEnemy(m_world);
-                m_meleeEnemies.AddItem(ai, true);
-                createdEntity = ai;
-                ai.Init();
-            }
-            else
-            {
-                MeleeEnemy ai = new MeleeEnemy(m_world);
-                m_meleeEnemies.AddItem(ai, true);
-                createdEntity = ai;
-                ai.Init();
+                case MapData.EnemyData.Species.Melee:
+                    {
+                        MeleeEnemy ai = new MeleeEnemy(m_world);
+                        m_meleeEnemies.AddItem(ai, true);
+                        createdEntity = ai;
+                        ai.Init();
+                    }
+                    break;
+
+
+                case MapData.EnemyData.Species.Missile:
+                    {
+                        MissileEnemy ai = new MissileEnemy(m_world);
+                        m_meleeEnemies.AddItem(ai, true);
+                        createdEntity = ai;
+                        ai.Init();
+                    }
+                    break;
             }
 
             createdEntity.SetPosition(pos);

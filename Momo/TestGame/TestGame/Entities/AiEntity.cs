@@ -40,19 +40,11 @@ namespace TestGame.Entities
 
         private Weapon m_weapon = null;
 
+        private SpawnPoint m_ownedSpawnPoint = null;
+
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-
-        public EntitySensoryData SensoryData
-        {
-            get { return m_sensoryData; }
-        }
-
-        public SensedObject GetSensedPlayer()
-        {
-            return m_sensedPlayer;
-        }
 
         public AiEntity(GameWorld world): base(world)
         {
@@ -66,6 +58,23 @@ namespace TestGame.Entities
             SetOccludingBinLayer(BinLayers.kBoundaryViewSmall);
 
             DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+        }
+
+        public EntitySensoryData SensoryData
+        {
+            get { return m_sensoryData; }
+        }
+
+        public SensedObject GetSensedPlayer()
+        {
+            return m_sensedPlayer;
+        }
+
+        public void TakeOwnershipOf(SpawnPoint spawnPoint)
+        {
+            System.Diagnostics.Debug.Assert(m_ownedSpawnPoint == null);
+            m_ownedSpawnPoint = spawnPoint;
+            spawnPoint.TakeOwnership(this);
         }
 
         public void SetDeathTrigger(Trigger trigger)
@@ -227,6 +236,12 @@ namespace TestGame.Entities
             if (m_weapon != null)
             {
                 m_weapon.DestroyItem();
+            }
+
+            if (m_ownedSpawnPoint != null)
+            {
+                m_ownedSpawnPoint.RelinquishOwnership(this);
+                m_ownedSpawnPoint = null;
             }
 
             GetWorld().GetEnemyManager().IncrementKillCount();

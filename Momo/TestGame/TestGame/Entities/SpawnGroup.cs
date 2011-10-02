@@ -17,7 +17,7 @@ namespace TestGame.Entities
         GameWorld m_world = null;
 
         private SpawnPointData m_data;
-        private SpawnEvent m_owner;
+        private AiEntity m_owner;
 
         internal SpawnPoint(GameWorld world, SpawnPointData data)
         {
@@ -50,16 +50,16 @@ namespace TestGame.Entities
             return m_owner != null;
         }
 
-        internal void RelinquishOwnership(SpawnEvent spawnEvent)
+        internal void RelinquishOwnership(AiEntity owner)
         {
-            Debug.Assert(m_owner == spawnEvent);
+            Debug.Assert(m_owner == owner);
             m_owner = null;
         }
 
-        internal void TakeOwnership(SpawnEvent spawnEvent)
+        internal void TakeOwnership(AiEntity owner)
         {
             Debug.Assert(m_owner == null);
-            m_owner = spawnEvent;
+            m_owner = owner;
         }
     }
 }

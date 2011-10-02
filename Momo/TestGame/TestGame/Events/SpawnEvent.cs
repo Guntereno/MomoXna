@@ -19,8 +19,6 @@ namespace TestGame.Events
         private int m_spawnCounter = 0;
         private float m_spawnTimer = 0.0f;
 
-        private SpawnPoint[] m_ownedSpawnPoints = new SpawnPoint[kMaxSpawns];
-
         private Trigger m_killTrigger = null;
         private int m_killCount = 0;
 
@@ -40,8 +38,7 @@ namespace TestGame.Events
             System.Diagnostics.Debug.Assert(GetData() != null);
             m_spawnData = (MapData.SpawnEventData)(GetData());
 
-            m_spawnCounter = m_spawnData.GetSpawnCount();
-            System.Diagnostics.Debug.Assert(m_spawnCounter <= kMaxSpawns);
+            m_spawnCounter = 0;
 
             m_spawnTimer = 0.0f; // Ensure a spawn on the next frame
         }
@@ -51,7 +48,7 @@ namespace TestGame.Events
             if (!GetIsActive())
                 return;
 
-            if (m_spawnCounter > 0)
+            if (m_spawnCounter < m_spawnData.GetEnemies().Length)
             {
                 m_spawnTimer -= frameTime.Dt;
                 if (m_spawnTimer <= 0.0f)
@@ -59,34 +56,28 @@ namespace TestGame.Events
                     SpawnPoint spawnPoint = GetWorld().GetSpawnPointManager().GetNextSpawnPoint();
                     if (spawnPoint != null)
                     {
-                        m_ownedSpawnPoints[m_spawnCounter-1] = spawnPoint;
-                        spawnPoint.TakeOwnership(this);
-                        SpawnEnemy(spawnPoint);
+                        AiEntity enemy = SpawnEnemy(spawnPoint);
+                        enemy.TakeOwnershipOf(spawnPoint);
                         m_spawnTimer = m_spawnData.GetSpawnDelay();
                     }
                 }
             }
-            else if (m_killCount >= m_spawnData.GetSpawnCount())
+            else if (m_killCount >= m_spawnData.GetEnemies().Length)
             {
-                for(int i=0; i<kMaxSpawns; ++i)
-                {
-                    if(m_ownedSpawnPoints[i] != null)
-                    {
-                        m_ownedSpawnPoints[i].RelinquishOwnership(this);
-                        m_ownedSpawnPoints[i] = null;
-                    }
-                }
                 End();
             }
         }
 
-        private void SpawnEnemy(SpawnPoint spawnPoint)
+        private AiEntity SpawnEnemy(SpawnPoint spawnPoint)
         {
             EnemyManager enemyManager = GetWorld().GetEnemyManager();
-            AiEntity enemy = enemyManager.Create(spawnPoint.GetData().GetPosition());
+            MapData.EnemyData.Species species = m_spawnData.GetEnemies()[m_spawnCounter].GetSpecies();
+            AiEntity enemy = enemyManager.Create(species, spawnPoint.GetData().GetPosition());
             enemy.SetDeathTrigger(m_killTrigger);
 
-            --m_spawnCounter;
+            ++m_spawnCounter;
+
+            return enemy;
         }
 
         // --------------------------------------------------------------------

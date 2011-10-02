@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace TmxProcessorLib.Content
 {
@@ -50,25 +51,35 @@ namespace TmxProcessorLib.Content
 
     internal class SpawnEvent : Event
     {
-        public int m_spawnCount = 0;
         public float m_spawnDelay = 0.0f;
+        public List<Enemy> m_enemies = new List<Enemy>();
 
         internal override void ImportXmlNode(System.Xml.XmlNode node, Microsoft.Xna.Framework.Content.Pipeline.ContentImporterContext context)
         {
             base.ImportXmlNode(node, context);
 
-            m_spawnCount = int.Parse(node.Attributes["count"].Value);
-
             if (node.Attributes["timer"] != null)
                 m_spawnDelay = float.Parse(node.Attributes["timer"].Value);
+
+            XmlNodeList enemyNodes = node.SelectNodes("Enemy");
+            foreach (XmlNode enemyNode in enemyNodes)
+            {
+                Enemy enemy = new Enemy();
+                enemy.ImportXmlNode(enemyNode, context);
+                m_enemies.Add(enemy);
+            }
         }
 
 
         internal override void Write(Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler.ContentWriter output)
         {
             base.Write(output);
-            output.Write(m_spawnCount);
             output.Write(m_spawnDelay);
+            output.Write(m_enemies.Count);
+            foreach (Enemy enemy in m_enemies)
+            {
+                enemy.Write(output);
+            }
         }
     }
 
