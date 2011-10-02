@@ -109,7 +109,7 @@ namespace TestGame.Systems
         }
 
         public Pool<AiEntity> GetMeleeEnemies() { return m_meleeEnemies; }
-        public Pool<AiEntity> GetMisileEnemies() { return m_missileEnemies; }
+        public Pool<AiEntity> GetMissileEnemies() { return m_missileEnemies; }
 
         public void IncrementKillCount() { ++m_killCounter; }
         public int GetKillCount() { return m_killCounter; }
