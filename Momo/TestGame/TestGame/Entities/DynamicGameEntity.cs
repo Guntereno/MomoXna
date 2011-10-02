@@ -163,6 +163,7 @@ namespace TestGame.Entities
         public virtual void ResetItem()
         {
             m_destroyed = false;
+            m_health = m_maxHealth;
         }
 
 
