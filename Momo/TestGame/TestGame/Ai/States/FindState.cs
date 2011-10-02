@@ -77,9 +77,9 @@ namespace TestGame.Ai.States
                                         out targetDirection);
 
 
-                    GetEntity().TurnTowards(targetDirection, 0.11f);
-
-                    Vector2 newPosition = GetEntity().GetPosition() + entity.FacingDirection * 1.5f;
+                    entity.TurnTowards(targetDirection, 0.05f);
+                    float speed = entity.GetRelativeFacing(targetDirection) * 1.5f;
+                    Vector2 newPosition = GetEntity().GetPosition() + entity.FacingDirection * speed;
 
                     GetEntity().SetPosition(newPosition);
                 }

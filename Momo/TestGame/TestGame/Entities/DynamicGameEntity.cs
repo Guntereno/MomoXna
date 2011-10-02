@@ -89,6 +89,14 @@ namespace TestGame.Entities
         }
 
 
+        public float GetRelativeFacing(Vector2 direction)
+        {
+            float dotFacingDirecion = Vector2.Dot(m_facingDirection, direction);
+            return 0.5f + (dotFacingDirecion * 0.5f);
+        }
+
+
+        // Returns [0.0, 1.0] based on how close the facing is to the target. 1.0 = the same, 0.0 opposite.
         public void TurnTowards(Vector2 targetDirection, float speed)
         {
             Vector2 normalToFacing = Maths2D.Perpendicular(m_facingDirection);
@@ -102,8 +110,6 @@ namespace TestGame.Entities
 
                 if (Vector2.Dot(Maths2D.Perpendicular(newFacing), targetDirection) < 0.0f)
                     newFacing = targetDirection;
-                else
-                    newFacing.Normalize();
             }
             else
             {
@@ -111,9 +117,9 @@ namespace TestGame.Entities
 
                 if (Vector2.Dot(Maths2D.Perpendicular(newFacing), targetDirection) > 0.0f)
                     newFacing = targetDirection;
-                else
-                    newFacing.Normalize();
             }
+
+            newFacing.Normalize();
 
             FacingDirection = newFacing;
         }
