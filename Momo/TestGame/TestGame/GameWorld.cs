@@ -150,13 +150,12 @@ namespace TestGame
 
 
             float smallPathNodeRadius = 25.0f;
-            BuildCollisionBoundaries(0.0f, BinLayers.kBoundary);
+            BuildCollisionBoundaries(0.0f, BinLayers.kBoundary, false);
 
-            BuildCollisionBoundaries(13.0f, BinLayers.kBoundaryViewSmall);
-            BuildCollisionBoundaries(18.0f, BinLayers.kBoundaryPathFindingSmall);
-            BuildCollisionBoundaries(smallPathNodeRadius - 1, BinLayers.kBoundaryNodeConnectingSmall);
+            BuildCollisionBoundaries(12.0f, BinLayers.kBoundaryViewSmall, true);
 
-            Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius);
+            BuildCollisionBoundaries(smallPathNodeRadius - 1, BinLayers.kBoundaryNodeConnectingSmall, true);
+            Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius, false);
    
 
             // Path stuff
@@ -314,16 +313,15 @@ namespace TestGame
         }
 
 
-        private Vector2[][] BuildCollisionBoundaries(float extrudeAmount, int binLayer)
+        private Vector2[][] BuildCollisionBoundaries(float extrudeAmount, int binLayer, bool roundedCorners)
         {
-            int numBoundries = m_map.CollisionBoundaries.Length;
-            Vector2[][] extrudedCollisionBoundary = ExtrudeCollisionBoundaries(extrudeAmount);
+            Vector2[][] extrudedCollisionBoundary = ExtrudeCollisionBoundaries(extrudeAmount, roundedCorners);
+            int numBoundries = extrudedCollisionBoundary.Length;
 
 
             for (int i = 0; i < numBoundries; ++i)
             {
-                int numNodes = m_map.CollisionBoundaries[i].Length;
-
+                int numNodes = extrudedCollisionBoundary[i].Length;
                 Vector2 lastPoint = extrudedCollisionBoundary[i][0];
 
 
@@ -344,15 +342,17 @@ namespace TestGame
         }
 
 
-        private Vector2[][] ExtrudeCollisionBoundaries(float extrudeAmount)
+        private Vector2[][] ExtrudeCollisionBoundaries(float extrudeAmount, bool roundedCorners)
         {
             int numBoundries = m_map.CollisionBoundaries.Length;
             Vector2[][] extrudedCollisionBoundary = new Vector2[numBoundries][];
 
             for (int i = 0; i < numBoundries; ++i)
             {
-                Momo.Maths.ExtendedMaths2D.ExtrudePointsAlongNormal(m_map.CollisionBoundaries[i], m_map.CollisionBoundaries[i].Length, true, extrudeAmount, out extrudedCollisionBoundary[i]);
-                //Momo.Maths.ExtendedMaths2D.ExtrudePointsAlongNormalRounded(m_map.CollisionBoundaries[i], m_map.CollisionBoundaries[i].Length, true, extrudeAmount, 0.45f, out extrudedCollisionBoundary[i]);
+                if(roundedCorners)
+                    Momo.Maths.ExtendedMaths2D.ExtrudePointsAlongNormalRounded(m_map.CollisionBoundaries[i], m_map.CollisionBoundaries[i].Length, extrudeAmount, 0.55f, out extrudedCollisionBoundary[i]);
+                else
+                    Momo.Maths.ExtendedMaths2D.ExtrudePointsAlongNormal(m_map.CollisionBoundaries[i], m_map.CollisionBoundaries[i].Length, extrudeAmount, out extrudedCollisionBoundary[i]);
             }
 
             return extrudedCollisionBoundary;
