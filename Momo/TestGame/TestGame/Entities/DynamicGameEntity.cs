@@ -118,7 +118,9 @@ namespace TestGame.Entities
             FacingDirection = newFacing;
         }
 
-
+        public virtual void OnCollisionEvent(ref BulletEntity bullet)
+        {
+        }
 
         // --------------------------------------------------------------------
         // -- IPool interface implementation

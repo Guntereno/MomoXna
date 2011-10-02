@@ -154,7 +154,7 @@ namespace TestGame.Entities
         }
 
 
-        public void OnCollisionEvent(ref BulletEntity bullet)
+        public override void OnCollisionEvent(ref BulletEntity bullet)
         {
             if ( (bullet.GetFlags() & BulletEntity.Flags.HarmsEnemies) == BulletEntity.Flags.HarmsEnemies )
             {

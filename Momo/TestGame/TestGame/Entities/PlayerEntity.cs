@@ -94,21 +94,34 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            SetBin(bin);
+            //SetBin(bin);
+            AddToBin(bin, GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), BinLayers.kPlayerEntity);
         }
 
 
         public void RemoveFromBin()
         {
-            SetBin(null);
+            //SetBin(null);
+            RemoveFromBin(BinLayers.kPlayerEntity);
         }
 
 
         public void UpdateBinEntry()
         {
-            BinRegionUniform curBinRegion = new BinRegionUniform();
+            //BinRegionUniform curBinRegion = new BinRegionUniform();
 
-            GetBin().GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
+            //GetBin().GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
+
+            //SetBinRegion(curBinRegion);
+
+            BinRegionUniform prevBinRegion = new BinRegionUniform();
+            BinRegionUniform curBinRegion = new BinRegionUniform();
+            Bin bin = GetBin();
+
+            GetBinRegion(ref prevBinRegion);
+            bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
+
+            bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kPlayerEntity);
 
             SetBinRegion(curBinRegion);
         }
@@ -120,9 +133,13 @@ namespace TestGame.Entities
         }
 
 
-        public void OnCollisionEvent(ref BulletEntity bullet)
+        public override void OnCollisionEvent(ref BulletEntity bullet)
         {
-            AddForce(bullet.GetVelocity());
+            float damage = bullet.GetParams().m_damage;
+            Vector2 direction = bullet.GetPositionDifferenceFromLastFrame();
+            direction.Normalize();
+
+            AddForce(direction * (damage * 500.0f));
         }
 
 

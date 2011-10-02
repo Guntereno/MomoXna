@@ -91,13 +91,10 @@ namespace TestGame.Entities
         }
 
 
-        public void OnCollisionEvent(ref AiEntity entity)
+        public void OnCollisionEvent(ref DynamicGameEntity entity)
         {
-            if ((m_flags & Flags.HarmsEnemies) == Flags.HarmsEnemies)
-            {
-                RemoveFromBin(BinLayers.kBullet);
-                DestroyItem();
-            }
+            RemoveFromBin(BinLayers.kBullet);
+            DestroyItem();
         }
 
 

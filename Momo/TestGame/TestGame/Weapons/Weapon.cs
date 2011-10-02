@@ -17,6 +17,13 @@ namespace TestGame.Weapons
         private State m_currentState = null;
         private int m_ammoInClip = 0;
 
+        private Vector2 m_position = new Vector2();
+        private Vector2 m_barrelPos = new Vector2();
+        private Vector2 m_direction = new Vector2();
+        private float m_facing = 0.0f;
+
+        float m_triggerState = 0.0f;
+
         IWeaponUser m_owner = null;
 
         public class Params
@@ -58,6 +65,13 @@ namespace TestGame.Weapons
         public int GetAmmoInClip() { return m_ammoInClip; }
         public void SetAmmoInClip(int ammo) { m_ammoInClip = ammo; }
 
+        public Vector2 GetPosition() { return m_position; }
+        public Vector2 GetBarrelPosition() { return m_barrelPos; }
+        public Vector2 GetDirection() { return m_direction; }
+        public float GetFacing() { return m_facing; }
+
+        public float GetTriggerState() { return m_triggerState; }
+
         public void SetCurrentState(State state)
         {
             if (m_currentState != null)
@@ -92,9 +106,19 @@ namespace TestGame.Weapons
         {
             Recoil = Vector2.Zero;
 
+            m_position = pos;
+            m_facing = facing;
+            m_direction = new Vector2((float)Math.Sin(facing), (float)Math.Cos(facing));
+
+            m_triggerState = triggerState;
+
+            // This should probably be a weapon parameter
+            const float kWeaponLength = 20.0f;
+            m_barrelPos = pos + (m_direction * kWeaponLength);
+
             if (m_currentState != null)
             {
-                m_currentState.Update(ref frameTime, triggerState, pos, facing);
+                m_currentState.Update(ref frameTime);
             }
         }
 
@@ -136,7 +160,7 @@ namespace TestGame.Weapons
             public Weapon GetWeapon() { return m_weapon; }
 
             public virtual void OnEnter() {}
-            public abstract void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing);
+            public abstract void Update(ref FrameTime frameTime);
             public virtual void OnExit() {}
 
             Weapon m_weapon;
@@ -160,7 +184,7 @@ namespace TestGame.Weapons
                 m_timer = GetTime();
             }
 
-            public override void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
+            public override void Update(ref FrameTime frameTime)
             {
                 m_timer -= frameTime.Dt;
                 if (m_timer <= 0.0f)
@@ -230,7 +254,7 @@ namespace TestGame.Weapons
                 m_nextState = nextState;
             }
 
-            public override void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
+            public override void Update(ref FrameTime frameTime)
             {
                 // Empty is a dead-end state. Must be exited using a reload call
             }

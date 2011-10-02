@@ -31,7 +31,7 @@ namespace TestGame
         }
 
 
-        public static void GenerateContacts(DynamicGameEntity[] entities, int entityCount, Bin bin, ContactList contactList)
+        public static void GenerateContacts(DynamicGameEntity[] entities, int entityCount, Bin bin, ContactList contactList, int entityLayer)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();
             BinRegionUniform boundaryRegion = new BinRegionUniform();
@@ -50,13 +50,13 @@ namespace TestGame
                 // Entities
                 BinQueryResults queryResults = bin.GetShaderQueryResults();
                 queryResults.StartQuery();
-                bin.Query(ref entityRegion, BinLayers.kAiEntity, queryResults);
+                bin.Query(ref entityRegion, entityLayer, queryResults);
                 queryResults.EndQuery();
 
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
                 {
-                    AiEntity checkEntity = (AiEntity)queryResults.BinItemQueryResults[j];
+                    DynamicGameEntity checkEntity = (DynamicGameEntity)queryResults.BinItemQueryResults[j];
 
                     if (entity != checkEntity)
                     {
@@ -152,7 +152,7 @@ namespace TestGame
         }
 
 
-        public static void UpdateBulletContacts(BulletEntity[] bullets, int bulletCount, Bin bin)
+        public static void UpdateBulletContacts(BulletEntity[] bullets, int bulletCount, Bin bin, int entityLayer)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();
             BinRegionUniform bulletRegion = new BinRegionUniform();
@@ -177,13 +177,13 @@ namespace TestGame
                 // Entities
                 BinQueryResults queryResults = bin.GetShaderQueryResults();
                 queryResults.StartQuery();
-                bin.Query(ref bulletRegion, BinLayers.kAiEntity, queryResults);
+                bin.Query(ref bulletRegion, entityLayer, queryResults);
                 queryResults.EndQuery();
 
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
                 {
-                    AiEntity checkEntity = (AiEntity)queryResults.BinItemQueryResults[j];
+                    DynamicGameEntity checkEntity = (DynamicGameEntity)queryResults.BinItemQueryResults[j];
                     checkEntity.GetBinRegion(ref entityRegion);
 
 
@@ -241,7 +241,7 @@ namespace TestGame
         }
 
 
-        public static void UpdateExplosions(List<Explosion> explosions, Bin bin)
+        public static void UpdateExplosions(List<Explosion> explosions, Bin bin, int entityLayer)
         {
             BinRegionUniform explosionRegion = new BinRegionUniform();
             BinRegionUniform entityRegion = new BinRegionUniform();
@@ -256,7 +256,7 @@ namespace TestGame
 
                 BinQueryResults queryResults = bin.GetShaderQueryResults();
                 queryResults.StartQuery();
-                bin.Query(ref explosionRegion, BinLayers.kAiEntity, queryResults);
+                bin.Query(ref explosionRegion, entityLayer, queryResults);
                 queryResults.EndQuery();
 
 

@@ -213,10 +213,10 @@ namespace TestGame
 
             // Collision detection/resolution
             m_contactList.StartAddingContacts();
-            CollisionHelpers.GenerateContacts(m_enemyManager.GetMeleeEnemies().ActiveItemList, m_enemyManager.GetMeleeEnemies().ActiveItemListCount, m_bin, m_contactList);
-            CollisionHelpers.GenerateContacts(m_enemyManager.GetMissileEnemies().ActiveItemList, m_enemyManager.GetMissileEnemies().ActiveItemListCount, m_bin, m_contactList);
-            CollisionHelpers.GenerateContacts(m_playerManager.GetPlayers().ActiveItemList, m_playerManager.GetPlayers().ActiveItemListCount, m_bin, m_contactList);
-            CollisionHelpers.UpdateBulletContacts(m_projectileManager.GetBullets().ActiveItemList, m_projectileManager.GetBullets().ActiveItemListCount, m_bin);
+
+            AddContacts(Entities.BinLayers.kAiEntity);
+            AddContacts(Entities.BinLayers.kPlayerEntity);
+
             m_contactList.EndAddingContacts();
 
             m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
@@ -224,6 +224,14 @@ namespace TestGame
             m_projectileManager.EndFrame();
 
             m_cameraController.Update(ref frameTime, ref inputWrapper);
+        }
+
+        private void AddContacts(int layer)
+        {
+            CollisionHelpers.GenerateContacts(m_enemyManager.GetMeleeEnemies().ActiveItemList, m_enemyManager.GetMeleeEnemies().ActiveItemListCount, m_bin, m_contactList, layer);
+            CollisionHelpers.GenerateContacts(m_enemyManager.GetMissileEnemies().ActiveItemList, m_enemyManager.GetMissileEnemies().ActiveItemListCount, m_bin, m_contactList, layer);
+            CollisionHelpers.GenerateContacts(m_playerManager.GetPlayers().ActiveItemList, m_playerManager.GetPlayers().ActiveItemListCount, m_bin, m_contactList, layer);
+            CollisionHelpers.UpdateBulletContacts(m_projectileManager.GetBullets().ActiveItemList, m_projectileManager.GetBullets().ActiveItemListCount, m_bin, layer);
         }
 
 

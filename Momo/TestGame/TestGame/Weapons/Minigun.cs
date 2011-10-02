@@ -91,13 +91,13 @@ namespace TestGame.Weapons
                 m_overheatState = overheatState;
             }
 
-            public override void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
+            public override void Update(ref FrameTime frameTime)
             {
                 Weapon weapon = GetWeapon();
                 Minigun minigun = (Minigun)(weapon);
 
                 const float kTriggerThresh = 0.5f;
-                if (triggerState > kTriggerThresh)
+                if (weapon.GetTriggerState() > kTriggerThresh)
                 {
                     int ammoInClip = weapon.GetAmmoInClip();
                     if (ammoInClip > 0)
@@ -106,18 +106,17 @@ namespace TestGame.Weapons
 
                         Random random = world.GetRandom();
 
-                        MinigunParams param = (MinigunParams)(GetWeapon().GetParams());
-                        float angle = facing + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
+                        MinigunParams param = (MinigunParams)(weapon.GetParams());
+                        float angle = weapon.GetFacing() + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
 
-                        Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
+                        Vector2 velocity = weapon.GetDirection();
 
                         minigun.Recoil = -velocity * weapon.GetParams().m_recoil;
-
 
                         velocity *= param.m_speed;
 
                         world.GetProjectileManager().AddBullet(
-                            pos,
+                            weapon.GetBarrelPosition(),
                             velocity,
                             m_bulletParams,
                             weapon.GetOwner().GetBulletFlags());
@@ -180,7 +179,7 @@ namespace TestGame.Weapons
                 m_nextState = nextState;
             }
 
-            public override void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
+            public override void Update(ref FrameTime frameTime)
             {
                 Weapon weapon = GetWeapon();
                 Minigun minigun = (Minigun)(weapon);

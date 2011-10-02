@@ -79,12 +79,12 @@ namespace TestGame.Weapons
                 m_coolDownState = coolDownState;
             }
 
-            public override void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
+            public override void Update(ref FrameTime frameTime)
             {
                 Weapon weapon = GetWeapon();
 
                 const float kTriggerThresh = 0.5f;
-                if (triggerState > kTriggerThresh)
+                if (weapon.GetTriggerState() > kTriggerThresh)
                 {
                     int ammoInClip = weapon.GetAmmoInClip();
                     if (ammoInClip > 0)
@@ -93,15 +93,13 @@ namespace TestGame.Weapons
 
                         Random random = world.GetRandom();
 
-                        PistolParams param = (PistolParams)(GetWeapon().GetParams());
-                        Vector2 velocity = new Vector2((float)Math.Sin(facing), (float)Math.Cos(facing));
+                        PistolParams param = (PistolParams)(weapon.GetParams());
+                        weapon.Recoil = -(weapon.GetDirection()) * weapon.GetParams().m_recoil;
 
-                        weapon.Recoil = -velocity * weapon.GetParams().m_recoil;
-                        
-                        velocity *= param.m_speed;
+                        Vector2 velocity = weapon.GetDirection() * param.m_speed;
 
                         world.GetProjectileManager().AddBullet(
-                            pos,
+                            weapon.GetBarrelPosition(),
                             velocity,
                             m_bulletParams,
                             weapon.GetOwner().GetBulletFlags() );
