@@ -215,6 +215,21 @@ namespace TmxProcessorLib.Content
                         TriggerCounterEvents.Add(triggerCounterEvent);
                     }
                     break;
+
+                case "Repeat":
+                    {
+                        int count = int.Parse(node.Attributes["count"].Value);
+                        for (int i = 0; i < count; ++i)
+                        {
+                            XmlNodeList childNodes = node.ChildNodes;
+                            foreach (XmlNode childNode in childNodes)
+                            {
+                                // Recursively check this groups children
+                                CheckEventNode(childNode, groupStack, context);
+                            }
+                        }
+                    }
+                    break;
             }
         }
 

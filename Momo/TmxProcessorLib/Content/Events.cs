@@ -98,15 +98,44 @@ namespace TmxProcessorLib.Content
             if (node.Attributes["timer"] != null)
                 m_spawnDelay = float.Parse(node.Attributes["timer"].Value);
 
-            XmlNodeList enemyNodes = node.SelectNodes("Enemy");
-            foreach (XmlNode enemyNode in enemyNodes)
+            XmlNodeList childNodes = node.ChildNodes;
+            foreach (XmlNode childNode in childNodes)
             {
-                Enemy enemy = new Enemy();
-                enemy.ImportXmlNode(enemyNode, context);
-                m_enemies.Add(enemy);
+                CheckChildNode(childNode, context);
             }
         }
 
+        private void CheckChildNode(XmlNode node, Microsoft.Xna.Framework.Content.Pipeline.ContentImporterContext context)
+        {
+            switch (node.Name)
+            {
+                case "Enemy":
+                    {
+                        Enemy enemy = new Enemy();
+                        enemy.ImportXmlNode(node, context);
+                        m_enemies.Add(enemy);
+                    }
+                    break;
+
+                case "Repeat":
+                    {
+                        int count = int.Parse(node.Attributes["count"].Value);
+                        for (int i = 0; i < count; ++i)
+                        {
+                            XmlNodeList childNodes = node.ChildNodes;
+                            foreach (XmlNode childNode in childNodes)
+                            {
+                                // Recursively check this groups children
+                                CheckChildNode(childNode, context);
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+                    throw new System.Exception("Invalid child node type {0} found in SpawnEvent!");
+            }
+        }
 
         internal override void Write(Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler.ContentWriter output)
         {
