@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
 
-using Microsoft.Xna.Framework;
-
-using Momo.Core.ObjectPools;
-using Momo.Core.Spatial;
 using Momo.Fonts;
 using Momo.Core;
 using Momo.Debug;
 
-using TestGame.Entities;
+using TestGame.Entities.Players;
 
 
 

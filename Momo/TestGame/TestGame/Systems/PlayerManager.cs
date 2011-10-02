@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Momo.Core.Spatial;
-using Momo.Core.ObjectPools;
-using TestGame.Entities;
+﻿using Microsoft.Xna.Framework;
 using Momo.Core;
+using Momo.Core.ObjectPools;
+using Momo.Core.Spatial;
+using TestGame.Entities.Players;
 using TestGame.Input;
-using Microsoft.Xna.Framework;
 
 namespace TestGame.Systems
 {

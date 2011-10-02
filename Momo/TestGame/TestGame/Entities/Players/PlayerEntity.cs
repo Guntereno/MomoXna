@@ -5,11 +5,10 @@ using Momo.Core;
 using Momo.Core.Collision2D;
 using Momo.Core.Spatial;
 using TestGame.Objects;
-using Momo.Fonts;
 using TestGame.Weapons;
 
 
-namespace TestGame.Entities
+namespace TestGame.Entities.Players
 {
     public class PlayerEntity : DynamicGameEntity, IWeaponUser
     {

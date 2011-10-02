@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 
 using Momo.Core;
-using Momo.Core.Collision2D;
-using Momo.Core.Spatial;
+using TestGame.Entities.Players;
 
 
 

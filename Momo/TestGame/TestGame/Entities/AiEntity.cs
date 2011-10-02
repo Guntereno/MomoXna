@@ -1,17 +1,13 @@
 ﻿using System;
-
 using Microsoft.Xna.Framework;
-
 using Momo.Core;
 using Momo.Core.Collision2D;
 using Momo.Core.Spatial;
-using Momo.Core.Pathfinding;
-
-using Momo.Debug;
-
-using TestGame.Objects;
-using TestGame.Ai.States;
 using Momo.Core.Triggers;
+using Momo.Debug;
+using TestGame.Ai.States;
+using TestGame.Entities.Players;
+using TestGame.Objects;
 using TestGame.Weapons;
 
 
