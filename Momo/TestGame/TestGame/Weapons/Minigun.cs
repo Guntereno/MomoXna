@@ -109,7 +109,7 @@ namespace TestGame.Weapons
                         MinigunParams param = (MinigunParams)(weapon.GetParams());
                         float angle = weapon.GetFacing() + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
 
-                        Vector2 velocity = weapon.GetDirection();
+                        Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
 
                         minigun.Recoil = -velocity * weapon.GetParams().m_recoil;
 
