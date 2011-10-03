@@ -69,7 +69,8 @@ namespace TestGame.Ai.States
                 if (m_routeToPlayer != null)
                 {
                     Vector2 targetDirection;
-                    m_tracker.Track(entity.GetPosition(),
+                    m_tracker.Track(    entity.GetPosition(),
+                                        entity.FacingDirection,
                                         entity.GetWorld().GetPlayerManager().GetAveragePosition(),
                                         entity.GetBin(),
                                         entity.GetObstructionBinLayer(),
@@ -77,7 +78,7 @@ namespace TestGame.Ai.States
                                         out targetDirection);
 
 
-                    entity.TurnTowards(targetDirection, 0.05f);
+                    entity.TurnTowards(targetDirection, 0.12f);
                     float speed = entity.GetRelativeFacing(targetDirection) * 1.5f;
                     Vector2 newPosition = GetEntity().GetPosition() + entity.FacingDirection * speed;
 

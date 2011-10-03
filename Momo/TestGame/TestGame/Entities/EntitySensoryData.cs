@@ -29,16 +29,18 @@ namespace TestGame.Entities
         internal Vector2 m_lastPosition;
         internal float m_sensedDistanceSq;
         internal float m_timeSensed;
+        internal DynamicGameEntity m_sensedEntity;
 
 
 
-        public SensedObject(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed)
+        public SensedObject(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed, DynamicGameEntity entity)
         {
             m_id = id;
             m_type = obj;
             m_lastPosition = position;
             m_sensedDistanceSq = distanceSq;
             m_timeSensed = timeSensed;
+            m_sensedEntity = entity;
         }
 
 
@@ -93,6 +95,7 @@ namespace TestGame.Entities
             for (int i = 0; i < m_sensedObjectCnt; ++i)
             {
                 m_sensedObjects[i].m_type = SensedType.kNone;
+                m_sensedObjects[i].m_sensedEntity = null;
             }
 
             m_sensedObjectCnt = 0;
@@ -116,10 +119,11 @@ namespace TestGame.Entities
                 {
                     if (m_sensedObjects[i].m_type == SensedType.kSeePlayer)
                     {
-                        AddSense(0, SensedType.kSawPlayer, m_sensedObjects[i].m_lastPosition, m_sensedObjects[i].m_sensedDistanceSq, 3.0f);
+                        AddSense(0, SensedType.kSawPlayer, m_sensedObjects[i].m_lastPosition, m_sensedObjects[i].m_sensedDistanceSq, 3.0f, m_sensedObjects[i].m_sensedEntity);
                     }
 
                     m_sensedObjects[i].m_type = SensedType.kNone;
+                    m_sensedObjects[i].m_sensedEntity = null;
 
                     if (i < m_sensedObjectCnt - 2)
                     {
@@ -150,7 +154,7 @@ namespace TestGame.Entities
         }
 
 
-        public void AddSense(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed)
+        public void AddSense(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed, DynamicGameEntity entity)
         {
             int objectIdx = GetSenseIndex(id, obj);
 
@@ -169,7 +173,7 @@ namespace TestGame.Entities
             }
 
 
-            m_sensedObjects[objectIdx] = new SensedObject(id, obj, position, distanceSq, timeSensed);
+            m_sensedObjects[objectIdx] = new SensedObject(id, obj, position, distanceSq, timeSensed, entity);
         }
 
 
@@ -284,10 +288,10 @@ namespace TestGame.Entities
 
 
                     if (clearLineOfSight)
-                        AddSense(0, SensedType.kSeePlayer, playerEntity.GetPosition(), distanceSq, 0.05f);
+                        AddSense(0, SensedType.kSeePlayer, playerEntity.GetPosition(), distanceSq, 0.05f, playerEntity);
 
                     if (clearLineOfPath)
-                        AddSense(0, SensedType.kStraightPathToPlayer, playerEntity.GetPosition(), distanceSq, 0.05f);
+                        AddSense(0, SensedType.kStraightPathToPlayer, playerEntity.GetPosition(), distanceSq, 0.05f, playerEntity);
                 }
             }
         }
