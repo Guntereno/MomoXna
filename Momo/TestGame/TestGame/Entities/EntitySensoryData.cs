@@ -32,6 +32,11 @@ namespace TestGame.Entities
         internal DynamicGameEntity m_sensedEntity;
 
 
+        public DynamicGameEntity SensedEntity
+        {
+            get { return m_sensedEntity; }
+        }
+
 
         public SensedObject(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed, DynamicGameEntity entity)
         {
