@@ -24,14 +24,15 @@ namespace TestGame.Ai.States
             Weapon weapon = entity.GetCurrentWeapon();
             if ((weapon != null) && (sensedEntity != null))
             {
-                const float kRangeDeltaSq = 1.0f;
                 float distSq = (entity.GetPosition() - sensedEntity.GetPosition()).LengthSquared();
 
                 float myRadSq = entity.GetContactRadiusInfo().RadiusSq;
                 float playerRadSq = sensedEntity.GetContactRadiusInfo().RadiusSq;
 
+                const float kRangeEpsilon = 21.0f;
+                const float kRangeEpsilonSq = kRangeEpsilon * kRangeEpsilon;
                 float triggerAmount = 0.0f;
-                if( (distSq - (myRadSq + playerRadSq)) <= kRangeDeltaSq )
+                if ((distSq - (myRadSq + playerRadSq)) <= kRangeEpsilonSq)
                 {
                     const float kFullPower = 1.0f;
                     triggerAmount = kFullPower;
