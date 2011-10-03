@@ -7,9 +7,18 @@ namespace TestGame.Ai.States
 {
     class ChargeState : ChaseState
     {
+        private State m_attackState = null;
+
         public ChargeState(AiEntity entity) :
             base(entity)
         {
+        }
+
+        public void Init(State lostPlayerState, State attackState)
+        {
+            base.Init(lostPlayerState);
+
+            m_attackState = attackState;
         }
 
         public override void Update(ref FrameTime frameTime, int updateToken)
@@ -23,8 +32,7 @@ namespace TestGame.Ai.States
             if (sensedObject != null)
             {
                 DynamicGameEntity sensedEntity = sensedObject.SensedEntity;
-                Weapon weapon = entity.GetCurrentWeapon();
-                if ((weapon != null) && (sensedEntity != null))
+                if (sensedEntity != null)
                 {
                     float distSq = (entity.GetPosition() - sensedEntity.GetPosition()).LengthSquared();
 
@@ -34,13 +42,10 @@ namespace TestGame.Ai.States
                     const float kDistEpsilon = 1.0f;
                     const float kDistEpsilonSq = kDistEpsilon * kDistEpsilon;
 
-                    float triggerAmount = 0.0f;
                     if ((distSq - totalRadiiSq) <= kDistEpsilonSq)
                     {
-                        const float kFullPower = 1.0f;
-                        triggerAmount = kFullPower;
+                        entity.SetCurrentState(m_attackState);
                     }
-                    weapon.Update(ref frameTime, triggerAmount, entity.GetPosition(), entity.FacingAngle);
                 }
             }
         }

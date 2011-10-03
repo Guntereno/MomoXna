@@ -156,6 +156,8 @@ namespace TestGame.Weapons
                 }
             }
 
+            public override bool AcceptingInput() { return true; }
+
             private State m_emptyState = null;
             private State m_coolDownState = null;
             private State m_overheatState = null;
@@ -194,6 +196,8 @@ namespace TestGame.Weapons
                 }
                 minigun.Heat = heat;
             }
+
+            public override bool AcceptingInput() { return false; }
 
             private State m_nextState = null;
         }

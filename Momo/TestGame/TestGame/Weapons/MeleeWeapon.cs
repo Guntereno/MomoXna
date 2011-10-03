@@ -79,6 +79,8 @@ namespace TestGame.Weapons
                     weapon.SetCurrentState(m_coolDownState);
                 }
             }
+
+            public override bool AcceptingInput() { return true; }
         }
     }
 }

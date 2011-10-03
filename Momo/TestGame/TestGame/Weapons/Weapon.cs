@@ -26,6 +26,18 @@ namespace TestGame.Weapons
 
         IWeaponUser m_owner = null;
 
+        public bool AcceptingInput()
+        {
+            if (m_currentState == null)
+            {
+                return false;
+            }
+            else
+            {
+                return m_currentState.AcceptingInput();
+            }
+        }
+
         public class GunParams
         {
             public GunParams(float reloadTime, int clipSize, float speed, float fireRate, float recoil)
@@ -163,6 +175,8 @@ namespace TestGame.Weapons
             public abstract void Update(ref FrameTime frameTime);
             public virtual void OnExit() {}
 
+            public abstract bool AcceptingInput();
+
             Weapon m_weapon;
         }
 
@@ -218,6 +232,8 @@ namespace TestGame.Weapons
                 GunParams param = GetWeapon().GetParams();
                 GetWeapon().SetAmmoInClip(param.m_clipSize);
             }
+
+            public override bool AcceptingInput() { return false; }
         }
 
 
@@ -236,6 +252,8 @@ namespace TestGame.Weapons
             {
                 return 1.0f / GetWeapon().GetParams().m_fireRate;
             }
+
+            public override bool AcceptingInput() { return false; }
         }
 
         public class EmptyState : State
@@ -258,6 +276,8 @@ namespace TestGame.Weapons
             {
                 // Empty is a dead-end state. Must be exited using a reload call
             }
+
+            public override bool AcceptingInput() { return false; }
 
             private State m_nextState = null;
         }

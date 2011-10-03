@@ -129,6 +129,8 @@ namespace TestGame.Weapons
                 }
             }
 
+            public override bool AcceptingInput() { return true; }
+
             private State m_emptyState = null;
             private State m_coolDownState = null;
 
