@@ -59,7 +59,7 @@ namespace TestGame.Weapons
             SetCurrentState(m_reloadState);
         }
 
-        public class MinigunParams : Weapon.Params
+        public class MinigunParams : Weapon.GunParams
         {
             public MinigunParams(float reloadTime, int clipSize, float speed, float fireRate, float recoil, float spread) :
                 base(reloadTime, clipSize, speed, fireRate, recoil)

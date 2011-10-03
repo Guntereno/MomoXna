@@ -11,7 +11,7 @@ namespace TestGame.Weapons
     public abstract class Weapon : IPoolItem
     {
         protected bool m_isDestroyed = true;
-        protected Params m_params = null;
+        protected GunParams m_params = null;
 
         private GameWorld m_world = null;
         private State m_currentState = null;
@@ -26,9 +26,9 @@ namespace TestGame.Weapons
 
         IWeaponUser m_owner = null;
 
-        public class Params
+        public class GunParams
         {
-            public Params(float reloadTime, int clipSize, float speed, float fireRate, float recoil)
+            public GunParams(float reloadTime, int clipSize, float speed, float fireRate, float recoil)
             {
                 m_reloadTime = reloadTime;
                 m_clipSize = clipSize;
@@ -57,7 +57,7 @@ namespace TestGame.Weapons
         public Vector2 Recoil { get; set; }
 
         public GameWorld GetWorld() { return m_world; }
-        public Params GetParams() { return m_params; }
+        public GunParams GetParams() { return m_params; }
 
         public IWeaponUser GetOwner() { return m_owner; }
         public void SetOwner(IWeaponUser owner) { m_owner = owner; }
@@ -215,7 +215,7 @@ namespace TestGame.Weapons
 
             public override void OnExit()
             {
-                Params param = GetWeapon().GetParams();
+                GunParams param = GetWeapon().GetParams();
                 GetWeapon().SetAmmoInClip(param.m_clipSize);
             }
         }

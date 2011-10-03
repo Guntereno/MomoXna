@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ai\States\ChargeState.cs" />
     <Compile Include="Ai\States\ChaseState.cs" />
     <Compile Include="Ai\States\DyingState.cs" />
     <Compile Include="Ai\States\FindState.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="TestWorldPathFinding.cs" />
     <Compile Include="Systems\ProjectileManager.cs" />
     <Compile Include="Weapons\IWeaponUser.cs" />
+    <Compile Include="Weapons\MeleeWeapon.cs" />
     <Compile Include="Weapons\Minigun.cs" />
     <Compile Include="Weapons\Pistol.cs" />
     <Compile Include="Weapons\Shotgun.cs" />

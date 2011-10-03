@@ -49,7 +49,7 @@ namespace TestGame.Entities
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
-            SetContactRadiusInfo(new RadiusInfo(14.0f + ((float)random.NextDouble() * 3.0f)));
+            SetContactRadiusInfo(new RadiusInfo(16.0f));
             SetMass(GetContactRadiusInfo().Radius * 0.5f);
 
             SetOccludingBinLayer(BinLayers.kBoundaryOcclusionSmall);

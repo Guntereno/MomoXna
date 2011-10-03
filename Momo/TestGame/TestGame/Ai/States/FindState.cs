@@ -70,7 +70,6 @@ namespace TestGame.Ai.States
                 {
                     Vector2 targetDirection;
                     m_tracker.Track(    entity.GetPosition(),
-                                        entity.FacingDirection,
                                         entity.GetWorld().GetPlayerManager().GetAveragePosition(),
                                         entity.GetBin(),
                                         entity.GetObstructionBinLayer(),

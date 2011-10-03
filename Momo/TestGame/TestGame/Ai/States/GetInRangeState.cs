@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace TestGame.Ai.States
 {
-    class GetInRangeState : ChaseState
+    class GetInRangeState : ChargeState
     {
         State m_inRangeState = null;
         RadiusInfo m_range = new RadiusInfo();

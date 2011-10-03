@@ -1,4 +1,5 @@
 ﻿using TestGame.Ai.States;
+using TestGame.Weapons;
 
 namespace TestGame.Entities.Enemies
 {
@@ -6,7 +7,7 @@ namespace TestGame.Entities.Enemies
     {
         private RandomWanderState m_stateRandomWander = null;
         private FindState m_stateFind = null;
-        private ChaseState m_stateChase = null;
+        private ChargeState m_stateCharge = null;
 
         public MeleeEnemy(GameWorld world)
             : base(world)
@@ -16,19 +17,32 @@ namespace TestGame.Entities.Enemies
 
             m_stateRandomWander = new RandomWanderState(this);
             m_stateFind = new FindState(this);
-            m_stateChase = new ChaseState(this);
+            m_stateCharge = new ChargeState(this);
 
 
             m_stateStunned.Init(m_stateRandomWander);
 
-            m_stateRandomWander.Init(m_stateChase);
-            m_stateFind.Init(m_stateChase);
-            m_stateChase.Init(m_stateFind);
+            m_stateRandomWander.Init(m_stateCharge);
+            m_stateFind.Init(m_stateCharge);
+            m_stateCharge.Init(m_stateFind);
 
         }
 
         public override void Init(MapData.EnemyData data)
         {
+            base.Init(data);
+
+            System.Diagnostics.Debug.Assert(GetCurrentWeapon() == null);
+
+            // Default to the melee weapon
+            MapData.Weapon.Design weaponDesign = GetData().GetWeapon();
+            if(weaponDesign == MapData.Weapon.Design.None)
+                weaponDesign = MapData.Weapon.Design.Melee;
+
+            Weapon weapon = GetWorld().GetWeaponManager().Create(weaponDesign);
+            SetCurrentWeapon(weapon);
+            weapon.SetOwner(this);
+
             SetCurrentState(m_stateFind);
         }
 

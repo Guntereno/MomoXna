@@ -52,7 +52,7 @@ namespace TestGame.Weapons
         CoolDownState m_coolDownState = null;
 
 
-        public class PistolParams : Weapon.Params
+        public class PistolParams : Weapon.GunParams
         {
             public PistolParams(float reloadTime, int clipSize, float speed, float fireRate, float recoil):
                 base(reloadTime, clipSize, speed, fireRate, recoil)

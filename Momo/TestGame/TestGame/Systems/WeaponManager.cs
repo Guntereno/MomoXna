@@ -15,7 +15,7 @@ namespace TestGame.Systems
 
         private GameWorld m_world;
 
-        private Pool<Weapon> m_weapons = new Pool<Weapon>(300, 3);
+        private Pool<Weapon> m_weapons = new Pool<Weapon>(300, (int)MapData.Weapon.Design.Count);
         bool m_needsCoalesce = false;
 
 
@@ -26,6 +26,7 @@ namespace TestGame.Systems
             m_weapons.RegisterPoolObjectType(typeof(Pistol), kWeaponMax[(int)MapData.Weapon.Design.Pistol]);
             m_weapons.RegisterPoolObjectType(typeof(Shotgun), kWeaponMax[(int)MapData.Weapon.Design.Shotgun]);
             m_weapons.RegisterPoolObjectType(typeof(Minigun), kWeaponMax[(int)MapData.Weapon.Design.Minigun]);
+            m_weapons.RegisterPoolObjectType(typeof(MeleeWeapon), kWeaponMax[(int)MapData.Weapon.Design.Melee]);
         }
 
         public Weapon Create(MapData.Weapon.Design type)
@@ -46,6 +47,10 @@ namespace TestGame.Systems
                     weapon = m_weapons.CreateItem(typeof(Minigun));
                     break;
 
+                case MapData.Weapon.Design.Melee:
+                    weapon = m_weapons.CreateItem(typeof(MeleeWeapon));
+                    break;
+
                 default:
                     return null;
             }
@@ -58,7 +63,8 @@ namespace TestGame.Systems
         {
             32,  // Pistol
             32,  // Shotgun
-            32   // Minigun
+            32,  // Minigun
+            64,  // Melee
         };
 
         public void Load()
@@ -71,7 +77,7 @@ namespace TestGame.Systems
             }
 
             // Shotguns
-            for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Pistol]; ++i)
+            for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Shotgun]; ++i)
             {
                 Shotgun shotgun = new Shotgun(m_world);
                 m_weapons.AddItem(shotgun, false);
@@ -82,6 +88,13 @@ namespace TestGame.Systems
             {
                 Minigun minigun = new Minigun(m_world);
                 m_weapons.AddItem(minigun, false);
+            }
+
+            // Melee
+            for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Melee]; ++i)
+            {
+                MeleeWeapon meleeWeapon = new MeleeWeapon(m_world);
+                m_weapons.AddItem(meleeWeapon, false);
             }
         }
 

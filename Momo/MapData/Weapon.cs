@@ -15,6 +15,8 @@ namespace MapData
             Shotgun = 1,
             Minigun = 2,
 
+            Melee = 3,
+
             Count
         }
     }
