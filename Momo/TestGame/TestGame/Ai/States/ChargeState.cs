@@ -28,13 +28,14 @@ namespace TestGame.Ai.States
                 {
                     float distSq = (entity.GetPosition() - sensedEntity.GetPosition()).LengthSquared();
 
-                    float myRadSq = entity.GetContactRadiusInfo().RadiusSq;
-                    float playerRadSq = sensedEntity.GetContactRadiusInfo().RadiusSq;
+                    float totalRadii = entity.GetContactRadiusInfo().Radius + sensedEntity.GetContactRadiusInfo().Radius;
+                    float totalRadiiSq = totalRadii * totalRadii;
 
-                    const float kRangeEpsilon = 21.0f;
-                    const float kRangeEpsilonSq = kRangeEpsilon * kRangeEpsilon;
+                    const float kDistEpsilon = 1.0f;
+                    const float kDistEpsilonSq = kDistEpsilon * kDistEpsilon;
+
                     float triggerAmount = 0.0f;
-                    if ((distSq - (myRadSq + playerRadSq)) <= kRangeEpsilonSq)
+                    if ((distSq - totalRadiiSq) <= kDistEpsilonSq)
                     {
                         const float kFullPower = 1.0f;
                         triggerAmount = kFullPower;
