@@ -147,6 +147,11 @@ namespace TestGame.Entities
         {
         }
 
+        protected virtual void Reset()
+        {
+            m_health = m_maxHealth;
+        }
+
         // --------------------------------------------------------------------
         // -- IPool interface implementation
         // --------------------------------------------------------------------
@@ -160,10 +165,10 @@ namespace TestGame.Entities
             m_destroyed = true;
         }
 
-        public virtual void ResetItem()
+        public void ResetItem()
         {
             m_destroyed = false;
-            m_health = m_maxHealth;
+            Reset();
         }
 
 

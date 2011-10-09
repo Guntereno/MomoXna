@@ -267,6 +267,8 @@ namespace TestGame.Entities
                 m_ownedSpawnPoint = null;
             }
 
+            GetWorld().GetCorpseManager().Create(this);
+
             GetWorld().GetEnemyManager().IncrementKillCount();
             DestroyItem();
         }

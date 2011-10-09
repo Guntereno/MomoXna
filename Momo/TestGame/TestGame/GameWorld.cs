@@ -53,6 +53,7 @@ namespace TestGame
         private TriggerManager m_triggerManager = null;
         private EventManager m_eventManager = null;
         private SpawnPointManager m_spawnGroupManager = null;
+        private CorpseManager m_corpseManager = null;
 
         private TextBatchPrinter m_textPrinter = new TextBatchPrinter();
 
@@ -77,6 +78,7 @@ namespace TestGame
             m_triggerManager = new TriggerManager();
             m_eventManager = new EventManager(this);
             m_spawnGroupManager = new SpawnPointManager(this);
+            m_corpseManager = new CorpseManager(this, m_bin);
         }
 
 
@@ -90,6 +92,7 @@ namespace TestGame
         public TriggerManager GetTriggerManager()               { return m_triggerManager; }
         public EventManager GetEventManager()                   { return m_eventManager; }
         public SpawnPointManager GetSpawnPointManager()         { return m_spawnGroupManager; }
+        public CorpseManager GetCorpseManager()                 { return m_corpseManager; }
 
         public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
         public Random GetRandom()                               { return m_random; }
@@ -136,6 +139,7 @@ namespace TestGame
             m_weaponManager.Load();
             m_projectileManager.Load();
             m_enemyManager.Load();
+            m_corpseManager.Load();
 
             m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(0));
 
@@ -209,6 +213,7 @@ namespace TestGame
             m_pathRouteManager.Update(ref frameTime);
 
             m_eventManager.Update(ref frameTime);
+            m_corpseManager.Update(ref frameTime);
 
             m_cameraController.Update(ref frameTime, ref inputWrapper);
 
@@ -278,6 +283,8 @@ namespace TestGame
             //{
             //    m_boundaries[i].DebugRender(m_debugRenderer);
             //}
+
+            m_corpseManager.DebugRender(m_debugRenderer);
 
             for (int i = 0; i < m_playerManager.GetPlayers().ActiveItemListCount; ++i)
             {

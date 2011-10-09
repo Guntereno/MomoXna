@@ -56,25 +56,30 @@ namespace TestGame
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
                 {
-                    DynamicGameEntity checkEntity = (DynamicGameEntity)queryResults.BinItemQueryResults[j];
+                    BinItem checkItem = queryResults.BinItemQueryResults[j];
 
-                    if (entity != checkEntity)
+                    if (checkItem is DynamicGameEntity)
                     {
-                        bool contact = Maths2D.DoesIntersect(    entity.GetPosition(),
-                                                                entity.GetContactRadiusInfo().Radius + contactDimensionPadding,
-                                                                checkEntity.GetPosition(),
-                                                                checkEntity.GetContactRadiusInfo().Radius + contactDimensionPadding,
-                                                                ref intersectInfo);
+                        DynamicGameEntity checkEntity = (DynamicGameEntity)checkItem;
 
-                        if (contact)
+                        if (entity != checkEntity)
                         {
-                            Contact existingContact = contactList.GetContact(checkEntity, entity);
+                            bool contact = Maths2D.DoesIntersect(entity.GetPosition(),
+                                                                    entity.GetContactRadiusInfo().Radius + contactDimensionPadding,
+                                                                    checkEntity.GetPosition(),
+                                                                    checkEntity.GetContactRadiusInfo().Radius + contactDimensionPadding,
+                                                                    ref intersectInfo);
 
-                            if (existingContact == null)
+                            if (contact)
                             {
-                                Vector2 contactNormal = intersectInfo.PositionDifference / intersectInfo.PositionDistance;
-                                float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - doubleContactDimensionPadding;
-                                contactList.AddContact(entity, checkEntity, contactNormal, contactOverlap, 1.0f, 0.9f);
+                                Contact existingContact = contactList.GetContact(checkEntity, entity);
+
+                                if (existingContact == null)
+                                {
+                                    Vector2 contactNormal = intersectInfo.PositionDifference / intersectInfo.PositionDistance;
+                                    float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - doubleContactDimensionPadding;
+                                    contactList.AddContact(entity, checkEntity, contactNormal, contactOverlap, 1.0f, 0.9f);
+                                }
                             }
                         }
                     }
@@ -183,28 +188,33 @@ namespace TestGame
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
                 {
-                    DynamicGameEntity checkEntity = (DynamicGameEntity)queryResults.BinItemQueryResults[j];
-                    checkEntity.GetBinRegion(ref entityRegion);
+                    BinItem checkItem = queryResults.BinItemQueryResults[j];
 
-
-
-                    bool contact = Maths2D.DoesIntersect(    checkEntity.GetPosition(),
-                                                            checkEntity.GetContactRadiusInfo().Radius,
-                                                            checkEntity.GetContactRadiusInfo().RadiusSq,
-                                                            bullet.GetLastFramePosition(),
-                                                            bullet.GetPosition(),
-                                                            bullet.GetPositionDifferenceFromLastFrame(),
-                                                            dPosLengthSq,
-                                                            ref intersectInfo);
-
-
-                    if (contact)
+                    if(checkItem is DynamicGameEntity)
                     {
-                        checkEntity.OnCollisionEvent(ref bullet);
+                        DynamicGameEntity checkEntity = (DynamicGameEntity)checkItem;
+                        checkEntity.GetBinRegion(ref entityRegion);
 
-                        bullet.OnCollisionEvent(ref checkEntity);
-                        bulletContact = true;
-                        break;
+
+
+                        bool contact = Maths2D.DoesIntersect(    checkEntity.GetPosition(),
+                                                                checkEntity.GetContactRadiusInfo().Radius,
+                                                                checkEntity.GetContactRadiusInfo().RadiusSq,
+                                                                bullet.GetLastFramePosition(),
+                                                                bullet.GetPosition(),
+                                                                bullet.GetPositionDifferenceFromLastFrame(),
+                                                                dPosLengthSq,
+                                                                ref intersectInfo);
+
+
+                        if (contact)
+                        {
+                            checkEntity.OnCollisionEvent(ref bullet);
+
+                            bullet.OnCollisionEvent(ref checkEntity);
+                            bulletContact = true;
+                            break;
+                        }
                     }
                 }
 

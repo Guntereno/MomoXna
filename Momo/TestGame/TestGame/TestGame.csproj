@@ -122,6 +122,7 @@
     <Compile Include="Entities\BinLayers.cs" />
     <Compile Include="Entities\BulletEntity.cs" />
     <Compile Include="CollisionHelpers.cs" />
+    <Compile Include="Entities\Corpse.cs" />
     <Compile Include="Entities\DynamicGameEntity.cs" />
     <Compile Include="Entities\Enemies\MeleeEnemy.cs" />
     <Compile Include="Entities\Enemies\MissileEnemy.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Systems\CameraController.cs" />
+    <Compile Include="Systems\CorpseManager.cs" />
     <Compile Include="Systems\EnemyManager.cs" />
     <Compile Include="Systems\EventManager.cs" />
     <Compile Include="Systems\OsdManager.cs" />
