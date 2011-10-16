@@ -45,7 +45,7 @@ namespace TestGame.Ai.States
             }
             else
             {
-                Random random = world.GetRandom();
+                Random random = world.Random;
 
                 m_wanderTurnVelocity += ((float)random.NextDouble() - 0.5f) * 50.0f * frameTime.Dt;
                 m_wanderTurnVelocity = MathHelper.Clamp(m_wanderTurnVelocity, -1.0f, 1.0f);

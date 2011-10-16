@@ -104,7 +104,7 @@ namespace TestGame.Weapons
                     {
                         GameWorld world = weapon.GetWorld();
 
-                        Random random = world.GetRandom();
+                        Random random = world.Random;
 
                         MinigunParams param = (MinigunParams)(weapon.GetParams());
                         float angle = weapon.GetFacing() + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
@@ -115,7 +115,7 @@ namespace TestGame.Weapons
 
                         velocity *= param.m_speed;
 
-                        world.GetProjectileManager().AddBullet(
+                        world.ProjectileManager.AddBullet(
                             weapon.GetBarrelPosition(),
                             velocity,
                             m_bulletParams,

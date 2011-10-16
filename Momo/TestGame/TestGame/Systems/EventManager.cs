@@ -17,12 +17,15 @@ namespace TestGame.Systems
         private SpawnEvent[] m_spawnEvents = null;
         private TriggerCounterEvent[] m_triggerCounterEvents = null;
 
-        Dictionary<Trigger, List<Event>> m_triggerDict = new Dictionary<Trigger, List<Event>>();
+        private Dictionary<Trigger, List<Event>> m_triggerDict = new Dictionary<Trigger, List<Event>>();
+
+
 
         public EventManager(GameWorld world)
         {
             m_world = world;
         }
+
 
         internal void LoadEvents(MapData.Map map)
         {
@@ -70,11 +73,11 @@ namespace TestGame.Systems
             Trigger trigger = null;
             if (eventInst.GetData().GetStartTrigger() != null)
             {
-                trigger = m_world.GetTriggerManager().RegisterTrigger(eventInst.GetData().GetStartTrigger());
+                trigger = m_world.TriggerManager.RegisterTrigger(eventInst.GetData().GetStartTrigger());
             }
             else
             {
-                trigger = m_world.GetTriggerManager().RegisterTrigger(TriggerManager.kDefaultTriggerName);
+                trigger = m_world.TriggerManager.RegisterTrigger(TriggerManager.kDefaultTriggerName);
             }
 
             RegisterTriggerEvent(trigger, eventInst);

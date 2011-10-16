@@ -96,7 +96,7 @@ namespace TestGame.Weapons
                     {
                         GameWorld world = weapon.GetWorld();
 
-                        Random random = world.GetRandom();
+                        Random random = world.Random;
 
                         ShotgunParams param = (ShotgunParams)(weapon.GetParams());
                         for (int i = 0; i < param.m_shotCount; ++i)
@@ -108,7 +108,7 @@ namespace TestGame.Weapons
 
                             velocity *= param.m_speed + (param.m_speed * ((float)random.NextDouble() * 0.08f));
 
-                            world.GetProjectileManager().AddBullet(
+                            world.ProjectileManager.AddBullet(
                                 weapon.GetBarrelPosition(),
                                 velocity,
                                 m_bulletParams,

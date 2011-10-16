@@ -40,7 +40,7 @@ namespace TestGame.Entities.Enemies
 
             if (GetData().GetWeapon() != MapData.Weapon.Design.None)
             {
-                Weapon weapon = GetWorld().GetWeaponManager().Create(GetData().GetWeapon());
+                Weapon weapon = GetWorld().WeaponManager.Create(GetData().GetWeapon());
                 SetCurrentWeapon(weapon);
                 weapon.SetOwner(this);
             }

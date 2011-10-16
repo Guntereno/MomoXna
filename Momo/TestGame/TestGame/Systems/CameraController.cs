@@ -99,7 +99,7 @@ namespace TestGame.Systems
 
         private void UpdateFollow()
         {
-            PlayerManager playerManager = m_world.GetPlayerManager();
+            PlayerManager playerManager = m_world.PlayerManager;
 
             m_spring.SetTarget(playerManager.GetAveragePosition());
         }

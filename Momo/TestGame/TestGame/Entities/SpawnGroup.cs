@@ -29,7 +29,7 @@ namespace TestGame.Entities
 
         internal float GetSquaredDistanceToPlayers()
         {
-            PlayerManager playerManager = m_world.GetPlayerManager();
+            PlayerManager playerManager = m_world.PlayerManager;
             Vector2 screenCenter = playerManager.GetAveragePosition();
             return (screenCenter - m_data.GetPosition()).LengthSquared();
         }

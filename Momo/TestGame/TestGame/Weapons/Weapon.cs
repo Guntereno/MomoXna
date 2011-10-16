@@ -147,7 +147,7 @@ namespace TestGame.Weapons
         public void DestroyItem()
         {
             m_isDestroyed = true;
-            GetWorld().GetWeaponManager().TriggerCoalesce();
+            GetWorld().WeaponManager.TriggerCoalesce();
         }
 
         public void ResetItem()

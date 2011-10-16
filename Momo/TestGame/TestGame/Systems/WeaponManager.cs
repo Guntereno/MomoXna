@@ -12,11 +12,19 @@ namespace TestGame.Systems
 {
     public class WeaponManager
     {
+        public readonly static int[] kWeaponMax = new int[(int)MapData.Weapon.Design.Count]
+        {
+            32,  // Pistol
+            32,  // Shotgun
+            32,  // Minigun
+            64,  // Melee
+        };
 
-        private GameWorld m_world;
+
+        private GameWorld m_world = null;
 
         private Pool<Weapon> m_weapons = new Pool<Weapon>(300, (int)MapData.Weapon.Design.Count);
-        bool m_needsCoalesce = false;
+        private bool m_needsCoalesce = false;
 
 
         public WeaponManager(GameWorld world)
@@ -59,13 +67,6 @@ namespace TestGame.Systems
             return weapon;
         }
 
-        public static readonly int[] kWeaponMax = new int[(int)MapData.Weapon.Design.Count]
-        {
-            32,  // Pistol
-            32,  // Shotgun
-            32,  // Minigun
-            64,  // Melee
-        };
 
         public void Load()
         {

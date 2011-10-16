@@ -72,7 +72,7 @@ namespace TestGame.Entities.Players
 
         public void Init()
         {
-            Systems.WeaponManager weaponMan = GetWorld().GetWeaponManager();
+            Systems.WeaponManager weaponMan = GetWorld().WeaponManager;
             m_arsenal[0] = weaponMan.Create(MapData.Weapon.Design.Pistol);
             m_arsenal[1] = weaponMan.Create(MapData.Weapon.Design.Shotgun);
             m_arsenal[2] = weaponMan.Create(MapData.Weapon.Design.Minigun);

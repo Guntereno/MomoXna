@@ -8,13 +8,14 @@ namespace TestGame.Weapons
 {
     public class MeleeWeapon : Weapon
     {
-        ActiveState m_activeState = null;
-        CoolDownState m_coolDownState = null;
-
-        GunParams m_weaponParams = null;
-
-
         public static readonly GunParams kDefaultParams = new GunParams(0.0f, 0, 0.0f, 1.5f, 500.0f);
+
+
+        private ActiveState m_activeState = null;
+        private CoolDownState m_coolDownState = null;
+
+        //private GunParams m_weaponParams = null;
+
 
 
         public MeleeWeapon(GameWorld world)

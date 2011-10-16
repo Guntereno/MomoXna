@@ -13,13 +13,14 @@ namespace TestGame.Systems
 {
     public class OsdManager
     {
-        const int kMaxPlayers = 4;
+        private const int kMaxPlayers = 4;
 
         private GameWorld m_world = null;
 
         private TextStyle m_textStyle = null;
         private TextObject[] m_weaponInfo = new TextObject[kMaxPlayers];
         private MutableString[] m_weaponString = new MutableString[kMaxPlayers];
+
 
 
         public OsdManager(GameWorld world)
@@ -50,9 +51,9 @@ namespace TestGame.Systems
 
         public void Update(ref FrameTime frameTime)
         {
-            for (int i = 0; i < m_world.GetPlayerManager().GetPlayers().ActiveItemListCount; ++i)
+            for (int i = 0; i < m_world.PlayerManager.Players.ActiveItemListCount; ++i)
             {
-                PlayerEntity player = m_world.GetPlayerManager().GetPlayers()[i];
+                PlayerEntity player = m_world.PlayerManager.Players[i];
                 Weapons.Weapon currentWeapon = player.GetCurrentWeapon();
 
                 m_weaponString[i].Clear();
@@ -77,7 +78,7 @@ namespace TestGame.Systems
         {
             for (int i = 0; i < kMaxPlayers; ++i)
             {
-                m_world.GetTextPrinter().AddToDrawList(m_weaponInfo[i]);
+                m_world.TextPrinter.AddToDrawList(m_weaponInfo[i]);
             }
         }
 

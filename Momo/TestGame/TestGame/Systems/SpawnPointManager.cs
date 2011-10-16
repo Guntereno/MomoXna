@@ -10,8 +10,9 @@ namespace TestGame.Systems
 {
     public class SpawnPointManager
     {
-        GameWorld m_world = null;
-        SpawnPoint[] m_spawnPoints = null;
+        private GameWorld m_world = null;
+        private SpawnPoint[] m_spawnPoints = null;
+
 
         internal SpawnPointManager(GameWorld world)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using Momo.Core;
 using Momo.Core.Collision2D;
 using Momo.Core.GameEntities;
@@ -12,8 +13,10 @@ using Momo.Core.Primitive2D;
 using Momo.Core.Spatial;
 using Momo.Debug;
 using Momo.Fonts;
+
 using TestGame.Entities;
 using TestGame.Systems;
+
 using WorldManager;
 
 
@@ -54,15 +57,42 @@ namespace TestGame
         private EventManager m_eventManager = null;
         private SpawnPointManager m_spawnGroupManager = null;
         private CorpseManager m_corpseManager = null;
+        private ImpManager m_impManager = null;
+        private PathRouteManager m_pathRouteManager = null;
 
-        private TextBatchPrinter m_textPrinter = new TextBatchPrinter();
+        private TextBatchPrinter m_textPrinter = null;
 
         private PathIsland m_pathIsland = new PathIsland();
-        private PathRouteManager m_pathRouteManager = new PathRouteManager();
+
 
         private int m_updateTokenOffset = 0;
 
         float m_elapsedTime = 0.0f;
+
+
+
+        public OrthographicCameraNode Camera            { get { return m_camera; } }
+
+        public PlayerManager PlayerManager              { get { return m_playerManager; } }
+        public WeaponManager WeaponManager              { get { return m_weaponManager; } }
+        public ProjectileManager ProjectileManager      { get { return m_projectileManager; } }
+        public EnemyManager EnemyManager                { get { return m_enemyManager; } }
+        public TriggerManager TriggerManager            { get { return m_triggerManager; } }
+        public EventManager EventManager                { get { return m_eventManager; } }
+        public SpawnPointManager SpawnPointManager      { get { return m_spawnGroupManager; } }
+        public CorpseManager CorpseManager              { get { return m_corpseManager; } }
+        public ImpManager ImpManager                    { get { return m_impManager; } }
+        public PathRouteManager PathRouteManager        { get { return m_pathRouteManager; } }
+
+        public TextBatchPrinter TextPrinter             { get { return m_textPrinter; } }
+        public Random Random                            { get { return m_random; } }
+        public DebugRenderer DebugRenderer              { get { return m_debugRenderer; } }
+
+        public MapData.Map Map                          { get { return m_map; } }
+
+        public float ElapsedTime                        { get { return m_elapsedTime; } }
+
+
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -79,31 +109,10 @@ namespace TestGame
             m_eventManager = new EventManager(this);
             m_spawnGroupManager = new SpawnPointManager(this);
             m_corpseManager = new CorpseManager(this, m_bin);
+            m_impManager = new ImpManager(this, m_bin);
+            m_pathRouteManager = new PathRouteManager();
+            m_textPrinter = new TextBatchPrinter();
         }
-
-
-
-        public OrthographicCameraNode GetCamera()               { return m_camera; }
-
-        public PlayerManager GetPlayerManager()                 { return m_playerManager; }
-        public WeaponManager GetWeaponManager()                 { return m_weaponManager; }
-        public ProjectileManager GetProjectileManager()         { return m_projectileManager; }
-        public EnemyManager GetEnemyManager()                   { return m_enemyManager; }
-        public TriggerManager GetTriggerManager()               { return m_triggerManager; }
-        public EventManager GetEventManager()                   { return m_eventManager; }
-        public SpawnPointManager GetSpawnPointManager()         { return m_spawnGroupManager; }
-        public CorpseManager GetCorpseManager()                 { return m_corpseManager; }
-
-        public TextBatchPrinter GetTextPrinter()                { return m_textPrinter; }
-        public Random GetRandom()                               { return m_random; }
-        public DebugRenderer GetDebugRenderer()                 { return m_debugRenderer; }
-
-        public MapData.Map GetMap()                             { return m_map; }
-
-        public PathRouteManager GetPathRouteManager()           { return m_pathRouteManager; }
-
-        public float GetElapsedTime()                           { return m_elapsedTime; }
-
 
 
         public override void Load()
@@ -189,11 +198,11 @@ namespace TestGame
 
         public override void Update(float dt)
         {
-            m_elapsedTime += dt;
-
             // More time related numbers will eventually be added to the FrameTime structure. Its worth passing
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
+
+            m_elapsedTime += frameTime.Dt;
 
             ++m_updateTokenOffset;
 
@@ -236,9 +245,9 @@ namespace TestGame
 
         private void AddContacts(int layer)
         {
-            CollisionHelpers.GenerateContacts(m_enemyManager.GetEnemies().ActiveItemList, m_enemyManager.GetEnemies().ActiveItemListCount, m_bin, m_contactList, layer);
-            CollisionHelpers.GenerateContacts(m_playerManager.GetPlayers().ActiveItemList, m_playerManager.GetPlayers().ActiveItemListCount, m_bin, m_contactList, layer);
-            CollisionHelpers.UpdateBulletContacts(m_projectileManager.GetBullets().ActiveItemList, m_projectileManager.GetBullets().ActiveItemListCount, m_bin, layer);
+            CollisionHelpers.GenerateContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, m_contactList, layer);
+            CollisionHelpers.GenerateContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, m_contactList, layer);
+            CollisionHelpers.UpdateBulletContacts(m_projectileManager.Bullets.ActiveItemList, m_projectileManager.Bullets.ActiveItemListCount, m_bin, layer);
         }
 
 
@@ -286,9 +295,9 @@ namespace TestGame
 
             m_corpseManager.DebugRender(m_debugRenderer);
 
-            for (int i = 0; i < m_playerManager.GetPlayers().ActiveItemListCount; ++i)
+            for (int i = 0; i < m_playerManager.Players.ActiveItemListCount; ++i)
             {
-                m_playerManager.GetPlayers()[i].DebugRender(m_debugRenderer);
+                m_playerManager.Players[i].DebugRender(m_debugRenderer);
             }
 
             m_enemyManager.DebugRender(m_debugRenderer);

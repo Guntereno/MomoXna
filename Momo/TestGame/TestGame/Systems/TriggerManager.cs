@@ -9,12 +9,13 @@ namespace TestGame.Systems
 {
     public class TriggerManager
     {
-        Dictionary<string, Trigger> m_triggers = new Dictionary<string, Trigger>();
+        public const string kDefaultTriggerName = "worldStart";
 
-        MutableString m_lookupBuffer = new MutableString(128);
 
-        Trigger m_defaultTrigger = null;
-        public static readonly string kDefaultTriggerName = "worldStart";
+        private Dictionary<string, Trigger> m_triggers = new Dictionary<string, Trigger>();
+        private MutableString m_lookupBuffer = new MutableString(128);
+        private Trigger m_defaultTrigger = null;
+
 
 
         public TriggerManager()

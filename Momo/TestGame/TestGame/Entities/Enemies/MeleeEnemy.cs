@@ -42,7 +42,7 @@ namespace TestGame.Entities.Enemies
             if(weaponDesign == MapData.Weapon.Design.None)
                 weaponDesign = MapData.Weapon.Design.Melee;
 
-            Weapon weapon = GetWorld().GetWeaponManager().Create(weaponDesign);
+            Weapon weapon = GetWorld().WeaponManager.Create(weaponDesign);
             SetCurrentWeapon(weapon);
             weapon.SetOwner(this);
 

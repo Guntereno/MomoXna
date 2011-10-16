@@ -7,15 +7,16 @@ namespace TestGame.Systems
 {
     public class CorpseManager
     {
+        private const int kMaxCorpses = 512;
+
+
         private GameWorld m_world;
         private Bin m_bin;
-
-        static readonly int kMaxCorpses = 512;
 
         private Pool<Corpse> m_corpses = new Pool<Corpse>(kMaxCorpses, 1);
 
 
-        public Pool<Corpse> GetCorpses() { return m_corpses; }
+        public Pool<Corpse> Corpses { get { return m_corpses; } }
 
 
         public CorpseManager(GameWorld world, Bin bin)
@@ -57,11 +58,12 @@ namespace TestGame.Systems
             bool needsCoalesce = false;
             for (int i = 0; i < m_corpses.ActiveItemListCount; ++i)
             {
-                m_corpses[i].Update(ref frameTime);
+                Corpse corpse = m_corpses[i];
+                corpse.Update(ref frameTime);
 
-                if (m_corpses[i].IsDestroyed())
+                if (corpse.IsDestroyed())
                 {
-                    m_bin.RemoveBinItem(m_corpses[i], BinLayers.kAiEntity);
+                    m_bin.RemoveBinItem(corpse, BinLayers.kAiEntity);
                     needsCoalesce = true;
                 }
             }

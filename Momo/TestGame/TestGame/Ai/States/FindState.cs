@@ -53,12 +53,12 @@ namespace TestGame.Ai.States
                 PathNode goalPathNode = null;
 
                 PathFindingHelpers.GetClosestPathNode(entity.GetPosition(), entity.GetBin(), BinLayers.kPathNodes, entity.GetObstructionBinLayer(), ref myPathNode);
-                PathFindingHelpers.GetClosestPathNode(entity.GetWorld().GetPlayerManager().GetAveragePosition(), entity.GetBin(), BinLayers.kPathNodes, entity.GetObstructionBinLayer(), ref goalPathNode);
+                PathFindingHelpers.GetClosestPathNode(entity.GetWorld().PlayerManager.GetAveragePosition(), entity.GetBin(), BinLayers.kPathNodes, entity.GetObstructionBinLayer(), ref goalPathNode);
 
                 if (myPathNode != null && goalPathNode != null)
                 {
                     bool cacheOnly = ((updateToken % kUpdatePathFrameFrequency) != 0);
-                    entity.GetWorld().GetPathRouteManager().GetPathRoute(myPathNode, goalPathNode, cacheOnly, ref m_routeToPlayer);
+                    entity.GetWorld().PathRouteManager.GetPathRoute(myPathNode, goalPathNode, cacheOnly, ref m_routeToPlayer);
                 }
                 else
                 {
@@ -70,7 +70,7 @@ namespace TestGame.Ai.States
                 {
                     Vector2 targetDirection;
                     m_tracker.Track(    entity.GetPosition(),
-                                        entity.GetWorld().GetPlayerManager().GetAveragePosition(),
+                                        entity.GetWorld().PlayerManager.GetAveragePosition(),
                                         entity.GetBin(),
                                         entity.GetObstructionBinLayer(),
                                         ref m_routeToPlayer,

@@ -202,5 +202,19 @@ namespace Momo.Maths
             outIntersectPoint = lineStart1 + (lineStep1 * t);
             return true;
         }
+
+
+        public static bool DoesIntersectInfinite(Vector2 lineStart1, Vector2 lineStep1, Vector2 lineStart2, Vector2 lineStep2, ref float outIntersectDelta)
+        {
+            float div = (-lineStep2.X * lineStep1.Y) + (lineStep1.X * lineStep2.Y);
+            if (div == 0.0f)
+                return false;
+
+            float s = (-lineStep1.Y * (lineStart1.X - lineStart2.X) + lineStep1.X * (lineStart1.Y - lineStart2.Y)) / div;
+            float t = (lineStep2.X * (lineStart1.Y - lineStart2.Y) - lineStep2.Y * (lineStart1.X - lineStart2.X)) / div;
+
+            outIntersectDelta = t;
+            return true;
+        }
     }
 }

@@ -14,20 +14,19 @@ namespace TestGame.Systems
 {
     public class EnemyManager
     {
+        private const int kMaxEnemies = 500;
+
         private GameWorld m_world;
         private Bin m_bin;
 
-        static readonly int kMaxEnemies = 1000;
         private Pool<AiEntity> m_enemies = new Pool<AiEntity>(kMaxEnemies, 2);
 
         private int m_killCounter = 0;
 
 
 
-        public Pool<AiEntity> GetEnemies() { return m_enemies; }
-
-        public void IncrementKillCount() { ++m_killCounter; }
-        public int GetKillCount() { return m_killCounter; }
+        public Pool<AiEntity> Enemies       { get { return m_enemies; } }
+        public int KillCount                { get { return m_killCounter; } }
 
 
 
@@ -38,6 +37,12 @@ namespace TestGame.Systems
 
             m_enemies.RegisterPoolObjectType(typeof(MeleeEnemy), kMaxEnemies);
             m_enemies.RegisterPoolObjectType(typeof(MissileEnemy), kMaxEnemies);
+        }
+
+
+        public void IncrementKillCount()
+        {
+            ++m_killCounter;
         }
 
 
@@ -86,26 +91,27 @@ namespace TestGame.Systems
         }
 
 
-        private void UpdateEnemyPool(Pool<AiEntity> pool, ref FrameTime frameTime, int updateToken)
+        private void UpdateEnemyPool(Pool<AiEntity> aiEntities, ref FrameTime frameTime, int updateToken)
         {
             bool needsCoalesce = false;
-            for (int i = 0; i < pool.ActiveItemListCount; ++i)
+            for (int i = 0; i < aiEntities.ActiveItemListCount; ++i)
             {
-                pool[i].Update(ref frameTime, updateToken + i);
-                pool[i].UpdateBinEntry();
+                AiEntity aiEntity = aiEntities[i];
+                aiEntity.Update(ref frameTime, updateToken + i);
+                aiEntity.UpdateBinEntry();
 
-                pool[i].UpdateSensoryData(m_world.GetPlayerManager().GetPlayers().ActiveItemList);
+                aiEntity.UpdateSensoryData(m_world.PlayerManager.Players.ActiveItemList);
 
-                if (pool[i].IsDestroyed())
+                if (aiEntity.IsDestroyed())
                 {
-                    m_bin.RemoveBinItem(pool[i], BinLayers.kAiEntity);
+                    m_bin.RemoveBinItem(aiEntities[i], BinLayers.kAiEntity);
                     needsCoalesce = true;
                 }
             }
 
             if (needsCoalesce)
             {
-                pool.CoalesceActiveList(false);
+                aiEntities.CoalesceActiveList(false);
             }
         }
 

@@ -26,7 +26,7 @@ namespace TestGame.Events
             : base(world, data)
         {
             string deathTriggerName = data.GetName() + "Kill";
-            m_killTrigger = world.GetTriggerManager().RegisterTrigger(deathTriggerName);
+            m_killTrigger = world.TriggerManager.RegisterTrigger(deathTriggerName);
             m_killTrigger.RegisterListener(this);
         }
 
@@ -53,7 +53,7 @@ namespace TestGame.Events
                 m_spawnTimer -= frameTime.Dt;
                 if (m_spawnTimer <= 0.0f)
                 {
-                    SpawnPoint spawnPoint = GetWorld().GetSpawnPointManager().GetNextSpawnPoint();
+                    SpawnPoint spawnPoint = GetWorld().SpawnPointManager.GetNextSpawnPoint();
                     if (spawnPoint != null)
                     {
                         AiEntity enemy = SpawnEnemy(spawnPoint);
@@ -70,7 +70,7 @@ namespace TestGame.Events
 
         private AiEntity SpawnEnemy(SpawnPoint spawnPoint)
         {
-            EnemyManager enemyManager = GetWorld().GetEnemyManager();
+            EnemyManager enemyManager = GetWorld().EnemyManager;
             MapData.EnemyData enemyData = m_spawnData.GetEnemies()[m_spawnCounter];
             AiEntity enemy = enemyManager.Create(enemyData, spawnPoint.GetData().GetPosition());
             enemy.SetDeathTrigger(m_killTrigger);

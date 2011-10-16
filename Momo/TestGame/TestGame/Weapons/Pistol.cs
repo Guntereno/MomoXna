@@ -91,14 +91,14 @@ namespace TestGame.Weapons
                     {
                         GameWorld world = weapon.GetWorld();
 
-                        Random random = world.GetRandom();
+                        Random random = world.Random;
 
                         PistolParams param = (PistolParams)(weapon.GetParams());
                         weapon.Recoil = -(weapon.GetDirection()) * weapon.GetParams().m_recoil;
 
                         Vector2 velocity = weapon.GetDirection() * param.m_speed;
 
-                        world.GetProjectileManager().AddBullet(
+                        world.ProjectileManager.AddBullet(
                             weapon.GetBarrelPosition(),
                             velocity,
                             m_bulletParams,

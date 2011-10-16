@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 
 using Momo.Core.Pathfinding;
 using Momo.Core.Spatial;
+using Momo.Maths;
 using Momo.Debug;
 
 
@@ -33,7 +34,7 @@ namespace TestGame.Entities
 
         // Returns true if reach goal.
         // Assumes you can see the first node on the route.
-        public bool Track(Vector2 myPosition, Vector2 goal, Bin bin, int occludingBoundaryLayer, ref PathRoute route, out Vector2 outDirection)
+        public bool Track(Vector2 myPosition/*, Vector2 myDirection*/, Vector2 goal, Bin bin, int occludingBoundaryLayer, ref PathRoute route, out Vector2 outDirection)
         {
             int routeNodeCnt = route.GetPathNodeCount();
 
@@ -53,6 +54,21 @@ namespace TestGame.Entities
             Vector2 dTargetNext = nextTargetPos - m_targetNode.GetPosition();
             float dTargetNextLen = dTargetNext.Length();
             Vector2 dTargetNextDirection = dTargetNext / dTargetNextLen;
+
+
+            
+            //if (foundOldRoute == false)
+            //{
+            //    float dTargetNodeDelta = 0.0f;
+            //    bool intersect = Maths2D.DoesIntersectInfinite(m_targetNode.GetPosition(), dTargetNext, myPosition, myDirection * 10000.0f, ref dTargetNodeDelta);
+
+            //    if (intersect)
+            //    {
+            //        m_searchLineDist = dTargetNextLen * dTargetNodeDelta;
+            //    }
+            //}
+
+
 
             Vector2 checkPos = m_targetNode.GetPosition() + (dTargetNextDirection * m_searchLineDist);
             Vector2 checkLine = checkPos - myPosition;

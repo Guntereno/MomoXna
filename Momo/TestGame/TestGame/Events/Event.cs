@@ -27,7 +27,7 @@ namespace TestGame.Events
 
             if (m_data.GetEndTrigger() != null)
             {
-                m_endTrigger = world.GetTriggerManager().RegisterTrigger(m_data.GetEndTrigger());
+                m_endTrigger = world.TriggerManager.RegisterTrigger(m_data.GetEndTrigger());
             }
         }
 

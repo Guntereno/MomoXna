@@ -13,12 +13,16 @@ namespace TestGame.Systems
 {
     public class ProjectileManager
     {
-        static readonly int kMaxBullets = 1000;
+        private const int kMaxBullets = 1000;
 
         private GameWorld m_world = null;
         private Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(kMaxBullets, 1);
 
-        Bin m_bin = null;
+        private Bin m_bin = null;
+
+
+        public Pool<BulletEntity> Bullets       { get { return m_bullets; } }
+
 
         public ProjectileManager(GameWorld world, Bin bin)
         {
@@ -69,8 +73,5 @@ namespace TestGame.Systems
 
             bullet.AddToBin(m_bin);
         }
-
-        public Pool<BulletEntity> GetBullets() { return m_bullets; }
-
     }
 }

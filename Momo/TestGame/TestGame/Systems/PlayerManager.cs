@@ -9,15 +9,21 @@ namespace TestGame.Systems
 {
     public class PlayerManager
     {
+        private const int kMaxPlayers = 2;
+
         private  GameWorld m_world;
         private  Bin m_bin;
 
-        public static readonly int kMaxPlayers = 2;
-
         private Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers, 1);
 
-        Vector2 m_cachedAveragePosition = new Vector2();
-        bool m_averageCached = false;
+        private Vector2 m_cachedAveragePosition = new Vector2();
+        private bool m_averageCached = false;
+
+
+
+        public Pool<PlayerEntity> Players       { get { return m_players; } }
+
+
 
         public PlayerManager(GameWorld world, Bin bin)
         {
@@ -29,6 +35,7 @@ namespace TestGame.Systems
 
         public void Load()
         {
+
         }
 
         public PlayerEntity AddPlayer(InputWrapper input)
@@ -48,8 +55,8 @@ namespace TestGame.Systems
             player.SetPlayerColour( debugColours[m_players.ActiveItemListCount] );
 
             // Spawn at a spawn point
-            MapData.Map map = m_world.GetMap();
-            //int playerSpawnIndex = m_world.GetRandom().Next(map.PlayerSpawnPoints.Length);
+            MapData.Map map = m_world.Map;
+            //int playerSpawnIndex = m_world.Random.Next(map.PlayerSpawnPoints.Length);
             int playerSpawnIndex = m_players.ActiveItemListCount;
             player.SetPosition(map.PlayerSpawnPoints[playerSpawnIndex]);
             player.Init();
@@ -90,8 +97,5 @@ namespace TestGame.Systems
 
             return m_cachedAveragePosition;
         }
-
-        public Pool<PlayerEntity> GetPlayers() { return m_players; }
-
     }
 }

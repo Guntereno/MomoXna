@@ -34,8 +34,6 @@ namespace TestGame.Entities
 
         private Trigger m_deathTrigger = null;
 
-        //private SensedObject m_sensedPlayer = null;
-
         private Weapon m_weapon = null;
 
         private SpawnPoint m_ownedSpawnPoint = null;
@@ -45,7 +43,7 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         public AiEntity(GameWorld world): base(world)
         {
-            Random random = GetWorld().GetRandom();
+            Random random = GetWorld().Random;
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
@@ -267,9 +265,9 @@ namespace TestGame.Entities
                 m_ownedSpawnPoint = null;
             }
 
-            GetWorld().GetCorpseManager().Create(this);
+            GetWorld().CorpseManager.Create(this);
 
-            GetWorld().GetEnemyManager().IncrementKillCount();
+            GetWorld().EnemyManager.IncrementKillCount();
             DestroyItem();
         }
 
