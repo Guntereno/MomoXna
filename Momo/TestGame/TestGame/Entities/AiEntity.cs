@@ -38,6 +38,7 @@ namespace TestGame.Entities
 
         private SpawnPoint m_ownedSpawnPoint = null;
 
+
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------

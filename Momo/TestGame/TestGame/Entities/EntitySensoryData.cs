@@ -32,13 +32,16 @@ namespace TestGame.Entities
         internal DynamicGameEntity m_sensedEntity;
 
 
-        public DynamicGameEntity SensedEntity
+        public DynamicGameEntity SensedEntity           { get { return m_sensedEntity; } }
+
+
+        public SensedObject()
         {
-            get { return m_sensedEntity; }
+
         }
 
 
-        public SensedObject(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed, DynamicGameEntity entity)
+        public void Set(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed, DynamicGameEntity entity)
         {
             m_id = id;
             m_type = obj;
@@ -47,7 +50,6 @@ namespace TestGame.Entities
             m_timeSensed = timeSensed;
             m_sensedEntity = entity;
         }
-
 
         public Vector2 GetLastPosition()
         {
@@ -58,7 +60,7 @@ namespace TestGame.Entities
 
     public class EntitySensoryData
     {
-        static readonly int kMaxSensedObjects = 10;
+        private static readonly int kMaxSensedObjects = 10;
 
 
         private float m_invHalfSightFov = 0.0f;
@@ -74,15 +76,8 @@ namespace TestGame.Entities
 
 
 
-        public SensedObject SeePlayerSense
-        {
-            get { return m_seePlayerSense; }
-        }
-
-        public SensedObject StraightPathToPlayerSense
-        {
-            get { return m_straightPathToPlayerSense; }
-        }
+        public SensedObject SeePlayerSense                  { get { return m_seePlayerSense; } }
+        public SensedObject StraightPathToPlayerSense       { get { return m_straightPathToPlayerSense; } }
 
 
         public EntitySensoryData(float sightFov, float sightDistance, float senseDistance)
@@ -90,6 +85,12 @@ namespace TestGame.Entities
             m_invHalfSightFov = 1.0f - (float)Math.Sin(sightFov * 0.5f);
             m_sightDistanceSq = sightDistance * sightDistance;
             m_senseDistanceSq = senseDistance * senseDistance;
+
+            for (int i = 0; i < kMaxSensedObjects; ++i)
+            {
+                m_sensedObjects[i] = new SensedObject();
+            }
+
 
             Reset();
         }
@@ -178,7 +179,7 @@ namespace TestGame.Entities
             }
 
 
-            m_sensedObjects[objectIdx] = new SensedObject(id, obj, position, distanceSq, timeSensed, entity);
+            m_sensedObjects[objectIdx].Set(id, obj, position, distanceSq, timeSensed, entity);
         }
 
 
