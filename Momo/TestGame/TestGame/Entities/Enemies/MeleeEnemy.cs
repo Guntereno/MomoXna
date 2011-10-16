@@ -35,15 +35,15 @@ namespace TestGame.Entities.Enemies
         {
             base.Init(data);
 
-            System.Diagnostics.Debug.Assert(GetCurrentWeapon() == null);
+            System.Diagnostics.Debug.Assert(CurrentWeapon == null);
 
             // Default to the melee weapon
-            MapData.Weapon.Design weaponDesign = GetData().GetWeapon();
+            MapData.Weapon.Design weaponDesign = Data.GetWeapon();
             if(weaponDesign == MapData.Weapon.Design.None)
                 weaponDesign = MapData.Weapon.Design.Melee;
 
             Weapon weapon = GetWorld().WeaponManager.Create(weaponDesign);
-            SetCurrentWeapon(weapon);
+            CurrentWeapon = weapon;
             weapon.SetOwner(this);
 
             SetCurrentState(m_stateFind);

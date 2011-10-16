@@ -6,7 +6,10 @@ namespace TestGame.Weapons
     {
         BulletEntity.Flags GetBulletFlags();
 
-        Weapon GetCurrentWeapon();
-        void SetCurrentWeapon(Weapon weapon);
+        Weapon CurrentWeapon
+        {
+            get;
+            set;
+        }
     }
 }

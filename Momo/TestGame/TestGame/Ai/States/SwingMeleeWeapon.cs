@@ -43,7 +43,7 @@ namespace TestGame.Ai.States
                 GetEntity().TurnTowards(targetDirection, 0.11f);
             }
 
-            Weapon weapon = entity.GetCurrentWeapon();
+            Weapon weapon = entity.CurrentWeapon;
 
             float triggerAmount = 0.0f;
             if (!m_performedSwing)

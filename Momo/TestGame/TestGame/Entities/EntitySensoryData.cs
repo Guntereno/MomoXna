@@ -273,8 +273,8 @@ namespace TestGame.Entities
 
                 if (checkLineOfSight)
                 {
-                    bool clearLineOfSight = CollisionHelpers.IsClearLineOfSight(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.GetOccludingBinLayer());
-                    bool clearLineOfPath = CollisionHelpers.IsClearLineOfSight(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.GetObstructionBinLayer());
+                    bool clearLineOfSight = CollisionHelpers.IsClearLineOfSightBoundary(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.GetOccludingBinLayer());
+                    bool clearLineOfPath = CollisionHelpers.IsClearLineOfSightBoundary(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.GetObstructionBinLayer());
 
                     //if (clearLineOfSight)
                     //    entity.GetWorld().DebugRenderer.DrawFilledLine(myPosition, entity.GetPosition(), new Color(0.0f, 1.0f, 0.0f, 0.2f), 2.0f);

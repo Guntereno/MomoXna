@@ -62,7 +62,7 @@ namespace TestGame.Ai.States
 
 
             // Fire the weapon at the player
-            Weapon weapon = entity.GetCurrentWeapon();
+            Weapon weapon = entity.CurrentWeapon;
             if (weapon != null)
             {
                 // Reload if needed

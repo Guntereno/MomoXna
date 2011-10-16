@@ -36,12 +36,12 @@ namespace TestGame.Entities.Enemies
         {
             base.Init(data);
 
-            System.Diagnostics.Debug.Assert(GetCurrentWeapon() == null);
+            System.Diagnostics.Debug.Assert(CurrentWeapon == null);
 
-            if (GetData().GetWeapon() != MapData.Weapon.Design.None)
+            if (Data.GetWeapon() != MapData.Weapon.Design.None)
             {
-                Weapon weapon = GetWorld().WeaponManager.Create(GetData().GetWeapon());
-                SetCurrentWeapon(weapon);
+                Weapon weapon = GetWorld().WeaponManager.Create(Data.GetWeapon());
+                CurrentWeapon = weapon;
                 weapon.SetOwner(this);
             }
 

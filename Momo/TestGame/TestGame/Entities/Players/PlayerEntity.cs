@@ -13,9 +13,8 @@ namespace TestGame.Entities.Players
 {
     public class PlayerEntity : DynamicGameEntity, IWeaponUser
     {
-        static readonly int kNumWeaponSlots = 3;
-
-        static readonly float kPlayerHealth = 2000.0f;
+        const int kNumWeaponSlots = 3;
+        const float kPlayerHealth = 2000.0f;
 
         #region State Machine
         private StateMachine m_stateMachine = null;
@@ -36,7 +35,32 @@ namespace TestGame.Entities.Players
 
         private Color m_playerColour = Color.White;
 
-        Bin m_bin = null;
+        private Bin m_bin = null;
+
+
+        public Weapon CurrentWeapon
+        {
+            get { return m_currentWeapon; }
+            set
+            {
+                m_currentWeapon = value;
+                throw new System.Exception("It's not possible to set the player's weapon externally!");
+            }
+        }
+
+
+
+        public Input.InputWrapper GetInputWrapper() { return m_input; }
+        public Vector2 GetInputMovement() { return m_movementInputVector; }
+        public Vector2 GetInputFacing() { return m_facingInputVector; }
+        public float GetTriggerState() { return m_triggerState; }
+
+        public Color GetPlayerColour() { return m_playerColour; }
+        public void SetPlayerColour(Color value) { m_playerColour = value; }
+
+        public void SetInputWrapper(Input.InputWrapper value) { m_input = value; }
+
+
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -59,16 +83,6 @@ namespace TestGame.Entities.Players
             m_stateDead.SetLength(4.0f);
             m_stateDead.SetExitState(m_stateActive);
         }
-
-        public Input.InputWrapper GetInputWrapper() { return m_input; }
-        public Vector2 GetInputMovement() { return m_movementInputVector; }
-        public Vector2 GetInputFacing() { return m_facingInputVector; }
-        public float GetTriggerState() { return m_triggerState; }
-
-        public Color GetPlayerColour() { return m_playerColour; }
-        public void SetPlayerColour(Color value) { m_playerColour = value; }
-
-        public void SetInputWrapper(Input.InputWrapper value) { m_input = value; }
 
         public void Init()
         {
@@ -249,12 +263,6 @@ namespace TestGame.Entities.Players
         public BulletEntity.Flags GetBulletFlags()
         {
             return BulletEntity.Flags.HarmsEnemies;
-        }
-
-        public Weapon GetCurrentWeapon() { return m_currentWeapon; }
-        public void SetCurrentWeapon(Weapon value)
-        {
-            throw new System.Exception("It's not possible to set the player's weapon externally!");
         }
     }
 }

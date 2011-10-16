@@ -136,7 +136,7 @@ namespace TestGame
 
                     PathNode pathNode = (PathNode)queryResults.BinItemQueryResults[closestBinItemIdx];
 
-                    if (CollisionHelpers.IsClearLineOfSight(pos, pathNode.GetPosition() - pos, bin, boundaryBinLayer))
+                    if (CollisionHelpers.IsClearLineOfSightBoundary(pos, pathNode.GetPosition() - pos, bin, boundaryBinLayer))
                     {
                         outNode = pathNode;
                         return true;

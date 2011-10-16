@@ -28,7 +28,7 @@ namespace TestGame.Systems
             m_world = world;
 
             Font font = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
-            m_textStyle = new TextStyle(font, TextSecondaryDrawTechnique.kOutline);
+            m_textStyle = new TextStyle(font, TextSecondaryDrawTechnique.kDropshadow);
 
 
             Vector2[] osdPositions = 
@@ -54,7 +54,7 @@ namespace TestGame.Systems
             for (int i = 0; i < m_world.PlayerManager.Players.ActiveItemListCount; ++i)
             {
                 PlayerEntity player = m_world.PlayerManager.Players[i];
-                Weapons.Weapon currentWeapon = player.GetCurrentWeapon();
+                Weapons.Weapon currentWeapon = player.CurrentWeapon;
 
                 m_weaponString[i].Clear();
 

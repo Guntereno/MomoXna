@@ -231,8 +231,7 @@ namespace TestGame
             // Collision detection/resolution
             m_contactList.StartAddingContacts();
 
-            AddContacts(Entities.BinLayers.kAiEntity);
-            AddContacts(Entities.BinLayers.kPlayerEntity);
+            GenerateContacts();
 
             m_contactList.EndAddingContacts();
 
@@ -243,11 +242,25 @@ namespace TestGame
         }
 
 
-        private void AddContacts(int layer)
+        static readonly int []kProjectileEntityLayers = { BinLayers.kAiEntity, BinLayers.kPlayerEntity };
+
+        private void GenerateContacts()
         {
-            CollisionHelpers.GenerateContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, m_contactList, layer);
-            CollisionHelpers.GenerateContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, m_contactList, layer);
-            CollisionHelpers.UpdateBulletContacts(m_projectileManager.Bullets.ActiveItemList, m_projectileManager.Bullets.ActiveItemListCount, m_bin, layer);
+            // Check against entities
+            CollisionHelpers.GenerateEntityContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kAiEntity, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kAiEntity, m_contactList);
+
+            CollisionHelpers.GenerateEntityContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kPlayerEntity, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kPlayerEntity, m_contactList);
+
+
+            // Check against boundaries
+            CollisionHelpers.GenerateBoundaryContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
+            CollisionHelpers.GenerateBoundaryContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
+
+
+            // Check projectiles
+            CollisionHelpers.GenerateProjectileContacts(m_projectileManager.Bullets.ActiveItemList, m_projectileManager.Bullets.ActiveItemListCount, m_bin, kProjectileEntityLayers, BinLayers.kBoundary);
         }
 
 

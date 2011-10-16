@@ -77,7 +77,7 @@ namespace TestGame.Entities
             m_lastSearchFrom = myPosition;
 
             // Check if we have a clean line of sight to our next target position.
-            bool canSeeNextTargetPos = CollisionHelpers.IsClearLineOfSight(myPosition, checkLine, bin, occludingBoundaryLayer);
+            bool canSeeNextTargetPos = CollisionHelpers.IsClearLineOfSightBoundary(myPosition, checkLine, bin, occludingBoundaryLayer);
             bool moveToNextTargetNode = false;
 
             // If we can see the next target position, increment our search line position (for next frame).

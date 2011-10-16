@@ -39,6 +39,17 @@ namespace TestGame.Entities
         private SpawnPoint m_ownedSpawnPoint = null;
 
 
+
+        public EntitySensoryData SensoryData        { get { return m_sensoryData; } }
+        public MapData.EnemyData Data               { get { return m_data; } }
+
+        public Weapon CurrentWeapon
+        {
+            get { return m_weapon; }
+            set { m_weapon = value; }
+        }
+
+
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
@@ -63,22 +74,9 @@ namespace TestGame.Entities
 
             m_currentState = null;
             m_deathTrigger = null;
-            //m_sensedPlayer = null;
             m_weapon = null;
             m_ownedSpawnPoint = null;
         }
-
-        public EntitySensoryData SensoryData
-        {
-            get { return m_sensoryData; }
-        }
-
-        //public SensedObject SensedPlayer
-        //{
-        //    get { return m_sensedPlayer; }
-        //}
-
-        public MapData.EnemyData GetData() { return m_data; }
 
         public void TakeOwnershipOf(SpawnPoint spawnPoint)
         {
@@ -279,8 +277,5 @@ namespace TestGame.Entities
         {
             return BulletEntity.Flags.HarmsPlayer;
         }
-
-        public Weapon GetCurrentWeapon() { return m_weapon; }
-        public void SetCurrentWeapon(Weapon value) { m_weapon = value; }
     }
 }
