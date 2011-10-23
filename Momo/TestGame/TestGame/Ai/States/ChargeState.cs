@@ -31,7 +31,7 @@ namespace TestGame.Ai.States
             SensedObject sensedObject = entity.SensoryData.SeePlayerSense;
             if (sensedObject != null)
             {
-                DynamicGameEntity sensedEntity = sensedObject.SensedEntity;
+                GameEntity sensedEntity = sensedObject.SensedEntity;
                 if (sensedEntity != null)
                 {
                     float distSq = (entity.GetPosition() - sensedEntity.GetPosition()).LengthSquared();

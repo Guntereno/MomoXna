@@ -7,7 +7,7 @@ using Momo.Core;
 
 namespace TestGame.Entities
 {
-    public class PressurePlate : StaticGameEntity
+    public class PressurePlate : GameEntity
     {
         private PressurePlateData m_data;
 

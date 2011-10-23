@@ -13,7 +13,7 @@ using TestGame.Weapons;
 
 namespace TestGame.Entities
 {
-    public class AiEntity : DynamicGameEntity, IWeaponUser
+    public class AiEntity : LivingGameEntity, IWeaponUser
     {
         // --------------------------------------------------------------------
         // -- Private Members
@@ -173,10 +173,10 @@ namespace TestGame.Entities
                 if (m_currentState != m_stateDying)
                 {
                     // Take damage from the bullet
-                    m_health -= damage;
-                    if (m_health <= 0.0f)
+                    Health -= damage;
+                    if (Health <= 0.0f)
                     {
-                        m_health = 0.0f;
+                        Health = 0.0f;
 
                         SetCurrentState(m_stateDying);
                     }

@@ -31,7 +31,7 @@ namespace TestGame
         }
 
 
-        public static void GenerateEntityContacts(DynamicGameEntity[] entities, int entityCount, Bin bin, int entityLayer, ContactList contactList)
+        public static void GenerateEntityContacts(GameEntity[] entities, int entityCount, Bin bin, int entityLayer, ContactList contactList)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
@@ -42,7 +42,7 @@ namespace TestGame
 
             for (int i = 0; i < entityCount; ++i)
             {
-                DynamicGameEntity entity = entities[i];
+                GameEntity entity = entities[i];
 
                 entity.GetBinRegion(ref entityRegion);
 
@@ -55,7 +55,7 @@ namespace TestGame
 
                 for (int j = 0; j < queryResults.BinItemCount; ++j)
                 {
-                    DynamicGameEntity checkEntity = (DynamicGameEntity)queryResults.BinItemQueryResults[j];
+                    GameEntity checkEntity = (GameEntity)queryResults.BinItemQueryResults[j];
 
                     if (entity != checkEntity)
                     {
@@ -82,7 +82,7 @@ namespace TestGame
         }
 
 
-        public static void GenerateBoundaryContacts(DynamicGameEntity[] entities, int entityCount, Bin bin, int boundaryLayer, ContactList contactList)
+        public static void GenerateBoundaryContacts(GameEntity[] entities, int entityCount, Bin bin, int boundaryLayer, ContactList contactList)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();
             BinRegionUniform boundaryRegion = new BinRegionUniform();
@@ -93,7 +93,7 @@ namespace TestGame
 
             for (int i = 0; i < entityCount; ++i)
             {
-                DynamicGameEntity entity = entities[i];
+                GameEntity entity = entities[i];
 
                 entity.GetBinRegion(ref entityRegion);
 
@@ -159,7 +159,7 @@ namespace TestGame
                 float entityContactDelta = float.MaxValue;
 
                 BoundaryEntity boundaryContact = null;
-                DynamicGameEntity entityContact = null;
+                GameEntity entityContact = null;
 
 
                 // Boundaries
@@ -208,7 +208,7 @@ namespace TestGame
 
                     for (int k = 0; k < queryResults.BinItemCount; ++k)
                     {
-                        DynamicGameEntity checkEntity = (DynamicGameEntity)queryResults.BinItemQueryResults[k];
+                        GameEntity checkEntity = (GameEntity)queryResults.BinItemQueryResults[k];
                         checkEntity.GetBinRegion(ref entityRegion);
 
                         float contactDelta = float.MaxValue;

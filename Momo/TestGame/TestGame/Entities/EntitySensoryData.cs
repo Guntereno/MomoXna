@@ -29,10 +29,10 @@ namespace TestGame.Entities
         internal Vector2 m_lastPosition;
         internal float m_sensedDistanceSq;
         internal float m_timeSensed;
-        internal DynamicGameEntity m_sensedEntity;
+        internal GameEntity m_sensedEntity;
 
 
-        public DynamicGameEntity SensedEntity           { get { return m_sensedEntity; } }
+        public GameEntity SensedEntity           { get { return m_sensedEntity; } }
 
 
         public SensedObject()
@@ -41,7 +41,7 @@ namespace TestGame.Entities
         }
 
 
-        public void Set(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed, DynamicGameEntity entity)
+        public void Set(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed, GameEntity entity)
         {
             m_id = id;
             m_type = obj;
@@ -160,7 +160,7 @@ namespace TestGame.Entities
         }
 
 
-        public void AddSense(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed, DynamicGameEntity entity)
+        public void AddSense(int id, SensedType obj, Vector2 position, float distanceSq, float timeSensed, GameEntity entity)
         {
             int objectIdx = GetSenseIndex(id, obj);
 

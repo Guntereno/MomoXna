@@ -13,7 +13,7 @@ using TestGame.Weapons;
 
 namespace TestGame.Entities.Players
 {
-    public class PlayerEntity : DynamicGameEntity, IWeaponUser
+    public class PlayerEntity : LivingGameEntity, IWeaponUser
     {
         private const int kNumWeaponSlots = 3;
         private const float kPlayerHealth = 2000.0f;
@@ -107,7 +107,8 @@ namespace TestGame.Entities.Players
 
             m_stateMachine.SetCurrentState(m_stateActive);
 
-            m_maxHealth = m_health = kPlayerHealth;
+            MaxHealth = kPlayerHealth;
+            Health = kPlayerHealth;
         }
 
 
@@ -163,10 +164,10 @@ namespace TestGame.Entities.Players
             if (m_stateMachine.CurrentState != m_stateDying)
             {
                 // Take damage from the bullet
-                m_health -= damage;
-                if (m_health <= 0.0f)
+                Health -= damage;
+                if (Health <= 0.0f)
                 {
-                    m_health = 0.0f;
+                    Health = 0.0f;
 
                     m_stateMachine.SetCurrentState(m_stateDying);
                 }
@@ -260,7 +261,7 @@ namespace TestGame.Entities.Players
         internal void Spawn()
         {
             AddToBin(m_bin);
-            m_health = m_maxHealth;
+            Health = MaxHealth;
         }
 
 

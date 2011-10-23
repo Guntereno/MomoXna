@@ -3,10 +3,10 @@ using Momo.Core.Spatial;
 
 namespace TestGame.Entities
 {
-    public class Corpse : StaticGameEntity
+    public class Corpse : GameEntity
     {
-        float m_meat = 0.0f;
-        float m_age = 0.0f;
+        private float m_meat = 0.0f;
+        private float m_age = 0.0f;
 
 
         public Corpse(GameWorld world): base(world)
@@ -29,9 +29,9 @@ namespace TestGame.Entities
             SetBinRegion(curBinRegion);
         }
 
-        protected override void Reset()
+        public override void ResetItem()
         {
-            base.Reset();
+            base.ResetItem();
 
             m_meat = 0.0f;
             m_age = 0.0f;

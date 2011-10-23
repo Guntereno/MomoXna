@@ -91,7 +91,7 @@ namespace TestGame.Entities
         }
 
 
-        public void OnCollisionEvent(ref DynamicGameEntity entity)
+        public void OnCollisionEvent(ref GameEntity entity)
         {
             RemoveFromBin(BinLayers.kBullet);
             DestroyItem();
