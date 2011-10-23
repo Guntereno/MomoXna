@@ -18,7 +18,7 @@ namespace TestGame.Entities
         {
             m_data = data;
 
-            SetContactRadiusInfo(new RadiusInfo(data.Radius));
+            ContactRadiusInfo = new RadiusInfo(data.Radius);
             SetPosition(data.Position);
 
             // Initialise the bin
