@@ -46,9 +46,9 @@ namespace TestGame.Entities.Imps
         }
 
 
-        public override void Init(MapData.EnemyData data)
+        public override void Init()
         {
-            base.Init(data);
+            base.Init();
 
         }
 

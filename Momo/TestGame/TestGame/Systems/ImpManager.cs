@@ -45,12 +45,12 @@ namespace TestGame.Systems
         }
 
 
-        public AiEntity Create(MapData.EnemyData data, Vector2 pos)
+        public Imp Create(Vector2 pos)
         {
             Imp createdImp = null;
 
             createdImp = m_imps.CreateItem(typeof(Imp));
-            createdImp.Init(data);
+            createdImp.Init();
 
             createdImp.SetPosition(pos);
             createdImp.AddToBin(m_bin);

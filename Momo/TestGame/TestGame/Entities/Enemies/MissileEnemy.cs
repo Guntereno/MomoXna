@@ -3,16 +3,18 @@ using TestGame.Weapons;
 
 namespace TestGame.Entities.Enemies
 {
-    public class MissileEnemy : AiEntity, IWeaponUser
+    public class MissileEnemy : EnemyEntity, IWeaponUser
     {
+        // TODO: Make this a property of the weapon
+        private const float kMinRange = 200.0f;
+
         #region State Machine
         private FindState m_stateFind = null;
         private GetInRangeState m_stateGetInRange = null;
         private FireProjectileWeaponState m_stateFireWeapon = null;
         #endregion
 
-        // TODO: Make this a property of the weapon
-        public static float kMinRange = 200.0f;
+
 
         public MissileEnemy(GameWorld world)
             : base(world)

@@ -19,13 +19,13 @@ namespace TestGame.Systems
         private GameWorld m_world;
         private Bin m_bin;
 
-        private Pool<AiEntity> m_enemies = new Pool<AiEntity>(kMaxEnemies, 2);
+        private Pool<EnemyEntity> m_enemies = new Pool<EnemyEntity>(kMaxEnemies, 2);
 
         private int m_killCounter = 0;
 
 
 
-        public Pool<AiEntity> Enemies       { get { return m_enemies; } }
+        public Pool<EnemyEntity> Enemies    { get { return m_enemies; } }
         public int KillCount                { get { return m_killCounter; } }
 
 
@@ -56,9 +56,9 @@ namespace TestGame.Systems
         }
 
 
-        public AiEntity Create(MapData.EnemyData data, Vector2 pos)
+        public EnemyEntity Create(MapData.EnemyData data, Vector2 pos)
         {
-            AiEntity createdEntity = null;
+            EnemyEntity createdEntity = null;
 
             switch (data.GetSpecies())
             {
@@ -91,7 +91,7 @@ namespace TestGame.Systems
         }
 
 
-        private void UpdateEnemyPool(Pool<AiEntity> aiEntities, ref FrameTime frameTime, int updateToken)
+        private void UpdateEnemyPool(Pool<EnemyEntity> aiEntities, ref FrameTime frameTime, int updateToken)
         {
             bool needsCoalesce = false;
             for (int i = 0; i < aiEntities.ActiveItemListCount; ++i)

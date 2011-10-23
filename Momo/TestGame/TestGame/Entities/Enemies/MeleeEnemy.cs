@@ -3,7 +3,7 @@ using TestGame.Weapons;
 
 namespace TestGame.Entities.Enemies
 {
-    public class MeleeEnemy : AiEntity
+    public class MeleeEnemy : EnemyEntity
     {
         #region State Machine
         private RandomWanderState m_stateRandomWander = null;

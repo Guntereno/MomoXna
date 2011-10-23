@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Momo.Core;
-using TestGame.Systems;
 using Momo.Maths;
 using Momo.Core.Triggers;
+
 using TestGame.Entities;
+using TestGame.Systems;
+using TestGame.Entities.Enemies;
+
+
 
 namespace TestGame.Events
 {
@@ -58,7 +60,7 @@ namespace TestGame.Events
                     SpawnPoint spawnPoint = World.SpawnPointManager.GetNextSpawnPoint();
                     if (spawnPoint != null)
                     {
-                        AiEntity enemy = SpawnEnemy(spawnPoint);
+                        EnemyEntity enemy = SpawnEnemy(spawnPoint);
                         enemy.TakeOwnershipOf(spawnPoint);
                         m_spawnTimer = m_spawnData.GetSpawnDelay();
                     }
@@ -70,11 +72,11 @@ namespace TestGame.Events
             }
         }
 
-        private AiEntity SpawnEnemy(SpawnPoint spawnPoint)
+        private EnemyEntity SpawnEnemy(SpawnPoint spawnPoint)
         {
             EnemyManager enemyManager = World.EnemyManager;
             MapData.EnemyData enemyData = m_spawnData.GetEnemies()[m_spawnCounter];
-            AiEntity enemy = enemyManager.Create(enemyData, spawnPoint.GetData().GetPosition());
+            EnemyEntity enemy = enemyManager.Create(enemyData, spawnPoint.GetData().GetPosition());
             enemy.SetDeathTrigger(m_killTrigger);
 
             ++m_spawnCounter;

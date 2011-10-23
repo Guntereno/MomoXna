@@ -14,10 +14,10 @@ namespace TestGame.Entities
 {
     public class GameEntity : DynamicEntity, INamed, IPoolItem
     {
+        #region Variables
         private const int kMaxNameLength = 32;
 
-        private MutableString m_name = new MutableString(kMaxNameLength);
-        private int m_nameHash = 0;
+        private Name m_name = new Name(kMaxNameLength);
 
         private RadiusInfo m_contactRadiusInfo;
 
@@ -30,9 +30,9 @@ namespace TestGame.Entities
         private bool m_destroyed = false;
 
         private GameWorld m_world;
+        #endregion
 
-
-
+        #region Properties
         public GameWorld World { get { return m_world; } }
 
         public float FacingAngle
@@ -72,7 +72,7 @@ namespace TestGame.Entities
             get { return m_contactRadiusInfo; }
             set { m_contactRadiusInfo = value; }
         }
-
+        #endregion
 
 
         public GameEntity(GameWorld world)
@@ -157,24 +157,22 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         public void SetName(MutableString name)
         {
-            m_name.Set(name);
-            m_nameHash = Hashing.GenerateHash(m_name.GetCharacterArray(), m_name.GetLength());
+            m_name.SetName(name);
         }
 
         public void SetName(string name)
         {
-            m_name.Set(name);
-            m_nameHash = Hashing.GenerateHash(m_name.GetCharacterArray(), m_name.GetLength());
+            m_name.SetName(name);
         }
 
         public MutableString GetName()
         {
-            return m_name;
+            return m_name.GetName();
         }
 
         public int GetNameHash()
         {
-            return m_nameHash;
+            return m_name.GetNameHash();
         }
     }
 }

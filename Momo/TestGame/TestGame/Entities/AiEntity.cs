@@ -1,10 +1,13 @@
 ﻿using System;
+
 using Microsoft.Xna.Framework;
+
 using Momo.Core;
 using Momo.Core.Collision2D;
 using Momo.Core.Spatial;
 using Momo.Core.Triggers;
 using Momo.Debug;
+
 using TestGame.Ai.States;
 using TestGame.Objects;
 using TestGame.Weapons;
@@ -29,18 +32,12 @@ namespace TestGame.Entities
         private int m_occludingBinLayer = -1;
         private int m_obstructionBinLayer = -1;
 
-        // TODO: Move this to an enemy class - not generic enough for Imp to share
-        private MapData.EnemyData m_data = null;
         private Weapon m_weapon = null;
-        private SpawnPoint m_ownedSpawnPoint = null;
         private Trigger m_deathTrigger = null;
 
 
 
-
-
         public EntitySensoryData SensoryData        { get { return m_sensoryData; } }
-        public MapData.EnemyData Data               { get { return m_data; } }
 
         public Weapon CurrentWeapon
         {
@@ -80,21 +77,11 @@ namespace TestGame.Entities
             SecondaryDebugColor = new Color(1.0f, 0.0f, 0.0f);
         }
 
-        public virtual void Init(MapData.EnemyData data)
+        public virtual void Init()
         {
-            m_data = data;
-
             m_currentState = null;
             m_deathTrigger = null;
             m_weapon = null;
-            m_ownedSpawnPoint = null;
-        }
-
-        public void TakeOwnershipOf(SpawnPoint spawnPoint)
-        {
-            System.Diagnostics.Debug.Assert(m_ownedSpawnPoint == null);
-            m_ownedSpawnPoint = spawnPoint;
-            spawnPoint.TakeOwnership(this);
         }
 
         public void SetDeathTrigger(Trigger trigger)
@@ -220,7 +207,7 @@ namespace TestGame.Entities
         }
 
 
-        internal void Kill()
+        internal virtual void Kill()
         {
             if (m_deathTrigger != null)
             {
@@ -233,15 +220,6 @@ namespace TestGame.Entities
                 m_weapon.DestroyItem();
             }
 
-            if (m_ownedSpawnPoint != null)
-            {
-                m_ownedSpawnPoint.RelinquishOwnership(this);
-                m_ownedSpawnPoint = null;
-            }
-
-            World.CorpseManager.Create(this);
-
-            World.EnemyManager.IncrementKillCount();
             DestroyItem();
         }
 
