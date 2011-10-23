@@ -160,7 +160,6 @@
     <Compile Include="Systems\TriggerController.cs" />
     <Compile Include="Systems\TriggerManager.cs" />
     <Compile Include="TestGame.cs" />
-    <Compile Include="TestWorldPathFinding.cs" />
     <Compile Include="Systems\ProjectileManager.cs" />
     <Compile Include="Weapons\IWeaponUser.cs" />
     <Compile Include="Weapons\MeleeWeapon.cs" />

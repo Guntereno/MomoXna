@@ -31,7 +31,8 @@ namespace TestGame.Entities.Imps
             ContactRadiusInfo = new RadiusInfo(16.0f);
             SetMass(ContactRadiusInfo.Radius * 2.0f);
 
-            SecondaryDebugColor = new Color(0.0f, 1.0f, 1.0f);
+            PrimaryDebugColor = new Color(0.0f, 1.0f, 1.0f);
+            SecondaryDebugColor = PrimaryDebugColor;
 
             m_stateMachine = new StateMachine(this);
             //m_stateActive = new ActiveState(m_stateMachine);

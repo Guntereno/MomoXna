@@ -1,9 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+
 using Momo.Core;
 using Momo.Core.ObjectPools;
 using Momo.Core.Spatial;
+using Momo.Debug;
+
 using TestGame.Entities.Players;
 using TestGame.Input;
+
+
 
 namespace TestGame.Systems
 {
@@ -97,6 +102,14 @@ namespace TestGame.Systems
             }
 
             return m_cachedAveragePosition;
+        }
+
+        public void DebugRender(DebugRenderer debugRenderer)
+        {
+            for (int i = 0; i < m_players.ActiveItemListCount; ++i)
+            {
+                m_players[i].DebugRender(debugRenderer);
+            }
         }
     }
 }

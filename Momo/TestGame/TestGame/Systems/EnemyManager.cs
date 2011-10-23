@@ -104,7 +104,7 @@ namespace TestGame.Systems
 
                 if (aiEntity.IsDestroyed())
                 {
-                    m_bin.RemoveBinItem(aiEntities[i], BinLayers.kAiEntity);
+                    m_bin.RemoveBinItem(aiEntities[i], BinLayers.kEnemyEntities);
                     needsCoalesce = true;
                 }
             }

@@ -152,8 +152,12 @@ namespace TestGame
             m_projectileManager.Load();
             m_enemyManager.Load();
             m_corpseManager.Load();
+            m_impManager.Load();
+
 
             m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(0));
+            m_impManager.Create(m_playerManager.Players.ActiveItemList[0].GetPosition() + new Vector2(50.0f, 0.0f));
+
 
             // TODO: Temp: Disconnects need to be handled in the InputManager
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.Two);
@@ -214,10 +218,7 @@ namespace TestGame
             Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper(0);
 
             m_playerManager.Update(ref frameTime);
-
-            // Move the camera follow position
-            m_cameraController.FollowPosition = m_playerManager.GetAveragePosition();
-
+            m_impManager.Update(ref frameTime, m_updateTokenOffset);
             m_enemyManager.Update(ref frameTime, m_updateTokenOffset);
             m_projectileManager.Update(ref frameTime);
             m_osdManager.Update(ref frameTime);
@@ -229,6 +230,9 @@ namespace TestGame
             m_eventManager.Update(ref frameTime);
             m_corpseManager.Update(ref frameTime);
 
+
+            // Move the camera follow position
+            m_cameraController.FollowPosition = m_playerManager.GetAveragePosition();
             m_cameraController.Update(ref frameTime, ref inputWrapper);
 
 
@@ -247,21 +251,27 @@ namespace TestGame
         }
 
 
-        static readonly int []kProjectileEntityLayers = { BinLayers.kAiEntity, BinLayers.kPlayerEntity };
+        static readonly int[] kProjectileEntityLayers = { BinLayers.kPlayerEntity, BinLayers.kEnemyEntities };
 
         private void GenerateContacts()
         {
-            // Check against entities
-            CollisionHelpers.GenerateEntityContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kAiEntity, m_contactList);
-            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kAiEntity, m_contactList);
-
-            CollisionHelpers.GenerateEntityContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kPlayerEntity, m_contactList);
+            // Check groups against each other
             CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kPlayerEntity, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_impManager.Imps.ActiveItemList, m_impManager.Imps.ActiveItemListCount, m_bin, BinLayers.kImpEntities, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kEnemyEntities, m_contactList);
+            
+            // Players against enemies/imps
+            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kEnemyEntities, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kImpEntities, m_contactList);
+
+            // Imps against enemies
+            CollisionHelpers.GenerateEntityContacts(m_impManager.Imps.ActiveItemList, m_impManager.Imps.ActiveItemListCount, m_bin, BinLayers.kEnemyEntities, m_contactList);
 
 
             // Check against boundaries
-            CollisionHelpers.GenerateBoundaryContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
             CollisionHelpers.GenerateBoundaryContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
+            CollisionHelpers.GenerateBoundaryContacts(m_impManager.Imps.ActiveItemList, m_impManager.Imps.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
+            CollisionHelpers.GenerateBoundaryContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
 
 
             // Check projectiles
@@ -315,10 +325,8 @@ namespace TestGame
 
             m_corpseManager.DebugRender(m_debugRenderer);
 
-            for (int i = 0; i < m_playerManager.Players.ActiveItemListCount; ++i)
-            {
-                m_playerManager.Players[i].DebugRender(m_debugRenderer);
-            }
+            m_impManager.DebugRender(m_debugRenderer);
+            m_playerManager.DebugRender(m_debugRenderer);
 
             m_enemyManager.DebugRender(m_debugRenderer);
             m_projectileManager.DebugRender(m_debugRenderer);
