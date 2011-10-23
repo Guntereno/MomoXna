@@ -59,6 +59,7 @@ namespace TestGame
         private CorpseManager m_corpseManager = null;
         private ImpManager m_impManager = null;
         private PathRouteManager m_pathRouteManager = null;
+        private PressurePlateManager m_pressurePlateManager = null;
 
         private TextBatchPrinter m_textPrinter = null;
 
@@ -71,26 +72,27 @@ namespace TestGame
 
 
 
-        public OrthographicCameraNode Camera            { get { return m_camera; } }
+        public OrthographicCameraNode Camera             { get { return m_camera; } }
 
-        public PlayerManager PlayerManager              { get { return m_playerManager; } }
-        public WeaponManager WeaponManager              { get { return m_weaponManager; } }
-        public ProjectileManager ProjectileManager      { get { return m_projectileManager; } }
-        public EnemyManager EnemyManager                { get { return m_enemyManager; } }
-        public TriggerManager TriggerManager            { get { return m_triggerManager; } }
-        public EventManager EventManager                { get { return m_eventManager; } }
-        public SpawnPointManager SpawnPointManager      { get { return m_spawnGroupManager; } }
-        public CorpseManager CorpseManager              { get { return m_corpseManager; } }
-        public ImpManager ImpManager                    { get { return m_impManager; } }
-        public PathRouteManager PathRouteManager        { get { return m_pathRouteManager; } }
+        public PlayerManager PlayerManager               { get { return m_playerManager; } }
+        public WeaponManager WeaponManager               { get { return m_weaponManager; } }
+        public ProjectileManager ProjectileManager       { get { return m_projectileManager; } }
+        public EnemyManager EnemyManager                 { get { return m_enemyManager; } }
+        public TriggerManager TriggerManager             { get { return m_triggerManager; } }
+        public EventManager EventManager                 { get { return m_eventManager; } }
+        public SpawnPointManager SpawnPointManager       { get { return m_spawnGroupManager; } }
+        public CorpseManager CorpseManager               { get { return m_corpseManager; } }
+        public ImpManager ImpManager                     { get { return m_impManager; } }
+        public PathRouteManager PathRouteManager         { get { return m_pathRouteManager; } }
+        public PressurePlateManager PressurePlateManager { get { return m_pressurePlateManager; } }
 
-        public TextBatchPrinter TextPrinter             { get { return m_textPrinter; } }
-        public Random Random                            { get { return m_random; } }
-        public DebugRenderer DebugRenderer              { get { return m_debugRenderer; } }
+        public TextBatchPrinter TextPrinter              { get { return m_textPrinter; } }
+        public Random Random                             { get { return m_random; } }
+        public DebugRenderer DebugRenderer               { get { return m_debugRenderer; } }
 
-        public MapData.Map Map                          { get { return m_map; } }
+        public MapData.Map Map                           { get { return m_map; } }
 
-        public float ElapsedTime                        { get { return m_elapsedTime; } }
+        public float ElapsedTime                         { get { return m_elapsedTime; } }
 
 
 
@@ -112,6 +114,7 @@ namespace TestGame
             m_impManager = new ImpManager(this, m_bin);
             m_pathRouteManager = new PathRouteManager();
             m_textPrinter = new TextBatchPrinter();
+            m_pressurePlateManager = new PressurePlateManager(this);
         }
 
 
@@ -187,6 +190,8 @@ namespace TestGame
 
             m_eventManager.LoadEvents(m_map);
             m_spawnGroupManager.LoadSpawnGroups(m_map);
+            m_pressurePlateManager.LoadPressurePoints(m_map);
+
         }
 
 
@@ -305,6 +310,8 @@ namespace TestGame
             //{
             //    m_boundaries[i].DebugRender(m_debugRenderer);
             //}
+
+            m_pressurePlateManager.DebugRender(m_debugRenderer);
 
             m_corpseManager.DebugRender(m_debugRenderer);
 

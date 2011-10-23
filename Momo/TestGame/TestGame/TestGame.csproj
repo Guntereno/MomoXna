@@ -131,6 +131,7 @@
     <Compile Include="Entities\PathTracker.cs" />
     <Compile Include="Entities\Players\PlayerEntity.cs" />
     <Compile Include="Entities\Players\PlayerStates.cs" />
+    <Compile Include="Entities\PressurePlate.cs" />
     <Compile Include="Entities\SpawnGroup.cs" />
     <Compile Include="Entities\StaticGameEntity.cs" />
     <Compile Include="Events\Event.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Systems\ImpManager.cs" />
     <Compile Include="Systems\OsdManager.cs" />
     <Compile Include="Systems\PlayerManager.cs" />
+    <Compile Include="Systems\PressurePlateManager.cs" />
     <Compile Include="Systems\SpawnPointManager.cs" />
     <Compile Include="Systems\TriggerController.cs" />
     <Compile Include="Systems\TriggerManager.cs" />

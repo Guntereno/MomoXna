@@ -95,6 +95,7 @@
     <Compile Include="NamedData.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="Patch.cs" />
+    <Compile Include="PressurePlate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Renderer.cs" />
     <Compile Include="SpawnEventData.cs" />

@@ -27,7 +27,7 @@ namespace TmxProcessorLib.Content
                 // Tiled has no requirement that names be unique, but we do
                 string name = obj.Name;
                 // Use a default of the layer's name if none provided
-                if (name == null)
+                if (name == null || name == "")
                 {
                     name = String.Format("{0}_{1:000}", layerNode.Name, 0);
                 }

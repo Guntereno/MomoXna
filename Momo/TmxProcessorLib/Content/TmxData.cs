@@ -49,7 +49,7 @@ namespace TmxProcessorLib.Content
 
         public List<Vector2> SpawnPoints { get; private set; }
 
-        public List<Object> Triggers { get; private set; }
+        public List<Object> PressurePlates { get; private set; }
 
         internal List<Patch>[] Patches { get; private set; }
 
@@ -257,28 +257,30 @@ namespace TmxProcessorLib.Content
 
             BuildPatches();
 
-            BuildTriggerList();
+            BuildPressurePointList();
         }
 
-        private void BuildTriggerList()
+        private void BuildPressurePointList()
         {
-            Triggers = new List<Object>();
+            PressurePlates = new List<Object>();
 
-            if (ObjectGroupsDict.ContainsKey("Triggers"))
+            if (ObjectGroupsDict.ContainsKey("PressurePlates"))
             {
-                ObjectGroup triggerGroup = ObjectGroupsDict["Triggers"];
-                Dictionary<String, Object> triggerDict = triggerGroup.Objects;
-                foreach (String triggerName in triggerDict.Keys)
+                ObjectGroup pressurePlatesGroup = ObjectGroupsDict["PressurePlates"];
+                Dictionary<String, Object> pressurePlatesDict = pressurePlatesGroup.Objects;
+                foreach (String pressurePlatesName in pressurePlatesDict.Keys)
                 {
-                    Object triggerObject = triggerDict[triggerName];
-                    switch (triggerObject.Type)
+                    Object pressurePlateObject = pressurePlatesDict[pressurePlatesName];
+                    switch (pressurePlateObject.Type)
                     {
-                        case "KillCount":
-                            Triggers.Add(triggerObject);
+                        case "Interactive":
+                        case "Normal":
+                        case "":
+                            PressurePlates.Add(pressurePlateObject);
                             break;
 
                         default:
-                            throw new InvalidContentException("Invalid trigger type!");
+                            throw new InvalidContentException("Invalid pressure plate type!");
                     }
                 }
             }
@@ -660,6 +662,56 @@ namespace TmxProcessorLib.Content
                 foreach (Patch patch in Patches[layerNum])
                 {
                     patch.Write(output, Offset);
+                }
+            }
+
+            // Output the pressure plates
+            output.Write(PressurePlates.Count);
+            for (int plateNum = 0; plateNum < PressurePlates.Count; ++plateNum)
+            {
+                Object plate = PressurePlates[plateNum];
+                int type;
+                if (plate.Type == "")
+                {
+                    type = (int)(MapData.PressurePlateData.Type.Normal);
+                }
+                else
+                {
+                    type = (int)(Enum.Parse(typeof(MapData.PressurePlateData.Type), plate.Type, true));
+                }
+
+                // Output defaults
+                output.Write(type);
+                output.Write(plate.Name);
+                output.Write(plate.Position + Offset);
+
+                // Use the largest dimension as the diameter of the circle
+                float radius = Math.Max(plate.Dimensions.X, plate.Dimensions.Y) * 0.5f;
+                output.Write(radius);
+
+                if(!plate.Properties.Properties.ContainsKey("trigger"))
+                {
+                    throw new InvalidContentException("Pressure plate missing 'trigger' property!");
+                }
+                output.Write(plate.Properties.Properties["trigger"]);
+
+                switch (plate.Type)
+                {
+                    case "Interactive":
+                        if(!plate.Properties.Properties.ContainsKey("interactTime"))
+                        {
+                            throw new InvalidContentException("Interactive pressure plate missing 'interactTime' property!");
+                        }
+                        output.Write(float.Parse(plate.Properties.Properties["interactTime"]));
+                        break;
+
+                    case "Normal":
+                    case null:
+                        // Do nothing
+                        break;
+
+                    default:
+                        throw new InvalidContentException("Invalid pressure plate type!");
                 }
             }
 

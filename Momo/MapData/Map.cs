@@ -39,6 +39,8 @@ namespace MapData
         public SpawnEventData[] SpawnEvents { get; private set; }
         public TriggerCounterEventData[] TriggerCounterEvents { get; private set; }
 
+        public PressurePlateData[] PressurePlates { get; private set; }
+
         public enum TriggerType
         {
             Invalid = -1,
@@ -104,6 +106,34 @@ namespace MapData
                     patch.Read(this, input);
 
                     Patches[layerIdx][patchIdx] = patch;
+                }
+            }
+
+            // Read the pressure point information
+            int numPressurePlates = input.ReadInt32();
+            PressurePlates = new PressurePlateData[numPressurePlates];
+            for (int i = 0; i < numPressurePlates; ++i)
+            {
+                PressurePlateData.Type type = (PressurePlateData.Type)(input.ReadInt32());
+                string name = input.ReadString();
+                Vector2 position = input.ReadVector2();
+                float radius = input.ReadSingle();
+                string trigger = input.ReadString();
+
+                switch (type)
+                {
+                    case PressurePlateData.Type.Normal:
+                        {
+                            PressurePlates[i] = new PressurePlateData(name, position, radius, trigger);
+                        }
+                        break;
+
+                    case PressurePlateData.Type.Interactive:
+                        {
+                            float interactTime = input.ReadSingle();
+                            PressurePlates[i] = new InteractivePressurePlateData(name, position, radius, trigger, interactTime);
+                        }
+                        break;
                 }
             }
 
