@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using Momo.Core.StateMachine;
-using Momo.Core;
+
 using Microsoft.Xna.Framework;
+
+using Momo.Core;
+using Momo.Core.StateMachine;
+
+
 
 namespace TestGame.Entities.Players
 {
@@ -16,14 +18,14 @@ namespace TestGame.Entities.Players
 
         public override void OnEnter()
         {
-            PlayerEntity player = (PlayerEntity)(GetMachine().GetOwner());
+            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
 
-            player.DebugColor = player.GetPlayerColour();
+            player.PrimaryDebugColor = player.PlayerColour;
         }
 
         public override void Update(ref FrameTime frameTime)
         {
-            PlayerEntity player = (PlayerEntity)(GetMachine().GetOwner());
+            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
 
             player.UpdateInput();
             player.UpdateMovement(ref frameTime);
@@ -47,16 +49,16 @@ namespace TestGame.Entities.Players
         {
             base.OnEnter();
 
-            PlayerEntity player = (PlayerEntity)(GetMachine().GetOwner());
+            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
 
             Color color = Color.Gray;
             color.A = 128;
-            player.DebugColor = color;
+            player.PrimaryDebugColor = color;
         }
 
         public override void OnExit()
         {
-            PlayerEntity player = (PlayerEntity)(GetMachine().GetOwner());
+            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
 
             player.Kill();
         }
@@ -79,13 +81,13 @@ namespace TestGame.Entities.Players
         {
             base.OnEnter();
 
-            PlayerEntity player = (PlayerEntity)(GetMachine().GetOwner());
-            player.DebugColor = Color.Transparent;
+            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
+            player.PrimaryDebugColor = Color.Transparent;
         }
 
         public override void OnExit()
         {
-            PlayerEntity player = (PlayerEntity)(GetMachine().GetOwner());
+            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
 
             player.Spawn();
         }

@@ -19,7 +19,7 @@ namespace TestGame.Ai.States
         {
             base.OnEnter();
 
-            GetEntity().DebugColor = new Color(0.7f, 0.5f, 0.5f, 0.5f);
+            GetEntity().PrimaryDebugColor = new Color(0.7f, 0.5f, 0.5f, 0.5f);
         }
 
         public override void OnExit()

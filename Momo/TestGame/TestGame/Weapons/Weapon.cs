@@ -17,26 +17,43 @@ namespace TestGame.Weapons
         private State m_currentState = null;
         private int m_ammoInClip = 0;
 
-        private Vector2 m_position = new Vector2();
-        private Vector2 m_barrelPos = new Vector2();
-        private Vector2 m_direction = new Vector2();
+        private Vector2 m_position = Vector2.Zero;
+        private Vector2 m_barrelPos = Vector2.Zero;
+        private Vector2 m_direction = Vector2.Zero;
+        private Vector2 m_recoil = Vector2.Zero;
         private float m_facing = 0.0f;
 
-        float m_triggerState = 0.0f;
+        private float m_triggerState = 0.0f;
 
-        IWeaponUser m_owner = null;
+        private IWeaponUser m_owner = null;
 
-        public bool AcceptingInput()
+
+        public Vector2 Recoil
         {
-            if (m_currentState == null)
-            {
-                return false;
-            }
-            else
-            {
-                return m_currentState.AcceptingInput();
-            }
+            get { return m_recoil; }
+            set { m_recoil = value; }
         }
+
+        public IWeaponUser Owner
+        {
+            get { return m_owner; }
+            set { m_owner = value; }
+        }
+
+        public int AmmoInClip
+        {
+            get { return m_ammoInClip; }
+            set { m_ammoInClip = value; }
+        }
+
+        public GameWorld World { get { return m_world; } }
+        public GunParams Parameters { get { return m_params; } }
+        public Vector2 Position { get { return m_position; } }
+        public Vector2 BarrelPosition { get { return m_barrelPos; } }
+        public Vector2 Direction { get { return m_direction; } }
+        public float Facing { get { return m_facing; } }
+        public float TriggerState { get { return m_triggerState; } }
+
 
         public class GunParams
         {
@@ -61,28 +78,25 @@ namespace TestGame.Weapons
             m_world = world;
         }
 
+
+        public bool AcceptingInput()
+        {
+            if (m_currentState == null)
+            {
+                return false;
+            }
+            else
+            {
+                return m_currentState.AcceptingInput();
+            }
+        }
+
+
         public override string ToString()
         {
             return "";
         }
 
-        public Vector2 Recoil { get; set; }
-
-        public GameWorld GetWorld() { return m_world; }
-        public GunParams GetParams() { return m_params; }
-
-        public IWeaponUser GetOwner() { return m_owner; }
-        public void SetOwner(IWeaponUser owner) { m_owner = owner; }
-
-        public int GetAmmoInClip() { return m_ammoInClip; }
-        public void SetAmmoInClip(int ammo) { m_ammoInClip = ammo; }
-
-        public Vector2 GetPosition() { return m_position; }
-        public Vector2 GetBarrelPosition() { return m_barrelPos; }
-        public Vector2 GetDirection() { return m_direction; }
-        public float GetFacing() { return m_facing; }
-
-        public float GetTriggerState() { return m_triggerState; }
 
         public void SetCurrentState(State state)
         {
@@ -147,7 +161,7 @@ namespace TestGame.Weapons
         public void DestroyItem()
         {
             m_isDestroyed = true;
-            GetWorld().WeaponManager.TriggerCoalesce();
+            World.WeaponManager.TriggerCoalesce();
         }
 
         public void ResetItem()
@@ -156,7 +170,6 @@ namespace TestGame.Weapons
         }
 
         #region State classes
-
         public abstract class State
         {
             public State(Weapon weapon)
@@ -229,8 +242,8 @@ namespace TestGame.Weapons
 
             public override void OnExit()
             {
-                GunParams param = GetWeapon().GetParams();
-                GetWeapon().SetAmmoInClip(param.m_clipSize);
+                GunParams param = GetWeapon().Parameters;
+                GetWeapon().AmmoInClip = param.m_clipSize;
             }
 
             public override bool AcceptingInput() { return false; }
@@ -250,7 +263,7 @@ namespace TestGame.Weapons
 
             protected override float GetTime()
             {
-                return 1.0f / GetWeapon().GetParams().m_fireRate;
+                return 1.0f / GetWeapon().Parameters.m_fireRate;
             }
 
             public override bool AcceptingInput() { return false; }

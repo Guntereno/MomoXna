@@ -71,9 +71,9 @@ namespace TestGame.Systems
         {
             // Add the start trigger to the registry
             Trigger trigger = null;
-            if (eventInst.GetData().GetStartTrigger() != null)
+            if (eventInst.EventData.GetStartTrigger() != null)
             {
-                trigger = m_world.TriggerManager.RegisterTrigger(eventInst.GetData().GetStartTrigger());
+                trigger = m_world.TriggerManager.RegisterTrigger(eventInst.EventData.GetStartTrigger());
             }
             else
             {

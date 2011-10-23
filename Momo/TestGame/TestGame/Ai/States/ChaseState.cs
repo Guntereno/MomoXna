@@ -37,7 +37,7 @@ namespace TestGame.Ai.States
         {
             base.OnEnter();
 
-            GetEntity().DebugColor = new Color(0.9f, 0.23f, 0.03f, 0.5f);
+            GetEntity().PrimaryDebugColor = new Color(0.9f, 0.23f, 0.03f, 0.5f);
         }
 
 

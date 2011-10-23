@@ -11,8 +11,8 @@ namespace TestGame.Systems
     {
         private const int kMaxPlayers = 2;
 
-        private  GameWorld m_world;
-        private  Bin m_bin;
+        private GameWorld m_world;
+        private Bin m_bin;
 
         private Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers, 1);
 
@@ -40,10 +40,6 @@ namespace TestGame.Systems
 
         public PlayerEntity AddPlayer(InputWrapper input)
         {
-            PlayerEntity player = new PlayerEntity(m_world);
-
-            player.SetInputWrapper(input);
-
             Color[] debugColours = 
             {
                 Color.ForestGreen,
@@ -52,7 +48,12 @@ namespace TestGame.Systems
                 Color.LightYellow
             };
 
-            player.SetPlayerColour( debugColours[m_players.ActiveItemListCount] );
+
+            PlayerEntity player = new PlayerEntity(m_world);
+
+            player.InputWrapper = input;
+
+            player.PlayerColour = debugColours[m_players.ActiveItemListCount];
 
             // Spawn at a spawn point
             MapData.Map map = m_world.Map;

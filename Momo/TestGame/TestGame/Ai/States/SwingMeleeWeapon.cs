@@ -25,7 +25,7 @@ namespace TestGame.Ai.States
         {
             base.OnEnter();
 
-            GetEntity().DebugColor = new Color(0.875f, 0.05f, 0.05f, 0.5f);
+            GetEntity().PrimaryDebugColor = new Color(0.875f, 0.05f, 0.05f, 0.5f);
             m_performedSwing = false;
         }
 

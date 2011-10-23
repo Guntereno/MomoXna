@@ -40,9 +40,9 @@ namespace TestGame.Entities.Enemies
 
             if (Data.GetWeapon() != MapData.Weapon.Design.None)
             {
-                Weapon weapon = GetWorld().WeaponManager.Create(Data.GetWeapon());
+                Weapon weapon = World.WeaponManager.Create(Data.GetWeapon());
                 CurrentWeapon = weapon;
-                weapon.SetOwner(this);
+                weapon.Owner = this;
             }
 
             SetCurrentState(m_stateFind);

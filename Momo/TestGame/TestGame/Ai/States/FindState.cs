@@ -1,8 +1,12 @@
-﻿using Momo.Core.Pathfinding;
-using TestGame.Entities;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+
 using Momo.Core;
 using Momo.Debug;
+using Momo.Core.Pathfinding;
+
+using TestGame.Entities;
+
+
 
 namespace TestGame.Ai.States
 {
@@ -35,7 +39,7 @@ namespace TestGame.Ai.States
         {
             base.OnEnter();
 
-            GetEntity().DebugColor = new Color(1.0f, 0.72f, 0.0f, 0.5f);
+            GetEntity().PrimaryDebugColor = new Color(1.0f, 0.72f, 0.0f, 0.5f);
         }
 
         public override void Update(ref FrameTime frameTime, int updateToken)
@@ -52,13 +56,13 @@ namespace TestGame.Ai.States
                 PathNode myPathNode = null;
                 PathNode goalPathNode = null;
 
-                PathFindingHelpers.GetClosestPathNode(entity.GetPosition(), entity.GetBin(), BinLayers.kPathNodes, entity.GetObstructionBinLayer(), ref myPathNode);
-                PathFindingHelpers.GetClosestPathNode(entity.GetWorld().PlayerManager.GetAveragePosition(), entity.GetBin(), BinLayers.kPathNodes, entity.GetObstructionBinLayer(), ref goalPathNode);
+                PathFindingHelpers.GetClosestPathNode(entity.GetPosition(), entity.GetBin(), BinLayers.kPathNodes, entity.ObstructionBinLayer, ref myPathNode);
+                PathFindingHelpers.GetClosestPathNode(entity.World.PlayerManager.GetAveragePosition(), entity.GetBin(), BinLayers.kPathNodes, entity.ObstructionBinLayer, ref goalPathNode);
 
                 if (myPathNode != null && goalPathNode != null)
                 {
                     bool cacheOnly = ((updateToken % kUpdatePathFrameFrequency) != 0);
-                    entity.GetWorld().PathRouteManager.GetPathRoute(myPathNode, goalPathNode, cacheOnly, ref m_routeToPlayer);
+                    entity.World.PathRouteManager.GetPathRoute(myPathNode, goalPathNode, cacheOnly, ref m_routeToPlayer);
                 }
                 else
                 {
@@ -70,9 +74,9 @@ namespace TestGame.Ai.States
                 {
                     Vector2 targetDirection;
                     m_tracker.Track(    entity.GetPosition(),
-                                        entity.GetWorld().PlayerManager.GetAveragePosition(),
+                                        entity.World.PlayerManager.GetAveragePosition(),
                                         entity.GetBin(),
-                                        entity.GetObstructionBinLayer(),
+                                        entity.ObstructionBinLayer,
                                         ref m_routeToPlayer,
                                         out targetDirection);
 

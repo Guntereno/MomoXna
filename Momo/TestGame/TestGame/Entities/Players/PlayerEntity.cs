@@ -1,10 +1,12 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+
 using Momo.Core;
 using Momo.Core.Collision2D;
 using Momo.Core.StateMachine;
 using Momo.Core.Spatial;
+
 using TestGame.Objects;
 using TestGame.Weapons;
 
@@ -13,8 +15,8 @@ namespace TestGame.Entities.Players
 {
     public class PlayerEntity : DynamicGameEntity, IWeaponUser
     {
-        const int kNumWeaponSlots = 3;
-        const float kPlayerHealth = 2000.0f;
+        private const int kNumWeaponSlots = 3;
+        private const float kPlayerHealth = 2000.0f;
 
         #region State Machine
         private StateMachine m_stateMachine = null;
@@ -49,16 +51,21 @@ namespace TestGame.Entities.Players
         }
 
 
+        public Vector2 InputMovement    { get { return m_movementInputVector; } }
+        public Vector2 InputFacing      { get { return m_facingInputVector; } }
+        public float TriggerState          { get { return m_triggerState; } }
 
-        public Input.InputWrapper GetInputWrapper() { return m_input; }
-        public Vector2 GetInputMovement() { return m_movementInputVector; }
-        public Vector2 GetInputFacing() { return m_facingInputVector; }
-        public float GetTriggerState() { return m_triggerState; }
+        public Color PlayerColour
+        {
+            get { return m_playerColour; }
+            set { m_playerColour = value; }
+        }
 
-        public Color GetPlayerColour() { return m_playerColour; }
-        public void SetPlayerColour(Color value) { m_playerColour = value; }
-
-        public void SetInputWrapper(Input.InputWrapper value) { m_input = value; }
+        public Input.InputWrapper InputWrapper
+        {
+            get { return m_input; }
+            set { m_input = value; }
+        }
 
 
 
@@ -67,10 +74,10 @@ namespace TestGame.Entities.Players
         // --------------------------------------------------------------------
         public PlayerEntity(GameWorld world) : base(world)
         {
-            FacingAngle = 0.0f;
-            SetContactRadiusInfo(new RadiusInfo(16.0f));
-            SetMass(GetContactRadiusInfo().Radius * 2.0f);
-            DebugColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
+            ContactRadiusInfo = new RadiusInfo(16.0f);
+            SetMass(ContactRadiusInfo.Radius * 2.0f);
+
+            SecondaryDebugColor = new Color( 0.0f, 1.0f, 0.0f );
 
             m_stateMachine = new StateMachine(this);
             m_stateActive = new ActiveState(m_stateMachine);
@@ -86,14 +93,14 @@ namespace TestGame.Entities.Players
 
         public void Init()
         {
-            Systems.WeaponManager weaponMan = GetWorld().WeaponManager;
+            Systems.WeaponManager weaponMan = World.WeaponManager;
             m_arsenal[0] = weaponMan.Create(MapData.Weapon.Design.Pistol);
             m_arsenal[1] = weaponMan.Create(MapData.Weapon.Design.Shotgun);
             m_arsenal[2] = weaponMan.Create(MapData.Weapon.Design.Minigun);
 
             for (int i = 0; i < kNumWeaponSlots; ++i)
             {
-                m_arsenal[i].SetOwner(this);
+                m_arsenal[i].Owner = this;
             }
 
             m_currentWeaponIdx = 0;
@@ -114,7 +121,7 @@ namespace TestGame.Entities.Players
         public void AddToBin(Bin bin)
         {
             m_bin = bin;
-            AddToBin(bin, GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), BinLayers.kPlayerEntity);
+            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), BinLayers.kPlayerEntity);
         }
 
 
@@ -131,7 +138,7 @@ namespace TestGame.Entities.Players
             Bin bin = GetBin();
 
             GetBinRegion(ref prevBinRegion);
-            bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
+            bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
 
             bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kPlayerEntity);
 
@@ -153,7 +160,7 @@ namespace TestGame.Entities.Players
 
             AddForce(direction * (damage * 500.0f));
 
-            if (m_stateMachine.GetCurrentState() != m_stateDying)
+            if (m_stateMachine.CurrentState != m_stateDying)
             {
                 // Take damage from the bullet
                 m_health -= damage;
@@ -196,9 +203,9 @@ namespace TestGame.Entities.Players
 
             m_currentWeapon = m_arsenal[m_currentWeaponIdx];
 
-            if (m_currentWeapon.GetAmmoInClip() < m_currentWeapon.GetParams().m_clipSize)
+            if (m_currentWeapon.AmmoInClip < m_currentWeapon.Parameters.m_clipSize)
             {
-                if (m_input.IsButtonPressed(Buttons.X) || (m_currentWeapon.GetAmmoInClip() == 0))
+                if (m_input.IsButtonPressed(Buttons.X) || (m_currentWeapon.AmmoInClip == 0))
                 {
                     m_currentWeapon.Reload();
                 }

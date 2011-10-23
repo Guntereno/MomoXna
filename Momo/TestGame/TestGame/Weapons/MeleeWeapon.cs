@@ -73,7 +73,7 @@ namespace TestGame.Weapons
                 Weapon weapon = GetWeapon();
 
                 const float kTriggerThresh = 0.5f;
-                if (weapon.GetTriggerState() > kTriggerThresh)
+                if (weapon.TriggerState > kTriggerThresh)
                 {
                     // Trigger an explosion at the barrel position
 

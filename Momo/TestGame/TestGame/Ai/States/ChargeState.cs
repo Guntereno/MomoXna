@@ -36,7 +36,7 @@ namespace TestGame.Ai.States
                 {
                     float distSq = (entity.GetPosition() - sensedEntity.GetPosition()).LengthSquared();
 
-                    float totalRadii = entity.GetContactRadiusInfo().Radius + sensedEntity.GetContactRadiusInfo().Radius;
+                    float totalRadii = entity.ContactRadiusInfo.Radius + sensedEntity.ContactRadiusInfo.Radius;
                     float totalRadiiSq = totalRadii * totalRadii;
 
                     const float kDistEpsilon = 1.0f;

@@ -10,6 +10,17 @@ namespace TestGame.Weapons
 {
     public class Pistol : Weapon
     {
+        public static readonly PistolParams kDefaultParams = new PistolParams(1.5f, 6, 1400.0f, 1.5f, 80000.0f);
+
+        private PistolParams m_pistolParams = null;
+
+        private EmptyState m_emptyState = null;
+        private CoolDownState m_coolDownState = null;
+        private ActiveState m_activeState = null;
+        private ReloadState m_reloadState = null;
+
+
+
         public Pistol(GameWorld world) : base(world)
         {
             m_activeState = new ActiveState(this);
@@ -22,6 +33,7 @@ namespace TestGame.Weapons
             m_reloadState.Init(m_activeState);
             m_coolDownState.Init(m_activeState);
         }
+
 
         public override string ToString()
         {
@@ -44,13 +56,6 @@ namespace TestGame.Weapons
             SetCurrentState(m_reloadState);
         }
 
-        PistolParams m_pistolParams = null;
-
-        ActiveState m_activeState = null;
-        EmptyState m_emptyState = null;
-        ReloadState m_reloadState = null;
-        CoolDownState m_coolDownState = null;
-
 
         public class PistolParams : Weapon.GunParams
         {
@@ -59,11 +64,15 @@ namespace TestGame.Weapons
             {}
         }
 
-        public static readonly PistolParams kDefaultParams = new PistolParams(1.5f, 6, 1400.0f, 1.5f, 80000.0f);
-
 
         public class ActiveState : State
         {
+            private BulletEntity.Params m_bulletParams = new BulletEntity.Params(100.0f, new Color(0.9f, 0.4f, 0.1f, 0.4f));
+
+            private State m_emptyState = null;
+            private State m_coolDownState = null;
+
+
             public ActiveState(Weapon weapon) :
                 base(weapon)
             { }
@@ -79,33 +88,36 @@ namespace TestGame.Weapons
                 m_coolDownState = coolDownState;
             }
 
+
+            public override bool AcceptingInput() { return true; }
+
             public override void Update(ref FrameTime frameTime)
             {
                 Weapon weapon = GetWeapon();
 
                 const float kTriggerThresh = 0.5f;
-                if (weapon.GetTriggerState() > kTriggerThresh)
+                if (weapon.TriggerState > kTriggerThresh)
                 {
-                    int ammoInClip = weapon.GetAmmoInClip();
+                    int ammoInClip = weapon.AmmoInClip;
                     if (ammoInClip > 0)
                     {
-                        GameWorld world = weapon.GetWorld();
+                        GameWorld world = weapon.World;
 
                         Random random = world.Random;
 
-                        PistolParams param = (PistolParams)(weapon.GetParams());
-                        weapon.Recoil = -(weapon.GetDirection()) * weapon.GetParams().m_recoil;
+                        PistolParams param = (PistolParams)(weapon.Parameters);
+                        weapon.Recoil = -(weapon.Direction) * weapon.Parameters.m_recoil;
 
-                        Vector2 velocity = weapon.GetDirection() * param.m_speed;
+                        Vector2 velocity = weapon.Direction * param.m_speed;
 
                         world.ProjectileManager.AddBullet(
-                            weapon.GetBarrelPosition(),
+                            weapon.BarrelPosition,
                             velocity,
                             m_bulletParams,
-                            weapon.GetOwner().GetBulletFlags() );
+                            weapon.Owner.GetBulletFlags() );
 
                         --ammoInClip;
-                        weapon.SetAmmoInClip(ammoInClip);
+                        weapon.AmmoInClip = ammoInClip;
 
                         weapon.SetCurrentState(m_coolDownState);
                     }
@@ -115,13 +127,6 @@ namespace TestGame.Weapons
                     }
                 }
             }
-
-            public override bool AcceptingInput() { return true; }
-
-            private State m_emptyState = null;
-            private State m_coolDownState = null;
-
-            BulletEntity.Params m_bulletParams = new BulletEntity.Params(100.0f, new Color(0.9f, 0.4f, 0.1f, 0.4f));
         }
     }
 }

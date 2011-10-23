@@ -25,20 +25,9 @@ namespace TestGame.Entities
         private bool m_destroyed = false;
 
 
+        public GameWorld World { get { return m_world; } }
 
-        public StaticGameEntity(GameWorld world)
-        {
-            m_world = world;
-        }
-
-
-
-        public static float GetContactDimensionPadding()
-        {
-            return kContactDimensionPadding;
-        }
-
-        public Color DebugColor
+        public Color PrimaryDebugColour
         {
             get { return m_debugColor; }
             set { m_debugColor = value; }
@@ -64,19 +53,23 @@ namespace TestGame.Entities
             }
         }
 
-        public RadiusInfo GetContactRadiusInfo()
+        public RadiusInfo ContactRadiusInfo
         {
-            return m_contactRadiusInfo;
+            get { return m_contactRadiusInfo; }
+            set { m_contactRadiusInfo = value; }
         }
 
-        public void SetContactRadiusInfo(RadiusInfo value)
+
+        public StaticGameEntity(GameWorld world)
         {
-            m_contactRadiusInfo = value;
+            m_world = world;
         }
 
-        public GameWorld GetWorld()
+
+
+        public static float GetContactDimensionPadding()
         {
-            return m_world;
+            return kContactDimensionPadding;
         }
 
 
@@ -87,7 +80,7 @@ namespace TestGame.Entities
             Color outlineColour = m_debugColor * 0.2f;
             outlineColour.A = 191;
 
-            debugRenderer.DrawCircle(GetPosition(), GetContactRadiusInfo().Radius, fillColour, outlineColour, true, 2, 8);
+            debugRenderer.DrawCircle(GetPosition(), ContactRadiusInfo.Radius, fillColour, outlineColour, true, 2, 8);
             debugRenderer.DrawLine(GetPosition(), GetPosition() + (m_facingDirection * m_contactRadiusInfo.Radius * 1.5f), outlineColour);
         }
 

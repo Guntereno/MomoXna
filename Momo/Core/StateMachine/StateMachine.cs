@@ -7,8 +7,8 @@ namespace Momo.Core.StateMachine
 {
     public class StateMachine
     {
-        State m_currentState = null;
-        Object m_owner = null;
+        private State m_currentState = null;
+        private Object m_owner = null;
 
 
         public StateMachine(Object owner)
@@ -17,7 +17,8 @@ namespace Momo.Core.StateMachine
         }
 
 
-        public Object GetOwner() { return m_owner; }
+        public Object Owner         { get { return m_owner; } }
+        public State CurrentState   { get { return m_currentState; } }
 
 
         public void Update(ref FrameTime frameTime)
@@ -41,11 +42,6 @@ namespace Momo.Core.StateMachine
             {
                 m_currentState.OnEnter();
             }
-        }
-
-        public State GetCurrentState()
-        {
-            return m_currentState;
         }
 
         public String GetCurrentStateName()

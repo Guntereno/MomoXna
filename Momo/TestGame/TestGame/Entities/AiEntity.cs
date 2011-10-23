@@ -20,9 +20,8 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
 
-        private State m_currentState = null;
-
         #region State Machine
+        private State m_currentState = null;
         protected StunnedState m_stateStunned = null;
         protected DyingState m_stateDying = null;
         #endregion
@@ -30,13 +29,13 @@ namespace TestGame.Entities
         private int m_occludingBinLayer = -1;
         private int m_obstructionBinLayer = -1;
 
+        // TODO: Move this to an enemy class - not generic enough for Imp to share
         private MapData.EnemyData m_data = null;
-
+        private Weapon m_weapon = null;
+        private SpawnPoint m_ownedSpawnPoint = null;
         private Trigger m_deathTrigger = null;
 
-        private Weapon m_weapon = null;
 
-        private SpawnPoint m_ownedSpawnPoint = null;
 
 
 
@@ -49,23 +48,36 @@ namespace TestGame.Entities
             set { m_weapon = value; }
         }
 
+        public int OccludingBinLayer
+        {
+            get { return m_occludingBinLayer; }
+            set { m_occludingBinLayer = value; }
+        }
+
+        public int ObstructionBinLayer
+        {
+            get { return m_obstructionBinLayer; }
+            set { m_obstructionBinLayer = value; }
+        }
+
+
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
         public AiEntity(GameWorld world): base(world)
         {
-            Random random = GetWorld().Random;
+            Random random = World.Random;
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
-            SetContactRadiusInfo(new RadiusInfo(16.0f));
-            SetMass(GetContactRadiusInfo().Radius * 0.5f);
+            ContactRadiusInfo = new RadiusInfo(16.0f);
+            SetMass(ContactRadiusInfo.Radius * 0.5f);
 
-            SetOccludingBinLayer(BinLayers.kBoundaryOcclusionSmall);
-            SetObstructionBinLayer(BinLayers.kBoundaryObstructionSmall);
+            OccludingBinLayer = BinLayers.kBoundaryOcclusionSmall;
+            ObstructionBinLayer = BinLayers.kBoundaryObstructionSmall;
 
-            DebugColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            SecondaryDebugColor = new Color(1.0f, 0.0f, 0.0f);
         }
 
         public virtual void Init(MapData.EnemyData data)
@@ -96,8 +108,6 @@ namespace TestGame.Entities
 
             m_sensoryData.Update(ref frameTime);
 
-            //bool playerSensed = m_sensoryData.GetSensedObject(SensedType.kSeePlayer, ref m_sensedPlayer);
-
             if (m_currentState != null)
             {
                 m_currentState.Update(ref frameTime, updateToken);
@@ -117,7 +127,7 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            AddToBin(bin, GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), BinLayers.kAiEntity);
+            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), BinLayers.kAiEntity);
         }
         
 
@@ -134,7 +144,7 @@ namespace TestGame.Entities
             Bin bin = GetBin();
 
             GetBinRegion(ref prevBinRegion);
-            bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
+            bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
 
             bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kAiEntity);
 
@@ -210,41 +220,6 @@ namespace TestGame.Entities
         }
 
 
-        public String GetCurrentStateName()
-        {
-            if (m_currentState == null)
-            {
-                return "";
-            }
-
-            return m_currentState.ToString();
-        }
-
-
-        public int GetOccludingBinLayer()
-        {
-            return m_occludingBinLayer;
-        }
-
-
-        public void SetOccludingBinLayer(int layer)
-        {
-            m_occludingBinLayer = layer;
-        }
-
-
-        public int GetObstructionBinLayer()
-        {
-            return m_obstructionBinLayer;
-        }
-
-
-        public void SetObstructionBinLayer(int layer)
-        {
-            m_obstructionBinLayer = layer;
-        }
-
-
         internal void Kill()
         {
             if (m_deathTrigger != null)
@@ -264,9 +239,9 @@ namespace TestGame.Entities
                 m_ownedSpawnPoint = null;
             }
 
-            GetWorld().CorpseManager.Create(this);
+            World.CorpseManager.Create(this);
 
-            GetWorld().EnemyManager.IncrementKillCount();
+            World.EnemyManager.IncrementKillCount();
             DestroyItem();
         }
 

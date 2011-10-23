@@ -62,13 +62,13 @@ namespace TestGame.Systems
                 {
                     m_weaponString[i].Append(currentWeapon.ToString());
                     m_weaponString[i].Append('\n');
-                    m_weaponString[i].Append(currentWeapon.GetAmmoInClip());
+                    m_weaponString[i].Append(currentWeapon.AmmoInClip);
                     m_weaponString[i].Append('\n');
                     m_weaponString[i].Append(currentWeapon.GetCurrentStateName());
                 }
 
                 m_weaponString[i].EndAppend();
-                m_weaponInfo[i].PrimaryColour = player.GetPlayerColour();
+                m_weaponInfo[i].PrimaryColour = player.PlayerColour;
                 m_weaponInfo[i].SetText(m_weaponString[i].GetCharacterArray());
             }
         }

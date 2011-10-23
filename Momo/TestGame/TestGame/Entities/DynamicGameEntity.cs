@@ -14,7 +14,9 @@ namespace TestGame.Entities
 {
     public class DynamicGameEntity : DynamicEntity, INamed, IPoolItem
     {
-        const int kMaxNameLength = 32;
+        private const int kMaxNameLength = 32;
+        private const float kDefaultHealth = 100.0f;
+
         private MutableString m_name = new MutableString(kMaxNameLength);
         private int m_nameHash = 0;
 
@@ -23,26 +25,25 @@ namespace TestGame.Entities
         private float m_facingAngle = 0.0f;
         private Vector2 m_facingDirection = Vector2.Zero;
 
-        private Color m_debugColor = Color.White;
+        private Color m_primaryDebugColour = Color.White;
+        private Color m_secondaryDebugColour = Color.White;
+
         private bool m_destroyed = false;
 
         private GameWorld m_world;
 
-        static readonly float kDefaultHealth = 100.0f;
         protected float m_maxHealth = kDefaultHealth;
         protected float m_health = kDefaultHealth;
 
 
-
-        public DynamicGameEntity(GameWorld world)
-        {
-            m_world = world;
-        }
+        public float Health { get { return m_health; } }
+        public GameWorld World { get { return m_world; } }
 
         public float FacingAngle
         {
-            get{ return m_facingAngle; }
-            set{
+            get { return m_facingAngle; }
+            set
+            {
                 m_facingAngle = value;
                 m_facingDirection = new Vector2((float)Math.Sin(m_facingAngle), (float)Math.Cos(m_facingAngle));
             }
@@ -51,44 +52,47 @@ namespace TestGame.Entities
         public Vector2 FacingDirection
         {
             get { return m_facingDirection; }
-            set {
+            set
+            {
                 m_facingDirection = value;
                 m_facingAngle = (float)Math.Atan2(m_facingDirection.X, m_facingDirection.Y);
             }
         }
 
-        public Color DebugColor
+        public Color PrimaryDebugColor
         {
-            get { return m_debugColor; }
-            set { m_debugColor = value; }
+            get { return m_primaryDebugColour; }
+            set { m_primaryDebugColour = value; }
         }
 
-        public float GetHealth() { return m_health; }
-
-        public GameWorld GetWorld()
+        public Color SecondaryDebugColor
         {
-            return m_world;
+            get { return m_secondaryDebugColour; }
+            set { m_secondaryDebugColour = value; }
         }
 
-        public RadiusInfo GetContactRadiusInfo()
+        public RadiusInfo ContactRadiusInfo
         {
-            return m_contactRadiusInfo;
+            get { return m_contactRadiusInfo; }
+            set { m_contactRadiusInfo = value; }
         }
 
-        public void SetContactRadiusInfo(RadiusInfo value)
+
+
+        public DynamicGameEntity(GameWorld world)
         {
-            m_contactRadiusInfo = value;
+            m_world = world;
         }
 
 
         public override void DebugRender(DebugRenderer debugRenderer)
         {
-            Color fillColour = m_debugColor;
+            Color fillColour = m_primaryDebugColour;
             fillColour.A = 102;
-            Color outlineColour = m_debugColor * 0.2f;
-            outlineColour.A = 191;
+            Color outlineColour = m_secondaryDebugColour;
+            outlineColour.A = 86;
 
-            debugRenderer.DrawCircle(GetPosition(), GetContactRadiusInfo().Radius, fillColour, outlineColour, true, 2, 8);
+            debugRenderer.DrawCircle(GetPosition(), ContactRadiusInfo.Radius, fillColour, outlineColour, true, 3.5f, 8);
             debugRenderer.DrawLine(GetPosition(), GetPosition() + (m_facingDirection * m_contactRadiusInfo.Radius * 1.5f), outlineColour);
 
             // Render health bar

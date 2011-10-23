@@ -14,9 +14,13 @@ namespace TestGame.Events
 
         private bool m_isActive = false;
 
-        MapData.EventData m_data = null;
+        private MapData.EventData m_data = null;
 
-        Trigger m_endTrigger = null;
+        private Trigger m_endTrigger = null;
+
+
+        public GameWorld World                  { get { return m_world; } }
+        public MapData.EventData EventData      { get { return m_data; } }
 
 
 
@@ -41,15 +45,6 @@ namespace TestGame.Events
 
         public abstract void Update(ref FrameTime frameTime);
 
-        public GameWorld GetWorld()
-        {
-            return m_world;
-        }
-
-        public MapData.EventData GetData()
-        {
-            return m_data;
-        }
 
         protected virtual void End()
         {

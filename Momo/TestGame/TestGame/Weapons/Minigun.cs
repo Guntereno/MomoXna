@@ -97,32 +97,32 @@ namespace TestGame.Weapons
                 Minigun minigun = (Minigun)(weapon);
 
                 const float kTriggerThresh = 0.5f;
-                if (weapon.GetTriggerState() > kTriggerThresh)
+                if (weapon.TriggerState > kTriggerThresh)
                 {
-                    int ammoInClip = weapon.GetAmmoInClip();
+                    int ammoInClip = weapon.AmmoInClip;
                     if (ammoInClip > 0)
                     {
-                        GameWorld world = weapon.GetWorld();
+                        GameWorld world = weapon.World;
 
                         Random random = world.Random;
 
-                        MinigunParams param = (MinigunParams)(weapon.GetParams());
-                        float angle = weapon.GetFacing() + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
+                        MinigunParams param = (MinigunParams)(weapon.Parameters);
+                        float angle = weapon.Facing + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
 
                         Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
 
-                        minigun.Recoil = -velocity * weapon.GetParams().m_recoil;
+                        minigun.Recoil = -velocity * weapon.Parameters.m_recoil;
 
                         velocity *= param.m_speed;
 
                         world.ProjectileManager.AddBullet(
-                            weapon.GetBarrelPosition(),
+                            weapon.BarrelPosition,
                             velocity,
                             m_bulletParams,
-                            weapon.GetOwner().GetBulletFlags());
+                            weapon.Owner.GetBulletFlags());
 
                         --ammoInClip;
-                        weapon.SetAmmoInClip(ammoInClip);
+                        weapon.AmmoInClip = ammoInClip;
 
                         const float kHeatDelta = 0.4f;
                         minigun.Heat = minigun.Heat + kHeatDelta;

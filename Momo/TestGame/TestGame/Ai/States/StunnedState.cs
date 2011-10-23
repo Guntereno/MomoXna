@@ -18,7 +18,7 @@ namespace TestGame.Ai.States
         {
             base.OnEnter();
 
-            GetEntity().DebugColor = new Color(0.5f, 0.0f, 0.0f, 0.5f);
+            GetEntity().PrimaryDebugColor = new Color(0.5f, 0.0f, 0.0f, 0.5f);
         }
 
         protected override float GetTime()

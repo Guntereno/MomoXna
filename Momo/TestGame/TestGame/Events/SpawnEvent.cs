@@ -12,7 +12,7 @@ namespace TestGame.Events
 {
     public class SpawnEvent : Event, ITriggerListener
     {
-        public static readonly int kMaxSpawns = 8;
+        public const int kMaxSpawns = 8;
 
         private MapData.SpawnEventData m_spawnData = null;
 
@@ -21,6 +21,8 @@ namespace TestGame.Events
 
         private Trigger m_killTrigger = null;
         private int m_killCount = 0;
+
+
 
         public SpawnEvent(GameWorld world, MapData.EventData data)
             : base(world, data)
@@ -35,8 +37,8 @@ namespace TestGame.Events
         {
             base.Begin();
 
-            System.Diagnostics.Debug.Assert(GetData() != null);
-            m_spawnData = (MapData.SpawnEventData)(GetData());
+            System.Diagnostics.Debug.Assert(EventData != null);
+            m_spawnData = (MapData.SpawnEventData)(EventData);
 
             m_spawnCounter = 0;
 
@@ -53,7 +55,7 @@ namespace TestGame.Events
                 m_spawnTimer -= frameTime.Dt;
                 if (m_spawnTimer <= 0.0f)
                 {
-                    SpawnPoint spawnPoint = GetWorld().SpawnPointManager.GetNextSpawnPoint();
+                    SpawnPoint spawnPoint = World.SpawnPointManager.GetNextSpawnPoint();
                     if (spawnPoint != null)
                     {
                         AiEntity enemy = SpawnEnemy(spawnPoint);
@@ -70,7 +72,7 @@ namespace TestGame.Events
 
         private AiEntity SpawnEnemy(SpawnPoint spawnPoint)
         {
-            EnemyManager enemyManager = GetWorld().EnemyManager;
+            EnemyManager enemyManager = World.EnemyManager;
             MapData.EnemyData enemyData = m_spawnData.GetEnemies()[m_spawnCounter];
             AiEntity enemy = enemyManager.Create(enemyData, spawnPoint.GetData().GetPosition());
             enemy.SetDeathTrigger(m_killTrigger);

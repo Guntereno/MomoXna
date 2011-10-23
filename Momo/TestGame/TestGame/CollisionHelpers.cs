@@ -60,9 +60,9 @@ namespace TestGame
                     if (entity != checkEntity)
                     {
                         bool contact = Maths2D.DoesIntersect(   entity.GetPosition(),
-                                                                entity.GetContactRadiusInfo().Radius + contactDimensionPadding,
+                                                                entity.ContactRadiusInfo.Radius + contactDimensionPadding,
                                                                 checkEntity.GetPosition(),
-                                                                checkEntity.GetContactRadiusInfo().Radius + contactDimensionPadding,
+                                                                checkEntity.ContactRadiusInfo.Radius + contactDimensionPadding,
                                                                 ref intersectInfo);
 
                         if (contact)
@@ -110,7 +110,7 @@ namespace TestGame
                     checkBoundary.GetBinRegion(ref boundaryRegion);
 
 
-                    float paddedRadius = entity.GetContactRadiusInfo().Radius + contactDimensionPadding;
+                    float paddedRadius = entity.ContactRadiusInfo.Radius + contactDimensionPadding;
                     float paddedRadiusSq = paddedRadius * paddedRadius;
 
                     LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
@@ -214,8 +214,8 @@ namespace TestGame
                         float contactDelta = float.MaxValue;
 
                         bool contact = Maths2D.DoesIntersect(   checkEntity.GetPosition(),
-                                                                checkEntity.GetContactRadiusInfo().Radius,
-                                                                checkEntity.GetContactRadiusInfo().RadiusSq,
+                                                                checkEntity.ContactRadiusInfo.Radius,
+                                                                checkEntity.ContactRadiusInfo.RadiusSq,
                                                                 bullet.GetLastFramePosition(),
                                                                 bullet.GetPosition(),
                                                                 bullet.GetPositionDifferenceFromLastFrame(),
@@ -307,7 +307,7 @@ namespace TestGame
         //            bool contact = Maths2D.DoesIntersect(    explosion.GetPosition(),
         //                                                    explosion.GetRange(),
         //                                                    checkEntity.GetPosition(),
-        //                                                    checkEntity.GetContactRadiusInfo().Radius,
+        //                                                    checkEntity.ContactRadiusInfo.Radius,
         //                                                    ref intersectInfo);
 
 

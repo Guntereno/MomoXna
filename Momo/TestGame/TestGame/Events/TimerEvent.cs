@@ -23,7 +23,7 @@ namespace TestGame.Events
         {
             base.Begin();
 
-            m_timerData = (MapData.TimerEventData)(GetData());
+            m_timerData = (MapData.TimerEventData)(EventData);
 
             m_time = m_timerData.GetTime();
         }

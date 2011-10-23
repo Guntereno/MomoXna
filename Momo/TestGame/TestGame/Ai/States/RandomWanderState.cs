@@ -32,12 +32,12 @@ namespace TestGame.Ai.States
         {
             base.OnEnter();
 
-            GetEntity().DebugColor = new Color(0.22f, 0.8f, 0.22f, 0.5f);
+            GetEntity().PrimaryDebugColor = new Color(0.22f, 0.8f, 0.22f, 0.5f);
         }
 
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
-            GameWorld world = GetEntity().GetWorld();
+            GameWorld world = GetEntity().World;
 
             if (GetEntity().SensoryData.StraightPathToPlayerSense != null)
             {

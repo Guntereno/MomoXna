@@ -273,13 +273,13 @@ namespace TestGame.Entities
 
                 if (checkLineOfSight)
                 {
-                    bool clearLineOfSight = CollisionHelpers.IsClearLineOfSightBoundary(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.GetOccludingBinLayer());
-                    bool clearLineOfPath = CollisionHelpers.IsClearLineOfSightBoundary(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.GetObstructionBinLayer());
+                    bool clearLineOfSight = CollisionHelpers.IsClearLineOfSightBoundary(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.OccludingBinLayer);
+                    bool clearLineOfPath = CollisionHelpers.IsClearLineOfSightBoundary(aiEntity.GetPosition(), dPos, playerEntity.GetBin(), aiEntity.ObstructionBinLayer);
 
                     //if (clearLineOfSight)
-                    //    entity.GetWorld().DebugRenderer.DrawFilledLine(myPosition, entity.GetPosition(), new Color(0.0f, 1.0f, 0.0f, 0.2f), 2.0f);
+                    //    entity.World.DebugRenderer.DrawFilledLine(myPosition, entity.GetPosition(), new Color(0.0f, 1.0f, 0.0f, 0.2f), 2.0f);
                     //else
-                    //    entity.GetWorld().DebugRenderer.DrawFilledLine(myPosition, entity.GetPosition(), new Color(1.0f, 0.0f, 0.0f, 0.2f), 2.0f);
+                    //    entity.World.DebugRenderer.DrawFilledLine(myPosition, entity.GetPosition(), new Color(1.0f, 0.0f, 0.0f, 0.2f), 2.0f);
 
 
                     //int kBinSelectionCapacity = 1000;
@@ -287,9 +287,9 @@ namespace TestGame.Entities
                     //entity.GetBin().GetBinRegionFromLine(myPosition, dPos, ref ms_tempBinRegionSelection);
 
                     //if(clearLineOfSight)
-                    //    entity.GetBin().DebugRender(entity.GetWorld().DebugRenderer, ms_tempBinRegionSelection, new Color(0.0f, 1.0f, 0.0f, 0.2f));
+                    //    entity.GetBin().DebugRender(entity.World.DebugRenderer, ms_tempBinRegionSelection, new Color(0.0f, 1.0f, 0.0f, 0.2f));
                     //else
-                    //    entity.GetBin().DebugRender(entity.GetWorld().DebugRenderer, ms_tempBinRegionSelection, new Color(1.0f, 0.0f, 0.0f, 0.2f));
+                    //    entity.GetBin().DebugRender(entity.World.DebugRenderer, ms_tempBinRegionSelection, new Color(1.0f, 0.0f, 0.0f, 0.2f));
 
 
 

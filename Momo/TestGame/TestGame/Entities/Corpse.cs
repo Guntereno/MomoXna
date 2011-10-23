@@ -19,13 +19,13 @@ namespace TestGame.Entities
             const float kMeatAmount = 100.0f;
             m_meat = kMeatAmount;
 
-            SetContactRadiusInfo(entity.GetContactRadiusInfo());
+            ContactRadiusInfo = entity.ContactRadiusInfo;
             SetPosition(entity.GetPosition());
 
             // Initialise the bin
             Bin bin = GetBin();
             BinRegionUniform curBinRegion = new BinRegionUniform();
-            bin.GetBinRegionFromCentre(GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), ref curBinRegion);
+            bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
             SetBinRegion(curBinRegion);
         }
 
@@ -83,7 +83,7 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            AddToBin(bin, GetPosition(), GetContactRadiusInfo().Radius + GetContactDimensionPadding(), BinLayers.kCorpse);
+            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), BinLayers.kCorpse);
         }
 
     }
