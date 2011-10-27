@@ -87,7 +87,8 @@ namespace DebugPipeline
         /// </summary>
         /// 
         /// Need to make this a relative path, but I'm not sure where it should be relative from :P
-        private const string ProjectToDebug = @"D:\dev\XNA\MomoRepo\Momo\TestGame\TestGameContent\TestGameContent.contentproj";
+        private static string RelaticeProjecToDebug = @"TestGame\TestGameContent\TestGameContent.contentproj";
+        private static string ProjectToDebug = "";
 
         /// <summary>
         /// TODO: Change this to the content item you want to debug. The content pipeline will only
@@ -126,6 +127,9 @@ namespace DebugPipeline
         [STAThread]
         static void Main()
         {
+            ProjectToDebug = System.IO.Path.GetFullPath(@"..\..\..\" + RelaticeProjecToDebug);
+
+
             if (!File.Exists(ProjectToDebug))
             {
                 throw new FileNotFoundException(String.Format("The project file '{0}' does not exist. Set the ProjectToDebug field to the full path of the project you want to debug.", ProjectToDebug), ProjectToDebug);

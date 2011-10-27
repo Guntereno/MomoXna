@@ -25,8 +25,9 @@ namespace TestGame.Entities.Players
         private DyingState m_stateDying = null;
         #endregion
 
+        public Vector2 m_movementVector = Vector2.Zero;
         public Vector2 m_movementInputVector = Vector2.Zero;
-        public Vector2 m_facingInputVector = Vector2.Zero;
+        public Vector2 m_facingInputVector = Vector2.UnitY;
         public float m_triggerState = 0.0f;
 
         private Weapons.Weapon[] m_arsenal = new Weapons.Weapon[kNumWeaponSlots];
@@ -220,27 +221,40 @@ namespace TestGame.Entities.Players
 
         internal void UpdateMovement(ref FrameTime frameTime)
         {
-            const float kMaxSpeed = 200.0f;
-
-            Vector2 newPosition = GetPosition() + ((m_movementInputVector * kMaxSpeed) * frameTime.Dt);
-
-            SetPosition(newPosition);
+            const float kMaxSpeed = 225.0f;
 
             // If the player has a facing input, use it...
-            Vector2 facing = m_facingInputVector;
-            if (facing != Vector2.Zero)
+            if (m_facingInputVector.LengthSquared() > 0.0f)
             {
-                FacingAngle = (float)Math.Atan2(facing.X, facing.Y);
+                FacingDirection = Vector2.Normalize(m_facingInputVector);
             }
-            else
+            // If they're moving, update it from the movement vector
+            else if (m_movementInputVector.LengthSquared() > 0.0f)
             {
-                // If they're moving, update it from the movement vector
-                float len = m_movementInputVector.Length();
-                if (len > 0.0f)
-                {
-                    FacingAngle = (float)Math.Atan2(m_movementInputVector.X, m_movementInputVector.Y);
-                }
+                FacingDirection = Vector2.Normalize(m_movementVector);
             }
+
+
+            Vector2 dMovement = m_movementInputVector - m_movementVector;
+            m_movementVector += dMovement * 0.5f;
+
+            Vector2 movementVectorNormalised = Vector2.Normalize(m_movementVector);
+
+            float dotMovementFacing = Vector2.Dot(movementVectorNormalised, FacingDirection);
+
+            float maxSpeedMod = 1.0f;
+
+
+            // Back footing
+            if (dotMovementFacing < -0.35f)
+                maxSpeedMod = 0.77f;
+            // Strafing
+            else if (dotMovementFacing < 0.35f)
+                maxSpeedMod = 0.85f;
+
+            Vector2 newPosition = GetPosition() + ((m_movementVector * maxSpeedMod * kMaxSpeed) * frameTime.Dt);
+
+            SetPosition(newPosition);
         }
 
         internal void UpdateWeapon(ref FrameTime frameTime)

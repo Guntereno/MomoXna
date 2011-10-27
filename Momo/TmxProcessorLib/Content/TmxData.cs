@@ -376,6 +376,22 @@ namespace TmxProcessorLib.Content
             Point m_point2;
         }
 
+        private bool CheckIfFloor(int x, int y)
+        {
+            bool tileExists = false;
+            foreach (string tileLayerName in TileLayersDict.Keys)
+            {
+                if (tileLayerName != "Walls")
+                {
+                    TileLayer wallLayer = TileLayersDict[tileLayerName];
+                    tileExists |= (wallLayer.Data[x + (y * wallLayer.Dimensions.X)] != 0);
+                }
+            }
+
+            return tileExists;
+        }
+
+
         private void BuildCollisionStrip()
         {
             if (TileLayersDict.ContainsKey("Walls"))
@@ -435,11 +451,13 @@ namespace TmxProcessorLib.Content
                                 if (x == 0)
                                     left = false;
                                 else
+                                    //left = CheckIfFloor(x - 1, y);
                                     left = (wallLayer.Data[(x - 1) + (y * wallLayer.Dimensions.X)] != 0);
 
                                 if (x == wallLayer.Dimensions.X)
                                     right = false;
                                 else
+                                    //right = CheckIfFloor(x, y);
                                     right = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)] != 0);
 
                                 // If same, discard

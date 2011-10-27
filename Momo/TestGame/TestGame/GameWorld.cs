@@ -10,6 +10,7 @@ using Momo.Core.GameEntities;
 using Momo.Core.Nodes.Cameras;
 using Momo.Core.Pathfinding;
 using Momo.Core.Primitive2D;
+using Momo.Core.Shadow2D;
 using Momo.Core.Spatial;
 using Momo.Debug;
 using Momo.Fonts;
@@ -64,7 +65,7 @@ namespace TestGame
         private TextBatchPrinter m_textPrinter = null;
 
         private PathIsland m_pathIsland = new PathIsland();
-
+        //private ShadowMesh m_testShadowMesh = new ShadowMesh();
 
         private int m_updateTokenOffset = 0;
 
@@ -156,7 +157,7 @@ namespace TestGame
 
 
             m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(0));
-            m_impManager.Create(m_playerManager.Players.ActiveItemList[0].GetPosition() + new Vector2(50.0f, 0.0f));
+            //m_impManager.Create(m_playerManager.Players.ActiveItemList[0].GetPosition() + new Vector2(50.0f, 0.0f));
 
 
             // TODO: Temp: Disconnects need to be handled in the InputManager
@@ -171,10 +172,9 @@ namespace TestGame
 
 
             float smallPathNodeRadius = 25.0f;
-            BuildCollisionBoundaries(0.0f, BinLayers.kBoundary, false);
-
-            BuildCollisionBoundaries(5.0f, BinLayers.kBoundaryOcclusionSmall, true);
-            BuildCollisionBoundaries(12.0f, BinLayers.kBoundaryObstructionSmall, true);
+            BuildCollisionBoundaries(0.0f, BinLayers.kBoundary, false, true);
+            BuildCollisionBoundaries(5.0f, BinLayers.kBoundaryOcclusionSmall, true, false);
+            BuildCollisionBoundaries(12.0f, BinLayers.kBoundaryObstructionSmall, true, false);
 
 
             // Path stuff
@@ -189,6 +189,8 @@ namespace TestGame
 
             m_pathRouteManager.Init(1000, 100, 200);
 
+            //m_testShadowMesh.Init(10000, 10000, TestGame.Instance().GraphicsDevice);
+     
             CollisionHelpers.Init();
             PathFindingHelpers.Init(400.0f, 3, m_bin);
 
@@ -231,12 +233,6 @@ namespace TestGame
             m_corpseManager.Update(ref frameTime);
 
 
-            // Move the camera follow position
-            m_cameraController.FollowPosition = m_playerManager.GetAveragePosition();
-            m_cameraController.Update(ref frameTime, ref inputWrapper);
-
-
-
             // Collision detection/resolution
             m_contactList.StartAddingContacts();
 
@@ -246,8 +242,23 @@ namespace TestGame
 
             m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
 
+
+
+            // Move the camera follow position
+            // Update camera after collision resolution so its go the actual rendered player position.
+            m_cameraController.FollowPosition = m_playerManager.GetAveragePosition();
+            m_cameraController.Update(ref frameTime, ref inputWrapper);
+
+
+            //m_testShadowMesh.Clear();
+            //m_testShadowMesh.AddOcculudingGeometry(m_playerManager.Players[0].GetPosition(), 16.0f, 1000.0f, m_boundaries);
+
+
+
             // End frame updates
             m_projectileManager.EndFrame();
+
+
         }
 
 
@@ -330,6 +341,9 @@ namespace TestGame
 
             m_enemyManager.DebugRender(m_debugRenderer);
             m_projectileManager.DebugRender(m_debugRenderer);
+
+            //m_testShadowMesh.DebugRender(m_debugRenderer);
+
             m_osdManager.DebugRender(m_debugRenderer);
 
             //m_triggerController.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
@@ -369,7 +383,7 @@ namespace TestGame
         }
 
 
-        private Vector2[][] BuildCollisionBoundaries(float extrudeAmount, int binLayer, bool roundedCorners)
+        private Vector2[][] BuildCollisionBoundaries(float extrudeAmount, int binLayer, bool roundedCorners, bool addToList)
         {
             Vector2[][] extrudedCollisionBoundary = ExtrudeCollisionBoundaries(extrudeAmount, roundedCorners);
             int numBoundries = extrudedCollisionBoundary.Length;
@@ -388,7 +402,9 @@ namespace TestGame
                     LinePrimitive2D lineStrip = new LinePrimitive2D(lastPoint, pos);
                     BoundaryEntity boundaryEntity = new BoundaryEntity(lineStrip);
                     boundaryEntity.AddToBin(m_bin, binLayer);
-                    m_boundaries.Add(boundaryEntity);
+
+                    if(addToList)
+                        m_boundaries.Add(boundaryEntity);
 
                     lastPoint = pos;
                 }

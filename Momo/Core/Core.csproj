@@ -129,6 +129,7 @@
     <Compile Include="RadiusInfo.cs" />
     <Compile Include="Shaders\Shader.cs" />
     <Compile Include="Shaders\ShaderSemantics.cs" />
+    <Compile Include="Shadow2D\ShadowMesh.cs" />
     <Compile Include="Spatial\Bin.cs" />
     <Compile Include="Spatial\BinEntry.cs" />
     <Compile Include="Spatial\BinIndex.cs" />

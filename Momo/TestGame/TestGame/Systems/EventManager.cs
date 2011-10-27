@@ -53,17 +53,29 @@ namespace TestGame.Systems
         public void Update(ref FrameTime frameTime)
         {
             // TODO: Candidate for update list
-            for (int i = 0; i < m_timerEvents.Length; ++i)
+
+            if (m_timerEvents != null)
             {
-                m_timerEvents[i].Update(ref frameTime);
+                for (int i = 0; i < m_timerEvents.Length; ++i)
+                {
+                    m_timerEvents[i].Update(ref frameTime);
+                }
             }
-            for (int i = 0; i < m_spawnEvents.Length; ++i)
+
+            if (m_spawnEvents != null)
             {
-                m_spawnEvents[i].Update(ref frameTime);
+                for (int i = 0; i < m_spawnEvents.Length; ++i)
+                {
+                    m_spawnEvents[i].Update(ref frameTime);
+                }
             }
-            for (int i = 0; i < m_triggerCounterEvents.Length; ++i)
+
+            if (m_triggerCounterEvents != null)
             {
-                m_triggerCounterEvents[i].Update(ref frameTime);
+                for (int i = 0; i < m_triggerCounterEvents.Length; ++i)
+                {
+                    m_triggerCounterEvents[i].Update(ref frameTime);
+                }
             }
         }
 
