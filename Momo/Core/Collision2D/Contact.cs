@@ -87,10 +87,10 @@ namespace Momo.Core.Collision2D
         {
             if (m_penetration > 0.0f)
             {
-                m_relativeVelocity = m_object1.GetVelocity();
+                m_relativeVelocity = m_object1.Velocity;
 
                 if (m_object2 != null)
-                    m_relativeVelocity -= m_object2.GetVelocity();
+                    m_relativeVelocity -= m_object2.Velocity;
 
                 m_seperatingVelocity = Vector2.Dot(m_relativeVelocity, m_contactNormal);
             }
@@ -99,10 +99,10 @@ namespace Momo.Core.Collision2D
 
         internal void calculateInternals()
         {
-            m_totalInverseMass = m_object1.GetInverseMass();
+            m_totalInverseMass = m_object1.InverseMass;
             
             if (m_object2 != null)
-                m_totalInverseMass += m_object2.GetInverseMass();
+                m_totalInverseMass += m_object2.InverseMass;
             
             calculateSeperatingVelocity();
         }
@@ -117,9 +117,9 @@ namespace Momo.Core.Collision2D
             float newSeperatingVelocity = -m_seperatingVelocity * m_restitution;
 
 
-            Vector2 accCausedVelocity = m_object1.GetLastFrameAcceleration();
+            Vector2 accCausedVelocity = m_object1.LastFrameAcceleration;
             if (m_object2 != null)
-                accCausedVelocity -= m_object2.GetLastFrameAcceleration();
+                accCausedVelocity -= m_object2.LastFrameAcceleration;
 
             float accCausedSeperatingVelocity = Vector2.Dot(accCausedVelocity, m_contactNormal) * dt;
 
@@ -155,16 +155,16 @@ namespace Momo.Core.Collision2D
                     if (frictionMag > planarVelocityLength)
                         frictionMag = planarVelocityLength;
 
-                    Vector2 friction = (planarVelocity / planarVelocityLength) * frictionMag * m_object1.GetMass();
+                    Vector2 friction = (planarVelocity / planarVelocityLength) * frictionMag * m_object1.Mass;
 
                     impulsePerIMass -= friction;
                 }
             }
 
 
-            m_object1.SetVelocity( m_object1.GetVelocity() + (impulsePerIMass * m_object1.GetInverseMass()));
+            m_object1.Velocity = m_object1.Velocity + (impulsePerIMass * m_object1.InverseMass);
             if (m_object2 != null)
-                m_object2.SetVelocity(m_object2.GetVelocity() + (impulsePerIMass * -m_object2.GetInverseMass()));
+                m_object2.Velocity = m_object2.Velocity + (impulsePerIMass * -m_object2.InverseMass);
 
 
 
@@ -189,17 +189,17 @@ namespace Momo.Core.Collision2D
             float penerationPerIMass = (m_penetration / m_totalInverseMass);
             Vector2 movePerIMass = m_contactNormal * penerationPerIMass;
 
-            m_resolutionMovement1 = movePerIMass * m_object1.GetInverseMass();
+            m_resolutionMovement1 = movePerIMass * m_object1.InverseMass;
             m_object1.SetPosition(m_object1.GetPosition() + m_resolutionMovement1);
-            m_penetration -= penerationPerIMass * m_object1.GetInverseMass();
+            m_penetration -= penerationPerIMass * m_object1.InverseMass;
 
             m_object1.OnCollisionEvent(ref m_object2);
 
             if (m_object2 != null)
             {
-                m_resolutionMovement2 = movePerIMass * -m_object2.GetInverseMass();
+                m_resolutionMovement2 = movePerIMass * -m_object2.InverseMass;
                 m_object2.SetPosition(m_object2.GetPosition() + m_resolutionMovement2);
-                m_penetration += penerationPerIMass * -m_object2.GetInverseMass();
+                m_penetration += penerationPerIMass * -m_object2.InverseMass;
 
                 m_object2.OnCollisionEvent(ref m_object1);
             }

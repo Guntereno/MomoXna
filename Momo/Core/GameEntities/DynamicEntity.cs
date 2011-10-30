@@ -39,67 +39,45 @@ namespace Momo.Core.GameEntities
 
 
         // --------------------------------------------------------------------
-        // -- Public Static Methods
+        // -- Public Properties
         // --------------------------------------------------------------------
-        public static float GetContactDimensionPadding()
+        public static float ContactDimensionPadding { get { return kContactDimensionPadding; } }
+
+        public float Mass
         {
-            return kContactDimensionPadding;
+            get { return m_massInfo.Mass; }
+            set { m_massInfo.Mass = value;  }
         }
+
+        public float InverseMass                { get { return m_massInfo.InverseMass; } }
+
+        public virtual Vector2 Velocity
+        {
+            get { return m_velocity; }
+            set { m_velocity = value; }
+        }
+
+        public Vector2 Force
+        {
+            get { return m_force; }
+            set { m_force = value; }
+        }
+
+        public Vector2 LastFrameAcceleration    { get { return m_lastFrameAcceleration; } }
 
 
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public void SetVelocity(Vector2 velocity)
-        {
-            m_velocity = velocity;
-        }
-
         public void AddVelocity(Vector2 velocity)
         {
             m_velocity += velocity;
         }
 
-        public override Vector2 GetVelocity()
-        {
-            return m_velocity;
-        }
-
-        public void SetForce(Vector2 force)
-        {
-            m_force = force;
-        }
 
         public void AddForce(Vector2 force)
         {
             m_force += force;
-        }
-
-        public Vector2 GetForce()
-        {
-            return m_force;
-        }
-
-        public Vector2 GetLastFrameAcceleration()
-        {
-            return m_lastFrameAcceleration;
-        }
-
-        public void SetMass(float mass)
-        {
-            m_massInfo.Mass = mass;
-        }
-
-
-        public float GetMass()
-        {
-            return m_massInfo.Mass;
-        }
-
-
-        public float GetInverseMass()
-        {
-            return m_massInfo.InverseMass;
         }
 
 

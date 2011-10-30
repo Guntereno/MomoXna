@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Momo.Core;
 using Momo.Core.GameEntities;
 using Momo.Core.ObjectPools;
+using Momo.Core.Collision2D;
 using Momo.Debug;
 using Momo.Maths;
 
@@ -20,6 +21,7 @@ namespace TestGame.Entities
         private Name m_name = new Name(kMaxNameLength);
 
         private RadiusInfo m_contactRadiusInfo;
+        private CollidableGroupInfo m_collidableGroupInfo = new CollidableGroupInfo();
 
         private float m_facingAngle = 0.0f;
         private Vector2 m_facingDirection = Vector2.Zero;
@@ -31,6 +33,7 @@ namespace TestGame.Entities
 
         private GameWorld m_world;
         #endregion
+
 
         #region Properties
         public GameWorld World { get { return m_world; } }
@@ -71,6 +74,12 @@ namespace TestGame.Entities
         {
             get { return m_contactRadiusInfo; }
             set { m_contactRadiusInfo = value; }
+        }
+
+        public CollidableGroupInfo CollidableGroupInfo
+        {
+            get { return m_collidableGroupInfo; }
+            set { m_collidableGroupInfo = value; }
         }
         #endregion
 

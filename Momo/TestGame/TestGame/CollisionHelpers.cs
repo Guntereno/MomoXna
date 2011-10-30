@@ -36,7 +36,7 @@ namespace TestGame
             BinRegionUniform entityRegion = new BinRegionUniform();
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
 
-            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
+            float contactDimensionPadding = DynamicEntity.ContactDimensionPadding;
             float doubleContactDimensionPadding = contactDimensionPadding * 2.0f;
 
 
@@ -88,7 +88,7 @@ namespace TestGame
             BinRegionUniform boundaryRegion = new BinRegionUniform();
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
 
-            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
+            float contactDimensionPadding = DynamicEntity.ContactDimensionPadding;
 
 
             for (int i = 0; i < entityCount; ++i)
@@ -143,14 +143,14 @@ namespace TestGame
             BinRegionUniform boundaryRegion = new BinRegionUniform();
 
 
-            float contactDimensionPadding = DynamicEntity.GetContactDimensionPadding();
+            float contactDimensionPadding = DynamicEntity.ContactDimensionPadding;
 
 
             for (int i = 0; i < bulletCount; ++i)
             {
                 BulletEntity bullet = bullets[i];
 
-                float dPosLengthSq = bullet.GetPositionDifferenceFromLastFrame().LengthSquared();
+                float dPosLengthSq = bullet.PositionDifferenceFromLastFrame.LengthSquared();
 
                 bullet.GetBinRegion(ref bulletRegion);
 
@@ -179,8 +179,8 @@ namespace TestGame
 
                     float contactDelta = float.MaxValue;
 
-                    bool contact = Maths2D.DoesIntersect(   bullet.GetLastFramePosition(),
-                                                            bullet.GetPositionDifferenceFromLastFrame(),
+                    bool contact = Maths2D.DoesIntersect(   bullet.LastFramePosition,
+                                                            bullet.PositionDifferenceFromLastFrame,
                                                             linePrimitive2D.Point,
                                                             linePrimitive2D.Difference,
                                                             ref contactDelta);
@@ -216,9 +216,9 @@ namespace TestGame
                         bool contact = Maths2D.DoesIntersect(   checkEntity.GetPosition(),
                                                                 checkEntity.ContactRadiusInfo.Radius,
                                                                 checkEntity.ContactRadiusInfo.RadiusSq,
-                                                                bullet.GetLastFramePosition(),
+                                                                bullet.LastFramePosition,
                                                                 bullet.GetPosition(),
-                                                                bullet.GetPositionDifferenceFromLastFrame(),
+                                                                bullet.PositionDifferenceFromLastFrame,
                                                                 dPosLengthSq,
                                                                 ref contactDelta);
 

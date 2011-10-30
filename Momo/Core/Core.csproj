@@ -92,10 +92,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collision2D\CollidableGroupInfo.cs" />
     <Compile Include="Collision2D\Contact.cs" />
     <Compile Include="Collision2D\ContactList.cs" />
     <Compile Include="Collision2D\ContactResolver.cs" />
     <Compile Include="Collision2D\IDynamicCollidable.cs" />
+    <Compile Include="Flags.cs" />
     <Compile Include="FrameTime.cs" />
     <Compile Include="GameEntities\BaseEntity.cs" />
     <Compile Include="GameEntities\BoundaryEntity.cs" />

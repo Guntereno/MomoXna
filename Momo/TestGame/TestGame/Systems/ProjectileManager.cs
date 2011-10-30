@@ -63,13 +63,13 @@ namespace TestGame.Systems
             }
         }
 
-        public void AddBullet(Vector2 startPos, Vector2 velocity, BulletEntity.Params param, BulletEntity.Flags flags)
+        public void AddBullet(Vector2 startPos, Vector2 velocity, BulletEntity.BulletParams param, Flags bulletGroupMembership)
         {
             BulletEntity bullet = m_bullets.CreateItem(typeof(BulletEntity));
             bullet.SetPosition(startPos);
-            bullet.SetVelocity(velocity);
-            bullet.SetParams(param);
-            bullet.SetFlags(flags);
+            bullet.Velocity = velocity;
+            bullet.Params = param;
+            bullet.CollidableGroupInfo.GroupMembership = bulletGroupMembership;
 
             bullet.AddToBin(m_bin);
         }

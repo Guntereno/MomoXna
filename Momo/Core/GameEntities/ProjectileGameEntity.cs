@@ -28,12 +28,20 @@ namespace Momo.Core.GameEntities
 
 
         // --------------------------------------------------------------------
-        // -- Public Static Methods
+        // -- Public Properties
         // --------------------------------------------------------------------
-        public static float GetContactDimensionPadding()
+        #region Properties
+        public static float ContactDimensionPadding     { get { return ms_contactDimensionPadding; } }
+
+        public Vector2 LastFramePosition                { get { return m_lastFramePosition; } }
+        public Vector2 PositionDifferenceFromLastFrame  { get { return m_positionDifferenceFromlastFrame; } }
+        
+        public Vector2 Velocity
         {
-            return ms_contactDimensionPadding;
+            get { return m_velocity; }
+            set { m_velocity = value; } 
         }
+        #endregion
 
 
         // --------------------------------------------------------------------
@@ -44,27 +52,6 @@ namespace Momo.Core.GameEntities
             //m_lastFramePosition = position;
             base.SetPosition(position);
         }
-
-        public void SetVelocity(Vector2 velocity)
-        {
-            m_velocity = velocity;
-        }
-
-        public override Vector2 GetVelocity()
-        {
-            return m_velocity;
-        }
-
-        public Vector2 GetLastFramePosition()
-        {
-            return m_lastFramePosition;
-        }
-
-        public Vector2 GetPositionDifferenceFromLastFrame()
-        {
-            return m_positionDifferenceFromlastFrame;
-        }
-
 
 
         public override void Update(ref FrameTime frameTime, int updateToken)

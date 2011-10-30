@@ -27,7 +27,7 @@ namespace TestGame.Entities.Players
 
         public Vector2 m_movementVector = Vector2.Zero;
         public Vector2 m_movementInputVector = Vector2.Zero;
-        public Vector2 m_facingInputVector = Vector2.UnitY;
+        public Vector2 m_facingInputVector = Vector2.Zero;
         public float m_triggerState = 0.0f;
 
         private Weapons.Weapon[] m_arsenal = new Weapons.Weapon[kNumWeaponSlots];
@@ -41,6 +41,12 @@ namespace TestGame.Entities.Players
         private Bin m_bin = null;
 
 
+
+        // --------------------------------------------------------------------
+        // -- Public Properties
+        // --------------------------------------------------------------------
+        #region Properties
+
         public Weapon CurrentWeapon
         {
             get { return m_currentWeapon; }
@@ -52,9 +58,9 @@ namespace TestGame.Entities.Players
         }
 
 
-        public Vector2 InputMovement    { get { return m_movementInputVector; } }
-        public Vector2 InputFacing      { get { return m_facingInputVector; } }
-        public float TriggerState          { get { return m_triggerState; } }
+        public Vector2 InputMovement        { get { return m_movementInputVector; } }
+        public Vector2 InputFacing          { get { return m_facingInputVector; } }
+        public float TriggerState           { get { return m_triggerState; } }
 
         public Color PlayerColour
         {
@@ -68,6 +74,10 @@ namespace TestGame.Entities.Players
             set { m_input = value; }
         }
 
+        public Flags BulletGroupMembership  { get { return new Flags((int)EntityGroups.PlayerBullets); } }
+
+        #endregion
+
 
 
         // --------------------------------------------------------------------
@@ -76,7 +86,12 @@ namespace TestGame.Entities.Players
         public PlayerEntity(GameWorld world) : base(world)
         {
             ContactRadiusInfo = new RadiusInfo(16.0f);
-            SetMass(ContactRadiusInfo.Radius * 2.0f);
+            Mass = ContactRadiusInfo.Radius * 2.0f;
+
+            CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.Players);
+            CollidableGroupInfo.CollidesWithGroups = new Flags((int)EntityGroups.AllEntities);
+
+            FacingDirection = Vector2.UnitY;
 
             SecondaryDebugColor = new Color( 0.0f, 1.0f, 0.0f );
 
@@ -123,7 +138,7 @@ namespace TestGame.Entities.Players
         public void AddToBin(Bin bin)
         {
             m_bin = bin;
-            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), BinLayers.kPlayerEntity);
+            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, BinLayers.kPlayerEntity);
         }
 
 
@@ -140,7 +155,7 @@ namespace TestGame.Entities.Players
             Bin bin = GetBin();
 
             GetBinRegion(ref prevBinRegion);
-            bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
+            bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);
 
             bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kPlayerEntity);
 
@@ -156,8 +171,8 @@ namespace TestGame.Entities.Players
 
         public override void OnCollisionEvent(ref BulletEntity bullet)
         {
-            float damage = bullet.GetParams().m_damage;
-            Vector2 direction = bullet.GetPositionDifferenceFromLastFrame();
+            float damage = bullet.Params.m_damage;
+            Vector2 direction = bullet.PositionDifferenceFromLastFrame;
             direction.Normalize();
 
             AddForce(direction * (damage * 500.0f));
@@ -257,6 +272,7 @@ namespace TestGame.Entities.Players
             SetPosition(newPosition);
         }
 
+
         internal void UpdateWeapon(ref FrameTime frameTime)
         {
             if (m_currentWeapon != null)
@@ -276,15 +292,6 @@ namespace TestGame.Entities.Players
         {
             AddToBin(m_bin);
             Health = MaxHealth;
-        }
-
-
-        // --------------------------------------------------------------------
-        // -- IWeaponUser interface implementation
-        // --------------------------------------------------------------------
-        public BulletEntity.Flags GetBulletFlags()
-        {
-            return BulletEntity.Flags.HarmsEnemies;
         }
     }
 }

@@ -122,6 +122,7 @@
     <Compile Include="Entities\BinLayers.cs" />
     <Compile Include="Entities\BulletEntity.cs" />
     <Compile Include="CollisionHelpers.cs" />
+    <Compile Include="Entities\EntityGroups.cs" />
     <Compile Include="Entities\Corpse.cs" />
     <Compile Include="Entities\Enemies\EnemyEntity.cs" />
     <Compile Include="Entities\Enemies\MeleeEnemy.cs" />

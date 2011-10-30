@@ -36,13 +36,6 @@ namespace Momo.Core.GameEntities
             get { return m_collisionLineBinRegionsSelection; }
         }
 
-
-        public override Vector2 GetVelocity()
-        {
-            return Vector2.Zero;
-        }
-
-
         public BoundaryEntity(LinePrimitive2D collisionPrimitive)
         {
             m_collisionPrimitive = collisionPrimitive;

@@ -1,10 +1,13 @@
-﻿using TestGame.Entities;
+﻿using Momo.Core;
+using TestGame.Entities;
+
+
 
 namespace TestGame.Weapons
 {
     public interface IWeaponUser
     {
-        BulletEntity.Flags GetBulletFlags();
+        Flags BulletGroupMembership { get; }
 
         Weapon CurrentWeapon
         {

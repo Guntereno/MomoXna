@@ -28,7 +28,17 @@ namespace TestGame.Entities.Enemies
         private MapData.EnemyData m_data = null;
         private SpawnPoint m_ownedSpawnPoint = null;
 
-        public MapData.EnemyData Data { get { return m_data; } }
+
+
+        // --------------------------------------------------------------------
+        // -- Public Properties
+        // --------------------------------------------------------------------
+        #region Properties
+
+        public MapData.EnemyData Data       { get { return m_data; } }
+        public Flags BulletGroupMembership  { get { return new Flags((int)EntityGroups.EnemyBullets); } }
+
+        #endregion
 
 
 
@@ -41,6 +51,7 @@ namespace TestGame.Entities.Enemies
 
         }
 
+
         public virtual void Init(MapData.EnemyData data)
         {
             Init();
@@ -50,12 +61,14 @@ namespace TestGame.Entities.Enemies
             m_ownedSpawnPoint = null;
         }
 
+
         public void TakeOwnershipOf(SpawnPoint spawnPoint)
         {
             System.Diagnostics.Debug.Assert(m_ownedSpawnPoint == null);
             m_ownedSpawnPoint = spawnPoint;
             spawnPoint.TakeOwnership(this);
         }
+
 
         internal override void Kill()
         {

@@ -15,18 +15,12 @@ namespace Momo.Core.Collision2D
         Vector2 GetPosition();
 
 
-        void SetVelocity(Vector2 velocity);
-        Vector2 GetVelocity();
+        Vector2 Velocity                { get; set; }
+        Vector2 Force                   { get; set; }
+        Vector2 LastFrameAcceleration   { get; }
 
-
-        void SetForce(Vector2 force);
-        Vector2 GetForce();
-        Vector2 GetLastFrameAcceleration();
-
-
-        void SetMass(float mass);
-        float GetMass();
-        float GetInverseMass();
+        float Mass                      { get; }
+        float InverseMass               { get; }
 
 
         void OnCollisionEvent(ref IDynamicCollidable collidable);

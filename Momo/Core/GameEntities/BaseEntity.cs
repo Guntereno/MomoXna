@@ -22,9 +22,6 @@ namespace Momo.Core.GameEntities
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public abstract Vector2 GetVelocity();
-
-
         public virtual void SetPosition(Vector2 position)
         {
             m_position = position;

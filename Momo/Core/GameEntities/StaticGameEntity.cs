@@ -11,11 +11,7 @@ namespace Momo.Core.GameEntities
     public class StaticEntity : BaseEntity
     {
         // --------------------------------------------------------------------
-        // -- Public Methods
+        // -- Public Properties
         // --------------------------------------------------------------------
-        public override Vector2 GetVelocity()
-        {
-            return Vector2.Zero;
-        }
     }
 }

@@ -67,7 +67,7 @@ namespace TestGame.Weapons
 
         public class ActiveState : State
         {
-            private BulletEntity.Params m_bulletParams = new BulletEntity.Params(100.0f, new Color(0.9f, 0.4f, 0.1f, 0.4f));
+            private BulletEntity.BulletParams m_bulletParams = new BulletEntity.BulletParams(100.0f, new Color(0.9f, 0.4f, 0.1f, 0.4f));
 
             private State m_emptyState = null;
             private State m_coolDownState = null;
@@ -114,7 +114,7 @@ namespace TestGame.Weapons
                             weapon.BarrelPosition,
                             velocity,
                             m_bulletParams,
-                            weapon.Owner.GetBulletFlags() );
+                            weapon.Owner.BulletGroupMembership);
 
                         --ammoInClip;
                         weapon.AmmoInClip = ammoInClip;

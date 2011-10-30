@@ -36,6 +36,10 @@ namespace TestGame.Entities
         private Trigger m_deathTrigger = null;
 
 
+        // --------------------------------------------------------------------
+        // -- Public Properties
+        // --------------------------------------------------------------------
+        #region Properties
 
         public EntitySensoryData SensoryData        { get { return m_sensoryData; } }
 
@@ -57,6 +61,9 @@ namespace TestGame.Entities
             set { m_obstructionBinLayer = value; }
         }
 
+        public Flags BulletGroupMembership { get { return new Flags((int)EntityGroups.AllBullets); } }
+
+        #endregion
 
 
         // --------------------------------------------------------------------
@@ -69,7 +76,10 @@ namespace TestGame.Entities
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
             ContactRadiusInfo = new RadiusInfo(16.0f);
-            SetMass(ContactRadiusInfo.Radius * 0.5f);
+            Mass = ContactRadiusInfo.Radius * 2.0f;
+
+            CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.Enemies);
+            CollidableGroupInfo.CollidesWithGroups = new Flags((int)EntityGroups.AllEntities);
 
             OccludingBinLayer = BinLayers.kBoundaryOcclusionSmall;
             ObstructionBinLayer = BinLayers.kBoundaryObstructionSmall;
@@ -114,7 +124,7 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), BinLayers.kEnemyEntities);
+            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, BinLayers.kEnemyEntities);
         }
         
 
@@ -131,7 +141,7 @@ namespace TestGame.Entities
             Bin bin = GetBin();
 
             GetBinRegion(ref prevBinRegion);
-            bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), ref curBinRegion);
+            bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);
 
             bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kEnemyEntities);
 
@@ -147,11 +157,10 @@ namespace TestGame.Entities
 
         public override void OnCollisionEvent(ref BulletEntity bullet)
         {
-            if ( (bullet.GetFlags() & BulletEntity.Flags.HarmsEnemies) == BulletEntity.Flags.HarmsEnemies )
+            if (bullet.CollidableGroupInfo.GroupMembership.IsFlagSet((int)EntityGroups.PlayerBullets))
             {
-
-                float damage = bullet.GetParams().m_damage;
-                Vector2 direction = bullet.GetPositionDifferenceFromLastFrame();
+                float damage = bullet.Params.m_damage;
+                Vector2 direction = bullet.PositionDifferenceFromLastFrame;
                 direction.Normalize();
 
                 AddForce(direction * (damage * 500.0f));
@@ -221,14 +230,6 @@ namespace TestGame.Entities
             }
 
             DestroyItem();
-        }
-
-        // --------------------------------------------------------------------
-        // -- IWeaponUser interface implementation
-        // --------------------------------------------------------------------
-        public BulletEntity.Flags GetBulletFlags()
-        {
-            return BulletEntity.Flags.HarmsPlayer;
         }
     }
 }

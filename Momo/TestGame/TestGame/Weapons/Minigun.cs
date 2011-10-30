@@ -119,7 +119,7 @@ namespace TestGame.Weapons
                             weapon.BarrelPosition,
                             velocity,
                             m_bulletParams,
-                            weapon.Owner.GetBulletFlags());
+                            weapon.Owner.BulletGroupMembership);
 
                         --ammoInClip;
                         weapon.AmmoInClip = ammoInClip;
@@ -162,7 +162,7 @@ namespace TestGame.Weapons
             private State m_coolDownState = null;
             private State m_overheatState = null;
 
-            BulletEntity.Params m_bulletParams = new BulletEntity.Params(20.0f, new Color(0.9f, 0.8f, 0.6f, 0.4f));
+            BulletEntity.BulletParams m_bulletParams = new BulletEntity.BulletParams(20.0f, new Color(0.9f, 0.8f, 0.6f, 0.4f));
         }
 
         public class VentHeat : State

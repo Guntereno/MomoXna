@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Momo.Core;
 using Momo.Core.GameEntities;
 using Momo.Core.Primitive2D;
+using Momo.Core.Collision2D;
 using Momo.Core.Spatial;
 using Momo.Core.ObjectPools;
 using Momo.Debug;
@@ -17,22 +18,31 @@ namespace TestGame.Entities
 {
     public class BulletEntity : ProjectileGameEntity, IPoolItem
     {
-        public enum Flags
-        {
-            None = 0x0,
-
-            HarmsPlayer = 0x1,
-            HarmsEnemies = 0x2,
-
-            HarmsEverything = HarmsPlayer | HarmsEnemies
-        }
-
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
         private bool m_destroyed = false;
-        private Params m_params;
-        Flags m_flags;
+        private BulletParams m_params;
+        private CollidableGroupInfo m_collidableGroupInfo = new CollidableGroupInfo();
+
+
+        // --------------------------------------------------------------------
+        // -- Public Properties
+        // --------------------------------------------------------------------
+        #region Properties
+        public BulletParams Params
+        {
+            get { return m_params; }
+            set { m_params = value; }
+        }
+
+        public CollidableGroupInfo CollidableGroupInfo
+        {
+            get { return m_collidableGroupInfo; }
+            set { m_collidableGroupInfo = value; }
+        }
+        #endregion
+
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -40,17 +50,11 @@ namespace TestGame.Entities
         public BulletEntity()
         {
             m_params = kDefaultParams;
+
+            CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.AllBullets);
+            CollidableGroupInfo.CollidesWithGroups = new Flags((int)(EntityGroups.Players | EntityGroups.Enemies | EntityGroups.AllBoundaries));
         }
 
-        public void SetFlags(Flags flags)
-        {
-            m_flags = flags;
-        }
-
-        public Flags GetFlags()
-        {
-            return m_flags;
-        }
 
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
@@ -60,7 +64,7 @@ namespace TestGame.Entities
 
         public override void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - GetVelocity() * 0.02f, m_params.m_debugColor, 3.5f);
+            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - Velocity * 0.02f, m_params.m_debugColor, 3.5f);
         }
 
 
@@ -83,7 +87,7 @@ namespace TestGame.Entities
             Bin bin = GetBin();
 
             GetBinRegion(ref prevBinRegion);
-            bin.GetBinRegionFromUnsortedCorners(GetLastFramePosition(), GetPosition(), ref curBinRegion);
+            bin.GetBinRegionFromUnsortedCorners(LastFramePosition, GetPosition(), ref curBinRegion);
 
             bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kBullet);
 
@@ -120,19 +124,9 @@ namespace TestGame.Entities
             m_destroyed = false;
         }
 
-        public Params GetParams()
+        public class BulletParams
         {
-            return m_params;
-        }
-
-        public void SetParams(Params value)
-        {
-            m_params = value;
-        }
-
-        public class Params
-        {
-            public Params(float damage, Color debugColor)
+            public BulletParams(float damage, Color debugColor)
             {
                 m_damage = damage;
                 m_debugColor = debugColor;
@@ -142,6 +136,6 @@ namespace TestGame.Entities
             public Color m_debugColor;
         }
 
-        public readonly Params kDefaultParams = new Params(10.0f, new Color(1.0f, 0.80f, 0.0f, 0.4f));
+        public static readonly BulletParams kDefaultParams = new BulletParams(10.0f, new Color(1.0f, 0.80f, 0.0f, 0.4f));
     }
 }
