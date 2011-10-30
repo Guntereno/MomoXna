@@ -114,13 +114,13 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), BinLayers.kImpEntities);
+            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + GetContactDimensionPadding(), BinLayers.kEnemyEntities);
         }
         
 
         public void RemoveFromBin()
         {
-            RemoveFromBin(BinLayers.kImpEntities);
+            RemoveFromBin(BinLayers.kEnemyEntities);
         }
 
 

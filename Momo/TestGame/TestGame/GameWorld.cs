@@ -58,7 +58,6 @@ namespace TestGame
         private EventManager m_eventManager = null;
         private SpawnPointManager m_spawnGroupManager = null;
         private CorpseManager m_corpseManager = null;
-        private ImpManager m_impManager = null;
         private PathRouteManager m_pathRouteManager = null;
         private PressurePlateManager m_pressurePlateManager = null;
 
@@ -83,7 +82,6 @@ namespace TestGame
         public EventManager EventManager                 { get { return m_eventManager; } }
         public SpawnPointManager SpawnPointManager       { get { return m_spawnGroupManager; } }
         public CorpseManager CorpseManager               { get { return m_corpseManager; } }
-        public ImpManager ImpManager                     { get { return m_impManager; } }
         public PathRouteManager PathRouteManager         { get { return m_pathRouteManager; } }
         public PressurePlateManager PressurePlateManager { get { return m_pressurePlateManager; } }
 
@@ -112,7 +110,6 @@ namespace TestGame
             m_eventManager = new EventManager(this);
             m_spawnGroupManager = new SpawnPointManager(this);
             m_corpseManager = new CorpseManager(this, m_bin);
-            m_impManager = new ImpManager(this, m_bin);
             m_pathRouteManager = new PathRouteManager();
             m_textPrinter = new TextBatchPrinter();
             m_pressurePlateManager = new PressurePlateManager(this);
@@ -153,7 +150,6 @@ namespace TestGame
             m_projectileManager.Load();
             m_enemyManager.Load();
             m_corpseManager.Load();
-            m_impManager.Load();
 
 
             m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(0));
@@ -220,7 +216,6 @@ namespace TestGame
             Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper(0);
 
             m_playerManager.Update(ref frameTime);
-            m_impManager.Update(ref frameTime, m_updateTokenOffset);
             m_enemyManager.Update(ref frameTime, m_updateTokenOffset);
             m_projectileManager.Update(ref frameTime);
             m_osdManager.Update(ref frameTime);
@@ -268,20 +263,13 @@ namespace TestGame
         {
             // Check groups against each other
             CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kPlayerEntity, m_contactList);
-            CollisionHelpers.GenerateEntityContacts(m_impManager.Imps.ActiveItemList, m_impManager.Imps.ActiveItemListCount, m_bin, BinLayers.kImpEntities, m_contactList);
             CollisionHelpers.GenerateEntityContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kEnemyEntities, m_contactList);
             
-            // Players against enemies/imps
+            // Players against enemies
             CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kEnemyEntities, m_contactList);
-            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kImpEntities, m_contactList);
-
-            // Imps against enemies
-            CollisionHelpers.GenerateEntityContacts(m_impManager.Imps.ActiveItemList, m_impManager.Imps.ActiveItemListCount, m_bin, BinLayers.kEnemyEntities, m_contactList);
-
 
             // Check against boundaries
             CollisionHelpers.GenerateBoundaryContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
-            CollisionHelpers.GenerateBoundaryContacts(m_impManager.Imps.ActiveItemList, m_impManager.Imps.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
             CollisionHelpers.GenerateBoundaryContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
 
 
@@ -336,7 +324,6 @@ namespace TestGame
 
             m_corpseManager.DebugRender(m_debugRenderer);
 
-            m_impManager.DebugRender(m_debugRenderer);
             m_playerManager.DebugRender(m_debugRenderer);
 
             m_enemyManager.DebugRender(m_debugRenderer);

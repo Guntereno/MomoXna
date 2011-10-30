@@ -128,9 +128,6 @@
     <Compile Include="Entities\Enemies\MissileEnemy.cs" />
     <Compile Include="Entities\EntitySensoryData.cs" />
     <Compile Include="Entities\GameEntity.cs" />
-    <Compile Include="Entities\Imps\ImpEntity.cs" />
-    <Compile Include="Entities\Imps\States\FindState.cs" />
-    <Compile Include="Entities\Imps\States\ImpState.cs" />
     <Compile Include="Entities\LivingGameEntity.cs" />
     <Compile Include="Entities\PathTracker.cs" />
     <Compile Include="Entities\Players\PlayerEntity.cs" />
@@ -152,7 +149,6 @@
     <Compile Include="Systems\CorpseManager.cs" />
     <Compile Include="Systems\EnemyManager.cs" />
     <Compile Include="Systems\EventManager.cs" />
-    <Compile Include="Systems\ImpManager.cs" />
     <Compile Include="Systems\OsdManager.cs" />
     <Compile Include="Systems\PlayerManager.cs" />
     <Compile Include="Systems\PressurePlateManager.cs" />
