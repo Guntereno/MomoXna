@@ -57,6 +57,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="fonts\Calibri_26_b_o3_0.png">
+      <Name>Calibri_26_b_o3_0</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="fonts\Consolas_24_o2.fnt">
       <Name>Consolas_24_o2</Name>
       <Importer>FontImporter</Importer>
@@ -68,6 +73,11 @@
       <Importer>TmxImporter</Importer>
       <SubType>Designer</SubType>
     </None>
+    <Compile Include="fonts\Consolas_24_o2_0.png">
+      <Name>Consolas_24_o2_0</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="maps\test_arena2\test_arena2.tmx">
       <Name>test_arena2</Name>
       <Importer>TmxImporter</Importer>
@@ -129,25 +139,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fonts\Calibri_26_b_o3_0.png">
-      <Name>Calibri_26_b_o3_0</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="maps\test_arena\test_arena.tmx">
       <Name>test_arena</Name>
       <Importer>TmxImporter</Importer>
       <Processor>TmxProcessor</Processor>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="fonts\Consolas_24_o2_0.png">
-      <Name>Consolas_24_o2_0</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 

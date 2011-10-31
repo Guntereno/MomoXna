@@ -13,7 +13,7 @@ namespace Momo.Core.Primitive2D
         internal Vector2 m_point;
         internal Vector2 m_normal;
         internal Vector2 m_difference;
-        internal float m_lengthSqList;
+        internal float m_lengthSq;
 
 
 
@@ -35,9 +35,9 @@ namespace Momo.Core.Primitive2D
             get { return m_difference; }
         }
 
-        public float LengthSqList
+        public float LengthSq
         {
-            get { return m_lengthSqList; }
+            get { return m_lengthSq; }
         }
 
 
@@ -46,11 +46,9 @@ namespace Momo.Core.Primitive2D
             m_point = point1;
             m_difference = point2 - point1;
 
-            // TODO: Use the normalize function below, unroll, and take the lengthSq out first.
+            m_lengthSq = m_difference.LengthSquared();
             m_normal = new Vector2(-m_difference.Y, m_difference.X);
-            m_normal.Normalize();
-
-            m_lengthSqList = m_difference.LengthSquared();
+            m_normal /= (float)Math.Sqrt(m_lengthSq);
         }
 
 

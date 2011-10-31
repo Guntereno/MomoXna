@@ -8,16 +8,16 @@ using Microsoft.Xna.Framework;
 
 namespace Momo.Core.Primitive2D
 {
-    public class LineStripPrimitive2D : Primitive2D
+    public struct LineStripPrimitive2D
     {
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private int m_pointCapacity = 0;
-        private int m_pointCount = 0;
-        private Vector2 m_lastPoint = Vector2.Zero;
+        private int m_pointCapacity;
+        private int m_pointCount;
+        private Vector2 m_lastPoint;
 
-        private LinePrimitive2D[] m_lineList = null;
+        private LinePrimitive2D[] m_lineList;
 
 
 
@@ -48,6 +48,9 @@ namespace Momo.Core.Primitive2D
 
         public LineStripPrimitive2D(int pointCapacity)
         {
+            m_pointCount = 0;
+            m_lastPoint = Vector2.Zero;
+
             m_lineList = new LinePrimitive2D[pointCapacity];
 
             m_pointCapacity = pointCapacity;

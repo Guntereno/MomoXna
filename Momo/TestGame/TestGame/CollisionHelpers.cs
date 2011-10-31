@@ -120,7 +120,7 @@ namespace TestGame
                                                             linePrimitive2D.Point,
                                                             linePrimitive2D.Point + linePrimitive2D.Difference,
                                                             linePrimitive2D.Difference,
-                                                            linePrimitive2D.LengthSqList,
+                                                            linePrimitive2D.LengthSq,
                                                             ref intersectInfo);
 
 

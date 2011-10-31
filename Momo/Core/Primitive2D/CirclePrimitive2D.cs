@@ -9,13 +9,13 @@ using Microsoft.Xna.Framework;
 
 namespace Momo.Core.Primitive2D
 {
-    public class CirclePrimitive2D : Primitive2D
+    public struct CirclePrimitive2D
     {
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
         private RadiusInfo m_radiusInfo;
-        private Vector2 m_centre = Vector2.Zero;
+        private Vector2 m_centre;
 
 
         // --------------------------------------------------------------------
@@ -51,6 +51,7 @@ namespace Momo.Core.Primitive2D
         public CirclePrimitive2D(float radius)
         {
             m_radiusInfo = new RadiusInfo(radius);
+            m_centre = Vector2.Zero;
         }
 
 

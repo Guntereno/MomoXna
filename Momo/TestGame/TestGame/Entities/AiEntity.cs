@@ -61,7 +61,7 @@ namespace TestGame.Entities
             set { m_obstructionBinLayer = value; }
         }
 
-        public Flags BulletGroupMembership { get { return new Flags((int)EntityGroups.AllBullets); } }
+        public virtual Flags BulletGroupMembership { get { return new Flags((int)EntityGroups.AllBullets); } }
 
         #endregion
 
