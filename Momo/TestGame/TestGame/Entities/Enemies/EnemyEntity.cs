@@ -36,7 +36,7 @@ namespace TestGame.Entities.Enemies
         #region Properties
 
         public MapData.EnemyData Data       { get { return m_data; } }
-        public Flags BulletGroupMembership  { get { return new Flags((int)EntityGroups.EnemyBullets); } }
+        public override Flags BulletGroupMembership  { get { return new Flags((int)EntityGroups.EnemyBullets); } }
 
         #endregion
 

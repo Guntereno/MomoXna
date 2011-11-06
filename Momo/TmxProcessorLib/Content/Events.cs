@@ -48,7 +48,7 @@ namespace TmxProcessorLib.Content
             {
                 m_startTrigger = EventGroup.AddPrefix(groupStack, node.Attributes["startTrigger"].Value);
             }
-            else if (groupStack.Peek().m_startTrigger != null)
+            else if (groupStack.Count > 0 && groupStack.Peek().m_startTrigger != null)
             {
                 // Group triggers are specified with absolute paths
                 m_startTrigger = groupStack.Peek().m_startTrigger;
