@@ -119,6 +119,8 @@ namespace TestGame.Weapons
                         --ammoInClip;
                         weapon.AmmoInClip = ammoInClip;
 
+                        world.SoundBank.PlayCue("GUN_single");
+
                         weapon.SetCurrentState(m_coolDownState);
                     }
                     else

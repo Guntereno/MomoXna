@@ -19,6 +19,7 @@ using TestGame.Entities;
 using TestGame.Systems;
 
 using WorldManager;
+using Microsoft.Xna.Framework.Audio;
 
 
 
@@ -68,8 +69,11 @@ namespace TestGame
 
         private int m_updateTokenOffset = 0;
 
-        float m_elapsedTime = 0.0f;
+        private float m_elapsedTime = 0.0f;
 
+        private AudioEngine m_audioEngine = null;
+        private WaveBank m_waveBank = null;
+        private SoundBank m_soundBank = null;
 
 
         public OrthographicCameraNode Camera             { get { return m_camera; } }
@@ -93,7 +97,9 @@ namespace TestGame
 
         public float ElapsedTime                         { get { return m_elapsedTime; } }
 
-
+        public AudioEngine AudioEngine                   { get { return m_audioEngine; } }
+        public WaveBank WaveBank                         { get { return m_waveBank; } }
+        public SoundBank SoundBank                       { get { return m_soundBank; } }
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -118,6 +124,10 @@ namespace TestGame
 
         public override void Load()
         {
+            m_audioEngine = new AudioEngine("Content\\Audio\\audio.xgs");
+            m_waveBank = new WaveBank(m_audioEngine, "Content\\Audio\\Wave Bank.xwb");
+            m_soundBank = new SoundBank(m_audioEngine, "Content\\Audio\\Sound Bank.xsb");
+
             Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
 
             // Debug

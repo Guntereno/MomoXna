@@ -124,6 +124,8 @@ namespace TestGame.Weapons
                         --ammoInClip;
                         weapon.AmmoInClip = ammoInClip;
 
+                        world.SoundBank.PlayCue("GUN_machine");
+
                         const float kHeatDelta = 0.4f;
                         minigun.Heat = minigun.Heat + kHeatDelta;
 
