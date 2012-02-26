@@ -8,22 +8,33 @@ namespace Momo.Core.Collision2D.Primitives
 {
     public class CollisionPrimitiveAABB : CollisionPrimitive
     {
-        public override void SetPosRotScale(Vector2 pos, Vector2 rot, Vector2 scale)
+        // --------------------------------------------------------------------
+        // -- Variables
+        // --------------------------------------------------------------------
+
+
+        // --------------------------------------------------------------------
+        // -- Properties
+        // --------------------------------------------------------------------
+        #region Properties
+
+        #endregion
+
+
+        // --------------------------------------------------------------------
+        // -- Methods
+        // --------------------------------------------------------------------
+        public override void SetPosRotScale(Vector2 pos, Vector2 rot, float scale)
         {
 
         }
 
-        public override bool DoesIntersect(CollisionPrimitive primtive, ref Vector2 collisionNormal, ref float overlap)
+        public override bool DoesIntersect(CollisionPrimitiveCircle primtive, float padding, ref Vector2 outIntersectNormal, ref float outPosDiff)
         {
             return false;
         }
 
-        public override bool DoesIntersect(CollisionPrimitiveAABB primtive, ref Vector2 collisionNormal, ref float overlap)
-        {
-            return false;
-        }
-
-        public override bool DoesIntersect(CollisionPrimitiveCircle primtive, ref Vector2 collisionNormal, ref float overlap)
+        public override bool DoesIntersect(CollisionPrimitiveAABB primtive, float padding, ref Vector2 outIntersectNormal, ref float outPosDiff)
         {
             return false;
         }

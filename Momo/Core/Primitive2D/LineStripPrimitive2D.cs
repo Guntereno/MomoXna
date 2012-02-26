@@ -11,7 +11,7 @@ namespace Momo.Core.Primitive2D
     public struct LineStripPrimitive2D
     {
         // --------------------------------------------------------------------
-        // -- Private Members
+        // -- Variables
         // --------------------------------------------------------------------
         private int m_pointCapacity;
         private int m_pointCount;
@@ -22,8 +22,9 @@ namespace Momo.Core.Primitive2D
 
 
         // --------------------------------------------------------------------
-        // -- Public Methods
+        // -- Properties
         // --------------------------------------------------------------------
+        #region Properties
         public int PointCapacity
         {
             get { return m_pointCapacity; }
@@ -43,9 +44,11 @@ namespace Momo.Core.Primitive2D
         {
             get { return m_lineList; }
         }
+        #endregion
 
-
-
+        // --------------------------------------------------------------------
+        // -- Methods
+        // --------------------------------------------------------------------
         public LineStripPrimitive2D(int pointCapacity)
         {
             m_pointCount = 0;

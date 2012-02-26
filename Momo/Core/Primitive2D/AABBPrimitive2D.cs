@@ -12,21 +12,21 @@ namespace Momo.Core.Primitive2D
     public struct AABBPrimitive2D
     {
         // --------------------------------------------------------------------
-        // -- Private Members
+        // -- Variables
         // --------------------------------------------------------------------
         private Vector2 m_min;
         private Vector2 m_max;
 
 
         // --------------------------------------------------------------------
-        // -- Public Methods
+        // -- Properties
         // --------------------------------------------------------------------
+        #region Properties
         public Vector2 Min
         {
             get { return m_min; }
             set { m_min = value; }
         }
-
 
         public Vector2 Max
         {
@@ -34,14 +34,16 @@ namespace Momo.Core.Primitive2D
             set { m_max = value; }
         }
 
-
         public Vector2 Centre
         {
             get { return (m_min + m_max) * 0.5f; }
         }
+        #endregion
 
 
-
+        // --------------------------------------------------------------------
+        // -- Methods
+        // --------------------------------------------------------------------
         public AABBPrimitive2D(Vector2 centre, float width, float height)
         {
             Vector2 hExtent = new Vector2(width * 0.5f, height * 0.5f);

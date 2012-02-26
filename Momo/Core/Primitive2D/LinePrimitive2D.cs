@@ -10,16 +10,19 @@ namespace Momo.Core.Primitive2D
 {
     public struct LinePrimitive2D
     {
+        // --------------------------------------------------------------------
+        // -- Variables
+        // --------------------------------------------------------------------
         internal Vector2 m_point;
         internal Vector2 m_normal;
         internal Vector2 m_difference;
         internal float m_lengthSq;
 
 
-
         // --------------------------------------------------------------------
-        // -- Public Methods
+        // -- Properties
         // --------------------------------------------------------------------
+        #region Properties
         public Vector2 Point
         {
             get { return m_point; }
@@ -39,8 +42,12 @@ namespace Momo.Core.Primitive2D
         {
             get { return m_lengthSq; }
         }
+        #endregion
 
 
+        // --------------------------------------------------------------------
+        // -- Methods
+        // --------------------------------------------------------------------
         public LinePrimitive2D(Vector2 point1, Vector2 point2)
         {
             m_point = point1;

@@ -101,7 +101,7 @@ namespace TestGame.Systems
         {
             PlayerManager playerManager = m_world.PlayerManager;
 
-            m_spring.SetTarget(playerManager.GetAveragePosition());
+            m_spring.SetTarget(playerManager.AveragePlayerPosition);
         }
 
         private void UpdateDebug(ref Input.InputWrapper input)

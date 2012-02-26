@@ -37,6 +37,7 @@ namespace TestGame.Ai.States
             SensedObject sensedPlayer = entity.SensoryData.SeePlayerSense;
 
             // Steer towards the player
+            if(sensedPlayer != null)
             {
                 Vector2 targetDirection = sensedPlayer.GetLastPosition() - entity.GetPosition();
                 targetDirection.Normalize();

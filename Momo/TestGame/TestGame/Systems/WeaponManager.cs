@@ -14,10 +14,10 @@ namespace TestGame.Systems
     {
         public readonly static int[] kWeaponMax = new int[(int)MapData.Weapon.Design.Count]
         {
-            32,  // Pistol
-            32,  // Shotgun
-            32,  // Minigun
-            64,  // Melee
+            100,  // Pistol
+            100,  // Shotgun
+            100,  // Minigun
+            100,  // Melee
         };
 
 

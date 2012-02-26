@@ -31,7 +31,7 @@ namespace TestGame
         }
 
 
-        public static void GenerateEntityContacts(GameEntity[] entities, int entityCount, Bin bin, int entityLayer, ContactList contactList)
+        public static void GenerateEntityContacts(GameEntity[] entities, int entityCount, float sizeMod, Bin bin, int entityLayer, ContactList contactList)
         {
             BinRegionUniform entityRegion = new BinRegionUniform();
             IntersectInfo2D intersectInfo = new IntersectInfo2D();
@@ -60,7 +60,7 @@ namespace TestGame
                     if (entity != checkEntity)
                     {
                         bool contact = Maths2D.DoesIntersect(   entity.GetPosition(),
-                                                                entity.ContactRadiusInfo.Radius + contactDimensionPadding,
+                                                                ( entity.ContactRadiusInfo.Radius * sizeMod ) + contactDimensionPadding,
                                                                 checkEntity.GetPosition(),
                                                                 checkEntity.ContactRadiusInfo.Radius + contactDimensionPadding,
                                                                 ref intersectInfo);

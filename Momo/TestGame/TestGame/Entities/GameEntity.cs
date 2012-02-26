@@ -15,7 +15,9 @@ namespace TestGame.Entities
 {
     public class GameEntity : DynamicEntity, INamed, IPoolItem
     {
-        #region Variables
+        // --------------------------------------------------------------------
+        // -- Variables
+        // --------------------------------------------------------------------
         private const int kMaxNameLength = 32;
 
         private Name m_name = new Name(kMaxNameLength);
@@ -32,9 +34,11 @@ namespace TestGame.Entities
         private bool m_destroyed = false;
 
         private GameWorld m_world;
-        #endregion
 
 
+        // --------------------------------------------------------------------
+        // -- Properties
+        // --------------------------------------------------------------------
         #region Properties
         public GameWorld World { get { return m_world; } }
 
@@ -84,6 +88,9 @@ namespace TestGame.Entities
         #endregion
 
 
+        // --------------------------------------------------------------------
+        // -- Methods
+        // --------------------------------------------------------------------
         public GameEntity(GameWorld world)
         {
             m_world = world;
@@ -143,7 +150,7 @@ namespace TestGame.Entities
 
 
         // --------------------------------------------------------------------
-        // -- IPool interface implementation
+        // -- IPool
         // --------------------------------------------------------------------
         public bool IsDestroyed()
         {
@@ -162,7 +169,7 @@ namespace TestGame.Entities
 
 
         // --------------------------------------------------------------------
-        // -- INamed interface implementation
+        // -- INamed
         // --------------------------------------------------------------------
         public void SetName(MutableString name)
         {

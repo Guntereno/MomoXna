@@ -175,6 +175,8 @@ namespace TestGame.Input
 
         private static void UpdateStickKeys(ref Vector2 resultVector, ref KeyboardState currentKeyboardState, Keys upKey, Keys leftKey, Keys downKey, Keys rightKey)
         {
+            resultVector = Vector2.Zero;
+
             bool leftKeyDown = currentKeyboardState.IsKeyDown(leftKey);
             bool rightKeyDown = currentKeyboardState.IsKeyDown(rightKey);
             if (leftKeyDown && !rightKeyDown)
@@ -185,6 +187,7 @@ namespace TestGame.Input
             {
                 resultVector.X = 1.0f;
             }
+
 
             bool upKeyDown = currentKeyboardState.IsKeyDown(upKey);
             bool downKeyDown = currentKeyboardState.IsKeyDown(downKey);
@@ -200,6 +203,7 @@ namespace TestGame.Input
 
         private static void UpdateTriggerKeys(ref float result, ref KeyboardState currentKeyboardState, Keys key)
         {
+            result = 0.0f;
             if (currentKeyboardState.IsKeyDown(key))
             {
                 result = 1.0f;

@@ -163,7 +163,6 @@ namespace TestGame
 
 
             m_playerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(0));
-            //m_impManager.Create(m_playerManager.Players.ActiveItemList[0].GetPosition() + new Vector2(50.0f, 0.0f));
 
 
             // TODO: Temp: Disconnects need to be handled in the InputManager
@@ -195,7 +194,8 @@ namespace TestGame
 
             m_pathRouteManager.Init(1000, 100, 200);
 
-            //m_testShadowMesh.Init(10000, 10000, TestGame.Instance().GraphicsDevice);
+            //Texture2D penumbraTexture = TestGame.Instance().Content.Load<Texture2D>("textures/penumbra");
+            //m_testShadowMesh.Init(10000, 10000, penumbraTexture, TestGame.Instance().GraphicsDevice);
      
             CollisionHelpers.Init();
             PathFindingHelpers.Init(400.0f, 3, m_bin);
@@ -204,6 +204,14 @@ namespace TestGame
             m_spawnGroupManager.LoadSpawnGroups(m_map);
             m_pressurePlateManager.LoadPressurePoints(m_map);
 
+            //Random rand = new Random(101);
+            //for (int i = 0; i < 100; ++i)
+            //{
+            //    float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
+            //    float y = 3880.0f + ((float)rand.NextDouble() * 500.0f);
+            //    m_enemyManager.Create(new MapData.EnemyData(MapData.EnemyData.Species.Melee, MapData.Weapon.Design.Melee), new Vector2(x, y));
+            //}
+            //m_enemyManager.Create(new MapData.EnemyData(MapData.EnemyData.Species.Melee, MapData.Weapon.Design.Melee), m_playerManager.Players[0].GetPosition() + new Vector2(0.0f, -50.0f));
         }
 
 
@@ -251,19 +259,18 @@ namespace TestGame
 
             // Move the camera follow position
             // Update camera after collision resolution so its go the actual rendered player position.
-            m_cameraController.FollowPosition = m_playerManager.GetAveragePosition();
+            m_playerManager.UpdateAveragePosition();
+            m_cameraController.FollowPosition = m_playerManager.AveragePlayerPosition;
             m_cameraController.Update(ref frameTime, ref inputWrapper);
 
 
             //m_testShadowMesh.Clear();
-            //m_testShadowMesh.AddOcculudingGeometry(m_playerManager.Players[0].GetPosition(), 16.0f, 1000.0f, m_boundaries);
+            //m_testShadowMesh.AddOcculudingGeometry(m_playerManager.Players[0].GetPosition(), 16.0f, 2000.0f, m_map.CollisionBoundaries[2]);
 
 
 
             // End frame updates
             m_projectileManager.EndFrame();
-
-
         }
 
 
@@ -272,11 +279,11 @@ namespace TestGame
         private void GenerateContacts()
         {
             // Check groups against each other
-            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kPlayerEntity, m_contactList);
-            CollisionHelpers.GenerateEntityContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kEnemyEntities, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, 1.0f, m_bin, BinLayers.kPlayerEntity, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, 0.9f, m_bin, BinLayers.kEnemyEntities, m_contactList);
             
             // Players against enemies
-            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kEnemyEntities, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, 0.7f, m_bin, BinLayers.kEnemyEntities, m_contactList);
 
             // Check against boundaries
             CollisionHelpers.GenerateBoundaryContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
@@ -310,6 +317,8 @@ namespace TestGame
         {
             m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
 
+            //m_testShadowMesh.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
+
             m_osdManager.Render();
 
             m_textPrinter.Render(true, TestGame.Instance().GraphicsDevice);
@@ -325,10 +334,8 @@ namespace TestGame
 
         public override void DebugRender()
         {
-            //for (int i = 0; i < m_boundaries.Count; ++i)
-            //{
-            //    m_boundaries[i].DebugRender(m_debugRenderer);
-            //}
+            for (int i = 0; i < m_boundaries.Count; ++i)
+                m_boundaries[i].DebugRender(m_debugRenderer);
 
             m_pressurePlateManager.DebugRender(m_debugRenderer);
 

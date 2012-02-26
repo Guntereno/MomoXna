@@ -11,6 +11,7 @@ using TestGame.Objects;
 using TestGame.Weapons;
 
 
+
 namespace TestGame.Entities.Players
 {
     public class PlayerEntity : LivingGameEntity, IWeaponUser
@@ -43,7 +44,7 @@ namespace TestGame.Entities.Players
 
 
         // --------------------------------------------------------------------
-        // -- Public Properties
+        // -- Properties
         // --------------------------------------------------------------------
         #region Properties
 
@@ -81,12 +82,12 @@ namespace TestGame.Entities.Players
 
 
         // --------------------------------------------------------------------
-        // -- Public Methods
+        // -- Methods
         // --------------------------------------------------------------------
         public PlayerEntity(GameWorld world) : base(world)
         {
             ContactRadiusInfo = new RadiusInfo(16.0f);
-            Mass = ContactRadiusInfo.Radius * 2.0f;
+            Mass = ContactRadiusInfo.Radius * 5.0f;
 
             CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.Players);
             CollidableGroupInfo.CollidesWithGroups = new Flags((int)EntityGroups.AllEntities);
