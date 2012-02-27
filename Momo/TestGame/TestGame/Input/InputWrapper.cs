@@ -139,6 +139,9 @@ namespace TestGame.Input
             // Stop the compiler bitching about unused variables...
             m_previousButtonState = m_buttonState;
 
+            m_leftStick = m_rightStick = Vector2.Zero;
+            m_leftTrigger = m_rightTrigger = 0.0f;
+
             Update(currentGamePadState);
 
             // Keyboard input overrides joypad
@@ -175,8 +178,6 @@ namespace TestGame.Input
 
         private static void UpdateStickKeys(ref Vector2 resultVector, ref KeyboardState currentKeyboardState, Keys upKey, Keys leftKey, Keys downKey, Keys rightKey)
         {
-            resultVector = Vector2.Zero;
-
             bool leftKeyDown = currentKeyboardState.IsKeyDown(leftKey);
             bool rightKeyDown = currentKeyboardState.IsKeyDown(rightKey);
             if (leftKeyDown && !rightKeyDown)
@@ -203,7 +204,6 @@ namespace TestGame.Input
 
         private static void UpdateTriggerKeys(ref float result, ref KeyboardState currentKeyboardState, Keys key)
         {
-            result = 0.0f;
             if (currentKeyboardState.IsKeyDown(key))
             {
                 result = 1.0f;
