@@ -21,9 +21,6 @@ namespace TestGame.Entities.Players
 
         #region State Machine
         private StateMachine m_stateMachine = null;
-        private ActiveState m_stateActive = null;
-        private DeadState m_stateDead = null;
-        private DyingState m_stateDying = null;
         #endregion
 
         public Vector2 m_movementVector = Vector2.Zero;
@@ -97,15 +94,18 @@ namespace TestGame.Entities.Players
             SecondaryDebugColor = new Color( 0.0f, 1.0f, 0.0f );
 
             m_stateMachine = new StateMachine(this);
-            m_stateActive = new ActiveState(m_stateMachine);
-            m_stateDying = new DyingState(m_stateMachine);
-            m_stateDead = new DeadState(m_stateMachine);
 
-            m_stateDying.SetLength(0.5f);
-            m_stateDying.SetExitState(m_stateDead);
+            m_stateMachine.AddState("Active", new ActiveState(m_stateMachine));
 
-            m_stateDead.SetLength(4.0f);
-            m_stateDead.SetExitState(m_stateActive);
+            DyingState dyingState = new DyingState(m_stateMachine);
+            dyingState.SetLength(0.5f);
+            dyingState.SetExitState("Dead");
+            m_stateMachine.AddState("Dying", dyingState);
+                        
+            DeadState deadState = new DeadState(m_stateMachine);
+            deadState.SetLength(4.0f);
+            deadState.SetExitState("Active");
+            m_stateMachine.AddState("Dead", deadState);
         }
 
         public void Init()
@@ -122,7 +122,7 @@ namespace TestGame.Entities.Players
 
             m_currentWeaponIdx = 0;
 
-            m_stateMachine.SetCurrentState(m_stateActive);
+            m_stateMachine.SetCurrentState("Active");
 
             MaxHealth = kPlayerHealth;
             Health = kPlayerHealth;
@@ -178,7 +178,7 @@ namespace TestGame.Entities.Players
 
             AddForce(direction * (damage * 500.0f));
 
-            if (m_stateMachine.CurrentState != m_stateDying)
+            if (m_stateMachine.CurrentStateName != "Dying")
             {
                 // Take damage from the bullet
                 Health -= damage;
@@ -186,7 +186,7 @@ namespace TestGame.Entities.Players
                 {
                     Health = 0.0f;
 
-                    m_stateMachine.SetCurrentState(m_stateDying);
+                    m_stateMachine.SetCurrentState("Dying");
                 }
             }
         }
