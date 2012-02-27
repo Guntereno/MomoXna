@@ -89,7 +89,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EventData.cs" />
-    <Compile Include="Lights.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MapDataReader.cs" />
     <Compile Include="NamedData.cs" />

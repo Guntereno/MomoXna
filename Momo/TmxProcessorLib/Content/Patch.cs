@@ -80,7 +80,7 @@ namespace TmxProcessorLib.Content
 
                 for (int y = yMin; y < (yMin + patchSize); ++y)
                 {
-                    System.Diagnostics.Debug.Assert(x < parent.Dimensions.Y);
+                    System.Diagnostics.Debug.Assert(y < parent.Dimensions.Y);
 
                     Tile tile = tileLayer.Tiles[x + (y * tileLayer.Dimensions.X)];
 

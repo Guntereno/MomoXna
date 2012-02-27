@@ -55,20 +55,20 @@ namespace TestGame
 
             Content.RootDirectory = "Content";
 
-            if (GraphicsAdapter.Adapters.Count > 1)
-            {
-                graphics.IsFullScreen = true;
-            }
+            //if (GraphicsAdapter.Adapters.Count > 1)
+            //{
+            //    graphics.IsFullScreen = true;
+            //}
         }
 
         public void PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             GraphicsAdapter currentAdapter = GraphicsAdapter.DefaultAdapter;
 
-            if (GraphicsAdapter.Adapters.Count > 1)
-            {
-                currentAdapter = GraphicsAdapter.Adapters[1];
-            }
+            //if (GraphicsAdapter.Adapters.Count > 1)
+            //{
+            //    currentAdapter = GraphicsAdapter.Adapters[1];
+            //}
 
             e.GraphicsDeviceInformation.Adapter = currentAdapter;
         }

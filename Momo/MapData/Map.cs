@@ -41,13 +41,6 @@ namespace MapData
 
         public PressurePlateData[] PressurePlates { get; private set; }
 
-        public enum TriggerType
-        {
-            Invalid = -1,
-
-            KillCount = 0
-        }
-
         public void Read(ContentReader input)
         {
             LayerCount = input.ReadInt32();
