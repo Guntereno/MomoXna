@@ -7,7 +7,7 @@ namespace Momo.Core.StateMachine
 {
     public class TimedState : State
     {
-        private string m_exitState = null;
+        private State m_exitState = null;
         private float m_timer = 0.0f;
         private float m_length = 0.0f;
 
@@ -23,7 +23,7 @@ namespace Momo.Core.StateMachine
             m_length = length;
         }
 
-        public void SetExitState(string exitState)
+        public void SetExitState(State exitState)
         {
             m_exitState = exitState;
         }
