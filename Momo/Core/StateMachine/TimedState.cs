@@ -11,8 +11,8 @@ namespace Momo.Core.StateMachine
         private float m_timer = 0.0f;
         private float m_length = 0.0f;
 
-        public TimedState(StateMachine machine) :
-            base(machine)
+        public TimedState(IStateMachineOwner owner) :
+            base(owner)
         {
         }
 
@@ -38,7 +38,7 @@ namespace Momo.Core.StateMachine
             m_timer -= frameTime.Dt;
             if (m_timer <= 0.0f)
             {
-                GetMachine().CurrentState = m_exitState;
+                Owner.StateMachine.CurrentState = m_exitState;
             }
         }
     }

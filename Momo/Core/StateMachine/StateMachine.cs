@@ -8,10 +8,10 @@ namespace Momo.Core.StateMachine
     public class StateMachine
     {
         private State m_currentState = null;
-        private Object m_owner = null;
+        private IStateMachineOwner m_owner = null;
 
 
-        public StateMachine(Object owner)
+        public StateMachine(IStateMachineOwner owner)
         {
             m_owner = owner;
         }

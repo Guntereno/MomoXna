@@ -7,19 +7,25 @@ namespace Momo.Core.StateMachine
 {
     public abstract class State
     {
-        private StateMachine m_machine = null;
+        private IStateMachineOwner m_owner = null;
 
-        public State(StateMachine machine)
+        public IStateMachineOwner Owner
         {
-            m_machine = machine;
+            get
+            {
+                return m_owner;
+            }
+        }
+
+        public State(IStateMachineOwner owner)
+        {
+            m_owner = owner;
         }
 
         public override string ToString()
         {
             return "";
         }
-
-        public StateMachine GetMachine() { return m_machine; }
 
         public virtual void OnEnter() { }
         public abstract void Update(ref FrameTime frameTime);

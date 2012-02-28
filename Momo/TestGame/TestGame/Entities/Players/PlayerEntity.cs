@@ -14,7 +14,7 @@ using TestGame.Weapons;
 
 namespace TestGame.Entities.Players
 {
-    public class PlayerEntity : LivingGameEntity, IWeaponUser
+    public class PlayerEntity : LivingGameEntity, IWeaponUser, IStateMachineOwner
     {
         private const int kNumWeaponSlots = 3;
         private const float kPlayerHealth = 2000.0f;
@@ -77,6 +77,8 @@ namespace TestGame.Entities.Players
 
         public Flags BulletGroupMembership  { get { return new Flags((int)EntityGroups.PlayerBullets); } }
 
+        public StateMachine StateMachine { get { return m_stateMachine; } }
+
         #endregion
 
 
@@ -97,9 +99,9 @@ namespace TestGame.Entities.Players
             SecondaryDebugColor = new Color( 0.0f, 1.0f, 0.0f );
 
             m_stateMachine = new StateMachine(this);
-            m_stateActive = new ActiveState(m_stateMachine);
-            m_stateDying = new DyingState(m_stateMachine);
-            m_stateDead = new DeadState(m_stateMachine);
+            m_stateActive = new ActiveState(this);
+            m_stateDying = new DyingState(this);
+            m_stateDead = new DeadState(this);
 
             m_stateDying.SetLength(0.5f);
             m_stateDying.SetExitState(m_stateDead);

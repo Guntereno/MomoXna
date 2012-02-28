@@ -12,20 +12,20 @@ namespace TestGame.Entities.Players
 {
     internal class ActiveState : State
     {
-        public ActiveState(StateMachine machine): base(machine)
+        public ActiveState(IStateMachineOwner owner): base(owner)
         {
         }
 
         public override void OnEnter()
         {
-            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
+            PlayerEntity player = (PlayerEntity)(Owner);
 
             player.PrimaryDebugColor = player.PlayerColour;
         }
 
         public override void Update(ref FrameTime frameTime)
         {
-            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
+            PlayerEntity player = (PlayerEntity)(Owner);
 
             player.UpdateInput();
             player.UpdateMovement(ref frameTime);
@@ -35,8 +35,8 @@ namespace TestGame.Entities.Players
 
     internal class DyingState : TimedState
     {
-        public DyingState(StateMachine machine)
-            : base(machine)
+        public DyingState(IStateMachineOwner owner)
+            : base(owner)
         {
         }
 
@@ -49,7 +49,7 @@ namespace TestGame.Entities.Players
         {
             base.OnEnter();
 
-            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
+            PlayerEntity player = (PlayerEntity)(Owner);
 
             Color color = Color.Gray;
             color.A = 128;
@@ -58,7 +58,7 @@ namespace TestGame.Entities.Players
 
         public override void OnExit()
         {
-            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
+            PlayerEntity player = (PlayerEntity)(Owner);
 
             player.Kill();
         }
@@ -66,8 +66,8 @@ namespace TestGame.Entities.Players
 
     internal class DeadState : TimedState
     {
-        public DeadState(StateMachine machine)
-            : base(machine)
+        public DeadState(IStateMachineOwner owner)
+            : base(owner)
         {
         }
 
@@ -81,13 +81,13 @@ namespace TestGame.Entities.Players
         {
             base.OnEnter();
 
-            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
+            PlayerEntity player = (PlayerEntity)(Owner);
             player.PrimaryDebugColor = Color.Transparent;
         }
 
         public override void OnExit()
         {
-            PlayerEntity player = (PlayerEntity)(GetMachine().Owner);
+            PlayerEntity player = (PlayerEntity)(Owner);
 
             player.Spawn();
         }
