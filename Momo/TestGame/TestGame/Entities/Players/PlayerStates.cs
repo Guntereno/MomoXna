@@ -10,86 +10,95 @@ using Momo.Core.StateMachine;
 
 namespace TestGame.Entities.Players
 {
-    internal class ActiveState : State
+    public partial class PlayerEntity
     {
-        public ActiveState(IStateMachineOwner owner): base(owner)
+        protected class ActiveState : State
         {
+            public ActiveState(IStateMachineOwner owner)
+                : base(owner)
+            {
+            }
+
+            public override void OnEnter()
+            {
+                PlayerEntity player = (PlayerEntity)(Owner);
+
+                player.PrimaryDebugColor = player.PlayerColour;
+            }
+
+            public override void Update(ref FrameTime frameTime)
+            {
+                PlayerEntity player = (PlayerEntity)(Owner);
+
+                player.UpdateInput();
+                player.UpdateMovement(ref frameTime);
+                player.UpdateWeapon(ref frameTime);
+            }
         }
 
-        public override void OnEnter()
+        protected class DyingState : TimedState
         {
-            PlayerEntity player = (PlayerEntity)(Owner);
+            public DyingState(IStateMachineOwner owner)
+                : base(owner)
+            {
+            }
 
-            player.PrimaryDebugColor = player.PlayerColour;
+            public override string ToString()
+            {
+                return "Dying (" + Timer.ToString("F3") + ")";
+            }
+
+            public override void OnEnter()
+            {
+                base.OnEnter();
+
+                PlayerEntity player = (PlayerEntity)(Owner);
+
+                Color color = Color.Gray;
+                color.A = 128;
+                player.PrimaryDebugColor = color;
+            }
+
+            public override void OnExit()
+            {
+                PlayerEntity player = (PlayerEntity)(Owner);
+
+                player.Kill();
+            }
         }
 
-        public override void Update(ref FrameTime frameTime)
+        protected class DeadState : TimedState
         {
-            PlayerEntity player = (PlayerEntity)(Owner);
+            public DeadState(IStateMachineOwner owner)
+                : base(owner)
+            {
+            }
 
-            player.UpdateInput();
-            player.UpdateMovement(ref frameTime);
-            player.UpdateWeapon(ref frameTime);
-        }
-    }
+            public override string ToString()
+            {
+                return "Dead (" + Timer.ToString("F3") + ")";
+            }
 
-    internal class DyingState : TimedState
-    {
-        public DyingState(IStateMachineOwner owner)
-            : base(owner)
-        {
-        }
 
-        public override string ToString()
-        {
-            return "Dying (" + GetTimer().ToString("F3") + ")";
-        }
+            public override void OnEnter()
+            {
+                base.OnEnter();
 
-        public override void OnEnter()
-        {
-            base.OnEnter();
+                PlayerEntity player = (PlayerEntity)(Owner);
+                player.PrimaryDebugColor = Color.Transparent;
+            }
 
-            PlayerEntity player = (PlayerEntity)(Owner);
+            public override void OnExit()
+            {
+                PlayerEntity player = (PlayerEntity)(Owner);
 
-            Color color = Color.Gray;
-            color.A = 128;
-            player.PrimaryDebugColor = color;
-        }
+                player.Spawn();
 
-        public override void OnExit()
-        {
-            PlayerEntity player = (PlayerEntity)(Owner);
-
-            player.Kill();
-        }
-    }
-
-    internal class DeadState : TimedState
-    {
-        public DeadState(IStateMachineOwner owner)
-            : base(owner)
-        {
+                // Set the gun index to 0. This is just to prove that 
+                // a PlayerState can access private members of the player
+                player.m_currentWeaponIdx = 0;
+            }
         }
 
-        public override string ToString()
-        {
-            return "Dead (" + GetTimer().ToString("F3") + ")";
-        }
-
-
-        public override void OnEnter()
-        {
-            base.OnEnter();
-
-            PlayerEntity player = (PlayerEntity)(Owner);
-            player.PrimaryDebugColor = Color.Transparent;
-        }
-
-        public override void OnExit()
-        {
-            PlayerEntity player = (PlayerEntity)(Owner);
-
-            player.Spawn();
-        }
     }
 }

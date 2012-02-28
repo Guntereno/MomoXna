@@ -7,15 +7,25 @@ namespace Momo.Core.StateMachine
 {
     public class StateMachine
     {
+        #region Fields
+
         private State m_currentState = null;
         private IStateMachineOwner m_owner = null;
 
+        #endregion
+
+
+        #region Constructor
 
         public StateMachine(IStateMachineOwner owner)
         {
             m_owner = owner;
         }
 
+        #endregion
+
+
+        #region Public Interface
 
         public Object Owner         { get { return m_owner; } }
         public State CurrentState   {
@@ -57,5 +67,7 @@ namespace Momo.Core.StateMachine
                 m_currentState.Update(ref frameTime);
             }
         }
+
+        #endregion
     }
 }

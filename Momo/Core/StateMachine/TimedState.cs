@@ -7,25 +7,42 @@ namespace Momo.Core.StateMachine
 {
     public class TimedState : State
     {
+        #region Fields
+
         private State m_exitState = null;
         private float m_timer = 0.0f;
         private float m_length = 0.0f;
+
+        #endregion
+
+        #region Constructor
 
         public TimedState(IStateMachineOwner owner) :
             base(owner)
         {
         }
 
-        public float GetTimer() { return m_timer; }
+        #endregion
 
-        public void SetLength(float length)
+
+        #region Public Interface
+
+        public float Timer
         {
-            m_length = length;
+            get { return m_timer; }
+            set { m_timer = value; }
         }
 
-        public void SetExitState(State exitState)
+        public float Length
         {
-            m_exitState = exitState;
+            get { return m_length; }
+            set { m_length = value; }
+        }
+
+        public State ExitState
+        {
+            get { return m_exitState; }
+            set { m_exitState = value; }
         }
 
         public override void OnEnter()
@@ -41,5 +58,7 @@ namespace Momo.Core.StateMachine
                 Owner.StateMachine.CurrentState = m_exitState;
             }
         }
+
+        #endregion
     }
 }

@@ -14,8 +14,10 @@ using TestGame.Weapons;
 
 namespace TestGame.Entities.Players
 {
-    public class PlayerEntity : LivingGameEntity, IWeaponUser, IStateMachineOwner
+    public partial class PlayerEntity : LivingGameEntity, IWeaponUser, IStateMachineOwner
     {
+        #region Fields
+
         private const int kNumWeaponSlots = 3;
         private const float kPlayerHealth = 2000.0f;
 
@@ -41,23 +43,13 @@ namespace TestGame.Entities.Players
 
         private Bin m_bin = null;
 
+        #endregion
 
 
         // --------------------------------------------------------------------
         // -- Properties
         // --------------------------------------------------------------------
         #region Properties
-
-        public Weapon CurrentWeapon
-        {
-            get { return m_currentWeapon; }
-            set
-            {
-                m_currentWeapon = value;
-                throw new System.Exception("It's not possible to set the player's weapon externally!");
-            }
-        }
-
 
         public Vector2 InputMovement        { get { return m_movementInputVector; } }
         public Vector2 InputFacing          { get { return m_facingInputVector; } }
@@ -75,9 +67,6 @@ namespace TestGame.Entities.Players
             set { m_input = value; }
         }
 
-        public Flags BulletGroupMembership  { get { return new Flags((int)EntityGroups.PlayerBullets); } }
-
-        public StateMachine StateMachine { get { return m_stateMachine; } }
 
         #endregion
 
@@ -103,11 +92,11 @@ namespace TestGame.Entities.Players
             m_stateDying = new DyingState(this);
             m_stateDead = new DeadState(this);
 
-            m_stateDying.SetLength(0.5f);
-            m_stateDying.SetExitState(m_stateDead);
+            m_stateDying.Length = 0.5f;
+            m_stateDying.ExitState = m_stateDead;
 
-            m_stateDead.SetLength(4.0f);
-            m_stateDead.SetExitState(m_stateActive);
+            m_stateDead.Length = 4.0f;
+            m_stateDead.ExitState = m_stateActive;
         }
 
         public void Init()
@@ -296,5 +285,29 @@ namespace TestGame.Entities.Players
             AddToBin(m_bin);
             Health = MaxHealth;
         }
+
+
+        #region IWeaponUser
+
+        public Weapon CurrentWeapon
+        {
+            get { return m_currentWeapon; }
+            set
+            {
+                m_currentWeapon = value;
+                throw new System.Exception("It's not possible to set the player's weapon externally!");
+            }
+        }
+
+        public Flags BulletGroupMembership { get { return new Flags((int)EntityGroups.PlayerBullets); } }
+
+        #endregion
+
+
+        #region IStateMachineOwner
+
+        public StateMachine StateMachine { get { return m_stateMachine; } }
+
+        #endregion
     }
 }

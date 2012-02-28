@@ -7,7 +7,24 @@ namespace Momo.Core.StateMachine
 {
     public abstract class State
     {
+        #region Fields
+
         private IStateMachineOwner m_owner = null;
+
+        #endregion
+
+
+        #region Constructor
+
+        public State(IStateMachineOwner owner)
+        {
+            m_owner = owner;
+        }
+
+        #endregion
+
+
+        #region Public Interface
 
         public IStateMachineOwner Owner
         {
@@ -15,11 +32,6 @@ namespace Momo.Core.StateMachine
             {
                 return m_owner;
             }
-        }
-
-        public State(IStateMachineOwner owner)
-        {
-            m_owner = owner;
         }
 
         public override string ToString()
@@ -30,5 +42,7 @@ namespace Momo.Core.StateMachine
         public virtual void OnEnter() { }
         public abstract void Update(ref FrameTime frameTime);
         public virtual void OnExit() { }
+
+        #endregion
     }
 }
