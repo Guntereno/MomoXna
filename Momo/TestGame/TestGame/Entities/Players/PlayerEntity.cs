@@ -122,7 +122,7 @@ namespace TestGame.Entities.Players
 
             m_currentWeaponIdx = 0;
 
-            m_stateMachine.SetCurrentState(m_stateActive);
+            m_stateMachine.CurrentState = m_stateActive;
 
             MaxHealth = kPlayerHealth;
             Health = kPlayerHealth;
@@ -186,7 +186,7 @@ namespace TestGame.Entities.Players
                 {
                     Health = 0.0f;
 
-                    m_stateMachine.SetCurrentState(m_stateDying);
+                    m_stateMachine.CurrentState = m_stateDying;
                 }
             }
         }

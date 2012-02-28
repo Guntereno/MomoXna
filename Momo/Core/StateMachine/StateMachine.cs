@@ -18,7 +18,36 @@ namespace Momo.Core.StateMachine
 
 
         public Object Owner         { get { return m_owner; } }
-        public State CurrentState   { get { return m_currentState; } }
+        public State CurrentState   {
+            get { return m_currentState; }
+            set
+            {
+                if (m_currentState != null)
+                {
+                    m_currentState.OnExit();
+                }
+
+                m_currentState = value;
+
+                if (m_currentState != null)
+                {
+                    m_currentState.OnEnter();
+                }
+            }
+        }
+
+        public string CurrentStateName
+        {
+            get
+            {
+                if (m_currentState == null)
+                {
+                    return "";
+                }
+
+                return m_currentState.ToString();
+            }
+        }
 
 
         public void Update(ref FrameTime frameTime)
@@ -28,32 +57,5 @@ namespace Momo.Core.StateMachine
                 m_currentState.Update(ref frameTime);
             }
         }
-
-        public void SetCurrentState(State state)
-        {
-            if (m_currentState != null)
-            {
-                m_currentState.OnExit();
-            }
-
-            m_currentState = state;
-
-            if (m_currentState != null)
-            {
-                m_currentState.OnEnter();
-            }
-        }
-
-        public String GetCurrentStateName()
-        {
-            if (m_currentState == null)
-            {
-                return "";
-            }
-
-            return m_currentState.ToString();
-        }
-
-
     }
 }

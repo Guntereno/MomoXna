@@ -38,7 +38,7 @@ namespace Momo.Core.StateMachine
             m_timer -= frameTime.Dt;
             if (m_timer <= 0.0f)
             {
-                GetMachine().SetCurrentState(m_exitState);
+                GetMachine().CurrentState = m_exitState;
             }
         }
     }

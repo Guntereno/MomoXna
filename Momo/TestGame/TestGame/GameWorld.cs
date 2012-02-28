@@ -450,5 +450,10 @@ namespace TestGame
                 }
             }
         }
+
+        public void PlaySoundQueue(string name)
+        {
+            SoundBank.PlayCue(name);
+        }
     }
 }
