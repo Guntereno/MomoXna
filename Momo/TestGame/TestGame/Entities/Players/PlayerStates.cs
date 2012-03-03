@@ -12,27 +12,96 @@ namespace TestGame.Entities.Players
 {
     public partial class PlayerEntity
     {
-        protected class ActiveState : State
+        public abstract class PlayerEntityState : State
+        {
+            #region Constructor
+
+            public PlayerEntityState(IStateMachineOwner owner)
+                : base(owner)
+            {
+                DebugColor = Color.Magenta;
+            }
+
+            #endregion
+
+            #region Public Interface
+
+            public override string ToString()
+            {
+                return this.GetType().Name;
+            }
+
+            public Color DebugColor { get; set; }
+            
+            public PlayerEntity PlayerEntity
+            {
+                get { return Owner as PlayerEntity; }
+            }
+
+            public override void OnEnter()
+            {
+                base.OnEnter();
+
+                PlayerEntity.PrimaryDebugColor = DebugColor;
+            }
+
+            #endregion
+        }
+
+        protected class TimedState : PlayerEntityState
+        {
+            #region Constructor
+
+            public TimedState(IStateMachineOwner owner) :
+                base(owner)
+            {
+            }
+
+            #endregion
+
+
+            #region Public Interface
+
+            public override string ToString()
+            {
+                return this.GetType().Name + " (" + Timer.ToString("F3") + ")";
+            }
+
+            public float Timer{ get; private set; }
+            public float Length{ get; set; }
+            public State ExitState{ get; set; }
+
+            public override void OnEnter()
+            {
+                base.OnEnter();
+
+                Timer = 0.0f;
+            }
+
+            public override void Update(ref FrameTime frameTime, int updateToken)
+            {
+                Timer += frameTime.Dt;
+                if (Timer >= Length)
+                {
+                    Owner.StateMachine.CurrentState = ExitState;
+                }
+            }
+
+            #endregion
+        }
+
+        protected class ActiveState : PlayerEntityState
         {
             public ActiveState(IStateMachineOwner owner)
                 : base(owner)
             {
             }
 
-            public override void OnEnter()
+            public override void Update(ref FrameTime frameTime, int updateToken)
             {
-                PlayerEntity player = (PlayerEntity)(Owner);
-
-                player.PrimaryDebugColor = player.PlayerColour;
-            }
-
-            public override void Update(ref FrameTime frameTime)
-            {
-                PlayerEntity player = (PlayerEntity)(Owner);
-
-                player.UpdateInput();
-                player.UpdateMovement(ref frameTime);
-                player.UpdateWeapon(ref frameTime);
+                PlayerEntity.UpdateInput();
+                PlayerEntity.UpdateMovement(ref frameTime);
+                PlayerEntity.UpdateWeapon(ref frameTime);
             }
         }
 
@@ -43,27 +112,11 @@ namespace TestGame.Entities.Players
             {
             }
 
-            public override string ToString()
-            {
-                return "Dying (" + Timer.ToString("F3") + ")";
-            }
-
-            public override void OnEnter()
-            {
-                base.OnEnter();
-
-                PlayerEntity player = (PlayerEntity)(Owner);
-
-                Color color = Color.Gray;
-                color.A = 128;
-                player.PrimaryDebugColor = color;
-            }
-
             public override void OnExit()
             {
-                PlayerEntity player = (PlayerEntity)(Owner);
+                base.OnExit();
 
-                player.Kill();
+                PlayerEntity.Kill();
             }
         }
 
@@ -72,20 +125,6 @@ namespace TestGame.Entities.Players
             public DeadState(IStateMachineOwner owner)
                 : base(owner)
             {
-            }
-
-            public override string ToString()
-            {
-                return "Dead (" + Timer.ToString("F3") + ")";
-            }
-
-
-            public override void OnEnter()
-            {
-                base.OnEnter();
-
-                PlayerEntity player = (PlayerEntity)(Owner);
-                player.PrimaryDebugColor = Color.Transparent;
             }
 
             public override void OnExit()

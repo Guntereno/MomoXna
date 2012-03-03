@@ -1,6 +1,8 @@
 ﻿using Momo.Core;
-using TestGame.Ai.States;
+using TestGame.Ai.AiEntityStates;
 using TestGame.Weapons;
+using Momo.Core.StateMachine;
+using Microsoft.Xna.Framework;
 
 
 
@@ -22,19 +24,32 @@ namespace TestGame.Entities.Enemies
         public MissileEnemy(GameWorld world)
             : base(world)
         {
-            m_stateStunned = new StunnedState(this);
-            m_stateDying = new DyingState(this);
-            m_stateFireWeapon = new FireProjectileWeaponState(this);
-
             m_stateFind = new FindState(this);
             m_stateGetInRange = new GetInRangeState(this);
+            m_stateFireWeapon = new FireProjectileWeaponState(this);
+
+            m_stateStunned.NextState = m_stateFind;
+
+            m_stateFind.FoundPlayerState = m_stateGetInRange;
+
+            m_stateGetInRange.LostPlayerState = m_stateFind;
+            m_stateGetInRange.AttackState = m_stateFireWeapon;
+            m_stateGetInRange.InRangeState = m_stateFireWeapon;
+            m_stateGetInRange.Range = new RadiusInfo(kMinRange);
+
+            m_stateFireWeapon.NoLongerInRangeState = m_stateGetInRange;
+            m_stateFireWeapon.LostPlayerState = m_stateFind;
+            m_stateFireWeapon.Range = new RadiusInfo(kMinRange);
 
 
-            m_stateStunned.Init(m_stateFind);
+            SecondaryDebugColor = new Color(1.0f, 0.0f, 0.0f);
 
-            m_stateFind.Init(m_stateGetInRange);
-            m_stateGetInRange.Init(m_stateFind, m_stateFireWeapon, kMinRange);
-            m_stateFireWeapon.Init(m_stateGetInRange, m_stateFind, kMinRange);
+            AiEntityState[] states = { m_stateFireWeapon, m_stateGetInRange, m_stateFind, m_stateStunned, m_stateDying };
+            for (int i = 0; i < states.Length; ++i)
+            {
+                float t = (float)i / (float)states.Length;
+                states[i].DebugColor = Color.Lerp(SecondaryDebugColor, Color.DarkGray, t);
+            }
         }
 
         public override void Init(MapData.EnemyData data)
@@ -50,7 +65,7 @@ namespace TestGame.Entities.Enemies
                 weapon.Owner = this;
             }
 
-            SetCurrentState(m_stateFind);
+            StateMachine.CurrentState = m_stateFind;
         }
     }
 }

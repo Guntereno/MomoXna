@@ -71,10 +71,11 @@ namespace TestGame
 
         private float m_elapsedTime = 0.0f;
 
+#if !NO_SOUND
         private AudioEngine m_audioEngine = null;
         private WaveBank m_waveBank = null;
         private SoundBank m_soundBank = null;
-
+#endif
 
         public OrthographicCameraNode Camera             { get { return m_camera; } }
 
@@ -97,9 +98,11 @@ namespace TestGame
 
         public float ElapsedTime                         { get { return m_elapsedTime; } }
 
+#if !NO_SOUND
         private AudioEngine AudioEngine                   { get { return m_audioEngine; } }
         private WaveBank WaveBank                         { get { return m_waveBank; } }
         private SoundBank SoundBank                       { get { return m_soundBank; } }
+#endif
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -124,9 +127,11 @@ namespace TestGame
 
         public override void Load()
         {
+#if !NO_SOUND
             m_audioEngine = new AudioEngine("Content\\Audio\\audio.xgs");
             m_waveBank = new WaveBank(m_audioEngine, "Content\\Audio\\Wave Bank.xwb");
             m_soundBank = new SoundBank(m_audioEngine, "Content\\Audio\\Sound Bank.xsb");
+#endif
 
             Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
 
@@ -453,7 +458,9 @@ namespace TestGame
 
         public void PlaySoundQueue(string name)
         {
+#if !NO_SOUND
             SoundBank.PlayCue(name);
+#endif
         }
     }
 }

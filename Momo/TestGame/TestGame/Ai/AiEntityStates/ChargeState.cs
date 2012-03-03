@@ -2,24 +2,24 @@
 using Momo.Core;
 using TestGame.Entities;
 using TestGame.Weapons;
+using Momo.Core.StateMachine;
 
-namespace TestGame.Ai.States
+namespace TestGame.Ai.AiEntityStates
 {
     class ChargeState : ChaseState
     {
-        private State m_attackState = null;
+        #region Constructor
 
         public ChargeState(AiEntity entity) :
             base(entity)
         {
         }
 
-        public void Init(State lostPlayerState, State attackState)
-        {
-            base.Init(lostPlayerState);
+        #endregion
 
-            m_attackState = attackState;
-        }
+        #region Public Interface
+
+        public State AttackState{ get; set; }
 
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
@@ -27,16 +27,15 @@ namespace TestGame.Ai.States
             base.Update(ref frameTime, updateToken);
 
             // If touching the player, attack him
-            AiEntity entity = GetEntity();
-            SensedObject sensedObject = entity.SensoryData.SeePlayerSense;
+            SensedObject sensedObject = AiEntity.SensoryData.SeePlayerSense;
             if (sensedObject != null)
             {
                 GameEntity sensedEntity = sensedObject.SensedEntity;
                 if (sensedEntity != null)
                 {
-                    float distSq = (entity.GetPosition() - sensedEntity.GetPosition()).LengthSquared();
+                    float distSq = (AiEntity.GetPosition() - sensedEntity.GetPosition()).LengthSquared();
 
-                    float totalRadii = entity.ContactRadiusInfo.Radius + sensedEntity.ContactRadiusInfo.Radius;
+                    float totalRadii = AiEntity.ContactRadiusInfo.Radius + sensedEntity.ContactRadiusInfo.Radius;
                     float totalRadiiSq = totalRadii * totalRadii;
 
                     const float kDistEpsilon = 1.0f;
@@ -44,10 +43,12 @@ namespace TestGame.Ai.States
 
                     if ((distSq - totalRadiiSq) <= kDistEpsilonSq)
                     {
-                        entity.SetCurrentState(m_attackState);
+                        AiEntity.StateMachine.CurrentState = AttackState;
                     }
                 }
             }
         }
+
+        #endregion
     }
 }

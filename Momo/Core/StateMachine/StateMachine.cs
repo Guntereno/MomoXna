@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Momo.Debug;
 
 namespace Momo.Core.StateMachine
 {
@@ -60,11 +61,19 @@ namespace Momo.Core.StateMachine
         }
 
 
-        public void Update(ref FrameTime frameTime)
+        public void Update(ref FrameTime frameTime, int updateToken = 0)
         {
             if (m_currentState != null)
             {
-                m_currentState.Update(ref frameTime);
+                m_currentState.Update(ref frameTime, updateToken);
+            }
+        }
+
+        public void DebugRender(DebugRenderer debugRenderer)
+        {
+            if (m_currentState != null)
+            {
+                m_currentState.DebugRender(debugRenderer);
             }
         }
 

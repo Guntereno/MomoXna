@@ -8,15 +8,16 @@ using Momo.Core.Spatial;
 using Momo.Core.Triggers;
 using Momo.Debug;
 
-using TestGame.Ai.States;
+using TestGame.Ai.AiEntityStates;
 using TestGame.Objects;
 using TestGame.Weapons;
+using Momo.Core.StateMachine;
 
 
 
 namespace TestGame.Entities
 {
-    public class AiEntity : LivingGameEntity, IWeaponUser
+    public class AiEntity : LivingGameEntity, IWeaponUser, IStateMachineOwner
     {
         // --------------------------------------------------------------------
         // -- Private Members
@@ -24,9 +25,8 @@ namespace TestGame.Entities
         private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
 
         #region State Machine
-        private State m_currentState = null;
-        protected StunnedState m_stateStunned = null;
-        protected DyingState m_stateDying = null;
+        protected Ai.AiEntityStates.TimedState m_stateStunned = null;
+        protected Ai.AiEntityStates.TimedState m_stateDying = null;
         #endregion
 
         private int m_occludingBinLayer = -1;
@@ -61,6 +61,8 @@ namespace TestGame.Entities
             set { m_obstructionBinLayer = value; }
         }
 
+        public StateMachine StateMachine { get; private set; }
+
         public virtual Flags BulletGroupMembership { get { return new Flags((int)EntityGroups.AllBullets); } }
 
         #endregion
@@ -84,12 +86,18 @@ namespace TestGame.Entities
             OccludingBinLayer = BinLayers.kBoundaryOcclusionSmall;
             ObstructionBinLayer = BinLayers.kBoundaryObstructionSmall;
 
-            SecondaryDebugColor = new Color(1.0f, 0.0f, 0.0f);
+            StateMachine = new StateMachine(this);
+
+            m_stateStunned = new Ai.AiEntityStates.TimedState(this);
+            m_stateStunned.Length = 0.5f;
+
+            m_stateDying = new Ai.AiEntityStates.TimedState(this);
+            m_stateDying.Length = 1.5f;
         }
 
         public virtual void Init()
         {
-            m_currentState = null;
+            StateMachine.CurrentState = null;
             m_deathTrigger = null;
             m_weapon = null;
         }
@@ -105,10 +113,10 @@ namespace TestGame.Entities
 
             m_sensoryData.Update(ref frameTime);
 
-            if (m_currentState != null)
-            {
-                m_currentState.Update(ref frameTime, updateToken);
-            }
+            StateMachine.Update(ref frameTime, updateToken);
+
+            if (StateMachine.CurrentState == null)
+                Kill();
         }
 
 
@@ -166,7 +174,7 @@ namespace TestGame.Entities
                 AddForce(direction * (damage * 500.0f));
 
 
-                if (m_currentState != m_stateDying)
+                if (StateMachine.CurrentState != m_stateDying)
                 {
                     // Take damage from the bullet
                     Health -= damage;
@@ -174,11 +182,11 @@ namespace TestGame.Entities
                     {
                         Health = 0.0f;
 
-                        SetCurrentState(m_stateDying);
+                        StateMachine.CurrentState = m_stateDying;
                     }
                     else
                     {
-                        SetCurrentState(m_stateStunned);
+                        StateMachine.CurrentState = m_stateStunned;
                     }
                 }
             }
@@ -195,26 +203,9 @@ namespace TestGame.Entities
         {
             base.DebugRender(debugRenderer);
 
-            if (m_currentState != null)
-                m_currentState.DebugRender(debugRenderer);
+            //if (StateMachine.CurrentState != null)
+            //    m_currentState.DebugRender(debugRenderer);
         }
-
-
-        public void SetCurrentState(State state)
-        {
-            if (m_currentState != null)
-            {
-                m_currentState.OnExit();
-            }
-
-            m_currentState = state;
-
-            if (m_currentState != null)
-            {
-                m_currentState.OnEnter();
-            }
-        }
-
 
         internal virtual void Kill()
         {

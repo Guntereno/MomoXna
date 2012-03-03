@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Momo.Core;
+using Momo.Core.StateMachine;
 using TestGame.Entities;
 using TestGame.Weapons;
 
-namespace TestGame.Ai.States
+namespace TestGame.Ai.AiEntityStates
 {
-    public class SwingMeleeWeapon : State
+    public class SwingMeleeWeapon : AiEntityState
     {
         private State m_chargeState = null;
         bool m_performedSwing = false;
@@ -25,26 +26,23 @@ namespace TestGame.Ai.States
         {
             base.OnEnter();
 
-            GetEntity().PrimaryDebugColor = new Color(0.875f, 0.05f, 0.05f, 0.5f);
             m_performedSwing = false;
         }
 
 
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
-            AiEntity entity = GetEntity();
-
-            SensedObject sensedPlayer = entity.SensoryData.SeePlayerSense;
+            SensedObject sensedPlayer = AiEntity.SensoryData.SeePlayerSense;
 
             // Steer towards the player
             if(sensedPlayer != null)
             {
-                Vector2 targetDirection = sensedPlayer.GetLastPosition() - entity.GetPosition();
+                Vector2 targetDirection = sensedPlayer.GetLastPosition() - AiEntity.GetPosition();
                 targetDirection.Normalize();
-                GetEntity().TurnTowards(targetDirection, 0.11f);
+                AiEntity.TurnTowards(targetDirection, 0.11f);
             }
 
-            Weapon weapon = entity.CurrentWeapon;
+            Weapon weapon = AiEntity.CurrentWeapon;
 
             float triggerAmount = 0.0f;
             if (!m_performedSwing)
@@ -61,11 +59,11 @@ namespace TestGame.Ai.States
                 // Wait until it's active again
                 if (weapon.AcceptingInput())
                 {
-                    entity.SetCurrentState(m_chargeState);
+                    AiEntity.StateMachine.CurrentState = m_chargeState;
                 }
             }
 
-            weapon.Update(ref frameTime, triggerAmount, entity.GetPosition(), entity.FacingAngle);
+            weapon.Update(ref frameTime, triggerAmount, AiEntity.GetPosition(), AiEntity.FacingAngle);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Momo.Debug;
 
 namespace Momo.Core.StateMachine
 {
@@ -40,9 +41,11 @@ namespace Momo.Core.StateMachine
         }
 
         public virtual void OnEnter() { }
-        public abstract void Update(ref FrameTime frameTime);
+        public abstract void Update(ref FrameTime frameTime, int updateToken);
         public virtual void OnExit() { }
 
+        public virtual void DebugRender(DebugRenderer debugRenderer) { }
+        
         #endregion
     }
 }

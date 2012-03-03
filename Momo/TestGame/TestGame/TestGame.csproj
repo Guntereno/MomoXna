@@ -107,17 +107,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ai\States\ChargeState.cs" />
-    <Compile Include="Ai\States\ChaseState.cs" />
-    <Compile Include="Ai\States\DyingState.cs" />
-    <Compile Include="Ai\States\FindState.cs" />
-    <Compile Include="Ai\States\FireProjectileWeaponState.cs" />
-    <Compile Include="Ai\States\GetInRangeState.cs" />
-    <Compile Include="Ai\States\RandomWanderState.cs" />
-    <Compile Include="Ai\States\State.cs" />
-    <Compile Include="Ai\States\StunnedState.cs" />
-    <Compile Include="Ai\States\SwingMeleeWeapon.cs" />
-    <Compile Include="Ai\States\TimedState.cs" />
+    <Compile Include="Ai\AiEntityStates\AIEntityState.cs" />
+    <Compile Include="Ai\AiEntityStates\ChargeState.cs" />
+    <Compile Include="Ai\AiEntityStates\ChaseState.cs" />
+    <Compile Include="Ai\AiEntityStates\FindState.cs" />
+    <Compile Include="Ai\AiEntityStates\FireProjectileWeaponState.cs" />
+    <Compile Include="Ai\AiEntityStates\GetInRangeState.cs" />
+    <Compile Include="Ai\AiEntityStates\RandomWanderState.cs" />
+    <Compile Include="Ai\AiEntityStates\SwingMeleeWeapon.cs" />
+    <Compile Include="Ai\AiEntityStates\TimedState.cs" />
     <Compile Include="Entities\AiEntity.cs" />
     <Compile Include="Entities\BinLayers.cs" />
     <Compile Include="Entities\BulletEntity.cs" />

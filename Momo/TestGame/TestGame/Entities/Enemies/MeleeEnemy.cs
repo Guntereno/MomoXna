@@ -1,5 +1,7 @@
-﻿using TestGame.Ai.States;
+﻿using TestGame.Ai.AiEntityStates;
 using TestGame.Weapons;
+using Momo.Core.StateMachine;
+using Microsoft.Xna.Framework;
 
 namespace TestGame.Entities.Enemies
 {
@@ -15,20 +17,30 @@ namespace TestGame.Entities.Enemies
         public MeleeEnemy(GameWorld world)
             : base(world)
         {
-            m_stateStunned = new StunnedState(this);
-            m_stateDying = new DyingState(this);
-
             m_stateRandomWander = new RandomWanderState(this);
             m_stateFind = new FindState(this);
             m_stateCharge = new ChargeState(this);
             m_stateAttack = new SwingMeleeWeapon(this);
 
-            m_stateStunned.Init(m_stateRandomWander);
+            m_stateStunned.NextState = m_stateRandomWander;
 
-            m_stateRandomWander.Init(m_stateCharge);
-            m_stateFind.Init(m_stateCharge);
-            m_stateCharge.Init(m_stateFind, m_stateAttack);
+            m_stateRandomWander.FoundPlayerState = m_stateCharge;
+
+            m_stateFind.FoundPlayerState = m_stateCharge;
+
+            m_stateCharge.LostPlayerState = m_stateFind;
+            m_stateCharge.AttackState = m_stateAttack;
+
             m_stateAttack.Init(m_stateCharge);
+
+            SecondaryDebugColor = new Color(1.0f, 0.0f, 0.0f);
+
+            AiEntityState[] states = { m_stateAttack, m_stateCharge, m_stateFind, m_stateRandomWander, m_stateStunned, m_stateDying };
+            for (int i = 0; i < states.Length; ++i)
+            {
+                float t = (float)i / (float)states.Length;
+                states[i].DebugColor = Color.Lerp(SecondaryDebugColor, Color.DarkGray, t);
+            }
         }
 
         public override void Init(MapData.EnemyData data)
@@ -46,7 +58,7 @@ namespace TestGame.Entities.Enemies
             CurrentWeapon = weapon;
             weapon.Owner = this;
 
-            SetCurrentState(m_stateFind);
+            StateMachine.CurrentState = m_stateFind;
         }
 
     }

@@ -58,7 +58,10 @@ namespace TestGame.Entities.Players
         public Color PlayerColour
         {
             get { return m_playerColour; }
-            set { m_playerColour = value; }
+            set {
+                m_playerColour = value;
+                m_stateActive.DebugColor = m_playerColour;
+            }
         }
 
         public Input.InputWrapper InputWrapper
@@ -88,15 +91,22 @@ namespace TestGame.Entities.Players
             SecondaryDebugColor = new Color( 0.0f, 1.0f, 0.0f );
 
             m_stateMachine = new StateMachine(this);
+
             m_stateActive = new ActiveState(this);
             m_stateDying = new DyingState(this);
             m_stateDead = new DeadState(this);
 
+            m_stateActive.DebugColor = PlayerColour;
+                        
             m_stateDying.Length = 0.5f;
             m_stateDying.ExitState = m_stateDead;
-
+            Color color = Color.Gray;
+            color.A = 128;
+            m_stateDying.DebugColor = color;
+                        
             m_stateDead.Length = 4.0f;
             m_stateDead.ExitState = m_stateActive;
+            m_stateDead.DebugColor = Color.Transparent;
         }
 
         public void Init()

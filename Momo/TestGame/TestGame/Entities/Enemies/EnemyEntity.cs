@@ -8,7 +8,7 @@ using Momo.Core.Spatial;
 using Momo.Core.Triggers;
 using Momo.Debug;
 
-using TestGame.Ai.States;
+using TestGame.Ai.AiEntityStates;
 using TestGame.Objects;
 using TestGame.Weapons;
 
