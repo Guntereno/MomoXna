@@ -99,7 +99,7 @@ namespace TestGame.Weapons
             const float kWeaponLength = 20.0f;
             m_barrelPos = pos + (m_direction * kWeaponLength);
 
-            StateMachine.Update(ref frameTime);
+            StateMachine.Update(ref frameTime, 0);
         }
 
         public virtual void Reload()
