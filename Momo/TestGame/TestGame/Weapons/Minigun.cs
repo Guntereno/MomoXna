@@ -10,26 +10,7 @@ namespace TestGame.Weapons
 {
     class Minigun: Weapon
     {
-        public Minigun(GameWorld world): base(world)
-        {
-            m_activeState = new ActiveState(this);
-            m_emptyState = new EmptyState(this);
-            m_reloadState = new ReloadState(this);
-            m_coolDownState = new CoolDownState(this);
-            m_ventingHeatState = new VentHeat(this);
-
-            m_activeState.Init(m_emptyState, m_coolDownState, m_ventingHeatState);
-            m_emptyState.Init(m_activeState);
-            m_reloadState.Init(m_activeState);
-            m_coolDownState.Init(m_activeState);
-            m_ventingHeatState.Init(m_activeState);
-        }
-
-        public override string ToString()
-        {
-            return "Minigun";
-        }
-
+        #region Fields
 
         MinigunParams m_minigunParams;
 
@@ -39,8 +20,49 @@ namespace TestGame.Weapons
         CoolDownState m_coolDownState = null;
         VentHeat m_ventingHeatState = null;
 
-        public float Heat { get; set; }
+        #endregion
 
+        #region Constructor
+
+        public Minigun(GameWorld world): base(world)
+        {
+            m_activeState = new ActiveState(this);
+            m_emptyState = new EmptyState(this);
+            m_reloadState = new ReloadState(this);
+            m_coolDownState = new CoolDownState(this);
+            m_ventingHeatState = new VentHeat(this);
+
+            m_activeState.EmptyState = m_emptyState;
+            m_activeState.CoolDownState = m_coolDownState;
+            m_activeState.OverheatState = m_ventingHeatState;
+            
+            m_emptyState.NextState = m_activeState;
+
+            m_reloadState.NextState = m_activeState;
+
+            m_coolDownState.NextState = m_activeState;
+
+            m_ventingHeatState.NextState = m_activeState;
+        }
+
+        #endregion
+
+        #region Public Interface
+
+        public override bool AcceptingInput
+        {
+            get
+            {
+                return StateMachine.CurrentState == m_activeState;
+            }
+        }
+
+        public override string ToString()
+        {
+            return "Minigun";
+        }
+
+        public float Heat { get; set; }
 
         public override void Init()
         {
@@ -51,13 +73,17 @@ namespace TestGame.Weapons
 
             base.Init();
 
-            SetCurrentState(m_activeState);
+            StateMachine.CurrentState = m_activeState;
         }
 
         public override void Reload()
         {
-            SetCurrentState(m_reloadState);
+            StateMachine.CurrentState = m_reloadState;
         }
+
+        #endregion
+
+        #region Params
 
         public class MinigunParams : Weapon.GunParams
         {
@@ -72,57 +98,63 @@ namespace TestGame.Weapons
 
         public static readonly MinigunParams kDefaultParams = new MinigunParams(4.0f, 600, 1400.0f, 45.0f, 23000.0f, 0.15f);
 
+        #endregion
 
-        public class ActiveState : State
+        #region States
+
+        public class ActiveState : WeaponState
         {
+            #region Fields
+
+            BulletEntity.BulletParams m_bulletParams = new BulletEntity.BulletParams(20.0f, new Color(0.9f, 0.8f, 0.6f, 0.4f));
+
+            #endregion
+
+            #region Constructor
+
             public ActiveState(Weapon weapon) :
                 base(weapon)
             { }
 
-            public override string ToString()
-            {
-                return "Active";
-            }
+            #endregion
 
-            public void Init(State emptyState, State coolDownState, State overheatState)
-            {
-                m_emptyState = emptyState;
-                m_coolDownState = coolDownState;
-                m_overheatState = overheatState;
-            }
+            #region Public Interface
 
-            public override void Update(ref FrameTime frameTime)
+            public WeaponState EmptyState { get; set; }
+            public WeaponState CoolDownState { get; set; }
+            public WeaponState OverheatState { get; set; }
+
+            public override void Update(ref FrameTime frameTime, int updateToken)
             {
-                Weapon weapon = GetWeapon();
-                Minigun minigun = (Minigun)(weapon);
+                Minigun minigun = (Minigun)(Weapon);
 
                 const float kTriggerThresh = 0.5f;
-                if (weapon.TriggerState > kTriggerThresh)
+                if (Weapon.TriggerState > kTriggerThresh)
                 {
-                    int ammoInClip = weapon.AmmoInClip;
+                    int ammoInClip = Weapon.AmmoInClip;
                     if (ammoInClip > 0)
                     {
-                        GameWorld world = weapon.World;
+                        GameWorld world = Weapon.World;
 
                         Random random = world.Random;
 
-                        MinigunParams param = (MinigunParams)(weapon.Parameters);
-                        float angle = weapon.Facing + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
+                        MinigunParams param = (MinigunParams)(Weapon.Parameters);
+                        float angle = Weapon.Facing + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
 
                         Vector2 velocity = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
 
-                        minigun.Recoil = -velocity * weapon.Parameters.m_recoil;
+                        minigun.Recoil = -velocity * Weapon.Parameters.m_recoil;
 
                         velocity *= param.m_speed;
 
                         world.ProjectileManager.AddBullet(
-                            weapon.BarrelPosition,
+                            Weapon.BarrelPosition,
                             velocity,
                             m_bulletParams,
-                            weapon.Owner.BulletGroupMembership);
+                            Weapon.Owner.BulletGroupMembership);
 
                         --ammoInClip;
-                        weapon.AmmoInClip = ammoInClip;
+                        Weapon.AmmoInClip = ammoInClip;
 
                         world.PlaySoundQueue("GUN_machine");
 
@@ -132,16 +164,16 @@ namespace TestGame.Weapons
                         const float kOverheatThreshold = 50.0f;
                         if (minigun.Heat >= kOverheatThreshold)
                         {
-                            weapon.SetCurrentState(m_overheatState);
+                            Weapon.StateMachine.CurrentState = OverheatState;
                         }
                         else
                         {
-                            weapon.SetCurrentState(m_coolDownState);
+                            Weapon.StateMachine.CurrentState = CoolDownState;
                         }
                     }
                     else
                     {
-                        weapon.SetCurrentState(m_emptyState);
+                        Weapon.StateMachine.CurrentState = EmptyState;
                     }
                 }
                 else
@@ -157,36 +189,26 @@ namespace TestGame.Weapons
                     minigun.Heat = heat;
                 }
             }
-
-            public override bool AcceptingInput() { return true; }
-
-            private State m_emptyState = null;
-            private State m_coolDownState = null;
-            private State m_overheatState = null;
-
-            BulletEntity.BulletParams m_bulletParams = new BulletEntity.BulletParams(20.0f, new Color(0.9f, 0.8f, 0.6f, 0.4f));
+            #endregion
         }
 
-        public class VentHeat : State
+        public class VentHeat : WeaponState
         {
+            #region Constructor
+
             public VentHeat(Weapon weapon) :
                 base(weapon)
             { }
 
-            public override string ToString()
-            {
-                return "Venting Heat";
-            }
+            #endregion
 
-            public void Init(State nextState)
-            {
-                m_nextState = nextState;
-            }
+            #region Public Interface
 
-            public override void Update(ref FrameTime frameTime)
+            public WeaponState NextState { get; set; }
+
+            public override void Update(ref FrameTime frameTime, int updateToken)
             {
-                Weapon weapon = GetWeapon();
-                Minigun minigun = (Minigun)(weapon);
+                Minigun minigun = (Minigun)(Weapon);
 
                 const float kCoolDelta = 0.4f;
                 float heat = minigun.Heat;
@@ -194,16 +216,15 @@ namespace TestGame.Weapons
                 if (heat <= 0.0f)
                 {
                     heat = 0.0f;
-                    weapon.SetCurrentState(m_nextState);
+                    Weapon.StateMachine.CurrentState = NextState;
                 }
                 minigun.Heat = heat;
             }
 
-            public override bool AcceptingInput() { return false; }
-
-            private State m_nextState = null;
+            #endregion
         }
 
+        #endregion
     }
 }
 

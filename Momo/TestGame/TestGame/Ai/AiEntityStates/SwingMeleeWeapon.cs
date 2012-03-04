@@ -47,7 +47,7 @@ namespace TestGame.Ai.AiEntityStates
             float triggerAmount = 0.0f;
             if (!m_performedSwing)
             {
-                if (weapon.AcceptingInput())
+                if (weapon.AcceptingInput)
                 {
                     const float kFullPower = 1.0f;
                     triggerAmount = kFullPower;
@@ -57,7 +57,7 @@ namespace TestGame.Ai.AiEntityStates
             else
             {
                 // Wait until it's active again
-                if (weapon.AcceptingInput())
+                if (weapon.AcceptingInput)
                 {
                     AiEntity.StateMachine.CurrentState = m_chargeState;
                 }

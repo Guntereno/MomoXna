@@ -10,6 +10,8 @@ namespace TestGame.Weapons
 {
     public class Pistol : Weapon
     {
+        #region Fields
+
         public static readonly PistolParams kDefaultParams = new PistolParams(1.5f, 6, 1400.0f, 1.5f, 80000.0f);
 
         private PistolParams m_pistolParams = null;
@@ -19,7 +21,9 @@ namespace TestGame.Weapons
         private ActiveState m_activeState = null;
         private ReloadState m_reloadState = null;
 
+        #endregion
 
+        #region Constructor
 
         public Pistol(GameWorld world) : base(world)
         {
@@ -28,12 +32,27 @@ namespace TestGame.Weapons
             m_reloadState = new ReloadState(this);
             m_coolDownState = new CoolDownState(this);
 
-            m_activeState.Init(m_emptyState, m_coolDownState);
-            m_emptyState.Init(m_activeState);
-            m_reloadState.Init(m_activeState);
-            m_coolDownState.Init(m_activeState);
+            m_activeState.EmptyState = m_emptyState;
+            m_activeState.CoolDownState = m_coolDownState;
+
+            m_emptyState.NextState = m_activeState;
+
+            m_reloadState.NextState = m_activeState;
+            
+            m_coolDownState.NextState = m_activeState;
         }
 
+        #endregion
+
+        #region Public Interface
+
+        public override bool AcceptingInput
+        {
+            get
+            {
+                return StateMachine.CurrentState == m_activeState;
+            }
+        }
 
         public override string ToString()
         {
@@ -48,14 +67,17 @@ namespace TestGame.Weapons
 
             base.Init();
 
-            SetCurrentState(m_activeState);
+            StateMachine.CurrentState = m_activeState;
         }
 
         public override void Reload()
         {
-            SetCurrentState(m_reloadState);
+            StateMachine.CurrentState = m_reloadState;
         }
 
+        #endregion
+
+        #region Params
 
         public class PistolParams : Weapon.GunParams
         {
@@ -64,71 +86,71 @@ namespace TestGame.Weapons
             {}
         }
 
+        #endregion
 
-        public class ActiveState : State
+        #region States
+
+        public class ActiveState : WeaponState
         {
+            #region Fields
+
             private BulletEntity.BulletParams m_bulletParams = new BulletEntity.BulletParams(100.0f, new Color(0.9f, 0.4f, 0.1f, 0.4f));
 
-            private State m_emptyState = null;
-            private State m_coolDownState = null;
+            #endregion
 
+            #region Constructor
 
             public ActiveState(Weapon weapon) :
                 base(weapon)
             { }
 
-            public override string ToString()
+            #endregion
+
+            #region Public Interface
+
+            public WeaponState EmptyState { get; set; }
+            public WeaponState CoolDownState { get; set; }
+
+            public override void Update(ref FrameTime frameTime, int updateToken)
             {
-                return "Active";
-            }
-
-            public void Init(State emptyState, State coolDownState)
-            {
-                m_emptyState = emptyState;
-                m_coolDownState = coolDownState;
-            }
-
-
-            public override bool AcceptingInput() { return true; }
-
-            public override void Update(ref FrameTime frameTime)
-            {
-                Weapon weapon = GetWeapon();
-
                 const float kTriggerThresh = 0.5f;
-                if (weapon.TriggerState > kTriggerThresh)
+                if (Weapon.TriggerState > kTriggerThresh)
                 {
-                    int ammoInClip = weapon.AmmoInClip;
+                    int ammoInClip = Weapon.AmmoInClip;
                     if (ammoInClip > 0)
                     {
-                        GameWorld world = weapon.World;
+                        GameWorld world = Weapon.World;
 
                         Random random = world.Random;
 
-                        PistolParams param = (PistolParams)(weapon.Parameters);
-                        weapon.Recoil = -(weapon.Direction) * weapon.Parameters.m_recoil;
+                        PistolParams param = (PistolParams)(Weapon.Parameters);
+                        Weapon.Recoil = -(Weapon.Direction) * Weapon.Parameters.m_recoil;
 
-                        Vector2 velocity = weapon.Direction * param.m_speed;
+                        Vector2 velocity = Weapon.Direction * param.m_speed;
 
                         world.ProjectileManager.AddBullet(
-                            weapon.BarrelPosition,
+                            Weapon.BarrelPosition,
                             velocity,
                             m_bulletParams,
-                            weapon.Owner.BulletGroupMembership);
+                            Weapon.Owner.BulletGroupMembership);
 
                         --ammoInClip;
-                        weapon.AmmoInClip = ammoInClip;
+                        Weapon.AmmoInClip = ammoInClip;
 
                         world.PlaySoundQueue("GUN_single");
 
-                        weapon.SetCurrentState(m_coolDownState);
+                        Weapon.StateMachine.CurrentState = CoolDownState;
                     }
                     else
                     {
-                        weapon.SetCurrentState(m_emptyState);
+                        Weapon.StateMachine.CurrentState = EmptyState;
                     }
                 }
             }
+
+            #endregion
         }
+
+        #endregion
     }
 }

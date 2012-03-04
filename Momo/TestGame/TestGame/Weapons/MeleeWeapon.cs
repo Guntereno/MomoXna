@@ -8,15 +8,18 @@ namespace TestGame.Weapons
 {
     public class MeleeWeapon : Weapon
     {
+        #region Fields
+
         public static readonly GunParams kDefaultParams = new GunParams(0.0f, 0, 0.0f, 1.5f, 500.0f);
-
-
+        
         private ActiveState m_activeState = null;
         private CoolDownState m_coolDownState = null;
 
         //private GunParams m_weaponParams = null;
 
+        #endregion
 
+        #region Constructor
 
         public MeleeWeapon(GameWorld world)
             : base(world)
@@ -24,8 +27,20 @@ namespace TestGame.Weapons
             m_activeState = new ActiveState(this);
             m_coolDownState = new CoolDownState(this);
 
-            m_activeState.Init(m_coolDownState);
-            m_coolDownState.Init(m_activeState);
+            m_activeState.CoolDownState = m_coolDownState;
+            m_coolDownState.NextState = m_activeState;
+        }
+
+        #endregion
+
+        #region Public Interface
+
+        public override bool AcceptingInput
+        {
+            get
+            {
+                return StateMachine.CurrentState == m_activeState;
+            }
         }
 
         public override string ToString()
@@ -33,14 +48,13 @@ namespace TestGame.Weapons
             return "MeleeWeapon";
         }
 
-
         public override void Init()
         {
             m_params = kDefaultParams;
 
             base.Init();
 
-            SetCurrentState(m_activeState);
+            StateMachine.CurrentState = m_activeState;
         }
 
         public override void Reload()
@@ -48,40 +62,38 @@ namespace TestGame.Weapons
             // Nothing, no reloading needed
         }
 
+        #endregion
 
-        public class ActiveState : State
+        #region States
+
+        public class ActiveState : WeaponState
         {
-            private State m_coolDownState = null;
-
+            #region Fields
 
             public ActiveState(Weapon weapon) :
                 base(weapon)
             { }
 
-            public override string ToString()
-            {
-                return "Active";
-            }
+            #endregion
 
-            public void Init(State coolDownState)
-            {
-                m_coolDownState = coolDownState;
-            }
+            #region Public Interface
 
-            public override void Update(ref FrameTime frameTime)
-            {
-                Weapon weapon = GetWeapon();
+            public WeaponState CoolDownState { get; set; }
 
+            public override void Update(ref FrameTime frameTime, int updateToken)
+            {
                 const float kTriggerThresh = 0.5f;
-                if (weapon.TriggerState > kTriggerThresh)
+                if (Weapon.TriggerState > kTriggerThresh)
                 {
-                    // Trigger an explosion at the barrel position
+                    // Todo: Trigger an explosion at the barrel position
 
-                    weapon.SetCurrentState(m_coolDownState);
+                    Weapon.StateMachine.CurrentState = CoolDownState;
                 }
             }
 
-            public override bool AcceptingInput() { return true; }
+            #endregion
         }
+
+        #endregion
     }
 }

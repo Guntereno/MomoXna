@@ -5,16 +5,29 @@ using System.Text;
 using Momo.Core;
 using Momo.Core.ObjectPools;
 using Microsoft.Xna.Framework;
+using Momo.Core.StateMachine;
 
 namespace TestGame.Weapons
 {
-    public abstract class Weapon : IPoolItem
+    public abstract class Weapon : IPoolItem, IStateMachineOwner
     {
+        #region Constructor
+
+        public Weapon(GameWorld world)
+        {
+            m_world = world;
+
+            StateMachine = new StateMachine(this);
+        }
+
+        #endregion
+
+        #region Fields
+
         protected bool m_isDestroyed = true;
         protected GunParams m_params = null;
 
         private GameWorld m_world = null;
-        private State m_currentState = null;
         private int m_ammoInClip = 0;
 
         private Vector2 m_position = Vector2.Zero;
@@ -27,6 +40,12 @@ namespace TestGame.Weapons
 
         private IWeaponUser m_owner = null;
 
+        #endregion
+
+
+        #region Public Interface
+
+        public StateMachine StateMachine { get; private set; }
 
         public Vector2 Recoil
         {
@@ -54,73 +73,11 @@ namespace TestGame.Weapons
         public float Facing { get { return m_facing; } }
         public float TriggerState { get { return m_triggerState; } }
 
-
-        public class GunParams
-        {
-            public GunParams(float reloadTime, int clipSize, float speed, float fireRate, float recoil)
-            {
-                m_reloadTime = reloadTime;
-                m_clipSize = clipSize;
-                m_speed = speed;
-                m_fireRate = fireRate;
-                m_recoil = recoil;
-            }
-
-            public float m_reloadTime; // seconds
-            public int m_clipSize;
-            public float m_speed;
-            public float m_fireRate; // shells/sec
-            public float m_recoil;
-        }
-
-        public Weapon(GameWorld world)
-        {
-            m_world = world;
-        }
-
-
-        public bool AcceptingInput()
-        {
-            if (m_currentState == null)
-            {
-                return false;
-            }
-            else
-            {
-                return m_currentState.AcceptingInput();
-            }
-        }
-
+        public abstract bool AcceptingInput { get; }
 
         public override string ToString()
         {
             return "";
-        }
-
-
-        public void SetCurrentState(State state)
-        {
-            if (m_currentState != null)
-            {
-                m_currentState.OnExit();
-            }
-
-            m_currentState = state;
-
-            if (m_currentState != null)
-            {
-                m_currentState.OnEnter();
-            }
-        }
-
-        public String GetCurrentStateName()
-        {
-            if (m_currentState == null)
-            {
-                return "";
-            }
-
-            return m_currentState.ToString();
         }
 
         public virtual void Init()
@@ -142,10 +99,7 @@ namespace TestGame.Weapons
             const float kWeaponLength = 20.0f;
             m_barrelPos = pos + (m_direction * kWeaponLength);
 
-            if (m_currentState != null)
-            {
-                m_currentState.Update(ref frameTime);
-            }
+            StateMachine.Update(ref frameTime);
         }
 
         public virtual void Reload()
@@ -169,132 +123,177 @@ namespace TestGame.Weapons
             m_isDestroyed = false;
         }
 
-        #region State classes
-        public abstract class State
+        #endregion
+
+        #region Params
+
+        public class GunParams
         {
-            public State(Weapon weapon)
+            public GunParams(float reloadTime, int clipSize, float speed, float fireRate, float recoil)
             {
-                m_weapon = weapon;
+                m_reloadTime = reloadTime;
+                m_clipSize = clipSize;
+                m_speed = speed;
+                m_fireRate = fireRate;
+                m_recoil = recoil;
             }
+
+            public float m_reloadTime; // seconds
+            public int m_clipSize;
+            public float m_speed;
+            public float m_fireRate; // shells/sec
+            public float m_recoil;
+        }
+
+        #endregion
+
+        #region States
+        public abstract class WeaponState: State
+        {
+            #region Constructor
+
+            public WeaponState(Weapon weapon): base(weapon)
+            {
+            }
+
+            #endregion
+
+            #region Public Interface
 
             public override string ToString()
             {
-                return "";
+                return GetType().Name;
             }
 
-            public Weapon GetWeapon() { return m_weapon; }
+            public Weapon Weapon
+            {
+                get { return Owner as Weapon; }
+            }
 
-            public virtual void OnEnter() {}
-            public abstract void Update(ref FrameTime frameTime);
-            public virtual void OnExit() {}
-
-            public abstract bool AcceptingInput();
-
-            Weapon m_weapon;
+            #endregion
         }
 
-        public abstract class TimedState : State
+        public abstract class TimedState : WeaponState
         {
+            #region Fields
+
+            float m_timer;
+
+            #endregion
+
+            #region Constructor
+
             public TimedState(Weapon weapon) :
                 base(weapon)
             { }
 
-            public void Init(State nextState)
-            {
-                m_nextState = nextState;
-            }
+            #endregion
 
-            protected abstract float GetTime();
+            #region Public Interface
+
+            public State NextState { get; set; }
+            public float Length { get; set; }
+
+            public override string ToString()
+            {
+                return GetType().Name + " (" + m_timer.ToString("F3") + ")";
+            }
 
             public override void OnEnter()
             {
-                m_timer = GetTime();
+                base.OnEnter();
+
+                m_timer = 0.0f;
             }
 
-            public override void Update(ref FrameTime frameTime)
+            public override void Update(ref FrameTime frameTime, int updateToken)
             {
-                m_timer -= frameTime.Dt;
-                if (m_timer <= 0.0f)
+                m_timer += frameTime.Dt;
+                if (m_timer >= Length)
                 {
-                    GetWeapon().SetCurrentState(m_nextState);
+                    Weapon.StateMachine.CurrentState = NextState;
                 }
             }
 
-            private State m_nextState = null;
-            protected float m_timer;
+            #endregion
         }
 
         public class ReloadState : TimedState
         {
+            #region Constructor
+
             public ReloadState(Weapon weapon) :
                 base(weapon)
             {}
 
-            public override string ToString()
-            {
-                return "Reloading (" + m_timer.ToString("F3") + ")";
-            }
+            #endregion
 
-            protected override float GetTime()
+
+            #region Public Interface
+
+            public override void OnEnter()
             {
-                return GetWeapon().m_params.m_reloadTime;
+                Length = Weapon.Parameters.m_reloadTime;
+
+                base.OnEnter();
             }
 
             public override void OnExit()
             {
-                GunParams param = GetWeapon().Parameters;
-                GetWeapon().AmmoInClip = param.m_clipSize;
+                GunParams param = Weapon.Parameters;
+                Weapon.AmmoInClip = param.m_clipSize;
             }
 
-            public override bool AcceptingInput() { return false; }
+            #endregion
         }
 
 
         public class CoolDownState : TimedState
         {
+            #region Constructor
+
             public CoolDownState(Weapon weapon) :
                 base(weapon)
             {}
 
-            public override string ToString()
+            #endregion
+
+            #region Public Interface
+
+            public override void OnEnter()
             {
-                return "Cooldown  (" + m_timer.ToString("F3") + ")";
+                Length = 1.0f / Weapon.Parameters.m_fireRate;
+
+                base.OnEnter();
             }
 
-            protected override float GetTime()
-            {
-                return 1.0f / GetWeapon().Parameters.m_fireRate;
-            }
-
-            public override bool AcceptingInput() { return false; }
+            #endregion
         }
 
-        public class EmptyState : State
+        public class EmptyState : WeaponState
         {
+            #region Constructor
+
             public EmptyState(Weapon weapon) :
                 base(weapon)
             { }
 
-            public override string ToString()
+            #endregion
+
+            #region Public Interface
+
+            public State NextState { get; set; }
+
+            public override void Update(ref FrameTime frameTime, int updateToken)
             {
-                return "Empty";
+                if (Weapon.AmmoInClip > 0)
+                {
+                    Weapon.StateMachine.CurrentState = NextState;
+                }
             }
 
-            public void Init(State nextState)
-            {
-                m_nextState = nextState;
-            }
-
-            public override void Update(ref FrameTime frameTime)
-            {
-                // Empty is a dead-end state. Must be exited using a reload call
-            }
-
-            public override bool AcceptingInput() { return false; }
-
-            private State m_nextState = null;
+            #endregion
         }
-
 
         #endregion
 
