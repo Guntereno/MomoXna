@@ -14,7 +14,7 @@ using TestGame.Weapons;
 
 
 
-namespace TestGame.Entities.Enemies
+namespace TestGame.Entities.AI
 {
     public class EnemyEntity : AiEntity
     {

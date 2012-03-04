@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 
 
-namespace TestGame.Entities.Enemies
+namespace TestGame.Entities.AI
 {
     public class MissileEnemy : EnemyEntity, IWeaponUser
     {
