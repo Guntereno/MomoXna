@@ -22,18 +22,18 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private EntitySensoryData m_sensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
+        private EntitySensoryData mSensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
 
         #region State Machine
-        protected Ai.AiEntityStates.TimedState m_stateStunned = null;
-        protected Ai.AiEntityStates.TimedState m_stateDying = null;
+        protected Ai.AiEntityStates.TimedState mStateStunned = null;
+        protected Ai.AiEntityStates.TimedState mStateDying = null;
         #endregion
 
-        private int m_occludingBinLayer = -1;
-        private int m_obstructionBinLayer = -1;
+        private int mOccludingBinLayer = -1;
+        private int mObstructionBinLayer = -1;
 
-        private Weapon m_weapon = null;
-        private Trigger m_deathTrigger = null;
+        private Weapon mWeapon = null;
+        private Trigger mDeathTrigger = null;
 
 
         // --------------------------------------------------------------------
@@ -41,24 +41,24 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         #region Properties
 
-        public EntitySensoryData SensoryData        { get { return m_sensoryData; } }
+        public EntitySensoryData SensoryData        { get { return mSensoryData; } }
 
         public Weapon CurrentWeapon
         {
-            get { return m_weapon; }
-            set { m_weapon = value; }
+            get { return mWeapon; }
+            set { mWeapon = value; }
         }
 
         public int OccludingBinLayer
         {
-            get { return m_occludingBinLayer; }
-            set { m_occludingBinLayer = value; }
+            get { return mOccludingBinLayer; }
+            set { mOccludingBinLayer = value; }
         }
 
         public int ObstructionBinLayer
         {
-            get { return m_obstructionBinLayer; }
-            set { m_obstructionBinLayer = value; }
+            get { return mObstructionBinLayer; }
+            set { mObstructionBinLayer = value; }
         }
 
         public StateMachine StateMachine { get; private set; }
@@ -88,35 +88,37 @@ namespace TestGame.Entities
 
             StateMachine = new StateMachine(this);
 
-            m_stateStunned = new Ai.AiEntityStates.TimedState(this);
-            m_stateStunned.Length = 0.5f;
+            mStateStunned = new Ai.AiEntityStates.TimedState(this);
+            mStateStunned.Length = 0.5f;
 
-            m_stateDying = new Ai.AiEntityStates.TimedState(this);
-            m_stateDying.Length = 1.5f;
+            mStateDying = new Ai.AiEntityStates.TimedState(this);
+            mStateDying.Length = 1.5f;
         }
 
-        public virtual void Init()
+        public override void ResetItem()
         {
+            base.ResetItem();
+
             StateMachine.CurrentState = null;
-            m_deathTrigger = null;
-            m_weapon = null;
+            mDeathTrigger = null;
+            mWeapon = null;
         }
 
         public void SetDeathTrigger(Trigger trigger)
         {
-            m_deathTrigger = trigger;
+            mDeathTrigger = trigger;
         }
 
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
             base.Update(ref frameTime, updateToken);
 
-            m_sensoryData.Update(ref frameTime);
+            mSensoryData.Update(ref frameTime);
 
             StateMachine.Update(ref frameTime, updateToken);
 
-            if (StateMachine.CurrentState == null)
-                Kill();
+            //if (StateMachine.CurrentState == null)
+            //    Kill();
         }
 
 
@@ -125,7 +127,7 @@ namespace TestGame.Entities
         {
             for(int i = 0; i < players.Length; ++i)
             {
-                m_sensoryData.UpdateSensoryData(this, players);
+                mSensoryData.UpdateSensoryData(this, players);
             }
         }
 
@@ -174,7 +176,7 @@ namespace TestGame.Entities
                 AddForce(direction * (damage * 500.0f));
 
 
-                if (StateMachine.CurrentState != m_stateDying)
+                if (StateMachine.CurrentState != mStateDying)
                 {
                     // Take damage from the bullet
                     Health -= damage;
@@ -182,11 +184,11 @@ namespace TestGame.Entities
                     {
                         Health = 0.0f;
 
-                        StateMachine.CurrentState = m_stateDying;
+                        StateMachine.CurrentState = mStateDying;
                     }
                     else
                     {
-                        StateMachine.CurrentState = m_stateStunned;
+                        StateMachine.CurrentState = mStateStunned;
                     }
                 }
             }
@@ -209,15 +211,15 @@ namespace TestGame.Entities
 
         internal virtual void Kill()
         {
-            if (m_deathTrigger != null)
+            if (mDeathTrigger != null)
             {
-                m_deathTrigger.Activate();
-                m_deathTrigger = null;
+                mDeathTrigger.Activate();
+                mDeathTrigger = null;
             }
 
-            if (m_weapon != null)
+            if (mWeapon != null)
             {
-                m_weapon.DestroyItem();
+                mWeapon.DestroyItem();
             }
 
             DestroyItem();

@@ -15,7 +15,7 @@ namespace TestGame.Ai.AiEntityStates
         public AiEntityState(AiEntity entity)
             : base(entity)
         {
-            DebugColor = Color.Magenta;
+            DebugColor = Color.White;
         }
 
         #endregion

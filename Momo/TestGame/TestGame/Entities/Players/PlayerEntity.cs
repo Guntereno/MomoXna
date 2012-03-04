@@ -134,7 +134,7 @@ namespace TestGame.Entities.Players
         {
             base.Update(ref frameTime, updateToken);
 
-            m_stateMachine.Update(ref frameTime);
+            m_stateMachine.Update(ref frameTime, updateToken);
         }
 
         public void AddToBin(Bin bin)

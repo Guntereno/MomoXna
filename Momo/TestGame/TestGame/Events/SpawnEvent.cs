@@ -6,7 +6,7 @@ using Momo.Core.Triggers;
 
 using TestGame.Entities;
 using TestGame.Systems;
-using TestGame.Entities.Enemies;
+using TestGame.Entities.AI;
 
 
 
@@ -74,7 +74,7 @@ namespace TestGame.Events
 
         private EnemyEntity SpawnEnemy(SpawnPoint spawnPoint)
         {
-            EnemyManager enemyManager = World.EnemyManager;
+            AiEntityManager enemyManager = World.EnemyManager;
             MapData.EnemyData enemyData = m_spawnData.GetEnemies()[m_spawnCounter];
             EnemyEntity enemy = enemyManager.Create(enemyData, spawnPoint.GetData().GetPosition());
             enemy.SetDeathTrigger(m_killTrigger);

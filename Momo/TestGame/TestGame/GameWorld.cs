@@ -10,12 +10,12 @@ using Momo.Core.GameEntities;
 using Momo.Core.Nodes.Cameras;
 using Momo.Core.Pathfinding;
 using Momo.Core.Primitive2D;
-using Momo.Core.Shadow2D;
 using Momo.Core.Spatial;
 using Momo.Debug;
 using Momo.Fonts;
 
 using TestGame.Entities;
+using TestGame.Entities.AI;
 using TestGame.Systems;
 
 using WorldManager;
@@ -53,19 +53,18 @@ namespace TestGame
         private PlayerManager m_playerManager = null;
         private WeaponManager m_weaponManager = null;
         private ProjectileManager m_projectileManager = null;
-        private EnemyManager m_enemyManager = null;
+        private AiEntityManager mAiEntityManager = null;
         private OsdManager m_osdManager = null;
         private TriggerManager m_triggerManager = null;
-        private EventManager m_eventManager = null;
-        private SpawnPointManager m_spawnGroupManager = null;
+        //private EventManager m_eventManager = null;
+        //private SpawnPointManager m_spawnGroupManager = null;
         private CorpseManager m_corpseManager = null;
         private PathRouteManager m_pathRouteManager = null;
-        private PressurePlateManager m_pressurePlateManager = null;
+        //private PressurePlateManager m_pressurePlateManager = null;
 
         private TextBatchPrinter m_textPrinter = null;
 
         private PathIsland m_pathIsland = new PathIsland();
-        //private ShadowMesh m_testShadowMesh = new ShadowMesh();
 
         private int m_updateTokenOffset = 0;
 
@@ -82,13 +81,13 @@ namespace TestGame
         public PlayerManager PlayerManager               { get { return m_playerManager; } }
         public WeaponManager WeaponManager               { get { return m_weaponManager; } }
         public ProjectileManager ProjectileManager       { get { return m_projectileManager; } }
-        public EnemyManager EnemyManager                 { get { return m_enemyManager; } }
+        public AiEntityManager EnemyManager              { get { return mAiEntityManager; } }
         public TriggerManager TriggerManager             { get { return m_triggerManager; } }
-        public EventManager EventManager                 { get { return m_eventManager; } }
-        public SpawnPointManager SpawnPointManager       { get { return m_spawnGroupManager; } }
+        //public EventManager EventManager                 { get { return m_eventManager; } }
+        //public SpawnPointManager SpawnPointManager       { get { return m_spawnGroupManager; } }
         public CorpseManager CorpseManager               { get { return m_corpseManager; } }
         public PathRouteManager PathRouteManager         { get { return m_pathRouteManager; } }
-        public PressurePlateManager PressurePlateManager { get { return m_pressurePlateManager; } }
+        //public PressurePlateManager PressurePlateManager { get { return m_pressurePlateManager; } }
 
         public TextBatchPrinter TextPrinter              { get { return m_textPrinter; } }
         public Random Random                             { get { return m_random; } }
@@ -112,16 +111,16 @@ namespace TestGame
             m_cameraController = new CameraController(this);
             m_weaponManager = new WeaponManager(this);
             m_projectileManager = new ProjectileManager(this, m_bin);
-            m_enemyManager = new EnemyManager(this, m_bin);
+            mAiEntityManager = new AiEntityManager(this, m_bin);
             m_osdManager = new OsdManager(this);
             m_playerManager = new PlayerManager(this, m_bin);
             m_triggerManager = new TriggerManager();
-            m_eventManager = new EventManager(this);
-            m_spawnGroupManager = new SpawnPointManager(this);
+            //m_eventManager = new EventManager(this);
+            //m_spawnGroupManager = new SpawnPointManager(this);
             m_corpseManager = new CorpseManager(this, m_bin);
             m_pathRouteManager = new PathRouteManager();
             m_textPrinter = new TextBatchPrinter();
-            m_pressurePlateManager = new PressurePlateManager(this);
+            //m_pressurePlateManager = new PressurePlateManager(this);
         }
 
 
@@ -163,7 +162,7 @@ namespace TestGame
             m_playerManager.Load();
             m_weaponManager.Load();
             m_projectileManager.Load();
-            m_enemyManager.Load();
+            mAiEntityManager.Load();
             m_corpseManager.Load();
 
 
@@ -199,24 +198,27 @@ namespace TestGame
 
             m_pathRouteManager.Init(1000, 100, 200);
 
-            //Texture2D penumbraTexture = TestGame.Instance().Content.Load<Texture2D>("textures/penumbra");
-            //m_testShadowMesh.Init(10000, 10000, penumbraTexture, TestGame.Instance().GraphicsDevice);
-     
             CollisionHelpers.Init();
             PathFindingHelpers.Init(400.0f, 3, m_bin);
 
-            m_eventManager.LoadEvents(m_map);
-            m_spawnGroupManager.LoadSpawnGroups(m_map);
-            m_pressurePlateManager.LoadPressurePoints(m_map);
+            //m_eventManager.LoadEvents(m_map);
+            //m_spawnGroupManager.LoadSpawnGroups(m_map);
+            //m_pressurePlateManager.LoadPressurePoints(m_map);
 
-            //Random rand = new Random(101);
-            //for (int i = 0; i < 100; ++i)
-            //{
-            //    float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
-            //    float y = 3880.0f + ((float)rand.NextDouble() * 500.0f);
-            //    m_enemyManager.Create(new MapData.EnemyData(MapData.EnemyData.Species.Melee, MapData.Weapon.Design.Melee), new Vector2(x, y));
-            //}
-            //m_enemyManager.Create(new MapData.EnemyData(MapData.EnemyData.Species.Melee, MapData.Weapon.Design.Melee), m_playerManager.Players[0].GetPosition() + new Vector2(0.0f, -50.0f));
+            Random rand = new Random(101);
+            for (int i = 0; i < 50; ++i)
+            {
+                float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
+                float y = 3880.0f + ((float)rand.NextDouble() * 500.0f);
+                mAiEntityManager.Create(typeof(Civilian), new Vector2(x, y));
+            }
+
+            for (int i = 0; i < 50; ++i)
+            {
+                float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
+                float y = 3880.0f + ((float)rand.NextDouble() * 500.0f);
+                mAiEntityManager.Create(typeof(Zombie), new Vector2(x, y));
+            }
         }
 
 
@@ -239,7 +241,7 @@ namespace TestGame
             Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper(0);
 
             m_playerManager.Update(ref frameTime);
-            m_enemyManager.Update(ref frameTime, m_updateTokenOffset);
+            mAiEntityManager.Update(ref frameTime, m_updateTokenOffset);
             m_projectileManager.Update(ref frameTime);
             m_osdManager.Update(ref frameTime);
 
@@ -247,7 +249,7 @@ namespace TestGame
 
             m_pathRouteManager.Update(ref frameTime);
 
-            m_eventManager.Update(ref frameTime);
+            //m_eventManager.Update(ref frameTime);
             m_corpseManager.Update(ref frameTime);
 
 
@@ -269,11 +271,6 @@ namespace TestGame
             m_cameraController.Update(ref frameTime, ref inputWrapper);
 
 
-            //m_testShadowMesh.Clear();
-            //m_testShadowMesh.AddOcculudingGeometry(m_playerManager.Players[0].GetPosition(), 16.0f, 2000.0f, m_map.CollisionBoundaries[2]);
-
-
-
             // End frame updates
             m_projectileManager.EndFrame();
         }
@@ -285,14 +282,14 @@ namespace TestGame
         {
             // Check groups against each other
             CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, 1.0f, m_bin, BinLayers.kPlayerEntity, m_contactList);
-            CollisionHelpers.GenerateEntityContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, 0.9f, m_bin, BinLayers.kEnemyEntities, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(mAiEntityManager.Entities.ActiveItemList, mAiEntityManager.Entities.ActiveItemListCount, 0.9f, m_bin, BinLayers.kEnemyEntities, m_contactList);
             
             // Players against enemies
             CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, 0.7f, m_bin, BinLayers.kEnemyEntities, m_contactList);
 
             // Check against boundaries
             CollisionHelpers.GenerateBoundaryContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
-            CollisionHelpers.GenerateBoundaryContacts(m_enemyManager.Enemies.ActiveItemList, m_enemyManager.Enemies.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
+            CollisionHelpers.GenerateBoundaryContacts(mAiEntityManager.Entities.ActiveItemList, mAiEntityManager.Entities.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
 
 
             // Check projectiles
@@ -322,8 +319,6 @@ namespace TestGame
         {
             m_mapRenderer.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
 
-            //m_testShadowMesh.Render(m_camera.ViewMatrix, m_camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
-
             m_osdManager.Render();
 
             m_textPrinter.Render(true, TestGame.Instance().GraphicsDevice);
@@ -342,16 +337,14 @@ namespace TestGame
             for (int i = 0; i < m_boundaries.Count; ++i)
                 m_boundaries[i].DebugRender(m_debugRenderer);
 
-            m_pressurePlateManager.DebugRender(m_debugRenderer);
+            //m_pressurePlateManager.DebugRender(m_debugRenderer);
 
             m_corpseManager.DebugRender(m_debugRenderer);
 
             m_playerManager.DebugRender(m_debugRenderer);
 
-            m_enemyManager.DebugRender(m_debugRenderer);
+            mAiEntityManager.DebugRender(m_debugRenderer);
             m_projectileManager.DebugRender(m_debugRenderer);
-
-            //m_testShadowMesh.DebugRender(m_debugRenderer);
 
             m_osdManager.DebugRender(m_debugRenderer);
 

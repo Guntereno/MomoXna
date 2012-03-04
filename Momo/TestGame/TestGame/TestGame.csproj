@@ -117,14 +117,13 @@
     <Compile Include="Ai\AiEntityStates\SwingMeleeWeapon.cs" />
     <Compile Include="Ai\AiEntityStates\TimedState.cs" />
     <Compile Include="Entities\AiEntity.cs" />
+    <Compile Include="Entities\AI\Civilian.cs" />
     <Compile Include="Entities\BinLayers.cs" />
     <Compile Include="Entities\BulletEntity.cs" />
     <Compile Include="CollisionHelpers.cs" />
+    <Compile Include="Entities\AI\Zombie.cs" />
     <Compile Include="Entities\EntityGroups.cs" />
     <Compile Include="Entities\Corpse.cs" />
-    <Compile Include="Entities\Enemies\EnemyEntity.cs" />
-    <Compile Include="Entities\Enemies\MeleeEnemy.cs" />
-    <Compile Include="Entities\Enemies\MissileEnemy.cs" />
     <Compile Include="Entities\EntitySensoryData.cs" />
     <Compile Include="Entities\GameEntity.cs" />
     <Compile Include="Entities\LivingGameEntity.cs" />
@@ -134,7 +133,6 @@
     <Compile Include="Entities\PressurePlate.cs" />
     <Compile Include="Entities\SpawnGroup.cs" />
     <Compile Include="Events\Event.cs" />
-    <Compile Include="Events\SpawnEvent.cs" />
     <Compile Include="Events\TimerEvent.cs" />
     <Compile Include="Events\TriggerCounterEvent.cs" />
     <Compile Include="GameWorld.cs" />
@@ -147,10 +145,8 @@
     <Compile Include="Systems\CameraController.cs" />
     <Compile Include="Systems\CorpseManager.cs" />
     <Compile Include="Systems\EnemyManager.cs" />
-    <Compile Include="Systems\EventManager.cs" />
     <Compile Include="Systems\OsdManager.cs" />
     <Compile Include="Systems\PlayerManager.cs" />
-    <Compile Include="Systems\PressurePlateManager.cs" />
     <Compile Include="Systems\SpawnPointManager.cs" />
     <Compile Include="Systems\TriggerController.cs" />
     <Compile Include="Systems\TriggerManager.cs" />

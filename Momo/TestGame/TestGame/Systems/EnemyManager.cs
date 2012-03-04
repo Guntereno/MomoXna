@@ -2,84 +2,72 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Momo.Core.ObjectPools;
-using TestGame.Entities;
-using Momo.Core.Spatial;
+
 using Microsoft.Xna.Framework;
+
+using Momo.Core.ObjectPools;
+using Momo.Core.Spatial;
 using Momo.Core;
 using Momo.Debug;
-using TestGame.Entities.Enemies;
+
+using TestGame.Entities;
+using TestGame.Entities.AI;
+
+
 
 namespace TestGame.Systems
 {
-    public class EnemyManager
+    public class AiEntityManager
     {
-        private const int kMaxEnemies = 500;
+        private const int kMaxEntities = 500;
 
-        private GameWorld m_world;
-        private Bin m_bin;
+        private GameWorld mWorld;
+        private Bin mBin;
 
-        private Pool<EnemyEntity> m_enemies = new Pool<EnemyEntity>(kMaxEnemies, 2);
+        private Pool<AiEntity> mEntities = new Pool<AiEntity>(kMaxEntities, 2);
 
-        private int m_killCounter = 0;
-
-
-
-        public Pool<EnemyEntity> Enemies    { get { return m_enemies; } }
-        public int KillCount                { get { return m_killCounter; } }
+        private int mKillCounter = 0;
 
 
 
-        public EnemyManager(GameWorld world, Bin bin)
+        public Pool<AiEntity> Entities      { get { return mEntities; } }
+        public int KillCount                { get { return mKillCounter; } }
+
+
+
+        public AiEntityManager(GameWorld world, Bin bin)
         {
-            m_world = world;
-            m_bin = bin;
+            mWorld = world;
+            mBin = bin;
 
-            m_enemies.RegisterPoolObjectType(typeof(MeleeEnemy), kMaxEnemies);
-            m_enemies.RegisterPoolObjectType(typeof(MissileEnemy), kMaxEnemies);
+            mEntities.RegisterPoolObjectType(typeof(Civilian), kMaxEntities);
+            mEntities.RegisterPoolObjectType(typeof(Zombie), kMaxEntities);
         }
 
 
         public void IncrementKillCount()
         {
-            ++m_killCounter;
+            ++mKillCounter;
         }
 
 
         public void Load()
         {
-            for (int i = 0; i < kMaxEnemies; ++i)
+            for (int i = 0; i < kMaxEntities; ++i)
             {
-                m_enemies.AddItem(new MeleeEnemy(m_world), false);
-                m_enemies.AddItem(new MissileEnemy(m_world), false);
+                mEntities.AddItem(new Civilian(mWorld), false);
+                mEntities.AddItem(new Zombie(mWorld), false);
             }
         }
 
 
-        public EnemyEntity Create(MapData.EnemyData data, Vector2 pos)
+        public AiEntity Create(Type aiEntityType, Vector2 pos)
         {
-            EnemyEntity createdEntity = null;
+            AiEntity createdEntity = null;
 
-            switch (data.GetSpecies())
-            {
-                case MapData.EnemyData.Species.Melee:
-                    {
-                        createdEntity = m_enemies.CreateItem(typeof(MeleeEnemy));
-                        createdEntity.Init(data);
-                    }
-                    break;
-
-
-                case MapData.EnemyData.Species.Missile:
-                    {
-                        createdEntity = m_enemies.CreateItem(typeof(MissileEnemy));
-                        createdEntity.Init(data);
-                    }
-                    break;
-            }
-
+            createdEntity = mEntities.CreateItem(aiEntityType);
             createdEntity.SetPosition(pos);
-            createdEntity.AddToBin(m_bin);
+            createdEntity.AddToBin(mBin);
 
             return createdEntity;
         }
@@ -87,11 +75,11 @@ namespace TestGame.Systems
 
         public void Update(ref FrameTime frameTime, int updateToken)
         {
-            UpdateEnemyPool(m_enemies, ref frameTime, updateToken);
+            UpdateEntityPool(mEntities, ref frameTime, updateToken);
         }
 
 
-        private void UpdateEnemyPool(Pool<EnemyEntity> aiEntities, ref FrameTime frameTime, int updateToken)
+        private void UpdateEntityPool(Pool<AiEntity> aiEntities, ref FrameTime frameTime, int updateToken)
         {
             bool needsCoalesce = false;
             for (int i = 0; i < aiEntities.ActiveItemListCount; ++i)
@@ -100,11 +88,11 @@ namespace TestGame.Systems
                 aiEntity.Update(ref frameTime, updateToken + i);
                 aiEntity.UpdateBinEntry();
 
-                aiEntity.UpdateSensoryData(m_world.PlayerManager.Players.ActiveItemList);
+                aiEntity.UpdateSensoryData(mWorld.PlayerManager.Players.ActiveItemList);
 
                 if (aiEntity.IsDestroyed())
                 {
-                    m_bin.RemoveBinItem(aiEntities[i], BinLayers.kEnemyEntities);
+                    mBin.RemoveBinItem(aiEntities[i], BinLayers.kEnemyEntities);
                     needsCoalesce = true;
                 }
             }
@@ -118,9 +106,9 @@ namespace TestGame.Systems
 
         public void DebugRender(DebugRenderer debugRenderer)
         {
-            for (int i = 0; i < m_enemies.ActiveItemListCount; ++i)
+            for (int i = 0; i < mEntities.ActiveItemListCount; ++i)
             {
-                m_enemies[i].DebugRender(debugRenderer);
+                mEntities[i].DebugRender(debugRenderer);
             }
         }
     }

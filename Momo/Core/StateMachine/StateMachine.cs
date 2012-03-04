@@ -29,7 +29,8 @@ namespace Momo.Core.StateMachine
         #region Public Interface
 
         public Object Owner         { get { return m_owner; } }
-        public State CurrentState   {
+        public State CurrentState
+        {
             get { return m_currentState; }
             set
             {
@@ -61,7 +62,7 @@ namespace Momo.Core.StateMachine
         }
 
 
-        public void Update(ref FrameTime frameTime, int updateToken = 0)
+        public void Update(ref FrameTime frameTime, int updateToken)
         {
             if (m_currentState != null)
             {
