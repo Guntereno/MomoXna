@@ -30,6 +30,23 @@ namespace Momo.Maths
         }
 
 
+        public static Vector2 NearestPointOntoLine(Vector2 point, Vector2 lineStart, Vector2 lineStep)
+        {
+            float wLine = Vector2.Dot(point - lineStart, lineStep) / Vector2.Dot(lineStep, lineStep);
+
+            if (wLine < 0.0f)
+            {
+                return lineStart;
+            }
+            else if (wLine > 1.0f)
+            {
+                return lineStart + lineStep;
+            }
+
+            return lineStart + (lineStep * wLine);
+        }
+
+
         public static bool DoesIntersect(Vector2 centre1, float radius1, Vector2 centre2, float radius2, ref IntersectInfo2D outIntersectInfo)
         {
             Vector2 dCentre = centre1 - centre2;

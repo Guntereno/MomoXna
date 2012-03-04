@@ -25,7 +25,7 @@ namespace TestGame.Entities
         private EntitySensoryData mSensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
 
         #region State Machine
-        protected Ai.AiEntityStates.TimedState mStateStunned = null;
+        //protected Ai.AiEntityStates.TimedState mStateStunned = null;
         protected Ai.AiEntityStates.TimedState mStateDying = null;
         #endregion
 
@@ -88,11 +88,12 @@ namespace TestGame.Entities
 
             StateMachine = new StateMachine(this);
 
-            mStateStunned = new Ai.AiEntityStates.TimedState(this);
-            mStateStunned.Length = 0.5f;
+            //mStateStunned = new Ai.AiEntityStates.TimedState(this);
+            //mStateStunned.Length = 0.5f;
 
             mStateDying = new Ai.AiEntityStates.TimedState(this);
-            mStateDying.Length = 1.5f;
+            mStateDying.DebugColor = Color.Gray;
+            mStateDying.TimeInState = 1.5f;
         }
 
         public override void ResetItem()
@@ -134,13 +135,13 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, BinLayers.kEnemyEntities);
+            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, mBinLayer);
         }
         
 
         public void RemoveFromBin()
         {
-            RemoveFromBin(BinLayers.kEnemyEntities);
+            RemoveFromBin(mBinLayer);
         }
 
 
@@ -153,7 +154,7 @@ namespace TestGame.Entities
             GetBinRegion(ref prevBinRegion);
             bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);
 
-            bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, BinLayers.kEnemyEntities);
+            bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, mBinLayer);
 
             SetBinRegion(curBinRegion);
         }
@@ -186,10 +187,10 @@ namespace TestGame.Entities
 
                         StateMachine.CurrentState = mStateDying;
                     }
-                    else
-                    {
-                        StateMachine.CurrentState = mStateStunned;
-                    }
+                    //else
+                    //{
+                    //    StateMachine.CurrentState = mStateStunned;
+                    //}
                 }
             }
         }

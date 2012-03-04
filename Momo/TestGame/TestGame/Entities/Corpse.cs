@@ -9,8 +9,10 @@ namespace TestGame.Entities
         private float m_age = 0.0f;
 
 
-        public Corpse(GameWorld world): base(world)
+        public Corpse(GameWorld world)
+            : base(world)
         {
+            mBinLayer = BinLayers.kCorpse;
         }
 
         public void Init(AiEntity entity)
@@ -83,7 +85,7 @@ namespace TestGame.Entities
 
         public void AddToBin(Bin bin)
         {
-            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, BinLayers.kCorpse);
+            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, mBinLayer);
         }
 
     }

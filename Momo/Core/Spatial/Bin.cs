@@ -126,7 +126,7 @@ namespace Momo.Core.Spatial
 
         public void AddBinItem(BinItem item, int layerIdx)
         {
-            AddBinItem(item, ref item.m_region, layerIdx);
+            AddBinItem(item, ref item.mRegion, layerIdx);
         }
 
 
@@ -190,7 +190,7 @@ namespace Momo.Core.Spatial
 
         public void RemoveBinItem(BinItem item, int layerIdx)
         {
-            RemoveBinItem(item, ref item.m_region, layerIdx);
+            RemoveBinItem(item, ref item.mRegion, layerIdx);
         }
 
 

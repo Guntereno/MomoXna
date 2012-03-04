@@ -32,7 +32,7 @@ namespace TestGame
         private OrthographicCameraNode m_camera = new OrthographicCameraNode("TestCamera");
         private CameraController m_cameraController = null;
 
-        private Bin m_bin = new Bin();
+        private Bin mBin = new Bin();
         private ContactList m_contactList = new ContactList(4000);
         private ContactResolver m_contactResolver = new ContactResolver();
 
@@ -76,31 +76,33 @@ namespace TestGame
         private SoundBank m_soundBank = null;
 #endif
 
-        public OrthographicCameraNode Camera             { get { return m_camera; } }
+        public OrthographicCameraNode Camera                { get { return m_camera; } }
 
-        public PlayerManager PlayerManager               { get { return m_playerManager; } }
-        public WeaponManager WeaponManager               { get { return m_weaponManager; } }
-        public ProjectileManager ProjectileManager       { get { return m_projectileManager; } }
-        public AiEntityManager EnemyManager              { get { return mAiEntityManager; } }
-        public TriggerManager TriggerManager             { get { return m_triggerManager; } }
-        //public EventManager EventManager                 { get { return m_eventManager; } }
-        //public SpawnPointManager SpawnPointManager       { get { return m_spawnGroupManager; } }
-        public CorpseManager CorpseManager               { get { return m_corpseManager; } }
-        public PathRouteManager PathRouteManager         { get { return m_pathRouteManager; } }
-        //public PressurePlateManager PressurePlateManager { get { return m_pressurePlateManager; } }
+        public Bin Bin                                      { get { return mBin; } }
 
-        public TextBatchPrinter TextPrinter              { get { return m_textPrinter; } }
-        public Random Random                             { get { return m_random; } }
-        public DebugRenderer DebugRenderer               { get { return m_debugRenderer; } }
+        public PlayerManager PlayerManager                  { get { return m_playerManager; } }
+        public WeaponManager WeaponManager                  { get { return m_weaponManager; } }
+        public ProjectileManager ProjectileManager          { get { return m_projectileManager; } }
+        public AiEntityManager EnemyManager                 { get { return mAiEntityManager; } }
+        public TriggerManager TriggerManager                { get { return m_triggerManager; } }
+        //public EventManager EventManager                  { get { return m_eventManager; } }
+        //public SpawnPointManager SpawnPointManager        { get { return m_spawnGroupManager; } }
+        public CorpseManager CorpseManager                  { get { return m_corpseManager; } }
+        public PathRouteManager PathRouteManager            { get { return m_pathRouteManager; } }
+        //public PressurePlateManager PressurePlateManager  { get { return m_pressurePlateManager; } }
 
-        public MapData.Map Map                           { get { return m_map; } }
+        public TextBatchPrinter TextPrinter                 { get { return m_textPrinter; } }
+        public Random Random                                { get { return m_random; } }
+        public DebugRenderer DebugRenderer                  { get { return m_debugRenderer; } }
 
-        public float ElapsedTime                         { get { return m_elapsedTime; } }
+        public MapData.Map Map                              { get { return m_map; } }
+
+        public float ElapsedTime                            { get { return m_elapsedTime; } }
 
 #if !NO_SOUND
-        private AudioEngine AudioEngine                   { get { return m_audioEngine; } }
-        private WaveBank WaveBank                         { get { return m_waveBank; } }
-        private SoundBank SoundBank                       { get { return m_soundBank; } }
+        private AudioEngine AudioEngine                     { get { return m_audioEngine; } }
+        private WaveBank WaveBank                           { get { return m_waveBank; } }
+        private SoundBank SoundBank                         { get { return m_soundBank; } }
 #endif
 
         // --------------------------------------------------------------------
@@ -110,14 +112,14 @@ namespace TestGame
         {
             m_cameraController = new CameraController(this);
             m_weaponManager = new WeaponManager(this);
-            m_projectileManager = new ProjectileManager(this, m_bin);
-            mAiEntityManager = new AiEntityManager(this, m_bin);
+            m_projectileManager = new ProjectileManager(this, mBin);
+            mAiEntityManager = new AiEntityManager(this, mBin);
             m_osdManager = new OsdManager(this);
-            m_playerManager = new PlayerManager(this, m_bin);
+            m_playerManager = new PlayerManager(this, mBin);
             m_triggerManager = new TriggerManager();
             //m_eventManager = new EventManager(this);
             //m_spawnGroupManager = new SpawnPointManager(this);
-            m_corpseManager = new CorpseManager(this, m_bin);
+            m_corpseManager = new CorpseManager(this, mBin);
             m_pathRouteManager = new PathRouteManager();
             m_textPrinter = new TextBatchPrinter();
             //m_pressurePlateManager = new PressurePlateManager(this);
@@ -152,7 +154,7 @@ namespace TestGame
             m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/test_arena2/test_arena2");
             //m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/tom_owes_me/tom_owes_me");
 
-            m_bin.Init(50, 50, m_map.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 6000, 1000, 1000);
+            mBin.Init(50, 50, m_map.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 6000, 1000, 1000);
 
 
             // ----------------------------------------------------------------
@@ -191,7 +193,7 @@ namespace TestGame
             Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius, false);
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
             regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 30, true, extrudeBoundariesSmallPath);
-            regions[0].GenerateNodePaths(m_bin, BinLayers.kBoundaryObstructionSmall);
+            regions[0].GenerateNodePaths(mBin, BinLayers.kBoundaryObstructionSmall);
             m_pathIsland.SetRegions(regions);
 
             AddPathIslandToBin(m_pathIsland);
@@ -199,21 +201,21 @@ namespace TestGame
             m_pathRouteManager.Init(1000, 100, 200);
 
             CollisionHelpers.Init();
-            PathFindingHelpers.Init(400.0f, 3, m_bin);
+            PathFindingHelpers.Init(400.0f, 3, mBin);
 
             //m_eventManager.LoadEvents(m_map);
             //m_spawnGroupManager.LoadSpawnGroups(m_map);
             //m_pressurePlateManager.LoadPressurePoints(m_map);
 
             Random rand = new Random(101);
-            for (int i = 0; i < 50; ++i)
+            for (int i = 0; i < 100; ++i)
             {
                 float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
-                float y = 3880.0f + ((float)rand.NextDouble() * 500.0f);
+                float y = 3880.0f + ((float)rand.NextDouble() * 700.0f);
                 mAiEntityManager.Create(typeof(Civilian), new Vector2(x, y));
             }
 
-            for (int i = 0; i < 50; ++i)
+            for (int i = 0; i < 3; ++i)
             {
                 float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
                 float y = 3880.0f + ((float)rand.NextDouble() * 500.0f);
@@ -276,24 +278,26 @@ namespace TestGame
         }
 
 
-        static readonly int[] kProjectileEntityLayers = { BinLayers.kPlayerEntity, BinLayers.kEnemyEntities };
+        static readonly int[] kProjectileEntityLayers = { BinLayers.kPlayerEntity, BinLayers.kEnemyEntities, BinLayers.kCivilianEntities };
 
         private void GenerateContacts()
         {
             // Check groups against each other
-            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, 1.0f, m_bin, BinLayers.kPlayerEntity, m_contactList);
-            CollisionHelpers.GenerateEntityContacts(mAiEntityManager.Entities.ActiveItemList, mAiEntityManager.Entities.ActiveItemListCount, 0.9f, m_bin, BinLayers.kEnemyEntities, m_contactList);
-            
+            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, 1.0f, mBin, BinLayers.kPlayerEntity, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(mAiEntityManager.Entities.ActiveItemList, mAiEntityManager.Entities.ActiveItemListCount, 0.9f, mBin, BinLayers.kEnemyEntities, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(mAiEntityManager.Entities.ActiveItemList, mAiEntityManager.Entities.ActiveItemListCount, 0.9f, mBin, BinLayers.kCivilianEntities, m_contactList);
+
             // Players against enemies
-            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, 0.7f, m_bin, BinLayers.kEnemyEntities, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, 0.7f, mBin, BinLayers.kEnemyEntities, m_contactList);
+            CollisionHelpers.GenerateEntityContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, 0.7f, mBin, BinLayers.kCivilianEntities, m_contactList);
 
             // Check against boundaries
-            CollisionHelpers.GenerateBoundaryContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
-            CollisionHelpers.GenerateBoundaryContacts(mAiEntityManager.Entities.ActiveItemList, mAiEntityManager.Entities.ActiveItemListCount, m_bin, BinLayers.kBoundary, m_contactList);
+            CollisionHelpers.GenerateBoundaryContacts(m_playerManager.Players.ActiveItemList, m_playerManager.Players.ActiveItemListCount, mBin, BinLayers.kBoundary, m_contactList);
+            CollisionHelpers.GenerateBoundaryContacts(mAiEntityManager.Entities.ActiveItemList, mAiEntityManager.Entities.ActiveItemListCount, mBin, BinLayers.kBoundary, m_contactList);
 
 
             // Check projectiles
-            CollisionHelpers.GenerateProjectileContacts(m_projectileManager.Bullets.ActiveItemList, m_projectileManager.Bullets.ActiveItemListCount, m_bin, kProjectileEntityLayers, BinLayers.kBoundary);
+            CollisionHelpers.GenerateProjectileContacts(m_projectileManager.Bullets.ActiveItemList, m_projectileManager.Bullets.ActiveItemListCount, mBin, kProjectileEntityLayers, BinLayers.kBoundary);
         }
 
 
@@ -403,7 +407,7 @@ namespace TestGame
 
                     LinePrimitive2D lineStrip = new LinePrimitive2D(lastPoint, pos);
                     BoundaryEntity boundaryEntity = new BoundaryEntity(lineStrip);
-                    boundaryEntity.AddToBin(m_bin, binLayer);
+                    boundaryEntity.AddToBin(mBin, binLayer);
 
                     if(addToList)
                         m_boundaries.Add(boundaryEntity);
@@ -444,7 +448,7 @@ namespace TestGame
 
                 for (int j = 0; j < nodeCnt; ++j)
                 {
-                    nodes[j].AddToBin(m_bin, nodes[j].GetPosition(), nodes[j].GetRadius(), BinLayers.kPathNodes);
+                    nodes[j].AddToBin(mBin, nodes[j].GetPosition(), nodes[j].GetRadius(), BinLayers.kPathNodes);
                 }
             }
         }

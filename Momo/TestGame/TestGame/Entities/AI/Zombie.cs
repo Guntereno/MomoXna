@@ -1,7 +1,9 @@
 ﻿using TestGame.Ai.AiEntityStates;
-using TestGame.Weapons;
-using Momo.Core.StateMachine;
+
 using Microsoft.Xna.Framework;
+
+using Momo.Core.StateMachine;
+
 
 
 
@@ -10,14 +12,17 @@ namespace TestGame.Entities.AI
     public class Zombie : AiEntity
     {
         #region State Machine
-        private RandomWanderState m_stateRandomWander = null;
+        private WanderState mStateWander = null;
         #endregion
+
 
         public Zombie(GameWorld world)
             : base(world)
         {
-            m_stateRandomWander = new RandomWanderState(this);
-            mStateStunned.NextState = m_stateRandomWander;
+            mBinLayer = BinLayers.kEnemyEntities;
+
+            mStateWander = new WanderState(this);
+            mStateWander.TimeInState = 10000.0f;
 
             SecondaryDebugColor = new Color(1.0f, 0.0f, 0.0f);
         }
@@ -27,7 +32,7 @@ namespace TestGame.Entities.AI
         {
             base.ResetItem();
 
-            StateMachine.CurrentState = m_stateRandomWander;
+            StateMachine.CurrentState = mStateWander;
         }
 
     }

@@ -7,44 +7,56 @@ namespace TestGame.Ai.AiEntityStates
 {
     public class TimedState : AiEntityState
     {
-        #region Fields
+        protected float mTimer;
 
-        protected float m_timer;
+        protected float mTimeInState;
+        protected float mMinTimeInState;
+        protected float mRandomTimeInState;
 
-        #endregion
 
 
-        #region Constructor
+        public State NextState { get; set; }
+
+        public float TimeInState
+        {
+            set
+            {
+                mMinTimeInState = value;
+                mRandomTimeInState = 0.0f;
+            }
+        }
+        public float MinimumTimeInState
+        {
+            get { return mMinTimeInState; }
+            set { mMinTimeInState = value; }
+        }
+        public float MaximumTimeInState
+        {
+            get { return mMinTimeInState + mRandomTimeInState; }
+            set { mRandomTimeInState = value - mMinTimeInState; }
+        }
+
 
         public TimedState(AiEntity entity) :
             base(entity)
         {
+
         }
-
-        #endregion
-
-        #region Public Interface
-
-        public State NextState { get; set; }
-
-        public float Length { get; set; }
 
         public override void OnEnter()
         {
             base.OnEnter();
 
-            m_timer = 0.0f;
+            mTimeInState = mMinTimeInState + (float)AiEntity.World.Random.NextDouble() * mRandomTimeInState;
         }
 
         public override void Update(ref FrameTime frameTime, int updateToken)
         {
-            m_timer += frameTime.Dt;
-            if (m_timer >= Length)
+            mTimer += frameTime.Dt;
+            if (mTimer >= mTimeInState)
             {
                 AiEntity.StateMachine.CurrentState = NextState;
             }
         }
-
-        #endregion
     }
 }

@@ -8,8 +8,8 @@ namespace Momo.Core.Spatial
 {
     public abstract class BinItem
     {
-        internal Bin m_bin = null;
-        internal BinRegionUniform m_region = BinRegionUniform.kInvalidBinRegionUniform;
+        internal Bin mBin = null;
+        internal BinRegionUniform mRegion = BinRegionUniform.kInvalidBinRegionUniform;
 
 
 
@@ -21,45 +21,45 @@ namespace Momo.Core.Spatial
 
         public Bin GetBin()
         {
-            return m_bin;
+            return mBin;
         }
 
 
         public void SetBin(Bin bin)
         {
-            m_bin = bin;
+            mBin = bin;
         }
 
 
         public void GetBinRegion(ref BinRegionUniform region)
         {
-            region = m_region;
+            region = mRegion;
         }
 
 
         public void SetBinRegion(BinRegionUniform region)
         {
-            m_region = region;
+            mRegion = region;
         }
 
 
         public void AddToBin(Bin bin, Vector2 corner1, Vector2 corner2, int binLayer)
         {
             bin.AddBinItem(this, corner1, corner2, binLayer);
-            m_bin = bin;
+            mBin = bin;
         }
 
 
         public void AddToBin(Bin bin, Vector2 centre, float radius, int binLayer)
         {
             bin.AddBinItem(this, centre, radius, binLayer);
-            m_bin = bin;
+            mBin = bin;
         }
 
 
         public void RemoveFromBin(int binLayer)
         {
-            m_bin.RemoveBinItem(this, binLayer);
+            mBin.RemoveBinItem(this, binLayer);
         }
     }
 }

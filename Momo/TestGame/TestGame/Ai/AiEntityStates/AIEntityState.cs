@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Momo.Core.StateMachine;
-using TestGame.Entities;
+
 using Microsoft.Xna.Framework;
+
+using Momo.Core.StateMachine;
+
+using TestGame.Entities;
+
+
+
 
 namespace TestGame.Ai.AiEntityStates
 {
@@ -19,6 +25,7 @@ namespace TestGame.Ai.AiEntityStates
         }
 
         #endregion
+
 
         #region Public Interface
 

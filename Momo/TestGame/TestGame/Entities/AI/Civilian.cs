@@ -10,15 +10,31 @@ namespace TestGame.Entities.AI
     public class Civilian : AiEntity
     {
         #region State Machine
-        private RandomWanderState m_stateRandomWander = null;
+        private IdleState mStateIdle = null;
+        private WanderState mStateWander = null;
         #endregion
+
 
         public Civilian(GameWorld world)
             : base(world)
         {
-            m_stateRandomWander = new RandomWanderState(this);
+            mBinLayer = BinLayers.kCivilianEntities;
 
-            mStateStunned.NextState = m_stateRandomWander;
+            mStateIdle = new IdleState(this);
+            mStateWander = new WanderState(this);
+
+            mStateIdle.MinimumTimeInState = 1.0f;
+            mStateIdle.MaximumTimeInState = 10.0f;
+            mStateIdle.NextState = mStateWander;
+
+
+            //m_stateWander.MinimumTimeInState = 1.0f;
+            //m_stateWander.MaximumTimeInState = 10.0f;
+            mStateWander.TimeInState = 10000.0f;
+            mStateWander.NextState = mStateIdle;
+            //m_stateWander.IdleState = m_stateIdle;
+
+            BaseSpeed = 1.0f + ((float)World.Random.NextDouble() * 0.35f);
 
             SecondaryDebugColor = new Color(0.0f, 0.0f, 1.0f);
         }
@@ -28,7 +44,8 @@ namespace TestGame.Entities.AI
         {
             base.ResetItem();
 
-            StateMachine.CurrentState = m_stateRandomWander;
+
+            StateMachine.CurrentState = mStateWander;
         }
 
     }
