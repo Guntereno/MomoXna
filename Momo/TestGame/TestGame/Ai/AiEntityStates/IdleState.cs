@@ -24,7 +24,7 @@ namespace TestGame.Ai.AiEntityStates
         }
 
 
-        public override void Update(ref FrameTime frameTime, int updateToken)
+        public override void Update(ref FrameTime frameTime, uint updateToken)
         {
             base.Update(ref frameTime, updateToken);
 
@@ -61,6 +61,14 @@ namespace TestGame.Ai.AiEntityStates
             }
 
             mChangeTimer -= frameTime.Dt;
+
+
+
+            float r = (float)random.NextDouble();
+            if (r < 0.001f)
+            {
+                AiEntity.StateMachine.CurrentState = NextState;
+            }
         }
     }
 }

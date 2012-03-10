@@ -78,7 +78,7 @@ namespace TestGame.Entities.Players
                 Timer = 0.0f;
             }
 
-            public override void Update(ref FrameTime frameTime, int updateToken)
+            public override void Update(ref FrameTime frameTime, uint updateToken)
             {
                 Timer += frameTime.Dt;
                 if (Timer >= Length)
@@ -97,7 +97,7 @@ namespace TestGame.Entities.Players
             {
             }
 
-            public override void Update(ref FrameTime frameTime, int updateToken)
+            public override void Update(ref FrameTime frameTime, uint updateToken)
             {
                 PlayerEntity.UpdateInput();
                 PlayerEntity.UpdateMovement(ref frameTime);

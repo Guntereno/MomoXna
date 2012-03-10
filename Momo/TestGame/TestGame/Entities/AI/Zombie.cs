@@ -1,4 +1,5 @@
 ﻿using TestGame.Ai.AiEntityStates;
+using TestGame.Entities.Gaits;
 
 using Microsoft.Xna.Framework;
 
@@ -12,7 +13,9 @@ namespace TestGame.Entities.AI
     public class Zombie : AiEntity
     {
         #region State Machine
-        private WanderState mStateWander = null;
+        private ZombieHerdState mStateHerd = null;
+        private ZombieWanderState mStateWander = null;
+        private ComeToStopState mStateComeToStop = null;
         #endregion
 
 
@@ -21,8 +24,27 @@ namespace TestGame.Entities.AI
         {
             mBinLayer = BinLayers.kEnemyEntities;
 
-            mStateWander = new WanderState(this);
-            mStateWander.TimeInState = 10000.0f;
+            mStateWander = new ZombieWanderState(this);
+            mStateWander.MinimumTimeInState = 1.0f;
+            mStateWander.MaximumTimeInState = 5.0f;
+
+            mStateHerd = new ZombieHerdState(this);
+            mStateHerd.MinimumTimeInState = 8.0f;
+            mStateHerd.MaximumTimeInState = 20.0f;
+
+
+            mStateComeToStop = new ComeToStopState(this);
+            mStateComeToStop.TimeInState = 0.3f;
+
+
+            mStateWander.HerdState = mStateHerd;
+            mStateWander.NextState = mStateHerd;
+            mStateHerd.NextState = mStateWander;
+            mStateComeToStop.NextState = mStateWander;
+
+            Gait = new ZombieGait((float)World.Random.NextDouble() * 100.0f);
+
+            Speed = 1.0f + ((float)World.Random.NextDouble() * 0.5f);
 
             SecondaryDebugColor = new Color(1.0f, 0.0f, 0.0f);
         }
@@ -32,7 +54,7 @@ namespace TestGame.Entities.AI
         {
             base.ResetItem();
 
-            StateMachine.CurrentState = mStateWander;
+            StateMachine.CurrentState = mStateHerd;
         }
 
     }

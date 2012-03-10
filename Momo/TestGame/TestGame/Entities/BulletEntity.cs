@@ -56,7 +56,7 @@ namespace TestGame.Entities
         }
 
 
-        public override void Update(ref FrameTime frameTime, int updateToken)
+        public override void Update(ref FrameTime frameTime, uint updateToken)
         {
             base.Update(ref frameTime, updateToken);
         }

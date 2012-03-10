@@ -124,7 +124,7 @@ namespace TestGame.Weapons
             public WeaponState CoolDownState { get; set; }
             public WeaponState OverheatState { get; set; }
 
-            public override void Update(ref FrameTime frameTime, int updateToken)
+            public override void Update(ref FrameTime frameTime, uint updateToken)
             {
                 Minigun minigun = (Minigun)(Weapon);
 
@@ -206,7 +206,7 @@ namespace TestGame.Weapons
 
             public WeaponState NextState { get; set; }
 
-            public override void Update(ref FrameTime frameTime, int updateToken)
+            public override void Update(ref FrameTime frameTime, uint updateToken)
             {
                 Minigun minigun = (Minigun)(Weapon);
 

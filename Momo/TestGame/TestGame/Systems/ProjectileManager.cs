@@ -44,7 +44,7 @@ namespace TestGame.Systems
         {
             for (int i = 0; i < m_bullets.ActiveItemListCount; ++i)
             {
-                m_bullets[i].Update(ref frameTime, i);
+                m_bullets[i].Update(ref frameTime, 0);
                 m_bullets[i].UpdateBinEntry();
             }
         }

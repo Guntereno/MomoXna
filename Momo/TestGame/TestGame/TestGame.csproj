@@ -109,11 +109,14 @@
   <ItemGroup>
     <Compile Include="Ai\AiEntityStates\AIEntityState.cs" />
     <Compile Include="Ai\AiEntityStates\AiEntityStateHelpers.cs" />
+    <Compile Include="Ai\AiEntityStates\ComeToStopState.cs" />
+    <Compile Include="Ai\AiEntityStates\ZombieWanderState.cs" />
+    <Compile Include="Ai\AiEntityStates\WanderState.cs" />
     <Compile Include="Ai\AiEntityStates\IdleState.cs" />
     <Compile Include="Ai\AiEntityStates\TimedState.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Ai\AiEntityStates\WanderState.cs" />
+    <Compile Include="Ai\AiEntityStates\ZombieHerdState.cs" />
     <Compile Include="Entities\AiEntity.cs" />
     <Compile Include="Entities\AI\Civilian.cs" />
     <Compile Include="Entities\BinLayers.cs" />
@@ -123,6 +126,8 @@
     <Compile Include="Entities\EntityGroups.cs" />
     <Compile Include="Entities\Corpse.cs" />
     <Compile Include="Entities\EntitySensoryData.cs" />
+    <Compile Include="Entities\Gaits\ZombieGait.cs" />
+    <Compile Include="Entities\Gaits\Gait.cs" />
     <Compile Include="Entities\GameEntity.cs" />
     <Compile Include="Entities\LivingGameEntity.cs" />
     <Compile Include="Entities\PathTracker.cs" />

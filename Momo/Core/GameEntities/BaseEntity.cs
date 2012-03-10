@@ -28,13 +28,19 @@ namespace Momo.Core.GameEntities
         }
 
 
+        public virtual void IncrementPosition(Vector2 dPosition)
+        {
+            m_position += dPosition;
+        }
+
+
         public override Vector2 GetPosition()
         {
             return m_position;
         }
 
 
-        public virtual void Update(ref FrameTime frameTime, int updateToken)
+        public virtual void Update(ref FrameTime frameTime, uint updateToken)
         {
 
         }

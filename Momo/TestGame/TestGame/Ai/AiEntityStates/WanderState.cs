@@ -9,7 +9,6 @@ namespace TestGame.Ai.AiEntityStates
     public class WanderState : TimedState
     {
         float m_wanderTurnVelocity = 0.0f;
-        float mWanderTimer = 0.0f;
 
 
         public State IdleState { get; set; }
@@ -27,7 +26,7 @@ namespace TestGame.Ai.AiEntityStates
         }
 
 
-        public override void Update(ref FrameTime frameTime, int updateToken)
+        public override void Update(ref FrameTime frameTime, uint updateToken)
         {
             base.Update(ref frameTime, updateToken);
 
@@ -35,9 +34,9 @@ namespace TestGame.Ai.AiEntityStates
             Random random = world.Random;
 
 
-            float entityRepelRadius = 200.0f;
+            float entityRepelRadius = 100.0f;
             float boundaryRepelRadius = 25.0f;
-            float entityRepelStr = 5.5f;
+            float entityRepelStr = 2.5f;
             float boundaryRepelStr = 1.5f;
 
             Vector2 entityRepelForce = -AiEntityStateHelpers.GetForceFromSurroundingEntities(entityRepelRadius, entityRepelRadius * entityRepelRadius, AiEntity, BinLayers.kEnemyEntities);
@@ -61,7 +60,7 @@ namespace TestGame.Ai.AiEntityStates
             {
                 float walkDirectionLen = (float)System.Math.Sqrt(walkDirectionLenSqrd);
                 Vector2 walkDirectionNorm = walkDirection / walkDirectionLen;
-                AiEntity.TurnTowardsAndWalk(walkDirectionNorm, 0.1f);
+                AiEntity.TurnTowardsAndWalk(walkDirectionNorm, 0.1f, 1.0f);
             }
         }
     }

@@ -77,7 +77,7 @@ namespace TestGame.Systems
         {
             for (int i = 0; i < m_players.ActiveItemListCount; ++i)
             {
-                m_players[i].Update(ref frameTime, i);
+                m_players[i].Update(ref frameTime, 0);
                 m_players[i].UpdateBinEntry();
             }
 

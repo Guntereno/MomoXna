@@ -11,7 +11,7 @@ namespace TestGame.Entities.AI
     {
         #region State Machine
         private IdleState mStateIdle = null;
-        private WanderState mStateWander = null;
+        private ZombieHerdState mStateWander = null;
         #endregion
 
 
@@ -21,7 +21,7 @@ namespace TestGame.Entities.AI
             mBinLayer = BinLayers.kCivilianEntities;
 
             mStateIdle = new IdleState(this);
-            mStateWander = new WanderState(this);
+            mStateWander = new ZombieHerdState(this);
 
             mStateIdle.MinimumTimeInState = 1.0f;
             mStateIdle.MaximumTimeInState = 10.0f;

@@ -80,15 +80,15 @@ namespace TestGame.Entities.Players
         // --------------------------------------------------------------------
         public PlayerEntity(GameWorld world) : base(world)
         {
-            ContactRadiusInfo = new RadiusInfo(16.0f);
-            Mass = ContactRadiusInfo.Radius * 5.0f;
+            ContactRadiusInfo = new RadiusInfo(14.0f);
+            Mass = ContactRadiusInfo.Radius * 3.0f;
 
             CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.Players);
             CollidableGroupInfo.CollidesWithGroups = new Flags((int)EntityGroups.AllEntities);
 
             FacingDirection = Vector2.UnitY;
 
-            SecondaryDebugColor = new Color( 0.0f, 1.0f, 0.0f );
+            SecondaryDebugColor = new Color(0.0f, 1.0f, 0.0f);
 
             m_stateMachine = new StateMachine(this);
 
@@ -130,7 +130,7 @@ namespace TestGame.Entities.Players
         }
 
 
-        public override void Update(ref FrameTime frameTime, int updateToken)
+        public override void Update(ref FrameTime frameTime, uint updateToken)
         {
             base.Update(ref frameTime, updateToken);
 

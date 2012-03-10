@@ -80,7 +80,7 @@ namespace TestGame.Weapons
 
             public WeaponState CoolDownState { get; set; }
 
-            public override void Update(ref FrameTime frameTime, int updateToken)
+            public override void Update(ref FrameTime frameTime, uint updateToken)
             {
                 const float kTriggerThresh = 0.5f;
                 if (Weapon.TriggerState > kTriggerThresh)

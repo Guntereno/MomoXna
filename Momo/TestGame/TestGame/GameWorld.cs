@@ -66,7 +66,7 @@ namespace TestGame
 
         private PathIsland m_pathIsland = new PathIsland();
 
-        private int m_updateTokenOffset = 0;
+        private uint m_updateTokenOffset = 0;
 
         private float m_elapsedTime = 0.0f;
 
@@ -208,17 +208,17 @@ namespace TestGame
             //m_pressurePlateManager.LoadPressurePoints(m_map);
 
             Random rand = new Random(101);
-            for (int i = 0; i < 100; ++i)
-            {
-                float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
-                float y = 3880.0f + ((float)rand.NextDouble() * 700.0f);
-                mAiEntityManager.Create(typeof(Civilian), new Vector2(x, y));
-            }
+            //for (int i = 0; i < 100; ++i)
+            //{
+            //    float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
+            //    float y = 3880.0f + ((float)rand.NextDouble() * 700.0f);
+            //    mAiEntityManager.Create(typeof(Civilian), new Vector2(x, y));
+            //}
 
-            for (int i = 0; i < 3; ++i)
+            for (int i = 0; i < 50; ++i)
             {
-                float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
-                float y = 3880.0f + ((float)rand.NextDouble() * 500.0f);
+                float x = 1840.0f + ((float)rand.NextDouble() * 250.0f);
+                float y = 4000.0f + ((float)rand.NextDouble() * 750.0f);
                 mAiEntityManager.Create(typeof(Zombie), new Vector2(x, y));
             }
         }
@@ -235,46 +235,58 @@ namespace TestGame
             // More time related numbers will eventually be added to the FrameTime structure. Its worth passing
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
-
-            m_elapsedTime += frameTime.Dt;
-
-            ++m_updateTokenOffset;
-
+            
             Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper(0);
 
-            m_playerManager.Update(ref frameTime);
-            mAiEntityManager.Update(ref frameTime, m_updateTokenOffset);
-            m_projectileManager.Update(ref frameTime);
-            m_osdManager.Update(ref frameTime);
+            int updateIterationCnt = 1;
+            KeyboardState keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.Space))
+            {
+                updateIterationCnt = 15;
+            }
 
-            m_weaponManager.Update(ref frameTime);
+            for (int i = 0; i < updateIterationCnt; ++i)
+            {
 
-            m_pathRouteManager.Update(ref frameTime);
+                m_elapsedTime += frameTime.Dt;
 
-            //m_eventManager.Update(ref frameTime);
-            m_corpseManager.Update(ref frameTime);
-
-
-            // Collision detection/resolution
-            m_contactList.StartAddingContacts();
-
-            GenerateContacts();
-
-            m_contactList.EndAddingContacts();
-
-            m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
+                ++m_updateTokenOffset;
 
 
+                m_playerManager.Update(ref frameTime);
+                mAiEntityManager.Update(ref frameTime, m_updateTokenOffset);
+                m_projectileManager.Update(ref frameTime);
+                m_osdManager.Update(ref frameTime);
 
-            // Move the camera follow position
-            // Update camera after collision resolution so its go the actual rendered player position.
-            m_playerManager.UpdateAveragePosition();
-            m_cameraController.FollowPosition = m_playerManager.AveragePlayerPosition;
-            m_cameraController.Update(ref frameTime, ref inputWrapper);
+                m_weaponManager.Update(ref frameTime);
+
+                m_pathRouteManager.Update(ref frameTime);
+
+                //m_eventManager.Update(ref frameTime);
+                m_corpseManager.Update(ref frameTime);
 
 
-            // End frame updates
-            m_projectileManager.EndFrame();
+                // Collision detection/resolution
+                m_contactList.StartAddingContacts();
+
+                GenerateContacts();
+
+                m_contactList.EndAddingContacts();
+
+                m_contactResolver.ResolveContacts(frameTime.Dt, m_contactList);
+
+
+
+                // Move the camera follow position
+                // Update camera after collision resolution so its go the actual rendered player position.
+                m_playerManager.UpdateAveragePosition();
+                m_cameraController.FollowPosition = m_playerManager.AveragePlayerPosition;
+                m_cameraController.Update(ref frameTime, ref inputWrapper);
+
+
+                // End frame updates
+                m_projectileManager.EndFrame();
+            }
         }
 
 

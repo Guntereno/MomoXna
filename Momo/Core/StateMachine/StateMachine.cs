@@ -62,7 +62,7 @@ namespace Momo.Core.StateMachine
         }
 
 
-        public void Update(ref FrameTime frameTime, int updateToken)
+        public void Update(ref FrameTime frameTime, uint updateToken)
         {
             if (m_currentState != null)
             {

@@ -77,7 +77,7 @@ namespace TestGame.Entities
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
-            ContactRadiusInfo = new RadiusInfo(16.0f);
+            ContactRadiusInfo = new RadiusInfo(12.0f);
             Mass = ContactRadiusInfo.Radius * 2.0f;
 
             CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.Enemies);
@@ -110,7 +110,7 @@ namespace TestGame.Entities
             mDeathTrigger = trigger;
         }
 
-        public override void Update(ref FrameTime frameTime, int updateToken)
+        public override void Update(ref FrameTime frameTime, uint updateToken)
         {
             base.Update(ref frameTime, updateToken);
 

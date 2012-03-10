@@ -206,7 +206,7 @@ namespace TestGame.Weapons
                 m_timer = 0.0f;
             }
 
-            public override void Update(ref FrameTime frameTime, int updateToken)
+            public override void Update(ref FrameTime frameTime, uint updateToken)
             {
                 m_timer += frameTime.Dt;
                 if (m_timer >= Length)
@@ -284,7 +284,7 @@ namespace TestGame.Weapons
 
             public State NextState { get; set; }
 
-            public override void Update(ref FrameTime frameTime, int updateToken)
+            public override void Update(ref FrameTime frameTime, uint updateToken)
             {
                 if (Weapon.AmmoInClip > 0)
                 {

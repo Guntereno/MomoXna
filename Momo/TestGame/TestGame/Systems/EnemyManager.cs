@@ -73,19 +73,20 @@ namespace TestGame.Systems
         }
 
 
-        public void Update(ref FrameTime frameTime, int updateToken)
+        public void Update(ref FrameTime frameTime, uint updateToken)
         {
             UpdateEntityPool(mEntities, ref frameTime, updateToken);
         }
 
 
-        private void UpdateEntityPool(Pool<AiEntity> aiEntities, ref FrameTime frameTime, int updateToken)
+        private void UpdateEntityPool(Pool<AiEntity> aiEntities, ref FrameTime frameTime, uint updateToken)
         {
             bool needsCoalesce = false;
+            uint token = updateToken;
             for (int i = 0; i < aiEntities.ActiveItemListCount; ++i)
             {
                 AiEntity aiEntity = aiEntities[i];
-                aiEntity.Update(ref frameTime, updateToken + i);
+                aiEntity.Update(ref frameTime, token);
                 aiEntity.UpdateBinEntry();
 
                 aiEntity.UpdateSensoryData(mWorld.PlayerManager.Players.ActiveItemList);
@@ -95,6 +96,8 @@ namespace TestGame.Systems
                     mBin.RemoveBinItem(aiEntities[i], BinLayers.kEnemyEntities);
                     needsCoalesce = true;
                 }
+
+                ++token;
             }
 
             if (needsCoalesce)

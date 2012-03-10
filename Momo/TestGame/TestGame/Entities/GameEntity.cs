@@ -9,6 +9,8 @@ using Momo.Core.Collision2D;
 using Momo.Debug;
 using Momo.Maths;
 
+using TestGame.Entities.Gaits;
+
 
 
 namespace TestGame.Entities
@@ -28,7 +30,10 @@ namespace TestGame.Entities
         private float mFacingAngle = 0.0f;
         private Vector2 mFacingDirection = Vector2.Zero;
 
+        private Gait mGait = new Gait();
+
         private float mBaseSpeed = 1.0f;
+        private float mSpeed = 1.0f;
 
         private Color mPrimaryDebugColour = Color.White;
         private Color mSecondaryDebugColour = Color.White;
@@ -67,10 +72,22 @@ namespace TestGame.Entities
             }
         }
 
+        public Gait Gait
+        {
+            get { return mGait; }
+            set { mGait = value; }
+        }
+
         public float BaseSpeed
         {
             get { return mBaseSpeed; }
             set { mBaseSpeed = value; }
+        }
+
+        public float Speed
+        {
+            get { return mSpeed; }
+            set { mSpeed = value; }
         }
 
         public Color PrimaryDebugColor
@@ -126,17 +143,18 @@ namespace TestGame.Entities
             return 0.5f + (dotFacingDirecion * 0.5f);
         }
 
-        public void TurnTowardsAndWalk(Vector2 targetDirection, float speed)
+        public void TurnTowardsAndWalk(Vector2 targetDirection, float turnSpeed, float amount)
         {
-            TurnTowards(targetDirection, speed);
+            TurnTowards(targetDirection, turnSpeed);
 
             float relativeDirection = GetRelativeFacing(targetDirection);
 
-            SetPosition(GetPosition() + (FacingDirection * relativeDirection));
+            mGait.WalkForward(this, relativeDirection * amount);
+            //SetPosition(GetPosition() + (FacingDirection * (relativeDirection * walkSpeed)));
         }
 
         // Returns [0.0, 1.0] based on how close the facing is to the target. 1.0 = the same, 0.0 opposite.
-        public void TurnTowards(Vector2 targetDirection, float speed)
+        public void TurnTowards(Vector2 targetDirection, float turnSpeed)
         {
             Vector2 normalToFacing = Maths2D.Perpendicular(mFacingDirection);
             float dotNormalTargetDirection = Vector2.Dot(normalToFacing, targetDirection);
@@ -145,14 +163,14 @@ namespace TestGame.Entities
 
             if (dotNormalTargetDirection > 0.0f)
             {
-                newFacing += (normalToFacing * speed);
+                newFacing += (normalToFacing * turnSpeed);
 
                 if (Vector2.Dot(Maths2D.Perpendicular(newFacing), targetDirection) < 0.0f)
                     newFacing = targetDirection;
             }
             else
             {
-                newFacing -= (normalToFacing * speed);
+                newFacing -= (normalToFacing * turnSpeed);
 
                 if (Vector2.Dot(Maths2D.Perpendicular(newFacing), targetDirection) > 0.0f)
                     newFacing = targetDirection;

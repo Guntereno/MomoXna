@@ -41,7 +41,7 @@ namespace Momo.Core.StateMachine
         }
 
         public virtual void OnEnter() { }
-        public abstract void Update(ref FrameTime frameTime, int updateToken);
+        public abstract void Update(ref FrameTime frameTime, uint updateToken);
         public virtual void OnExit() { }
 
         public virtual void DebugRender(DebugRenderer debugRenderer) { }

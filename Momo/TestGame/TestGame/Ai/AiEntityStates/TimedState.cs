@@ -17,6 +17,11 @@ namespace TestGame.Ai.AiEntityStates
 
         public State NextState { get; set; }
 
+
+        public float Timer
+        {
+            get { return mTimer; }
+        }
         public float TimeInState
         {
             set
@@ -48,9 +53,10 @@ namespace TestGame.Ai.AiEntityStates
             base.OnEnter();
 
             mTimeInState = mMinTimeInState + (float)AiEntity.World.Random.NextDouble() * mRandomTimeInState;
+            mTimer = 0.0f;
         }
 
-        public override void Update(ref FrameTime frameTime, int updateToken)
+        public override void Update(ref FrameTime frameTime, uint updateToken)
         {
             mTimer += frameTime.Dt;
             if (mTimer >= mTimeInState)

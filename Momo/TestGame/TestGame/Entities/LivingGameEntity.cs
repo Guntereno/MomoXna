@@ -21,7 +21,6 @@ namespace TestGame.Entities
         private float m_health = kDefaultHealth;
 
 
-
         public float MaxHealth
         {
             get { return m_maxHealth; }
