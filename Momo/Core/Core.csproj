@@ -128,6 +128,7 @@
     <Compile Include="Primitive2D\LineStripPrimitive2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadiusInfo.cs" />
+    <Compile Include="ResourceManager.cs" />
     <Compile Include="Shaders\Shader.cs" />
     <Compile Include="Shaders\ShaderSemantics.cs" />
     <Compile Include="Spatial\Bin.cs" />

@@ -38,7 +38,7 @@ namespace TestGame
 
         public InputManager InputManager { get; private set; }
 
-
+        public ResourceManager ResourceManager { get; private set; }
 
         public TestGame()
         {
@@ -46,6 +46,8 @@ namespace TestGame
             ms_instance = this;
 
             InputManager = new Input.InputManager();
+
+            ResourceManager = new ResourceManager(Content);
 
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = kBackBufferWidth;
