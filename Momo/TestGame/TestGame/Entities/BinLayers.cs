@@ -18,5 +18,9 @@ namespace TestGame.Entities
         public const int kBoundaryObstructionSmall = 8;
 
         public const int kLayerCount = kBoundaryObstructionSmall + 1;
+
+
+        public static int[] kEnemyList = new int[] { kEnemyEntities };
+        public static int[] kFriendyList = new int[] { kPlayerEntity, kCivilianEntities  };
     }
 }

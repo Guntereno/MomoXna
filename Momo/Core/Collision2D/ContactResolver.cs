@@ -18,7 +18,7 @@ namespace Momo.Core.Collision2D
 
         private const int kVelocityResolveContactMultiplier = 2;       // What factor of the number of contacts do we resolve
                                                                         // the velocities.
-        private const int kPenetrationResolveContactMulitplier = 5;     // What factor of the number of contacts do we resolve
+        private const int kPenetrationResolveContactMulitplier = 3;     // What factor of the number of contacts do we resolve
                                                                         // the penerations.
 
         // A subset of the passed in contact list

@@ -21,7 +21,7 @@ namespace TestGame.Ai.AiEntityStates
         public AiEntityState(AiEntity entity)
             : base(entity)
         {
-            DebugColor = Color.White;
+            DebugColor = new Color(1.0f, 1.0f, 1.0f, 0.8f);
         }
 
         #endregion
@@ -40,7 +40,7 @@ namespace TestGame.Ai.AiEntityStates
         {
             base.OnEnter();
 
-            AiEntity.PrimaryDebugColor = DebugColor;
+            AiEntity.SecondaryDebugColor = DebugColor;
         }
 
         #endregion

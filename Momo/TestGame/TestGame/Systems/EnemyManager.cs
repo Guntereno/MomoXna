@@ -89,8 +89,6 @@ namespace TestGame.Systems
                 aiEntity.Update(ref frameTime, token);
                 aiEntity.UpdateBinEntry();
 
-                aiEntity.UpdateSensoryData(mWorld.PlayerManager.Players.ActiveItemList);
-
                 if (aiEntity.IsDestroyed())
                 {
                     mBin.RemoveBinItem(aiEntities[i], BinLayers.kEnemyEntities);

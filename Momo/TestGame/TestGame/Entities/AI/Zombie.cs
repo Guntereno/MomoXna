@@ -15,7 +15,7 @@ namespace TestGame.Entities.AI
         #region State Machine
         private ZombieHerdState mStateHerd = null;
         private ZombieWanderState mStateWander = null;
-        private ComeToStopState mStateComeToStop = null;
+        private ZombieChaseState mStateChase = null;
         #endregion
 
 
@@ -32,21 +32,24 @@ namespace TestGame.Entities.AI
             mStateHerd.MinimumTimeInState = 8.0f;
             mStateHerd.MaximumTimeInState = 20.0f;
 
-
-            mStateComeToStop = new ComeToStopState(this);
-            mStateComeToStop.TimeInState = 0.3f;
-
+            mStateChase = new ZombieChaseState(this);
+            mStateChase.TimeInState = float.MaxValue;
 
             mStateWander.HerdState = mStateHerd;
+            mStateWander.ChaseState = mStateChase;
             mStateWander.NextState = mStateHerd;
+
+            mStateHerd.ChaseState = mStateChase;
             mStateHerd.NextState = mStateWander;
-            mStateComeToStop.NextState = mStateWander;
+
+            mStateChase.NextState = mStateWander;
 
             Gait = new ZombieGait((float)World.Random.NextDouble() * 100.0f);
 
-            Speed = 1.0f + ((float)World.Random.NextDouble() * 0.5f);
+            BaseSpeed = 10.0f + ((float)World.Random.NextDouble() * 5.0f);
 
-            SecondaryDebugColor = new Color(1.0f, 0.0f, 0.0f);
+            PrimaryDebugColor = new Color(1.0f, 0.0f, 0.0f, 0.3f);
+            SecondaryDebugColor = PrimaryDebugColor;
         }
 
 

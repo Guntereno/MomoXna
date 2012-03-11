@@ -127,13 +127,8 @@ namespace TestGame.Entities
 
         public override void DebugRender(DebugRenderer debugRenderer)
         {
-            Color fillColour = mPrimaryDebugColour;
-            fillColour.A = 102;
-            Color outlineColour = mSecondaryDebugColour;
-            outlineColour.A = 86;
-
-            debugRenderer.DrawCircle(GetPosition(), ContactRadiusInfo.Radius, fillColour, outlineColour, true, 3.5f, 8);
-            debugRenderer.DrawLine(GetPosition(), GetPosition() + (mFacingDirection * mContactRadiusInfo.Radius * 1.5f), outlineColour);
+            debugRenderer.DrawCircle(GetPosition(), ContactRadiusInfo.Radius, mPrimaryDebugColour, mSecondaryDebugColour, true, 2.5f, 8);
+            debugRenderer.DrawLine(GetPosition(), GetPosition() + (mFacingDirection * mContactRadiusInfo.Radius * 1.5f), mSecondaryDebugColour);
         }
 
 

@@ -16,11 +16,13 @@ namespace TestGame.Ai.AiEntityStates
 
 
         public State HerdState { get; set; }
+        public State ChaseState { get; set; }
 
 
         public ZombieWanderState(AiEntity entity) :
             base(entity)
         {
+            DebugColor = new Color(0.3f, 0.0f, 0.0f, 0.7f);
         }
 
 
@@ -33,9 +35,10 @@ namespace TestGame.Ai.AiEntityStates
         public override void OnEnter()
         {
             base.OnEnter();
+
             mWanderTurnVelocity = 0.0f;
 
-            AiEntity.SecondaryDebugColor = Color.Aquamarine;
+            AiEntity.Speed = AiEntity.BaseSpeed;
         }
 
 
@@ -63,6 +66,10 @@ namespace TestGame.Ai.AiEntityStates
             float kEntityRepelStr = 1.5f;
             float kBoundaryRepelRadius = AiEntity.ContactRadiusInfo.Radius * 2.0f;
             float kBoundaryRepelStr = 1.5f;
+            float kEntitySightRadius = 800.0f;
+            float kEntityHearRadius = 250.0f;
+
+
             // Boundary repel
             if (updateToken % 20 == 0)
             {
@@ -85,6 +92,7 @@ namespace TestGame.Ai.AiEntityStates
                 }
             }
 
+            // Wander
             if ((updateToken + 3) % 2 == 0)
             {
                 float facingAngle = AiEntity.FacingAngle;
@@ -92,6 +100,17 @@ namespace TestGame.Ai.AiEntityStates
                 mWanderTurnVelocity = MathHelper.Clamp(mWanderTurnVelocity, -0.18f, 0.18f);
                 facingAngle += mWanderTurnVelocity * frameTime.Dt;
                 AiEntity.FacingAngle = facingAngle;
+            }
+
+            // ---- Search for nearest entity to chase ----
+            if ((updateToken + 4) % 5 == 0)
+            {
+                GameEntity closestEntity = null;
+                Vector2 closetDPosition = Vector2.Zero;
+                if (AiEntityStateHelpers.GetEntities(kEntitySightRadius, kEntityHearRadius, 0.5f, AiEntity, BinLayers.kFriendyList, BinLayers.kBoundaryOcclusionSmall, ref closestEntity, ref closetDPosition))
+                {
+                    AiEntity.StateMachine.CurrentState = ChaseState;
+                }
             }
 
 

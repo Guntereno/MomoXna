@@ -9,7 +9,6 @@ using Momo.Core.Triggers;
 using Momo.Debug;
 
 using TestGame.Ai.AiEntityStates;
-using TestGame.Objects;
 using TestGame.Weapons;
 using Momo.Core.StateMachine;
 
@@ -22,8 +21,6 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private EntitySensoryData mSensoryData = new EntitySensoryData((float)Math.PI, 500.0f, 150.0f);
-
         #region State Machine
         //protected Ai.AiEntityStates.TimedState mStateStunned = null;
         protected Ai.AiEntityStates.TimedState mStateDying = null;
@@ -40,8 +37,6 @@ namespace TestGame.Entities
         // -- Public Properties
         // --------------------------------------------------------------------
         #region Properties
-
-        public EntitySensoryData SensoryData        { get { return mSensoryData; } }
 
         public Weapon CurrentWeapon
         {
@@ -77,7 +72,7 @@ namespace TestGame.Entities
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
-            ContactRadiusInfo = new RadiusInfo(12.0f);
+            ContactRadiusInfo = new RadiusInfo(11.0f);
             Mass = ContactRadiusInfo.Radius * 2.0f;
 
             CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.Enemies);
@@ -92,7 +87,7 @@ namespace TestGame.Entities
             //mStateStunned.Length = 0.5f;
 
             mStateDying = new Ai.AiEntityStates.TimedState(this);
-            mStateDying.DebugColor = Color.Gray;
+            mStateDying.DebugColor = new Color(0.5f, 0.5f, 0.5f, 0.4f);
             mStateDying.TimeInState = 1.5f;
         }
 
@@ -114,22 +109,10 @@ namespace TestGame.Entities
         {
             base.Update(ref frameTime, updateToken);
 
-            mSensoryData.Update(ref frameTime);
-
             StateMachine.Update(ref frameTime, updateToken);
 
-            //if (StateMachine.CurrentState == null)
-            //    Kill();
-        }
-
-
-        // Temporary until we work out how the player visually will update the aiEntity
-        public void UpdateSensoryData(Players.PlayerEntity[] players)
-        {
-            for(int i = 0; i < players.Length; ++i)
-            {
-                mSensoryData.UpdateSensoryData(this, players);
-            }
+            if (StateMachine.CurrentState == null)
+                Kill();
         }
 
 
@@ -185,6 +168,7 @@ namespace TestGame.Entities
                     {
                         Health = 0.0f;
 
+                        PrimaryDebugColor = new Color(0.4f, 0.4f, 0.4f, 0.25f);
                         StateMachine.CurrentState = mStateDying;
                     }
                     //else
@@ -196,10 +180,10 @@ namespace TestGame.Entities
         }
 
 
-        public void OnExplosionEvent(ref Explosion explosion, Vector2 force)
-        {
-            AddForce(force);
-        }
+        //public void OnExplosionEvent(ref Explosion explosion, Vector2 force)
+        //{
+        //    AddForce(force);
+        //}
 
 
         public override void DebugRender(DebugRenderer debugRenderer)

@@ -54,19 +54,22 @@ namespace TestGame.Entities
             base.DebugRender(debugRenderer);
 
 
-            const float kBarWidth = 32.0f;
+            const float kBarWidth = 20.0f;
             const float kBarHeight = 4.0f;
 
-            // Render health bar
-            Vector2 start = GetPosition();
-            Vector2 end = GetPosition();
-            end.X += kBarWidth;
-            Vector2 healthEnd = GetPosition();
-            healthEnd.X += kBarWidth * (m_health / m_maxHealth);
+            if (m_health < m_maxHealth)
+            {
+                // Render health bar
+                Vector2 start = GetPosition();
+                Vector2 end = GetPosition();
+                end.X += kBarWidth;
+                Vector2 healthEnd = GetPosition();
+                healthEnd.X += kBarWidth * (m_health / m_maxHealth);
 
-            Vector2 offset = new Vector2(-4.0f, 16.0f);
-            debugRenderer.DrawFilledLine(start + offset, end + offset, Color.Black, kBarHeight);
-            debugRenderer.DrawFilledLine(start + offset, healthEnd + offset, Color.Green, kBarHeight - 2.0f);
+                Vector2 offset = new Vector2(-4.0f, 16.0f);
+                debugRenderer.DrawFilledLine(start + offset, end + offset, Color.Black, kBarHeight);
+                debugRenderer.DrawFilledLine(start + offset, healthEnd + offset, new Color(0.0f, 0.7f, 0.0f, 0.7f), kBarHeight - 2.0f);
+            }
         }
     }
 

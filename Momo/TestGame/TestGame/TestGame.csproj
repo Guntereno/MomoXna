@@ -109,10 +109,11 @@
   <ItemGroup>
     <Compile Include="Ai\AiEntityStates\AIEntityState.cs" />
     <Compile Include="Ai\AiEntityStates\AiEntityStateHelpers.cs" />
-    <Compile Include="Ai\AiEntityStates\ComeToStopState.cs" />
+    <Compile Include="Ai\AiEntityStates\CivilianFleeState.cs" />
+    <Compile Include="Ai\AiEntityStates\CivilianIdleState.cs" />
+    <Compile Include="Ai\AiEntityStates\CivilianWanderState.cs" />
+    <Compile Include="Ai\AiEntityStates\ZombieChaseState.cs" />
     <Compile Include="Ai\AiEntityStates\ZombieWanderState.cs" />
-    <Compile Include="Ai\AiEntityStates\WanderState.cs" />
-    <Compile Include="Ai\AiEntityStates\IdleState.cs" />
     <Compile Include="Ai\AiEntityStates\TimedState.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -125,7 +126,6 @@
     <Compile Include="Entities\AI\Zombie.cs" />
     <Compile Include="Entities\EntityGroups.cs" />
     <Compile Include="Entities\Corpse.cs" />
-    <Compile Include="Entities\EntitySensoryData.cs" />
     <Compile Include="Entities\Gaits\ZombieGait.cs" />
     <Compile Include="Entities\Gaits\Gait.cs" />
     <Compile Include="Entities\GameEntity.cs" />
@@ -139,7 +139,6 @@
     <Compile Include="GameWorld.cs" />
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\InputWrapper.cs" />
-    <Compile Include="Objects\Explosion.cs" />
     <Compile Include="PathFindingHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

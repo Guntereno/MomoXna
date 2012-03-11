@@ -14,15 +14,14 @@ namespace TestGame.Ai.AiEntityStates
 {
     public class ZombieHerdState : TimedState
     {
-        //float m_wanderTurnVelocity = 0.0f;
-
-
         public State IdleState { get; set; }
+        public State ChaseState { get; set; }
 
 
         public ZombieHerdState(AiEntity entity) :
             base(entity)
         {
+            DebugColor = new Color(0.6f, 0.0f, 0.0f, 0.7f);
         }
 
 
@@ -35,7 +34,8 @@ namespace TestGame.Ai.AiEntityStates
         public override void OnEnter()
         {
             base.OnEnter();
-            AiEntity.SecondaryDebugColor = Color.Orange;
+
+            AiEntity.Speed = AiEntity.BaseSpeed;
         }
 
 
@@ -55,6 +55,8 @@ namespace TestGame.Ai.AiEntityStates
             float kEntityRepelStr = 5.0f;
             float kBoundaryRepelRadius = AiEntity.ContactRadiusInfo.Radius * 2.0f;
             float kBoundaryRepelStr = 1.0f;
+            float kEntitySightRadius = 800.0f;
+            float kEntityHearRadius = 250.0f;
 
 
             Vector2 forceAveragePosition = Vector2.Zero;
@@ -128,7 +130,18 @@ namespace TestGame.Ai.AiEntityStates
                 boundaryRepelForce = AiEntityStateHelpers.GetForceFromSurroundingBoundaries(kBoundaryRepelRadius, kBoundaryRepelRadius * kBoundaryRepelRadius, AiEntity, BinLayers.kBoundary);
                 boundaryRepelForce *= kBoundaryRepelStr;
             }
-  
+
+            // ---- Search for nearest entity to chase ----
+            if ((updateToken + 2) % 5 == 0)
+            {
+                GameEntity closestEntity = null;
+                Vector2 closetDPosition = Vector2.Zero;
+                if (AiEntityStateHelpers.GetEntities(kEntitySightRadius, kEntityHearRadius, 0.5f, AiEntity, BinLayers.kFriendyList, BinLayers.kBoundaryOcclusionSmall, ref closestEntity, ref closetDPosition))
+                {
+                    AiEntity.StateMachine.CurrentState = ChaseState;
+                }
+            }
+
 
 
             Vector2 walkDirection = Vector2.Zero;

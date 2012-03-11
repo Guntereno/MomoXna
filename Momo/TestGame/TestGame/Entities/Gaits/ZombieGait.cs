@@ -10,8 +10,7 @@ namespace TestGame.Entities.Gaits
     {
         float mStep = 0.0f;
 
-        const float kWalkBobSpeed = 5.0f;
-        const float kWalkSpeed = 10.0f;
+        const float kWalkBobSpeed = 0.5f;
 
 
         public ZombieGait(float gaitStep)
@@ -31,7 +30,7 @@ namespace TestGame.Entities.Gaits
             {
                 mStep += amount * kWalkBobSpeed * 0.5f;
             }
-            actualAmount = (actualAmount + 1.0f) * kWalkSpeed * amount;
+            actualAmount = (actualAmount + 1.0f) * amount;
 
             entity.IncrementPosition(entity.FacingDirection * actualAmount);
         }

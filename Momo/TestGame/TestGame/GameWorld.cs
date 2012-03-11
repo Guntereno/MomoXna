@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -105,6 +107,7 @@ namespace TestGame
         private SoundBank SoundBank                         { get { return m_soundBank; } }
 #endif
 
+
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
@@ -208,12 +211,12 @@ namespace TestGame
             //m_pressurePlateManager.LoadPressurePoints(m_map);
 
             Random rand = new Random(101);
-            //for (int i = 0; i < 100; ++i)
-            //{
-            //    float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
-            //    float y = 3880.0f + ((float)rand.NextDouble() * 700.0f);
-            //    mAiEntityManager.Create(typeof(Civilian), new Vector2(x, y));
-            //}
+            for (int i = 0; i < 50; ++i)
+            {
+                float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
+                float y = 3880.0f + ((float)rand.NextDouble() * 700.0f);
+                mAiEntityManager.Create(typeof(Civilian), new Vector2(x, y));
+            }
 
             for (int i = 0; i < 50; ++i)
             {

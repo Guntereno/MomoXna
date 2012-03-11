@@ -10,8 +10,8 @@ namespace TestGame.Entities.AI
     public class Civilian : AiEntity
     {
         #region State Machine
-        private IdleState mStateIdle = null;
-        private ZombieHerdState mStateWander = null;
+        private CivilianFleeState mStateFlee = null;
+        private CivilianIdleState mStateIdle = null;
         #endregion
 
 
@@ -20,23 +20,23 @@ namespace TestGame.Entities.AI
         {
             mBinLayer = BinLayers.kCivilianEntities;
 
-            mStateIdle = new IdleState(this);
-            mStateWander = new ZombieHerdState(this);
+            mStateFlee = new CivilianFleeState(this);
+            mStateFlee.MinimumTimeInState = 1000.0f;
+            mStateFlee.MaximumTimeInState = 100000.0f;
 
-            mStateIdle.MinimumTimeInState = 1.0f;
-            mStateIdle.MaximumTimeInState = 10.0f;
-            mStateIdle.NextState = mStateWander;
+            mStateIdle = new CivilianIdleState(this);
+            mStateIdle.MinimumTimeInState = 1000.0f;
+            mStateIdle.MaximumTimeInState = 100000.0f;
 
 
-            //m_stateWander.MinimumTimeInState = 1.0f;
-            //m_stateWander.MaximumTimeInState = 10.0f;
-            mStateWander.TimeInState = 10000.0f;
-            mStateWander.NextState = mStateIdle;
-            //m_stateWander.IdleState = m_stateIdle;
+            mStateFlee.IdleState = mStateIdle;
+            mStateIdle.FleeState = mStateFlee;
 
-            BaseSpeed = 1.0f + ((float)World.Random.NextDouble() * 0.35f);
 
-            SecondaryDebugColor = new Color(0.0f, 0.0f, 1.0f);
+            BaseSpeed = 10.0f + ((float)World.Random.NextDouble() * 5.0f);
+
+            PrimaryDebugColor = new Color(0.0f, 1.0f, 1.0f, 0.3f);
+            SecondaryDebugColor = PrimaryDebugColor;
         }
 
 
@@ -44,8 +44,7 @@ namespace TestGame.Entities.AI
         {
             base.ResetItem();
 
-
-            StateMachine.CurrentState = mStateWander;
+            StateMachine.CurrentState = mStateFlee;
         }
 
     }

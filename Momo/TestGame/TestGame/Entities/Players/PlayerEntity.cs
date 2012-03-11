@@ -7,7 +7,6 @@ using Momo.Core.Collision2D;
 using Momo.Core.StateMachine;
 using Momo.Core.Spatial;
 
-using TestGame.Objects;
 using TestGame.Weapons;
 
 
@@ -80,15 +79,13 @@ namespace TestGame.Entities.Players
         // --------------------------------------------------------------------
         public PlayerEntity(GameWorld world) : base(world)
         {
-            ContactRadiusInfo = new RadiusInfo(14.0f);
-            Mass = ContactRadiusInfo.Radius * 3.0f;
+            ContactRadiusInfo = new RadiusInfo(12.0f);
+            Mass = ContactRadiusInfo.Radius * 2.0f;
 
             CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.Players);
             CollidableGroupInfo.CollidesWithGroups = new Flags((int)EntityGroups.AllEntities);
 
             FacingDirection = Vector2.UnitY;
-
-            SecondaryDebugColor = new Color(0.0f, 1.0f, 0.0f);
 
             m_stateMachine = new StateMachine(this);
 
@@ -107,6 +104,8 @@ namespace TestGame.Entities.Players
             m_stateDead.Length = 4.0f;
             m_stateDead.ExitState = m_stateActive;
             m_stateDead.DebugColor = Color.Transparent;
+
+            PrimaryDebugColor = new Color(0.0f, 1.0f, 0.0f, 0.25f);
         }
 
         public void Init()
@@ -193,10 +192,10 @@ namespace TestGame.Entities.Players
         }
 
 
-        public void OnExplosionEvent(ref Explosion explosion, Vector2 force)
-        {
-            AddForce(force);
-        }
+        //public void OnExplosionEvent(ref Explosion explosion, Vector2 force)
+        //{
+        //    AddForce(force);
+        //}
 
 
         public void UpdateInput()

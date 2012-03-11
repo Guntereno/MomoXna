@@ -42,7 +42,7 @@ namespace TestGame.Entities.Players
             {
                 base.OnEnter();
 
-                PlayerEntity.PrimaryDebugColor = DebugColor;
+                PlayerEntity.SecondaryDebugColor = DebugColor;
             }
 
             #endregion
