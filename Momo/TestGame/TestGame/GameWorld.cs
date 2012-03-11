@@ -115,14 +115,14 @@ namespace TestGame
         {
             m_cameraController = new CameraController(this);
             m_weaponManager = new WeaponManager(this);
-            m_projectileManager = new ProjectileManager(this, mBin);
-            mAiEntityManager = new AiEntityManager(this, mBin);
+            m_projectileManager = new ProjectileManager(this);
+            mAiEntityManager = new AiEntityManager(this);
             m_osdManager = new OsdManager(this);
-            m_playerManager = new PlayerManager(this, mBin);
+            m_playerManager = new PlayerManager(this);
             m_triggerManager = new TriggerManager();
             //m_eventManager = new EventManager(this);
             //m_spawnGroupManager = new SpawnPointManager(this);
-            m_corpseManager = new CorpseManager(this, mBin);
+            m_corpseManager = new CorpseManager(this);
             m_pathRouteManager = new PathRouteManager();
             m_textPrinter = new TextBatchPrinter();
             //m_pressurePlateManager = new PressurePlateManager(this);
@@ -250,7 +250,6 @@ namespace TestGame
 
             for (int i = 0; i < updateIterationCnt; ++i)
             {
-
                 m_elapsedTime += frameTime.Dt;
 
                 ++m_updateTokenOffset;
@@ -287,8 +286,15 @@ namespace TestGame
                 m_cameraController.Update(ref frameTime, ref inputWrapper);
 
 
-                // End frame updates
-                m_projectileManager.EndFrame();
+                m_weaponManager.PostUpdate();
+                m_projectileManager.PostUpdate();
+                mAiEntityManager.PostUpdate();
+                m_playerManager.PostUpdate();
+                m_corpseManager.PostUpdate();
+
+#if !NO_SOUND
+                m_audioEngine.Update();
+#endif
             }
         }
 

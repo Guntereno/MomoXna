@@ -57,6 +57,7 @@ namespace TestGame.Entities
             get { return mFacingAngle; }
             set
             {
+                System.Diagnostics.Debug.Assert(!float.IsNaN(value), "Gotcha you little git. This occasionally happens seemly for no reason. We should be able to work backwards from here.");
                 mFacingAngle = value;
                 mFacingDirection = new Vector2((float)Math.Sin(mFacingAngle), (float)Math.Cos(mFacingAngle));
             }
@@ -67,6 +68,7 @@ namespace TestGame.Entities
             get { return mFacingDirection; }
             set
             {
+                System.Diagnostics.Debug.Assert(!float.IsNaN(value.X), "Gotcha you little git. This occasionally happens seemly for no reason. We should be able to work backwards from here.");
                 mFacingDirection = value;
                 mFacingAngle = (float)Math.Atan2(mFacingDirection.X, mFacingDirection.Y);
             }
@@ -191,6 +193,7 @@ namespace TestGame.Entities
 
         public void DestroyItem()
         {
+            mWorld.Bin.RemoveBinItem(this, mBinLayer);
             mDestroyed = true;
         }
 

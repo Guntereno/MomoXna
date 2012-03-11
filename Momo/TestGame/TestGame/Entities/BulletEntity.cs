@@ -97,14 +97,12 @@ namespace TestGame.Entities
 
         public void OnCollisionEvent(ref GameEntity entity)
         {
-            RemoveFromBin(BinLayers.kBullet);
             DestroyItem();
         }
 
 
         public void OnCollisionEvent(ref BoundaryEntity entity)
         {
-            RemoveFromBin(BinLayers.kBullet);
             DestroyItem();
         }
 
@@ -116,6 +114,7 @@ namespace TestGame.Entities
 
         public void DestroyItem()
         {
+            RemoveFromBin(BinLayers.kBullet);
             m_destroyed = true;
         }
 

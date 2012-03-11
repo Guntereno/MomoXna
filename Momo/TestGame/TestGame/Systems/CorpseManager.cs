@@ -10,36 +10,34 @@ namespace TestGame.Systems
         private const int kMaxCorpses = 512;
 
 
-        private GameWorld m_world;
-        private Bin m_bin;
+        private GameWorld mWorld;
 
-        private Pool<Corpse> m_corpses = new Pool<Corpse>(kMaxCorpses, 1);
-
-
-        public Pool<Corpse> Corpses { get { return m_corpses; } }
+        private Pool<Corpse> mCorpses = new Pool<Corpse>(kMaxCorpses, 1, 2, false);
 
 
-        public CorpseManager(GameWorld world, Bin bin)
+        public Pool<Corpse> Corpses { get { return mCorpses; } }
+
+
+        public CorpseManager(GameWorld world)
         {
-            m_world = world;
-            m_bin = bin;
+            mWorld = world;
 
-            m_corpses.RegisterPoolObjectType(typeof(Corpse), kMaxCorpses);
+            mCorpses.RegisterPoolObjectType(typeof(Corpse), kMaxCorpses);
         }
 
         public void Load()
         {
             for (int i = 0; i < kMaxCorpses; ++i)
             {
-                m_corpses.AddItem(new Corpse(m_world), false);
+                mCorpses.AddItem(new Corpse(mWorld), false);
             }
         }
 
         public Corpse Create(AiEntity entity)
         {
-            Corpse corpse = m_corpses.CreateItem(typeof(Corpse));
+            Corpse corpse = mCorpses.CreateItem(typeof(Corpse));
 
-            corpse.AddToBin(m_bin);
+            corpse.AddToBin(mWorld.Bin);
             corpse.Init(entity);
             
             return corpse;
@@ -47,31 +45,24 @@ namespace TestGame.Systems
 
         public void DebugRender(Momo.Debug.DebugRenderer debugRenderer)
         {
-            for (int i = 0; i < m_corpses.ActiveItemListCount; ++i)
+            for (int i = 0; i < mCorpses.ActiveItemListCount; ++i)
             {
-                m_corpses[i].DebugRender(debugRenderer);
+                mCorpses[i].DebugRender(debugRenderer);
             }
         }
 
         public void Update(ref FrameTime frameTime)
         {
-            bool needsCoalesce = false;
-            for (int i = 0; i < m_corpses.ActiveItemListCount; ++i)
+            for (int i = 0; i < mCorpses.ActiveItemListCount; ++i)
             {
-                Corpse corpse = m_corpses[i];
+                Corpse corpse = mCorpses[i];
                 corpse.Update(ref frameTime);
-
-                if (corpse.IsDestroyed())
-                {
-                    m_bin.RemoveBinItem(corpse, BinLayers.kEnemyEntities);
-                    needsCoalesce = true;
-                }
             }
+        }
 
-            if (needsCoalesce)
-            {
-                m_corpses.CoalesceActiveList(false);
-            }
+        public void PostUpdate()
+        {
+            mCorpses.Update();
         }
     }
 }

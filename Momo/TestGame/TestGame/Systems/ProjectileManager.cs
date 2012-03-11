@@ -15,63 +15,59 @@ namespace TestGame.Systems
     {
         private const int kMaxBullets = 1000;
 
-        private GameWorld m_world = null;
-        private Pool<BulletEntity> m_bullets = new Pool<BulletEntity>(kMaxBullets, 1);
-
-        private Bin m_bin = null;
+        private GameWorld mWorld = null;
+        private Pool<BulletEntity> mBullets = new Pool<BulletEntity>(kMaxBullets, 1, 2, false);
 
 
-        public Pool<BulletEntity> Bullets       { get { return m_bullets; } }
+        public Pool<BulletEntity> Bullets       { get { return mBullets; } }
 
 
-        public ProjectileManager(GameWorld world, Bin bin)
+        public ProjectileManager(GameWorld world)
         {
-            m_world = world;
-            m_bin = bin;
+            mWorld = world;
 
-            m_bullets.RegisterPoolObjectType(typeof(BulletEntity), kMaxBullets);
+            mBullets.RegisterPoolObjectType(typeof(BulletEntity), kMaxBullets);
         }
 
         public void Load()
         {
             for (int i = 0; i < kMaxBullets; ++i)
             {
-                m_bullets.AddItem(new BulletEntity(), false);
+                mBullets.AddItem(new BulletEntity(), false);
             }
         }
 
         public void Update(ref FrameTime frameTime)
         {
-            for (int i = 0; i < m_bullets.ActiveItemListCount; ++i)
+            for (int i = 0; i < mBullets.ActiveItemListCount; ++i)
             {
-                m_bullets[i].Update(ref frameTime, 0);
-                m_bullets[i].UpdateBinEntry();
+                mBullets[i].Update(ref frameTime, 0);
+                mBullets[i].UpdateBinEntry();
             }
         }
 
-        public void EndFrame()
+        public void PostUpdate()
         {
-            // Destroying dead entities/objects
-            m_bullets.CoalesceActiveList(false);
+            mBullets.Update();
         }
 
         public void DebugRender(DebugRenderer debugRenderer)
         {
-            for (int i = 0; i < m_bullets.ActiveItemListCount; ++i)
+            for (int i = 0; i < mBullets.ActiveItemListCount; ++i)
             {
-                m_bullets[i].DebugRender(debugRenderer);
+                mBullets[i].DebugRender(debugRenderer);
             }
         }
 
         public void AddBullet(Vector2 startPos, Vector2 velocity, BulletEntity.BulletParams param, Flags bulletGroupMembership)
         {
-            BulletEntity bullet = m_bullets.CreateItem(typeof(BulletEntity));
+            BulletEntity bullet = mBullets.CreateItem(typeof(BulletEntity));
             bullet.SetPosition(startPos);
             bullet.Velocity = velocity;
             bullet.Params = param;
             bullet.CollidableGroupInfo.GroupMembership = bulletGroupMembership;
 
-            bullet.AddToBin(m_bin);
+            bullet.AddToBin(mWorld.Bin);
         }
     }
 }

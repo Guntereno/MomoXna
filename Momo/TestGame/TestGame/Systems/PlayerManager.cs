@@ -16,25 +16,23 @@ namespace TestGame.Systems
     {
         private const int kMaxPlayers = 2;
 
-        private GameWorld m_world;
-        private Bin m_bin;
+        private GameWorld mWorld;
 
-        private Pool<PlayerEntity> m_players = new Pool<PlayerEntity>(kMaxPlayers, 1);
+        private Pool<PlayerEntity> mPlayers = new Pool<PlayerEntity>(kMaxPlayers, 1, 2, false);
 
-        private Vector2 m_averagePosition = new Vector2();
-
-
-        public Pool<PlayerEntity> Players       { get { return m_players; } }
-        public Vector2 AveragePlayerPosition    { get { return m_averagePosition; } }
+        private Vector2 mAveragePosition = new Vector2();
 
 
+        public Pool<PlayerEntity> Players       { get { return mPlayers; } }
+        public Vector2 AveragePlayerPosition    { get { return mAveragePosition; } }
 
-        public PlayerManager(GameWorld world, Bin bin)
+
+
+        public PlayerManager(GameWorld world)
         {
-            m_world = world;
-            m_bin = bin;
+            mWorld = world;
 
-            m_players.RegisterPoolObjectType(typeof(PlayerEntity), kMaxPlayers);
+            mPlayers.RegisterPoolObjectType(typeof(PlayerEntity), kMaxPlayers);
         }
 
         public void Load()
@@ -53,55 +51,60 @@ namespace TestGame.Systems
             };
 
 
-            PlayerEntity player = new PlayerEntity(m_world);
+            PlayerEntity player = new PlayerEntity(mWorld);
 
             player.InputWrapper = input;
 
-            player.PlayerColour = debugColours[m_players.ActiveItemListCount];
+            player.PlayerColour = debugColours[mPlayers.ActiveItemListCount];
 
             // Spawn at a spawn point
-            MapData.Map map = m_world.Map;
+            MapData.Map map = mWorld.Map;
             //int playerSpawnIndex = m_world.Random.Next(map.PlayerSpawnPoints.Length);
-            int playerSpawnIndex = m_players.ActiveItemListCount;
+            int playerSpawnIndex = mPlayers.ActiveItemListCount;
             player.SetPosition(map.PlayerSpawnPoints[playerSpawnIndex]);
             player.Init();
 
             // Add to the pool and bin
-            m_players.AddItem(player, true);
-            player.AddToBin(m_bin);
+            mPlayers.AddItem(player, true);
+            player.AddToBin(mWorld.Bin);
 
             return player;
         }
 
         public void Update(ref FrameTime frameTime)
         {
-            for (int i = 0; i < m_players.ActiveItemListCount; ++i)
+            for (int i = 0; i < mPlayers.ActiveItemListCount; ++i)
             {
-                m_players[i].Update(ref frameTime, 0);
-                m_players[i].UpdateBinEntry();
+                mPlayers[i].Update(ref frameTime, 0);
+                mPlayers[i].UpdateBinEntry();
             }
 
             UpdateAveragePosition();
         }
 
+        public void PostUpdate()
+        {
+            mPlayers.Update();
+        }
+
         public void UpdateAveragePosition()
         {
             // Calculate the center point of the players
-            m_averagePosition = Vector2.Zero;
-            int playerCount = m_players.ActiveItemListCount;
+            mAveragePosition = Vector2.Zero;
+            int playerCount = mPlayers.ActiveItemListCount;
             for (int i = 0; i < playerCount; ++i)
             {
-                m_averagePosition += m_players[i].GetPosition();
+                mAveragePosition += mPlayers[i].GetPosition();
             }
 
-            m_averagePosition /= (float)playerCount;
+            mAveragePosition /= (float)playerCount;
         }
 
         public void DebugRender(DebugRenderer debugRenderer)
         {
-            for (int i = 0; i < m_players.ActiveItemListCount; ++i)
+            for (int i = 0; i < mPlayers.ActiveItemListCount; ++i)
             {
-                m_players[i].DebugRender(debugRenderer);
+                mPlayers[i].DebugRender(debugRenderer);
             }
         }
     }

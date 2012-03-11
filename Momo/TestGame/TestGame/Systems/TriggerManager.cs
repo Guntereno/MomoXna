@@ -12,24 +12,24 @@ namespace TestGame.Systems
         public const string kDefaultTriggerName = "worldStart";
 
 
-        private Dictionary<string, Trigger> m_triggers = new Dictionary<string, Trigger>();
-        private MutableString m_lookupBuffer = new MutableString(128);
-        private Trigger m_defaultTrigger = null;
+        private Dictionary<string, Trigger> mTriggers = new Dictionary<string, Trigger>();
+        private MutableString mLookupBuffer = new MutableString(128);
+        private Trigger mDefaultTrigger = null;
 
 
 
         public TriggerManager()
         {
             // Default trigger called at start of stage
-            m_defaultTrigger = new Trigger(kDefaultTriggerName);
-            m_triggers[kDefaultTriggerName] = m_defaultTrigger;
+            mDefaultTrigger = new Trigger(kDefaultTriggerName);
+            mTriggers[kDefaultTriggerName] = mDefaultTrigger;
         }
 
         public Trigger GetTrigger(string name)
         {
-            if (m_triggers.ContainsKey(name))
+            if (mTriggers.ContainsKey(name))
             {
-                return m_triggers[name];
+                return mTriggers[name];
             }
 
             return null;
@@ -37,15 +37,15 @@ namespace TestGame.Systems
 
         public Trigger RegisterTrigger(string name)
         {
-            if (m_triggers.ContainsKey(name))
+            if (mTriggers.ContainsKey(name))
             {
-                return m_triggers[name];
+                return mTriggers[name];
             }
             else
             {
                 // If the trigger doesn't exist yet, create it
                 Trigger newTrigger = new Trigger(name);
-                m_triggers[name] = newTrigger;
+                mTriggers[name] = newTrigger;
                 return newTrigger;
             }
         }

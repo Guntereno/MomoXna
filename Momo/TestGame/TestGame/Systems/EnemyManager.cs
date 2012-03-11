@@ -22,9 +22,8 @@ namespace TestGame.Systems
         private const int kMaxEntities = 500;
 
         private GameWorld mWorld;
-        private Bin mBin;
 
-        private Pool<AiEntity> mEntities = new Pool<AiEntity>(kMaxEntities, 2);
+        private Pool<AiEntity> mEntities = new Pool<AiEntity>(kMaxEntities, 2, 2, false);
 
         private int mKillCounter = 0;
 
@@ -35,10 +34,9 @@ namespace TestGame.Systems
 
 
 
-        public AiEntityManager(GameWorld world, Bin bin)
+        public AiEntityManager(GameWorld world)
         {
             mWorld = world;
-            mBin = bin;
 
             mEntities.RegisterPoolObjectType(typeof(Civilian), kMaxEntities);
             mEntities.RegisterPoolObjectType(typeof(Zombie), kMaxEntities);
@@ -67,7 +65,7 @@ namespace TestGame.Systems
 
             createdEntity = mEntities.CreateItem(aiEntityType);
             createdEntity.SetPosition(pos);
-            createdEntity.AddToBin(mBin);
+            createdEntity.AddToBin(mWorld.Bin);
 
             return createdEntity;
         }
@@ -79,28 +77,21 @@ namespace TestGame.Systems
         }
 
 
+        public void PostUpdate()
+        {
+            mEntities.Update();
+        }
+
+
         private void UpdateEntityPool(Pool<AiEntity> aiEntities, ref FrameTime frameTime, uint updateToken)
         {
-            bool needsCoalesce = false;
             uint token = updateToken;
             for (int i = 0; i < aiEntities.ActiveItemListCount; ++i)
             {
                 AiEntity aiEntity = aiEntities[i];
                 aiEntity.Update(ref frameTime, token);
                 aiEntity.UpdateBinEntry();
-
-                if (aiEntity.IsDestroyed())
-                {
-                    mBin.RemoveBinItem(aiEntities[i], BinLayers.kEnemyEntities);
-                    needsCoalesce = true;
-                }
-
                 ++token;
-            }
-
-            if (needsCoalesce)
-            {
-                aiEntities.CoalesceActiveList(false);
             }
         }
 

@@ -7,6 +7,7 @@ namespace Momo.Core.ObjectPools
 {
     public class Pool<T> where T : IPoolItem
     {
+
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
@@ -18,8 +19,15 @@ namespace Momo.Core.ObjectPools
         private T[][] m_inactiveItems = null;
         private int[] m_inactiveItemCount;
 
+        private DestroyedPoolItem<T>[] m_destroyedItems = null;
+        private int m_destroyedStartIndex = 0;
+        private int m_destroyedItemCount = 0;
+
         private Type[] m_registeredTypes = null;
         private int m_typeCount = 0;
+
+        private int m_destroyedIdleCount = 0;
+        private bool m_preserveListOrder = false;
 
 
         // --------------------------------------------------------------------
@@ -41,13 +49,25 @@ namespace Momo.Core.ObjectPools
         }
 
 
-        public Pool(int totalCapacity, int maxTypeCount)
+        public Pool(int totalCapacity, int maxTypeCount, int destroyedIdleCount, bool preserveListOrder)
         {
             m_itemCapacity = totalCapacity;
+
+            m_destroyedIdleCount = destroyedIdleCount;
+            m_preserveListOrder = preserveListOrder;
+
             m_activeItems = new T[totalCapacity];
             m_inactiveItems = new T[maxTypeCount][];
             m_inactiveItemCount = new int[maxTypeCount];
+            m_destroyedItems = new DestroyedPoolItem<T>[totalCapacity];
             m_registeredTypes = new Type[maxTypeCount];
+        }
+
+
+        public void Update()
+        {
+            MoveDestroyedToInactiveList();
+            CoalesceActiveList(m_preserveListOrder);
         }
 
 
@@ -85,7 +105,7 @@ namespace Momo.Core.ObjectPools
         }
 
 
-        public void CoalesceActiveList(bool preserveOrder)
+        private void CoalesceActiveList(bool preserveOrder)
         {
             if (preserveOrder)
                 CoalesceActiveListPreserveOrder();
@@ -101,8 +121,8 @@ namespace Momo.Core.ObjectPools
             {
                 if (m_activeItems[i].IsDestroyed())
                 {
-                    // Move to inactive list
-                    AddToInactiveList(m_activeItems[i]);
+                    // Move to destroyed list
+                    AddToDestroyedList(m_activeItems[i]);
                     
                     m_activeItems[i] = default(T);
                     --m_activeItemCount;
@@ -124,8 +144,8 @@ namespace Momo.Core.ObjectPools
             {
                 if (m_activeItems[i].IsDestroyed())
                 {
-                    // Move to inactive list
-                    AddToInactiveList(m_activeItems[i]);
+                    // Move to destroyed list
+                    AddToDestroyedList(m_activeItems[i]);
 
                     m_activeItems[i] = default(T);
                     --m_activeItemCount;
@@ -147,6 +167,56 @@ namespace Momo.Core.ObjectPools
             int inactiveListCount = m_inactiveItemCount[inactiveListIdx];
             m_inactiveItems[inactiveListIdx][inactiveListCount] = item;
             ++m_inactiveItemCount[inactiveListIdx];
+        }
+
+
+        private void AddToDestroyedList(T item)
+        {
+            int endIndex = m_destroyedStartIndex + m_destroyedItemCount;
+            if(endIndex >= m_itemCapacity)
+            {
+                endIndex -= m_itemCapacity;
+            }
+
+            m_destroyedItems[endIndex].m_item = item;
+
+            ++m_destroyedItemCount;
+        }
+
+
+        private void MoveDestroyedToInactiveList()
+        {
+            int count = m_destroyedItemCount;
+            int index = m_destroyedStartIndex;
+
+            while (count > 0)
+            {
+                ++m_destroyedItems[index].m_tickCount;
+
+                if (m_destroyedItems[index].m_tickCount >= m_destroyedIdleCount)
+                {
+                    AddToInactiveList(m_destroyedItems[index].m_item);
+
+                    m_destroyedItems[index].m_item = default(T);
+                    m_destroyedItems[index].m_tickCount = 0;
+
+                    ++m_destroyedStartIndex;
+                    if (m_destroyedStartIndex >= m_itemCapacity)
+                    {
+                        m_destroyedStartIndex = 0;
+                    }
+
+                    --m_destroyedItemCount;
+                }
+
+                ++index;
+                if (index >= m_itemCapacity)
+                {
+                    index = 0;
+                }
+
+                --count;
+            }
         }
 
 

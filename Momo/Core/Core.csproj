@@ -112,6 +112,7 @@
     <Compile Include="Nodes\Cameras\OrthographicCameraNode.cs" />
     <Compile Include="Nodes\Cameras\PerspectiveCameraNode.cs" />
     <Compile Include="Nodes\Node3d.cs" />
+    <Compile Include="ObjectPools\DestroyedPoolItem.cs" />
     <Compile Include="ObjectPools\IPoolItem.cs" />
     <Compile Include="ObjectPools\Pool.cs" />
     <Compile Include="Pathfinding\PathFinder.cs" />

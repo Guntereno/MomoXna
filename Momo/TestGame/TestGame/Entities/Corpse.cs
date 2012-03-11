@@ -25,9 +25,8 @@ namespace TestGame.Entities
             SetPosition(entity.GetPosition());
 
             // Initialise the bin
-            Bin bin = GetBin();
             BinRegionUniform curBinRegion = new BinRegionUniform();
-            bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);
+            World.Bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);
             SetBinRegion(curBinRegion);
         }
 

@@ -245,7 +245,7 @@ namespace TestGame.Entities.Players
                 FacingDirection = Vector2.Normalize(m_facingInputVector);
             }
             // If they're moving, update it from the movement vector
-            else if (m_movementInputVector.LengthSquared() > 0.0f)
+            else if (m_movementVector.LengthSquared() > 0.0f)
             {
                 FacingDirection = Vector2.Normalize(m_movementVector);
             }
