@@ -211,7 +211,7 @@ namespace TestGame
             //m_pressurePlateManager.LoadPressurePoints(m_map);
 
             Random rand = new Random(101);
-            for (int i = 0; i < 50; ++i)
+            for (int i = 0; i < 1; ++i)
             {
                 float x = 1840.0f + ((float)rand.NextDouble() * 420.0f);
                 float y = 3880.0f + ((float)rand.NextDouble() * 700.0f);
