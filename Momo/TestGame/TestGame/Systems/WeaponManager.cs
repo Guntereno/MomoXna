@@ -21,14 +21,14 @@ namespace TestGame.Systems
         };
 
 
-        private GameWorld mWorld = null;
+        private Zone mZone = null;
 
         private Pool<Weapon> mWeapons = new Pool<Weapon>(300, (int)MapData.Weapon.Design.Count, 2, false);
 
 
-        public WeaponManager(GameWorld world)
+        public WeaponManager(Zone zone)
         {
-            mWorld = world;
+            mZone = zone;
 
             mWeapons.RegisterPoolObjectType(typeof(Pistol), kWeaponMax[(int)MapData.Weapon.Design.Pistol]);
             mWeapons.RegisterPoolObjectType(typeof(Shotgun), kWeaponMax[(int)MapData.Weapon.Design.Shotgun]);
@@ -72,28 +72,28 @@ namespace TestGame.Systems
             // Pistols
             for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Pistol]; ++i)
             {
-                Pistol pistol = new Pistol(mWorld);
+                Pistol pistol = new Pistol(mZone);
                 mWeapons.AddItem(pistol, false);
             }
 
             // Shotguns
             for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Shotgun]; ++i)
             {
-                Shotgun shotgun = new Shotgun(mWorld);
+                Shotgun shotgun = new Shotgun(mZone);
                 mWeapons.AddItem(shotgun, false);
             }
 
             // Miniguns
             for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Minigun]; ++i)
             {
-                Minigun minigun = new Minigun(mWorld);
+                Minigun minigun = new Minigun(mZone);
                 mWeapons.AddItem(minigun, false);
             }
 
             // Melee
             for (int i = 0; i < kWeaponMax[(int)MapData.Weapon.Design.Melee]; ++i)
             {
-                MeleeWeapon meleeWeapon = new MeleeWeapon(mWorld);
+                MeleeWeapon meleeWeapon = new MeleeWeapon(mZone);
                 mWeapons.AddItem(meleeWeapon, false);
             }
         }

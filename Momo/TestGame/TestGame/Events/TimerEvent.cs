@@ -14,7 +14,7 @@ namespace TestGame.Events
 
         MapData.TimerEventData m_timerData = null;
 
-        public TimerEvent(GameWorld world, MapData.EventData data)
+        public TimerEvent(Zone world, MapData.EventData data)
             : base(world, data)
         {
         }

@@ -135,7 +135,7 @@ namespace TestGame.Entities.Players
 
                 // Set the gun index to 0. This is just to prove that 
                 // a PlayerState can access private members of the player
-                player.m_currentWeaponIdx = 0;
+                player.mCurrentWeaponIdx = 0;
             }
         }
 

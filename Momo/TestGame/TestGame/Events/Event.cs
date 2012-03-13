@@ -10,37 +10,37 @@ namespace TestGame.Events
 {
     public abstract class Event
     {
-        private GameWorld m_world;
+        private Zone mZone;
 
-        private bool m_isActive = false;
+        private bool mIsActive = false;
 
-        private MapData.EventData m_data = null;
+        private MapData.EventData mData = null;
 
-        private Trigger m_endTrigger = null;
-
-
-        public GameWorld World                  { get { return m_world; } }
-        public MapData.EventData EventData      { get { return m_data; } }
+        private Trigger mEndTrigger = null;
 
 
+        public Zone Zone                        { get { return mZone; } }
+        public MapData.EventData EventData      { get { return mData; } }
 
-        public Event(GameWorld world, MapData.EventData data)
+
+
+        public Event(Zone zone, MapData.EventData data)
         {
-            m_world = world;
-            m_data = data;
+            mZone = zone;
+            mData = data;
 
-            if (m_data.GetEndTrigger() != null)
+            if (mData.GetEndTrigger() != null)
             {
-                m_endTrigger = world.TriggerManager.RegisterTrigger(m_data.GetEndTrigger());
+                mEndTrigger = zone.TriggerManager.RegisterTrigger(mData.GetEndTrigger());
             }
         }
 
-        public bool GetIsActive() { return m_isActive; }
+        public bool GetIsActive() { return mIsActive; }
 
         public virtual void Begin()
         {
-            Trigger.Log("Event {0} began", m_data.GetName());
-            m_isActive = true;
+            Trigger.Log("Event {0} began", mData.GetName());
+            mIsActive = true;
         }
 
         public abstract void Update(ref FrameTime frameTime);
@@ -48,13 +48,13 @@ namespace TestGame.Events
 
         protected virtual void End()
         {
-            Trigger.Log("Event {0} ended", m_data.GetName());
+            Trigger.Log("Event {0} ended", mData.GetName());
 
-            m_isActive = false;
+            mIsActive = false;
 
-            if (m_endTrigger != null)
+            if (mEndTrigger != null)
             {
-                m_endTrigger.Activate();
+                mEndTrigger.Activate();
             }
         }
     }

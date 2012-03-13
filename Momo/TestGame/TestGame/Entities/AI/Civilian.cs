@@ -15,8 +15,8 @@ namespace TestGame.Entities.AI
         #endregion
 
 
-        public Civilian(GameWorld world)
-            : base(world)
+        public Civilian(Zone zone)
+            : base(zone)
         {
             mBinLayer = BinLayers.kCivilianEntities;
 
@@ -33,7 +33,7 @@ namespace TestGame.Entities.AI
             mStateIdle.FleeState = mStateFlee;
 
 
-            BaseSpeed = 10.0f + ((float)World.Random.NextDouble() * 5.0f);
+            BaseSpeed = 10.0f + ((float)Zone.Random.NextDouble() * 5.0f);
 
             PrimaryDebugColor = new Color(0.0f, 1.0f, 1.0f, 0.3f);
             SecondaryDebugColor = PrimaryDebugColor;

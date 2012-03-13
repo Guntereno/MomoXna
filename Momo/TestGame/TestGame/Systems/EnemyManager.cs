@@ -21,7 +21,7 @@ namespace TestGame.Systems
     {
         private const int kMaxEntities = 500;
 
-        private GameWorld mWorld;
+        private Zone mZone;
 
         private Pool<AiEntity> mEntities = new Pool<AiEntity>(kMaxEntities, 2, 2, false);
 
@@ -34,9 +34,9 @@ namespace TestGame.Systems
 
 
 
-        public AiEntityManager(GameWorld world)
+        public AiEntityManager(Zone zone)
         {
-            mWorld = world;
+            mZone = zone;
 
             mEntities.RegisterPoolObjectType(typeof(Civilian), kMaxEntities);
             mEntities.RegisterPoolObjectType(typeof(Zombie), kMaxEntities);
@@ -53,8 +53,8 @@ namespace TestGame.Systems
         {
             for (int i = 0; i < kMaxEntities; ++i)
             {
-                mEntities.AddItem(new Civilian(mWorld), false);
-                mEntities.AddItem(new Zombie(mWorld), false);
+                mEntities.AddItem(new Civilian(mZone), false);
+                mEntities.AddItem(new Zombie(mZone), false);
             }
         }
 
@@ -65,7 +65,7 @@ namespace TestGame.Systems
 
             createdEntity = mEntities.CreateItem(aiEntityType);
             createdEntity.SetPosition(pos);
-            createdEntity.AddToBin(mWorld.Bin);
+            createdEntity.AddToBin(mZone.Bin);
 
             return createdEntity;
         }

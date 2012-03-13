@@ -43,7 +43,7 @@ namespace TestGame.Ai.AiEntityStates
         {
             base.Update(ref frameTime, updateToken);
 
-            GameWorld world = AiEntity.World;
+            Zone world = AiEntity.Zone;
             Random random = world.Random;
 
 
@@ -68,7 +68,7 @@ namespace TestGame.Ai.AiEntityStates
 
             if (updateToken % 10 == 0)
             {
-                BinQueryResults binItems = AiEntityStateHelpers.GetBinItems(velocityAlignmentRadius.Radius, AiEntity.GetPosition(), AiEntity.World.Bin, BinLayers.kEnemyEntities);
+                BinQueryResults binItems = AiEntityStateHelpers.GetBinItems(velocityAlignmentRadius.Radius, AiEntity.GetPosition(), AiEntity.Zone.Bin, BinLayers.kEnemyEntities);
 
                 Vector2 averageVelocity = Vector2.Zero;
                 Vector2 averagePosition = Vector2.Zero;

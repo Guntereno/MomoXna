@@ -5,12 +5,12 @@ namespace TestGame.Entities
 {
     public class Corpse : GameEntity
     {
-        private float m_meat = 0.0f;
-        private float m_age = 0.0f;
+        private float mMeat = 0.0f;
+        private float mAge = 0.0f;
 
 
-        public Corpse(GameWorld world)
-            : base(world)
+        public Corpse(Zone zone)
+            : base(zone)
         {
             mBinLayer = BinLayers.kCorpse;
         }
@@ -19,14 +19,14 @@ namespace TestGame.Entities
         {
             // Const for now. Should be a parameter of the enemy
             const float kMeatAmount = 100.0f;
-            m_meat = kMeatAmount;
+            mMeat = kMeatAmount;
 
             ContactRadiusInfo = entity.ContactRadiusInfo;
             SetPosition(entity.GetPosition());
 
             // Initialise the bin
             BinRegionUniform curBinRegion = new BinRegionUniform();
-            World.Bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);
+            Zone.Bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);
             SetBinRegion(curBinRegion);
         }
 
@@ -34,28 +34,28 @@ namespace TestGame.Entities
         {
             base.ResetItem();
 
-            m_meat = 0.0f;
-            m_age = 0.0f;
+            mMeat = 0.0f;
+            mAge = 0.0f;
         }
 
         public void SetMeat(float meat)
         {
-            m_meat = meat;
+            mMeat = meat;
         }
 
         public void Update(ref FrameTime frameTime)
         {
             // Have we been harvested?
-            if (m_meat <= 0.0f)
+            if (mMeat <= 0.0f)
             {
                 Perish();
             }
             else
             {
-                m_age += frameTime.Dt;
+                mAge += frameTime.Dt;
 
                 const float kLifeSpan = 20.0f;
-                if (m_age > kLifeSpan)
+                if (mAge > kLifeSpan)
                 {
                     Perish();
                 }
@@ -65,13 +65,13 @@ namespace TestGame.Entities
         public float HarvestMeat(float amount)
         {
             float harvested = 0.0f;
-            if (m_meat > amount)
+            if (mMeat > amount)
             {
                 harvested = amount;
             }
             else
             {
-                harvested = m_meat;
+                harvested = mMeat;
             }
 
             return harvested;

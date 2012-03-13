@@ -13,9 +13,9 @@ namespace TestGame.Weapons
     {
         #region Constructor
 
-        public Weapon(GameWorld world)
+        public Weapon(Zone zone)
         {
-            m_world = world;
+            mZone = zone;
 
             StateMachine = new StateMachine(this);
         }
@@ -24,21 +24,21 @@ namespace TestGame.Weapons
 
         #region Fields
 
-        protected bool m_isDestroyed = true;
-        protected GunParams m_params = null;
+        protected bool mIsDestroyed = true;
+        protected GunParams mParams = null;
 
-        private GameWorld m_world = null;
-        private int m_ammoInClip = 0;
+        private Zone mZone = null;
+        private int mAmmoInClip = 0;
 
-        private Vector2 m_position = Vector2.Zero;
-        private Vector2 m_barrelPos = Vector2.Zero;
-        private Vector2 m_direction = Vector2.Zero;
-        private Vector2 m_recoil = Vector2.Zero;
-        private float m_facing = 0.0f;
+        private Vector2 mPosition = Vector2.Zero;
+        private Vector2 mBarrelPos = Vector2.Zero;
+        private Vector2 mDirection = Vector2.Zero;
+        private Vector2 mRecoil = Vector2.Zero;
+        private float mFacing = 0.0f;
 
-        private float m_triggerState = 0.0f;
+        private float mTriggerState = 0.0f;
 
-        private IWeaponUser m_owner = null;
+        private IWeaponUser mOwner = null;
 
         #endregion
 
@@ -49,29 +49,29 @@ namespace TestGame.Weapons
 
         public Vector2 Recoil
         {
-            get { return m_recoil; }
-            set { m_recoil = value; }
+            get { return mRecoil; }
+            set { mRecoil = value; }
         }
 
         public IWeaponUser Owner
         {
-            get { return m_owner; }
-            set { m_owner = value; }
+            get { return mOwner; }
+            set { mOwner = value; }
         }
 
         public int AmmoInClip
         {
-            get { return m_ammoInClip; }
-            set { m_ammoInClip = value; }
+            get { return mAmmoInClip; }
+            set { mAmmoInClip = value; }
         }
 
-        public GameWorld World { get { return m_world; } }
-        public GunParams Parameters { get { return m_params; } }
-        public Vector2 Position { get { return m_position; } }
-        public Vector2 BarrelPosition { get { return m_barrelPos; } }
-        public Vector2 Direction { get { return m_direction; } }
-        public float Facing { get { return m_facing; } }
-        public float TriggerState { get { return m_triggerState; } }
+        public Zone Zone { get { return mZone; } }
+        public GunParams Parameters { get { return mParams; } }
+        public Vector2 Position { get { return mPosition; } }
+        public Vector2 BarrelPosition { get { return mBarrelPos; } }
+        public Vector2 Direction { get { return mDirection; } }
+        public float Facing { get { return mFacing; } }
+        public float TriggerState { get { return mTriggerState; } }
 
         public abstract bool AcceptingInput { get; }
 
@@ -82,44 +82,44 @@ namespace TestGame.Weapons
 
         public virtual void Init()
         {
-            m_ammoInClip = m_params.m_clipSize;
+            mAmmoInClip = mParams.m_clipSize;
         }
 
         public void Update(ref FrameTime frameTime, float triggerState, Vector2 pos, float facing)
         {
             Recoil = Vector2.Zero;
 
-            m_position = pos;
-            m_facing = facing;
-            m_direction = new Vector2((float)Math.Sin(facing), (float)Math.Cos(facing));
+            mPosition = pos;
+            mFacing = facing;
+            mDirection = new Vector2((float)Math.Sin(facing), (float)Math.Cos(facing));
 
-            m_triggerState = triggerState;
+            mTriggerState = triggerState;
 
             // This should probably be a weapon parameter
             const float kWeaponLength = 20.0f;
-            m_barrelPos = pos + (m_direction * kWeaponLength);
+            mBarrelPos = pos + (mDirection * kWeaponLength);
 
             StateMachine.Update(ref frameTime, 0);
         }
 
         public virtual void Reload()
         {
-            m_ammoInClip = m_params.m_clipSize;
+            mAmmoInClip = mParams.m_clipSize;
         }
 
         public bool IsDestroyed()
         {
-            return m_isDestroyed;
+            return mIsDestroyed;
         }
 
         public void DestroyItem()
         {
-            m_isDestroyed = true;
+            mIsDestroyed = true;
         }
 
         public void ResetItem()
         {
-            m_isDestroyed = false;
+            mIsDestroyed = false;
         }
 
         #endregion
@@ -176,7 +176,7 @@ namespace TestGame.Weapons
         {
             #region Fields
 
-            float m_timer;
+            float mTimer;
 
             #endregion
 
@@ -195,20 +195,20 @@ namespace TestGame.Weapons
 
             public override string ToString()
             {
-                return GetType().Name + " (" + m_timer.ToString("F3") + ")";
+                return GetType().Name + " (" + mTimer.ToString("F3") + ")";
             }
 
             public override void OnEnter()
             {
                 base.OnEnter();
 
-                m_timer = 0.0f;
+                mTimer = 0.0f;
             }
 
             public override void Update(ref FrameTime frameTime, uint updateToken)
             {
-                m_timer += frameTime.Dt;
-                if (m_timer >= Length)
+                mTimer += frameTime.Dt;
+                if (mTimer >= Length)
                 {
                     Weapon.StateMachine.CurrentState = NextState;
                 }

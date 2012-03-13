@@ -16,7 +16,7 @@ namespace TestGame.Systems
     {
         private const int kMaxPlayers = 2;
 
-        private GameWorld mWorld;
+        private Zone mZone;
 
         private Pool<PlayerEntity> mPlayers = new Pool<PlayerEntity>(kMaxPlayers, 1, 2, false);
 
@@ -28,9 +28,9 @@ namespace TestGame.Systems
 
 
 
-        public PlayerManager(GameWorld world)
+        public PlayerManager(Zone zone)
         {
-            mWorld = world;
+            mZone = zone;
 
             mPlayers.RegisterPoolObjectType(typeof(PlayerEntity), kMaxPlayers);
         }
@@ -51,14 +51,14 @@ namespace TestGame.Systems
             };
 
 
-            PlayerEntity player = new PlayerEntity(mWorld);
+            PlayerEntity player = new PlayerEntity(mZone);
 
             player.InputWrapper = input;
 
             player.PlayerColour = debugColours[mPlayers.ActiveItemListCount];
 
             // Spawn at a spawn point
-            MapData.Map map = mWorld.Map;
+            MapData.Map map = mZone.Map;
             //int playerSpawnIndex = m_world.Random.Next(map.PlayerSpawnPoints.Length);
             int playerSpawnIndex = mPlayers.ActiveItemListCount;
             player.SetPosition(map.PlayerSpawnPoints[playerSpawnIndex]);
@@ -66,7 +66,7 @@ namespace TestGame.Systems
 
             // Add to the pool and bin
             mPlayers.AddItem(player, true);
-            player.AddToBin(mWorld.Bin);
+            player.AddToBin(mZone.Bin);
 
             return player;
         }

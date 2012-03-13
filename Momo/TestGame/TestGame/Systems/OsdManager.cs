@@ -15,20 +15,20 @@ namespace TestGame.Systems
     {
         private const int kMaxPlayers = 4;
 
-        private GameWorld m_world = null;
+        private Zone mZone = null;
 
-        private TextStyle m_textStyle = null;
-        private TextObject[] m_weaponInfo = new TextObject[kMaxPlayers];
-        private MutableString[] m_weaponString = new MutableString[kMaxPlayers];
+        private TextStyle mTextStyle = null;
+        private TextObject[] mWeaponInfo = new TextObject[kMaxPlayers];
+        private MutableString[] mWeaponString = new MutableString[kMaxPlayers];
 
 
 
-        public OsdManager(GameWorld world)
+        public OsdManager(Zone zone)
         {
-            m_world = world;
+            mZone = zone;
 
             Font font = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
-            m_textStyle = new TextStyle(font, TextSecondaryDrawTechnique.kDropshadow);
+            mTextStyle = new TextStyle(font, TextSecondaryDrawTechnique.kDropshadow);
 
 
             Vector2[] osdPositions = 
@@ -41,35 +41,35 @@ namespace TestGame.Systems
 
             for (int i = 0; i < kMaxPlayers; ++i)
             {
-                m_weaponInfo[i] = new TextObject(m_textStyle, 500, 100, 3);
-                m_weaponString[i] = new MutableString(40);
+                mWeaponInfo[i] = new TextObject(mTextStyle, 500, 100, 3);
+                mWeaponString[i] = new MutableString(40);
 
-                m_weaponInfo[i].Position = osdPositions[i];
+                mWeaponInfo[i].Position = osdPositions[i];
             }
         }
 
 
         public void Update(ref FrameTime frameTime)
         {
-            for (int i = 0; i < m_world.PlayerManager.Players.ActiveItemListCount; ++i)
+            for (int i = 0; i < mZone.PlayerManager.Players.ActiveItemListCount; ++i)
             {
-                PlayerEntity player = m_world.PlayerManager.Players[i];
+                PlayerEntity player = mZone.PlayerManager.Players[i];
                 Weapons.Weapon currentWeapon = player.CurrentWeapon;
 
-                m_weaponString[i].Clear();
+                mWeaponString[i].Clear();
 
                 if (currentWeapon != null)
                 {
-                    m_weaponString[i].Append(currentWeapon.ToString());
-                    m_weaponString[i].Append('\n');
-                    m_weaponString[i].Append(currentWeapon.AmmoInClip);
-                    m_weaponString[i].Append('\n');
-                    m_weaponString[i].Append(currentWeapon.StateMachine.CurrentStateName);
+                    mWeaponString[i].Append(currentWeapon.ToString());
+                    mWeaponString[i].Append('\n');
+                    mWeaponString[i].Append(currentWeapon.AmmoInClip);
+                    mWeaponString[i].Append('\n');
+                    mWeaponString[i].Append(currentWeapon.StateMachine.CurrentStateName);
                 }
 
-                m_weaponString[i].EndAppend();
-                m_weaponInfo[i].PrimaryColour = player.PlayerColour;
-                m_weaponInfo[i].SetText(m_weaponString[i].GetCharacterArray());
+                mWeaponString[i].EndAppend();
+                mWeaponInfo[i].PrimaryColour = player.PlayerColour;
+                mWeaponInfo[i].SetText(mWeaponString[i].GetCharacterArray());
             }
         }
 
@@ -78,7 +78,7 @@ namespace TestGame.Systems
         {
             for (int i = 0; i < kMaxPlayers; ++i)
             {
-                m_world.TextPrinter.AddToDrawList(m_weaponInfo[i]);
+                mZone.World.TextPrinter.AddToDrawList(mWeaponInfo[i]);
             }
         }
 

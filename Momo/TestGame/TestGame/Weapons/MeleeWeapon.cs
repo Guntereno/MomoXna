@@ -21,8 +21,8 @@ namespace TestGame.Weapons
 
         #region Constructor
 
-        public MeleeWeapon(GameWorld world)
-            : base(world)
+        public MeleeWeapon(Zone zone)
+            : base(zone)
         {
             m_activeState = new ActiveState(this);
             m_coolDownState = new CoolDownState(this);
@@ -50,7 +50,7 @@ namespace TestGame.Weapons
 
         public override void Init()
         {
-            m_params = kDefaultParams;
+            mParams = kDefaultParams;
 
             base.Init();
 

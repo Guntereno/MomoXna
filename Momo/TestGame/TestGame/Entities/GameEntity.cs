@@ -40,7 +40,7 @@ namespace TestGame.Entities
 
         private bool mDestroyed = false;
 
-        private GameWorld mWorld;
+        private Zone mZone;
 
 
         protected int mBinLayer = 0;
@@ -50,7 +50,7 @@ namespace TestGame.Entities
         // -- Properties
         // --------------------------------------------------------------------
         #region Properties
-        public GameWorld World { get { return mWorld; } }
+        public Zone Zone { get { return mZone; } }
 
         public float FacingAngle
         {
@@ -121,9 +121,9 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Methods
         // --------------------------------------------------------------------
-        public GameEntity(GameWorld world)
+        public GameEntity(Zone zone)
         {
-            mWorld = world;
+            mZone = zone;
         }
 
 
@@ -193,7 +193,7 @@ namespace TestGame.Entities
 
         public void DestroyItem()
         {
-            mWorld.Bin.RemoveBinItem(this, mBinLayer);
+            mZone.Bin.RemoveBinItem(this, mBinLayer);
             mDestroyed = true;
         }
 

@@ -66,9 +66,9 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public AiEntity(GameWorld world): base(world)
+        public AiEntity(Zone zone): base(zone)
         {
-            Random random = World.Random;
+            Random random = Zone.Random;
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
@@ -124,7 +124,7 @@ namespace TestGame.Entities
 
         public void RemoveFromBin()
         {
-            RemoveFromBin(mBinLayer);
+            RemoveFromBin(Zone.Bin, mBinLayer);
         }
 
 
@@ -132,7 +132,7 @@ namespace TestGame.Entities
         {
             BinRegionUniform prevBinRegion = new BinRegionUniform();
             BinRegionUniform curBinRegion = new BinRegionUniform();
-            Bin bin = GetBin();
+            Bin bin = Zone.Bin;
 
             GetBinRegion(ref prevBinRegion);
             bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);

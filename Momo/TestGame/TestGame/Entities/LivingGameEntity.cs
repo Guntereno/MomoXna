@@ -34,8 +34,8 @@ namespace TestGame.Entities
         }
 
 
-        public LivingGameEntity(GameWorld world) :
-            base(world)
+        public LivingGameEntity(Zone zone) :
+            base(zone)
         {
  
         }

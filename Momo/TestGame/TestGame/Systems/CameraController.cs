@@ -13,32 +13,29 @@ using Momo.Debug;
 
 namespace TestGame.Systems
 {
-    class CameraController
+    public class CameraController
     {
         public OrthographicCameraNode Camera { get; set; }
         public Vector2 FollowPosition { get; set; }
 
-        Vector3 m_cameraVelocity = Vector3.Zero;
+        Vector3 mCameraVelocity = Vector3.Zero;
 
-        Momo.Maths.CriticallyDampenedSpring m_spring = new Momo.Maths.CriticallyDampenedSpring();
+        Momo.Maths.CriticallyDampenedSpring mSpring = new Momo.Maths.CriticallyDampenedSpring();
 
         private enum Behaviour
         {
             Debug,
             Follow
         }
-        Behaviour m_behaviour = Behaviour.Debug;
-
-        private  GameWorld m_world;
-
+        Behaviour mBehaviour = Behaviour.Debug;
 
         const int kDebugStringLength = 64;
-        protected MutableString m_debugString = new MutableString(kDebugStringLength);
+        protected MutableString mDebugString = new MutableString(kDebugStringLength);
 
 
-        public CameraController(GameWorld world)
+        public CameraController()
         {
-            m_world = world;
+
         }
 
         public void Update(ref FrameTime frameTime, ref Input.InputWrapper input)
@@ -48,14 +45,14 @@ namespace TestGame.Systems
 
             if (input.IsButtonDown(Buttons.LeftStick))
             {
-                m_behaviour = Behaviour.Debug;
+                mBehaviour = Behaviour.Debug;
             }
             else
             {
-                m_behaviour = Behaviour.Follow;
+                mBehaviour = Behaviour.Follow;
             }
 
-            switch (m_behaviour)
+            switch (mBehaviour)
             {
                 case Behaviour.Debug:
                     UpdateDebug(ref input);
@@ -66,9 +63,9 @@ namespace TestGame.Systems
                     break;
             }
 
-            m_spring.Update(frameTime.Dt);
+            mSpring.Update(frameTime.Dt);
 
-            Vector2 springPos = m_spring.GetCurrentValue();
+            Vector2 springPos = mSpring.GetCurrentValue();
             const float kCamHeight = 10.0f;
             Camera.LocalTranslation = new Vector3(
                 (float)Math.Floor(springPos.X),
@@ -86,31 +83,29 @@ namespace TestGame.Systems
 
         public void DebugRender(DebugRenderer debugRenderer, TextBatchPrinter debugTextBatchPrinter, TextStyle debugTextStyle)
         {
-            Vector2 curPos = m_spring.GetCurrentValue();
+            Vector2 curPos = mSpring.GetCurrentValue();
 
-            m_debugString.Clear();
-            m_debugString.Append("(");
-            m_debugString.Append(curPos, 0);
-            m_debugString.Append(")");
-            m_debugString.EndAppend();
+            mDebugString.Clear();
+            mDebugString.Append("(");
+            mDebugString.Append(curPos, 0);
+            mDebugString.Append(")");
+            mDebugString.EndAppend();
 
-            debugTextBatchPrinter.AddToDrawList(m_debugString.GetCharacterArray(), Color.White, Color.Black, new Vector2(0.0f, 0.0f), debugTextStyle);
+            debugTextBatchPrinter.AddToDrawList(mDebugString.GetCharacterArray(), Color.White, Color.Black, new Vector2(0.0f, 0.0f), debugTextStyle);
         }
 
         private void UpdateFollow()
         {
-            PlayerManager playerManager = m_world.PlayerManager;
-
-            m_spring.SetTarget(playerManager.AveragePlayerPosition);
+            mSpring.SetTarget(FollowPosition);
         }
 
         private void UpdateDebug(ref Input.InputWrapper input)
         {
-            Vector2 pos = m_spring.GetTarget();
+            Vector2 pos = mSpring.GetTarget();
             const float kMaxSpeed = 30.0f;
             Vector2 inputVector = input.GetRightStick();
             pos += inputVector * kMaxSpeed;
-            m_spring.SetTarget(pos);
+            mSpring.SetTarget(pos);
         }
     }
 }

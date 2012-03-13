@@ -10,7 +10,7 @@ namespace TestGame.Systems
         private const int kMaxCorpses = 512;
 
 
-        private GameWorld mWorld;
+        private Zone mZone;
 
         private Pool<Corpse> mCorpses = new Pool<Corpse>(kMaxCorpses, 1, 2, false);
 
@@ -18,9 +18,9 @@ namespace TestGame.Systems
         public Pool<Corpse> Corpses { get { return mCorpses; } }
 
 
-        public CorpseManager(GameWorld world)
+        public CorpseManager(Zone zone)
         {
-            mWorld = world;
+            mZone = zone;
 
             mCorpses.RegisterPoolObjectType(typeof(Corpse), kMaxCorpses);
         }
@@ -29,7 +29,7 @@ namespace TestGame.Systems
         {
             for (int i = 0; i < kMaxCorpses; ++i)
             {
-                mCorpses.AddItem(new Corpse(mWorld), false);
+                mCorpses.AddItem(new Corpse(mZone), false);
             }
         }
 
@@ -37,7 +37,7 @@ namespace TestGame.Systems
         {
             Corpse corpse = mCorpses.CreateItem(typeof(Corpse));
 
-            corpse.AddToBin(mWorld.Bin);
+            corpse.AddToBin(mZone.Bin);
             corpse.Init(entity);
             
             return corpse;

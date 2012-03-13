@@ -46,7 +46,7 @@ namespace TestGame.Ai.AiEntityStates
         {
             base.Update(ref frameTime, updateToken);
 
-            GameWorld world = AiEntity.World;
+            Zone world = AiEntity.Zone;
             Random random = world.Random;
 
 

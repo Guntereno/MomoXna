@@ -46,8 +46,8 @@ namespace TestGame.Ai.AiEntityStates
         {
             base.Update(ref frameTime, updateToken);
 
-            GameWorld world = AiEntity.World;
-            Random random = world.Random;
+            Zone zone = AiEntity.Zone;
+            Random random = zone.Random;
 
 
             float kEntitySightRadius = 800.0f;

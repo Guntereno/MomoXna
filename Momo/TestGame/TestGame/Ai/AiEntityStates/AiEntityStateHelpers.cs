@@ -27,7 +27,7 @@ namespace TestGame.Ai.AiEntityStates
         {
             Vector2 force = Vector2.Zero;
 
-            Bin bin = entity.World.Bin;
+            Bin bin = entity.Zone.Bin;
             BinRegionUniform entityRegion = new BinRegionUniform();
             bin.GetBinRegionFromCentre(entity.GetPosition(), radius, ref entityRegion);
 
@@ -73,7 +73,7 @@ namespace TestGame.Ai.AiEntityStates
             Vector2 averagePosition = entity.GetPosition();
             int averagePositionCnt = 1;
 
-            Bin bin = entity.World.Bin;
+            Bin bin = entity.Zone.Bin;
             BinRegionUniform entityRegion = new BinRegionUniform();
             bin.GetBinRegionFromCentre(entity.GetPosition(), radius, ref entityRegion);
 
@@ -117,7 +117,7 @@ namespace TestGame.Ai.AiEntityStates
             GameEntity closestEntity = null;
 
 
-            Bin bin = entity.World.Bin;
+            Bin bin = entity.Zone.Bin;
             BinRegionUniform entityRegion = new BinRegionUniform();
             bin.GetBinRegionFromCentre(entity.GetPosition(), sighthRadius, ref entityRegion);
 
@@ -172,7 +172,7 @@ namespace TestGame.Ai.AiEntityStates
         {
             Vector2 force = Vector2.Zero;
 
-            Bin bin = entity.World.Bin;
+            Bin bin = entity.Zone.Bin;
             BinRegionUniform entityRegion = new BinRegionUniform();
             bin.GetBinRegionFromCentre(entity.GetPosition(), radius, ref entityRegion);
 

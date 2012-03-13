@@ -21,25 +21,32 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private bool m_destroyed = false;
-        private BulletParams m_params;
-        private CollidableGroupInfo m_collidableGroupInfo = new CollidableGroupInfo();
+        private Zone mZone = null;
+        private bool mDestroyed = false;
+        private BulletParams mParams;
+        private CollidableGroupInfo mCollidableGroupInfo = new CollidableGroupInfo();
 
 
         // --------------------------------------------------------------------
         // -- Public Properties
         // --------------------------------------------------------------------
         #region Properties
+        public Zone Zone
+        {
+            get { return mZone; }
+            set { mZone = value; }
+        }
+
         public BulletParams Params
         {
-            get { return m_params; }
-            set { m_params = value; }
+            get { return mParams; }
+            set { mParams = value; }
         }
 
         public CollidableGroupInfo CollidableGroupInfo
         {
-            get { return m_collidableGroupInfo; }
-            set { m_collidableGroupInfo = value; }
+            get { return mCollidableGroupInfo; }
+            set { mCollidableGroupInfo = value; }
         }
         #endregion
 
@@ -47,9 +54,11 @@ namespace TestGame.Entities
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public BulletEntity()
+        public BulletEntity(Zone zone)
         {
-            m_params = kDefaultParams;
+            mZone = zone;
+
+            mParams = kDefaultParams;
 
             CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.AllBullets);
             CollidableGroupInfo.CollidesWithGroups = new Flags((int)(EntityGroups.Players | EntityGroups.Enemies | EntityGroups.AllBoundaries));
@@ -64,7 +73,7 @@ namespace TestGame.Entities
 
         public override void DebugRender(DebugRenderer debugRenderer)
         {
-            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - Velocity * 0.02f, m_params.m_debugColor, 3.5f);
+            debugRenderer.DrawFilledLine(GetPosition(), GetPosition() - Velocity * 0.02f, mParams.m_debugColor, 3.5f);
         }
 
 
@@ -76,7 +85,7 @@ namespace TestGame.Entities
 
         public void RemoveFromBin()
         {
-            RemoveFromBin(BinLayers.kBullet);
+            RemoveFromBin( Zone.Bin, BinLayers.kBullet);
         }
 
 
@@ -84,7 +93,7 @@ namespace TestGame.Entities
         {
             BinRegionUniform prevBinRegion = new BinRegionUniform();
             BinRegionUniform curBinRegion = new BinRegionUniform();
-            Bin bin = GetBin();
+            Bin bin = Zone.Bin;
 
             GetBinRegion(ref prevBinRegion);
             bin.GetBinRegionFromUnsortedCorners(LastFramePosition, GetPosition(), ref curBinRegion);
@@ -109,18 +118,18 @@ namespace TestGame.Entities
 
         public bool IsDestroyed()
         {
-            return m_destroyed;
+            return mDestroyed;
         }
 
         public void DestroyItem()
         {
-            RemoveFromBin(BinLayers.kBullet);
-            m_destroyed = true;
+            RemoveFromBin(Zone.Bin, BinLayers.kBullet);
+            mDestroyed = true;
         }
 
         public void ResetItem()
         {
-            m_destroyed = false;
+            mDestroyed = false;
         }
 
         public class BulletParams

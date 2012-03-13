@@ -23,7 +23,7 @@ namespace TestGame.Weapons
 
         #region Constructor
 
-        public Shotgun(GameWorld world) : base(world)
+        public Shotgun(Zone zone) : base(zone)
         {
             m_activeState = new ActiveState(this);
             m_emptyState = new EmptyState(this);
@@ -60,7 +60,7 @@ namespace TestGame.Weapons
         public override void Init()
         {
             m_shotgunParams = kDefaultParams;
-            m_params = m_shotgunParams;
+            mParams = m_shotgunParams;
 
             base.Init();
 
@@ -125,9 +125,9 @@ namespace TestGame.Weapons
                     int ammoInClip = Weapon.AmmoInClip;
                     if (ammoInClip > 0)
                     {
-                        GameWorld world = Weapon.World;
+                        Zone zone = Weapon.Zone;
 
-                        Random random = world.Random;
+                        Random random = zone.Random;
 
                         ShotgunParams param = (ShotgunParams)(Weapon.Parameters);
                         for (int i = 0; i < param.m_shotCount; ++i)
@@ -139,7 +139,7 @@ namespace TestGame.Weapons
 
                             velocity *= param.m_speed + (param.m_speed * ((float)random.NextDouble() * 0.08f));
 
-                            world.ProjectileManager.AddBullet(
+                            zone.ProjectileManager.AddBullet(
                                 Weapon.BarrelPosition,
                                 velocity,
                                 m_bulletParams,
@@ -150,7 +150,7 @@ namespace TestGame.Weapons
                         --ammoInClip;
                         Weapon.AmmoInClip = ammoInClip;
 
-                        world.PlaySoundQueue("GUN_single2");
+                        zone.World.PlaySoundQueue("GUN_single2");
 
                         Weapon.StateMachine.CurrentState = CoolDownState;
                     }

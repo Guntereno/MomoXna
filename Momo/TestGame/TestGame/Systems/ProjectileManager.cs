@@ -15,16 +15,16 @@ namespace TestGame.Systems
     {
         private const int kMaxBullets = 1000;
 
-        private GameWorld mWorld = null;
+        private Zone mZone = null;
         private Pool<BulletEntity> mBullets = new Pool<BulletEntity>(kMaxBullets, 1, 2, false);
 
 
         public Pool<BulletEntity> Bullets       { get { return mBullets; } }
 
 
-        public ProjectileManager(GameWorld world)
+        public ProjectileManager(Zone zone)
         {
-            mWorld = world;
+            mZone = zone;
 
             mBullets.RegisterPoolObjectType(typeof(BulletEntity), kMaxBullets);
         }
@@ -33,7 +33,7 @@ namespace TestGame.Systems
         {
             for (int i = 0; i < kMaxBullets; ++i)
             {
-                mBullets.AddItem(new BulletEntity(), false);
+                mBullets.AddItem(new BulletEntity(mZone), false);
             }
         }
 
@@ -67,7 +67,7 @@ namespace TestGame.Systems
             bullet.Params = param;
             bullet.CollidableGroupInfo.GroupMembership = bulletGroupMembership;
 
-            bullet.AddToBin(mWorld.Bin);
+            bullet.AddToBin(mZone.Bin);
         }
     }
 }

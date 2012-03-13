@@ -14,12 +14,12 @@ namespace TestGame.Events
         private Trigger m_countTrigger = null;
         private int m_count = 0;
 
-        public TriggerCounterEvent(GameWorld world, MapData.TriggerCounterEventData triggerCounterEventData)
-            : base(world, triggerCounterEventData)
+        public TriggerCounterEvent(Zone zone, MapData.TriggerCounterEventData triggerCounterEventData)
+            : base(zone, triggerCounterEventData)
         {
             m_triggerCounterData = triggerCounterEventData;
 
-            m_countTrigger = world.TriggerManager.RegisterTrigger(m_triggerCounterData.GetCountTrigger());
+            m_countTrigger = zone.TriggerManager.RegisterTrigger(m_triggerCounterData.GetCountTrigger());
             m_countTrigger.RegisterListener(this);
         }
 

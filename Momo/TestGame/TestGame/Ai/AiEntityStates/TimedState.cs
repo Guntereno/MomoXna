@@ -52,7 +52,7 @@ namespace TestGame.Ai.AiEntityStates
         {
             base.OnEnter();
 
-            mTimeInState = mMinTimeInState + (float)AiEntity.World.Random.NextDouble() * mRandomTimeInState;
+            mTimeInState = mMinTimeInState + (float)AiEntity.Zone.Random.NextDouble() * mRandomTimeInState;
             mTimer = 0.0f;
         }
 

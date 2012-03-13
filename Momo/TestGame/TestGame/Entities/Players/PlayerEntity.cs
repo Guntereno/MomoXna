@@ -21,26 +21,25 @@ namespace TestGame.Entities.Players
         private const float kPlayerHealth = 2000.0f;
 
         #region State Machine
-        private StateMachine m_stateMachine = null;
-        private ActiveState m_stateActive = null;
-        private DeadState m_stateDead = null;
-        private DyingState m_stateDying = null;
+        private StateMachine mStateMachine = null;
+        private ActiveState mStateActive = null;
+        private DeadState mStateDead = null;
+        private DyingState mStateDying = null;
         #endregion
 
-        public Vector2 m_movementVector = Vector2.Zero;
-        public Vector2 m_movementInputVector = Vector2.Zero;
-        public Vector2 m_facingInputVector = Vector2.Zero;
-        public float m_triggerState = 0.0f;
+        public Vector2 mMovementVector = Vector2.Zero;
+        public Vector2 mMovementInputVector = Vector2.Zero;
+        public Vector2 mFacingInputVector = Vector2.Zero;
+        public float mTriggerState = 0.0f;
 
-        private Weapons.Weapon[] m_arsenal = new Weapons.Weapon[kNumWeaponSlots];
-        private Weapons.Weapon m_currentWeapon = null;
-        private int m_currentWeaponIdx = -1;
+        private Weapons.Weapon[] mArsenal = new Weapons.Weapon[kNumWeaponSlots];
+        private Weapons.Weapon mCurrentWeapon = null;
+        private int mCurrentWeaponIdx = -1;
 
-        private Input.InputWrapper m_input = null;
+        private Input.InputWrapper mInput = null;
 
-        private Color m_playerColour = Color.White;
+        private Color mPlayerColour = Color.White;
 
-        private Bin m_bin = null;
 
         #endregion
 
@@ -50,23 +49,23 @@ namespace TestGame.Entities.Players
         // --------------------------------------------------------------------
         #region Properties
 
-        public Vector2 InputMovement        { get { return m_movementInputVector; } }
-        public Vector2 InputFacing          { get { return m_facingInputVector; } }
-        public float TriggerState           { get { return m_triggerState; } }
+        public Vector2 InputMovement        { get { return mMovementInputVector; } }
+        public Vector2 InputFacing          { get { return mFacingInputVector; } }
+        public float TriggerState           { get { return mTriggerState; } }
 
         public Color PlayerColour
         {
-            get { return m_playerColour; }
+            get { return mPlayerColour; }
             set {
-                m_playerColour = value;
-                m_stateActive.DebugColor = m_playerColour;
+                mPlayerColour = value;
+                mStateActive.DebugColor = mPlayerColour;
             }
         }
 
         public Input.InputWrapper InputWrapper
         {
-            get { return m_input; }
-            set { m_input = value; }
+            get { return mInput; }
+            set { mInput = value; }
         }
 
 
@@ -77,7 +76,7 @@ namespace TestGame.Entities.Players
         // --------------------------------------------------------------------
         // -- Methods
         // --------------------------------------------------------------------
-        public PlayerEntity(GameWorld world) : base(world)
+        public PlayerEntity(Zone zone) : base(zone)
         {
             ContactRadiusInfo = new RadiusInfo(12.0f);
             Mass = ContactRadiusInfo.Radius * 2.0f;
@@ -87,42 +86,42 @@ namespace TestGame.Entities.Players
 
             FacingDirection = Vector2.UnitY;
 
-            m_stateMachine = new StateMachine(this);
+            mStateMachine = new StateMachine(this);
 
-            m_stateActive = new ActiveState(this);
-            m_stateDying = new DyingState(this);
-            m_stateDead = new DeadState(this);
+            mStateActive = new ActiveState(this);
+            mStateDying = new DyingState(this);
+            mStateDead = new DeadState(this);
 
-            m_stateActive.DebugColor = PlayerColour;
+            mStateActive.DebugColor = PlayerColour;
                         
-            m_stateDying.Length = 0.5f;
-            m_stateDying.ExitState = m_stateDead;
+            mStateDying.Length = 0.5f;
+            mStateDying.ExitState = mStateDead;
             Color color = Color.Gray;
             color.A = 128;
-            m_stateDying.DebugColor = color;
+            mStateDying.DebugColor = color;
                         
-            m_stateDead.Length = 4.0f;
-            m_stateDead.ExitState = m_stateActive;
-            m_stateDead.DebugColor = Color.Transparent;
+            mStateDead.Length = 4.0f;
+            mStateDead.ExitState = mStateActive;
+            mStateDead.DebugColor = Color.Transparent;
 
             PrimaryDebugColor = new Color(0.0f, 1.0f, 0.0f, 0.25f);
         }
 
         public void Init()
         {
-            Systems.WeaponManager weaponMan = World.WeaponManager;
-            m_arsenal[0] = weaponMan.Create(MapData.Weapon.Design.Pistol);
-            m_arsenal[1] = weaponMan.Create(MapData.Weapon.Design.Shotgun);
-            m_arsenal[2] = weaponMan.Create(MapData.Weapon.Design.Minigun);
+            Systems.WeaponManager weaponMan = Zone.WeaponManager;
+            mArsenal[0] = weaponMan.Create(MapData.Weapon.Design.Pistol);
+            mArsenal[1] = weaponMan.Create(MapData.Weapon.Design.Shotgun);
+            mArsenal[2] = weaponMan.Create(MapData.Weapon.Design.Minigun);
 
             for (int i = 0; i < kNumWeaponSlots; ++i)
             {
-                m_arsenal[i].Owner = this;
+                mArsenal[i].Owner = this;
             }
 
-            m_currentWeaponIdx = 0;
+            mCurrentWeaponIdx = 0;
 
-            m_stateMachine.CurrentState = m_stateActive;
+            mStateMachine.CurrentState = mStateActive;
 
             MaxHealth = kPlayerHealth;
             Health = kPlayerHealth;
@@ -133,19 +132,18 @@ namespace TestGame.Entities.Players
         {
             base.Update(ref frameTime, updateToken);
 
-            m_stateMachine.Update(ref frameTime, updateToken);
+            mStateMachine.Update(ref frameTime, updateToken);
         }
 
         public void AddToBin(Bin bin)
         {
-            m_bin = bin;
             AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, BinLayers.kPlayerEntity);
         }
 
 
         public void RemoveFromBin()
         {
-            RemoveFromBin(BinLayers.kPlayerEntity);
+            RemoveFromBin(Zone.Bin, BinLayers.kPlayerEntity);
         }
 
 
@@ -153,7 +151,7 @@ namespace TestGame.Entities.Players
         {
             BinRegionUniform prevBinRegion = new BinRegionUniform();
             BinRegionUniform curBinRegion = new BinRegionUniform();
-            Bin bin = GetBin();
+            Bin bin = Zone.Bin;
 
             GetBinRegion(ref prevBinRegion);
             bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);
@@ -178,7 +176,7 @@ namespace TestGame.Entities.Players
 
             AddForce(direction * (damage * 500.0f));
 
-            if (m_stateMachine.CurrentState != m_stateDying)
+            if (mStateMachine.CurrentState != mStateDying)
             {
                 // Take damage from the bullet
                 Health -= damage;
@@ -186,7 +184,7 @@ namespace TestGame.Entities.Players
                 {
                     Health = 0.0f;
 
-                    m_stateMachine.CurrentState = m_stateDying;
+                    mStateMachine.CurrentState = mStateDying;
                 }
             }
         }
@@ -201,37 +199,37 @@ namespace TestGame.Entities.Players
         public void UpdateInput()
         {
             // Handle weapon cycling
-            if (m_input.IsButtonPressed(Buttons.RightShoulder))
+            if (mInput.IsButtonPressed(Buttons.RightShoulder))
             {
-                ++m_currentWeaponIdx;
-                if (m_currentWeaponIdx >= kNumWeaponSlots)
+                ++mCurrentWeaponIdx;
+                if (mCurrentWeaponIdx >= kNumWeaponSlots)
                 {
-                    m_currentWeaponIdx = 0;
+                    mCurrentWeaponIdx = 0;
                 }
             }
 
-            if (m_input.IsButtonPressed(Buttons.LeftShoulder))
+            if (mInput.IsButtonPressed(Buttons.LeftShoulder))
             {
-                --m_currentWeaponIdx;
-                if (m_currentWeaponIdx < 0)
+                --mCurrentWeaponIdx;
+                if (mCurrentWeaponIdx < 0)
                 {
-                    m_currentWeaponIdx = kNumWeaponSlots - 1;
+                    mCurrentWeaponIdx = kNumWeaponSlots - 1;
                 }
             }
 
-            m_currentWeapon = m_arsenal[m_currentWeaponIdx];
+            mCurrentWeapon = mArsenal[mCurrentWeaponIdx];
 
-            if (m_currentWeapon.AmmoInClip < m_currentWeapon.Parameters.m_clipSize)
+            if (mCurrentWeapon.AmmoInClip < mCurrentWeapon.Parameters.m_clipSize)
             {
-                if (m_input.IsButtonPressed(Buttons.X) || (m_currentWeapon.AmmoInClip == 0))
+                if (mInput.IsButtonPressed(Buttons.X) || (mCurrentWeapon.AmmoInClip == 0))
                 {
-                    m_currentWeapon.Reload();
+                    mCurrentWeapon.Reload();
                 }
             }
 
-            m_movementInputVector = m_input.GetLeftStick();
-            m_facingInputVector = m_input.GetRightStick();
-            m_triggerState = m_input.GetRightTrigger();
+            mMovementInputVector = mInput.GetLeftStick();
+            mFacingInputVector = mInput.GetRightStick();
+            mTriggerState = mInput.GetRightTrigger();
         }
 
 
@@ -240,21 +238,21 @@ namespace TestGame.Entities.Players
             const float kMaxSpeed = 225.0f;
 
             // If the player has a facing input, use it...
-            if (m_facingInputVector.LengthSquared() > 0.0f)
+            if (mFacingInputVector.LengthSquared() > 0.0f)
             {
-                FacingDirection = Vector2.Normalize(m_facingInputVector);
+                FacingDirection = Vector2.Normalize(mFacingInputVector);
             }
             // If they're moving, update it from the movement vector
-            else if (m_movementVector.LengthSquared() > 0.0f)
+            else if (mMovementVector.LengthSquared() > 0.0f)
             {
-                FacingDirection = Vector2.Normalize(m_movementVector);
+                FacingDirection = Vector2.Normalize(mMovementVector);
             }
 
 
-            Vector2 dMovement = m_movementInputVector - m_movementVector;
-            m_movementVector += dMovement * 0.5f;
+            Vector2 dMovement = mMovementInputVector - mMovementVector;
+            mMovementVector += dMovement * 0.5f;
 
-            Vector2 movementVectorNormalised = Vector2.Normalize(m_movementVector);
+            Vector2 movementVectorNormalised = Vector2.Normalize(mMovementVector);
 
             float dotMovementFacing = Vector2.Dot(movementVectorNormalised, FacingDirection);
 
@@ -268,7 +266,7 @@ namespace TestGame.Entities.Players
             else if (dotMovementFacing < 0.35f)
                 maxSpeedMod = 0.85f;
 
-            Vector2 newPosition = GetPosition() + ((m_movementVector * maxSpeedMod * kMaxSpeed) * frameTime.Dt);
+            Vector2 newPosition = GetPosition() + ((mMovementVector * maxSpeedMod * kMaxSpeed) * frameTime.Dt);
 
             SetPosition(newPosition);
         }
@@ -276,22 +274,22 @@ namespace TestGame.Entities.Players
 
         internal void UpdateWeapon(ref FrameTime frameTime)
         {
-            if (m_currentWeapon != null)
+            if (mCurrentWeapon != null)
             {
-                m_currentWeapon.Update(ref frameTime, m_triggerState, GetPosition(), FacingAngle);
+                mCurrentWeapon.Update(ref frameTime, mTriggerState, GetPosition(), FacingAngle);
 
-                AddForce(m_currentWeapon.Recoil);
+                AddForce(mCurrentWeapon.Recoil);
             }
         }
 
         internal void Kill()
         {
-            RemoveFromBin();
+            RemoveFromBin(Zone.Bin, mBinLayer);
         }
 
         internal void Spawn()
         {
-            AddToBin(m_bin);
+            AddToBin(Zone.Bin);
             Health = MaxHealth;
         }
 
@@ -300,10 +298,10 @@ namespace TestGame.Entities.Players
 
         public Weapon CurrentWeapon
         {
-            get { return m_currentWeapon; }
+            get { return mCurrentWeapon; }
             set
             {
-                m_currentWeapon = value;
+                mCurrentWeapon = value;
                 throw new System.Exception("It's not possible to set the player's weapon externally!");
             }
         }
@@ -315,7 +313,7 @@ namespace TestGame.Entities.Players
 
         #region IStateMachineOwner
 
-        public StateMachine StateMachine { get { return m_stateMachine; } }
+        public StateMachine StateMachine { get { return mStateMachine; } }
 
         #endregion
     }

@@ -24,7 +24,7 @@ namespace TestGame.Weapons
 
         #region Constructor
 
-        public Minigun(GameWorld world): base(world)
+        public Minigun(Zone zone): base(zone)
         {
             m_activeState = new ActiveState(this);
             m_emptyState = new EmptyState(this);
@@ -67,7 +67,7 @@ namespace TestGame.Weapons
         public override void Init()
         {
             m_minigunParams = kDefaultParams;
-            m_params = m_minigunParams;
+            mParams = m_minigunParams;
 
             Heat = 0.0f;
 
@@ -134,9 +134,9 @@ namespace TestGame.Weapons
                     int ammoInClip = Weapon.AmmoInClip;
                     if (ammoInClip > 0)
                     {
-                        GameWorld world = Weapon.World;
+                        Zone zone = Weapon.Zone;
 
-                        Random random = world.Random;
+                        Random random = zone.Random;
 
                         MinigunParams param = (MinigunParams)(Weapon.Parameters);
                         float angle = Weapon.Facing + (((float)random.NextDouble() * param.m_spread) - (0.5f * param.m_spread));
@@ -147,7 +147,7 @@ namespace TestGame.Weapons
 
                         velocity *= param.m_speed;
 
-                        world.ProjectileManager.AddBullet(
+                        zone.ProjectileManager.AddBullet(
                             Weapon.BarrelPosition,
                             velocity,
                             m_bulletParams,
@@ -156,7 +156,7 @@ namespace TestGame.Weapons
                         --ammoInClip;
                         Weapon.AmmoInClip = ammoInClip;
 
-                        world.PlaySoundQueue("GUN_machine");
+                        zone.World.PlaySoundQueue("GUN_machine");
 
                         const float kHeatDelta = 0.4f;
                         minigun.Heat = minigun.Heat + kHeatDelta;

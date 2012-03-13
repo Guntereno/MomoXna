@@ -19,8 +19,8 @@ namespace TestGame.Entities.AI
         #endregion
 
 
-        public Zombie(GameWorld world)
-            : base(world)
+        public Zombie(Zone zone)
+            : base(zone)
         {
             mBinLayer = BinLayers.kEnemyEntities;
 
@@ -44,9 +44,9 @@ namespace TestGame.Entities.AI
 
             mStateChase.NextState = mStateWander;
 
-            Gait = new ZombieGait((float)World.Random.NextDouble() * 100.0f);
+            Gait = new ZombieGait((float)Zone.Random.NextDouble() * 100.0f);
 
-            BaseSpeed = 10.0f + ((float)World.Random.NextDouble() * 5.0f);
+            BaseSpeed = 10.0f + ((float)Zone.Random.NextDouble() * 5.0f);
 
             PrimaryDebugColor = new Color(1.0f, 0.0f, 0.0f, 0.3f);
             SecondaryDebugColor = PrimaryDebugColor;

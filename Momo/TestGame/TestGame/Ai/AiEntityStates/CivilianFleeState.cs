@@ -71,7 +71,7 @@ namespace TestGame.Ai.AiEntityStates
         {
             base.Update(ref frameTime, updateToken);
 
-            GameWorld world = AiEntity.World;
+            Zone world = AiEntity.Zone;
             Random random = world.Random;
 
             Vector2 boundaryRepelForce = Vector2.Zero;
@@ -120,8 +120,8 @@ namespace TestGame.Ai.AiEntityStates
 
                 SearchDirs searchDir = msSearchDirections[mLongDirectionIndex];
                 searchDirection = ((AiEntity.FacingDirection * searchDir.mX) + (perpDirection * searchDir.mY));
-                clearPath = AiEntityStateHelpers.IsClearLineOfSightBoundary(AiEntity.GetPosition(), searchDirection * kLongPathRepelRadius, AiEntity.World.Bin, BinLayers.kBoundaryObstructionSmall);
-                int enemyCnt = AiEntityStateHelpers.CountBinItems(AiEntity.GetPosition(), searchDirection * kLongPathRepelRadius, AiEntity.World.Bin, BinLayers.kEnemyEntities);
+                clearPath = AiEntityStateHelpers.IsClearLineOfSightBoundary(AiEntity.GetPosition(), searchDirection * kLongPathRepelRadius, AiEntity.Zone.Bin, BinLayers.kBoundaryObstructionSmall);
+                int enemyCnt = AiEntityStateHelpers.CountBinItems(AiEntity.GetPosition(), searchDirection * kLongPathRepelRadius, AiEntity.Zone.Bin, BinLayers.kEnemyEntities);
 
 
                 mLongDirectionIndex += mLongDirectionSearch;

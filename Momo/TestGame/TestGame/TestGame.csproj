@@ -158,6 +158,7 @@
     <Compile Include="Weapons\Shotgun.cs" />
     <Compile Include="Weapons\Weapon.cs" />
     <Compile Include="Systems\WeaponManager.cs" />
+    <Compile Include="Zone.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
