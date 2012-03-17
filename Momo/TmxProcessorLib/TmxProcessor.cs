@@ -565,7 +565,7 @@ namespace TmxProcessorLib
                             float randScaleZ = ((float)Math.PI * 0.5f) * rotCount;
 
 
-                            const float kGlobalScale = 0.5f;
+                            const float kGlobalScale = 0.35f;
 
                             Vector3 pos = new Vector3(centerX, centerY, 0.0f);
 
