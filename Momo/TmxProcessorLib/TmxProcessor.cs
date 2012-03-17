@@ -37,10 +37,13 @@ namespace TmxProcessorLib
     public class TmxProcessor : ContentProcessor<TInput, TOutput>
     {
         public Vector2 Offset = new Vector2(1000.0f, 1000.0f);
+        public static Random Random { get; private set; }
 
         public override TOutput Process(TInput input, ContentProcessorContext context)
         {
             TmxProcessorLib.Content.Map output = new TmxProcessorLib.Content.Map();
+
+            Random = new Random();
 
             output.LayerCount = input.TileLayers.Count;
 
@@ -521,8 +524,6 @@ namespace TmxProcessorLib
 
                     Tile tile = output.Tiles[tileId];
 
-
-
                     if (!tileDict.ContainsKey(tile.Parent))
                     {
                         tileDict.Add(tile.Parent, new List<TileInfo>());
@@ -540,6 +541,42 @@ namespace TmxProcessorLib
                 {
                     List<TileInfo> tileList = tileDict[tileset];
 
+                    // Use models for the wall layer
+                    if (tileset.Name == "citywalls")
+                    {
+                        string modelName = "tiles/cityBlockWall";
+
+
+                        for (int i = 0; i < tileList.Count; ++i)
+                        {
+                            TileInfo tileInfo = tileList[i];
+
+                            float centerX = (tileInfo.m_x * input.TileDimensions.X) + (input.TileDimensions.X * 0.5f) + Offset.X;
+                            float centerY = (tileInfo.m_y * input.TileDimensions.Y) + (input.TileDimensions.Y * 0.5f) + Offset.X;
+
+                            float randScaleY = 1.0f + (float)TmxProcessor.Random.NextDouble();
+
+                            int rotCount = TmxProcessor.Random.Next(3);
+                            float randScaleZ = ((float)Math.PI * 0.5f) * rotCount;
+
+
+                            const float kGlobalScale = 0.5f;
+
+                            Vector3 pos = new Vector3(centerX, centerY, 0.0f);
+
+                            Matrix worldMatrix = Matrix.Identity;
+
+                            worldMatrix *= Matrix.CreateScale(kGlobalScale, kGlobalScale * randScaleY, kGlobalScale);
+                            worldMatrix *= Matrix.CreateRotationY(randScaleZ);
+                            worldMatrix *= Matrix.CreateRotationX((float)Math.PI * 0.5f);
+                            worldMatrix *= Matrix.CreateTranslation(pos);
+
+                            patch.Models.Add(new Content.ModelInst(modelName, worldMatrix));
+                        }
+                    }
+
+
+                    // Add the ground info
                     int numVerts = tileList.Count * 6;
                     VFormat[] vertList = new VFormat[numVerts];
                     int currentVert = 0;

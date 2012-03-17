@@ -62,7 +62,7 @@ namespace MapData
             m_viewFrustum.Matrix = modelMatrix * viewMatrix * projMatrix;
 
             graphicsDevice.BlendState = BlendState.AlphaBlend;
-            graphicsDevice.DepthStencilState = DepthStencilState.None;
+            graphicsDevice.DepthStencilState = DepthStencilState.Default;
             graphicsDevice.RasterizerState = RasterizerState.CullNone;
             graphicsDevice.SamplerStates[0] = m_samplerState;
 
@@ -71,9 +71,9 @@ namespace MapData
                 for (int patchIdx = 0; patchIdx < m_map.Patches[layerIdx].Length; ++patchIdx)
                 {
                     MapData.Patch patch = m_map.Patches[layerIdx][patchIdx];
-                    if (m_viewFrustum.Intersects(patch.GetBoundingBox()))
+                    if (m_viewFrustum.Intersects(patch.BoundingBox))
                     {
-                        patch.Render(m_effect, graphicsDevice);
+                        patch.Render(viewMatrix, projMatrix, m_effect, graphicsDevice);
                     }
                 }
             }

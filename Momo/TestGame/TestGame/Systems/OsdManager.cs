@@ -27,7 +27,7 @@ namespace TestGame.Systems
         {
             mZone = zone;
 
-            Font font = TestGame.Instance().Content.Load<Font>("fonts/Calibri_26_b_o3");
+            Font font = TestGame.Instance.Content.Load<Font>("fonts/Calibri_26_b_o3");
             mTextStyle = new TextStyle(font, TextSecondaryDrawTechnique.kDropshadow);
 
 

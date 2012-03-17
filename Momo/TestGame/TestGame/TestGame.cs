@@ -17,8 +17,8 @@ namespace TestGame
     /// </summary>
     public class TestGame : Microsoft.Xna.Framework.Game
     {
-        public static TestGame Instance() { return ms_instance; }
-        private static TestGame ms_instance = null;
+        public static TestGame Instance { get { return msInstance; } }
+        private static TestGame msInstance = null;
 
         public const int kBackBufferWidth = 1280;
         public const int kBackBufferHeight = 720;
@@ -29,25 +29,24 @@ namespace TestGame
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        private Profiler m_profiler = new Profiler();
-        private int m_cpuUpdateProfileItemId = 0;
-        private int m_cpuRenderProfileItemId = 0;
-        private int m_cpuDebugRenderProfileItemId = 0;
+        private Profiler mProfiler = new Profiler();
+        private int mCpuUpdateProfileItemId = 0;
+        private int mCpuRenderProfileItemId = 0;
+        private int mCpuDebugRenderProfileItemId = 0;
 
         private WorldManager.WorldManager m_worldManager = new WorldManager.WorldManager();
 
         public InputManager InputManager { get; private set; }
 
-        public ResourceManager ResourceManager { get; private set; }
-
         public TestGame()
         {
-            System.Diagnostics.Debug.Assert(ms_instance == null);
-            ms_instance = this;
+            if (msInstance != null)
+                throw new System.Exception("Attempt to instantiate Singleton twice!");
+            msInstance = this;
+
+            new ResourceManager(Content);
 
             InputManager = new Input.InputManager();
-
-            ResourceManager = new ResourceManager(Content);
 
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = kBackBufferWidth;
@@ -77,10 +76,10 @@ namespace TestGame
 
         protected override void Initialize()
         {
-            m_profiler.Init(10, TestGame.Instance().GraphicsDevice);
-            m_cpuUpdateProfileItemId = m_profiler.RegisterProfileItem("Update", new Color(1.0f, 0.0f, 0.0f, 0.5f));
-            m_cpuRenderProfileItemId = m_profiler.RegisterProfileItem("Render", new Color(0.5f, 0.0f, 0.0f, 0.5f));
-            m_cpuDebugRenderProfileItemId = m_profiler.RegisterProfileItem("DebugRender", new Color(1.0f, 0.0f, 0.0f, 0.5f));
+            mProfiler.Init(10, TestGame.Instance.GraphicsDevice);
+            mCpuUpdateProfileItemId = mProfiler.RegisterProfileItem("Update", new Color(1.0f, 0.0f, 0.0f, 0.5f));
+            mCpuRenderProfileItemId = mProfiler.RegisterProfileItem("Render", new Color(0.5f, 0.0f, 0.0f, 0.5f));
+            mCpuDebugRenderProfileItemId = mProfiler.RegisterProfileItem("DebugRender", new Color(1.0f, 0.0f, 0.0f, 0.5f));
 
             m_worldManager.RegisterWorld("TestWorld", GameWorld.WorldCreator);
 
@@ -105,7 +104,7 @@ namespace TestGame
 
         protected override void Update(GameTime gameTime)
         {
-            m_profiler.StartProfile(m_cpuUpdateProfileItemId);
+            mProfiler.StartProfile(mCpuUpdateProfileItemId);
 
             // More time related numbers will eventually be added to the FrameTime structure. Its worth passing
             // it about instead of just dt, so we can easily refactor.
@@ -121,7 +120,7 @@ namespace TestGame
 
             base.Update(gameTime);
 
-            m_profiler.EndProfile(m_cpuUpdateProfileItemId);
+            mProfiler.EndProfile(mCpuUpdateProfileItemId);
         }
 
 
@@ -131,15 +130,15 @@ namespace TestGame
         {
             GraphicsDevice.Clear(Color.SteelBlue);
 
-            m_profiler.StartProfile(m_cpuRenderProfileItemId);
+            mProfiler.StartProfile(mCpuRenderProfileItemId);
             m_worldManager.Render();
-            m_profiler.EndProfile(m_cpuRenderProfileItemId);
+            mProfiler.EndProfile(mCpuRenderProfileItemId);
 
-            m_profiler.StartProfile(m_cpuDebugRenderProfileItemId);
+            mProfiler.StartProfile(mCpuDebugRenderProfileItemId);
             m_worldManager.DebugRender();
-            m_profiler.EndProfile(m_cpuDebugRenderProfileItemId);
+            mProfiler.EndProfile(mCpuDebugRenderProfileItemId);
 
-            m_profiler.Render(GraphicsDevice);
+            mProfiler.Render(GraphicsDevice);
 
             base.Draw(gameTime);
         }

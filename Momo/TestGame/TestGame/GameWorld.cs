@@ -53,9 +53,6 @@ namespace TestGame
         private TextStyle mDebugTextStyle = null;
         private TextBatchPrinter mDebugTextPrinter = new TextBatchPrinter();
 
-
-        private Model m_testModel;
-
 #if !NO_SOUND
         private AudioEngine mAudioEngine = null;
         private WaveBank mWaveBank = null;
@@ -90,12 +87,12 @@ namespace TestGame
 
         public override void Load()
         {
-            Effect textEffect = TestGame.Instance().Content.Load<Effect>("effects/text");
+            Effect textEffect = TestGame.Instance.Content.Load<Effect>("effects/text");
 
             // Debug
-            mDebugRenderer.Init(50000, 1000, TestGame.Instance().GraphicsDevice);
+            mDebugRenderer.Init(50000, 1000, TestGame.Instance.GraphicsDevice);
             mDebugTextPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 500, 1000, 1);
-            mDebugFont = TestGame.Instance().Content.Load<Font>("fonts/Consolas_24_o2");
+            mDebugFont = TestGame.Instance.Content.Load<Font>("fonts/Consolas_24_o2");
             mDebugTextStyle = new TextStyle(mDebugFont, TextSecondaryDrawTechnique.kDropshadow);
 
             mTextPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 100, 1000, 1);
@@ -112,8 +109,6 @@ namespace TestGame
 
             mCamera.LocalTranslation = new Vector3(300.0f, 750.0f, 10.0f);
             mCameraController.Camera = mCamera;
-
-            m_testModel = TestGame.Instance().ResourceManager.Get<Model>("tiles/cityBlockWall");
 
 #if !NO_SOUND
             mAudioEngine = new AudioEngine("Content\\Audio\\audio.xgs");
@@ -139,7 +134,7 @@ namespace TestGame
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
             
-            Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper(0);
+            Input.InputWrapper inputWrapper = TestGame.Instance.InputManager.GetInputWrapper(0);
 
 
             mZone.Update(dt);
@@ -178,15 +173,7 @@ namespace TestGame
         {
             mZone.Render();
 
-            Vector3 pos = new Vector3(mZone.Map.PlayerSpawnPoints[0].X, mZone.Map.PlayerSpawnPoints[0].Y, 0.0f);
-            Matrix testWorldMatrix;
-            Matrix.CreateRotationX((float)Math.PI * 0.5f, out testWorldMatrix);
-            testWorldMatrix *= Matrix.CreateScale(0.5f);
-            testWorldMatrix *= Matrix.CreateTranslation(pos);
-
-            m_testModel.Draw(testWorldMatrix, Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-            TextPrinter.Render(true, TestGame.Instance().GraphicsDevice);
+            TextPrinter.Render(true, TestGame.Instance.GraphicsDevice);
             TextPrinter.ClearDrawList();
         }
 
@@ -204,11 +191,11 @@ namespace TestGame
 
             mCameraController.DebugRender(mDebugRenderer, mDebugTextPrinter, mDebugTextStyle);
 
-            DebugRenderer.Render(mCamera.ViewMatrix, mCamera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
+            DebugRenderer.Render(mCamera.ViewMatrix, mCamera.ProjectionMatrix, TestGame.Instance.GraphicsDevice);
             DebugRenderer.Clear();
 
             // Render any debug text objects that where added.
-            DebugTextPrinter.Render(true, TestGame.Instance().GraphicsDevice);
+            DebugTextPrinter.Render(true, TestGame.Instance.GraphicsDevice);
             DebugTextPrinter.ClearDrawList();
         }
 

@@ -99,7 +99,7 @@ namespace TestGame
 
         public void Load()
         {
-            mMap = TestGame.Instance().ResourceManager.Get<MapData.Map>("maps/test_arena2/test_arena2");
+            mMap = ResourceManager.Instance.Get<MapData.Map>("maps/zone01/zone01");
 
             mBin.Init(50, 50, mMap.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 6000, 1000, 1000);
 
@@ -114,18 +114,18 @@ namespace TestGame
             mCorpseManager.Load();
 
 
-            mPlayerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(0));
+            mPlayerManager.AddPlayer(TestGame.Instance.InputManager.GetInputWrapper(0));
 
 
             // TODO: Temp: Disconnects need to be handled in the InputManager
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.Two);
             if (gamePadState.IsConnected)
             {
-                mPlayerManager.AddPlayer(TestGame.Instance().InputManager.GetInputWrapper(1));
+                mPlayerManager.AddPlayer(TestGame.Instance.InputManager.GetInputWrapper(1));
             }
 
 
-            mMapRenderer.Init(mMap, TestGame.Instance().GraphicsDevice, 16);
+            mMapRenderer.Init(mMap, TestGame.Instance.GraphicsDevice, 16);
 
 
             float smallPathNodeRadius = 25.0f;
@@ -138,7 +138,7 @@ namespace TestGame
             PathRegion[] regions = new PathRegion[1];
             Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius, false);
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
-            regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 30, true, extrudeBoundariesSmallPath);
+            regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 60, true, extrudeBoundariesSmallPath);
             regions[0].GenerateNodePaths(mBin, BinLayers.kBoundaryObstructionSmall);
             mPathIsland.SetRegions(regions);
 
@@ -177,7 +177,7 @@ namespace TestGame
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
             
-            Input.InputWrapper inputWrapper = TestGame.Instance().InputManager.GetInputWrapper(0);
+            Input.InputWrapper inputWrapper = TestGame.Instance.InputManager.GetInputWrapper(0);
 
             int updateIterationCnt = 1;
             KeyboardState keyboardState = Keyboard.GetState();
@@ -278,7 +278,7 @@ namespace TestGame
 
         public void Render()
         {
-            mMapRenderer.Render(World.Camera.ViewMatrix, World.Camera.ProjectionMatrix, TestGame.Instance().GraphicsDevice);
+            mMapRenderer.Render(World.Camera.ViewMatrix, World.Camera.ProjectionMatrix, TestGame.Instance.GraphicsDevice);
 
             mOsdManager.Render();
         }

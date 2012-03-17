@@ -9,23 +9,29 @@ using Microsoft.Xna.Framework.Graphics;
 namespace MapData
 {
     using VFormat = VertexPositionTexture;
+    using Momo.Core;
 
     public class Patch
     {
+        public Mesh[] Meshes { get; private set; }
+        public ModelInst[] Models { get; private set; }
+        public BoundingBox BoundingBox { get; private set; }
+
         public Patch()
         {
         }
 
-        public BoundingBox GetBoundingBox()
-        {
-            return m_boundingBox;
-        }
 
-        public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
+        public void Render(Matrix view, Matrix projection, BasicEffect effect, GraphicsDevice graphicsDevice)
         {
-            for (int i = 0; i < m_meshes.Length; ++i)
+            for (int i=0; i < Meshes.Length; ++i)
             {
-                m_meshes[i].Render(effect, graphicsDevice);
+                Meshes[i].Render(effect, graphicsDevice);
+            }
+
+            for (int i = 0; i < Models.Length; ++i)
+            {
+                Models[i].Model.Draw(Models[i].WorldMatrix, view, projection);
             }
         }
 
@@ -33,10 +39,10 @@ namespace MapData
         {
             Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-            for (int i = 0; i < m_meshes.Length; ++i)
+            for (int i = 0; i < Meshes.Length; ++i)
             {
-                Mesh mesh = m_meshes[i];
-                BoundingBox boundingBox = mesh.GetBoundingBox();
+                Mesh mesh = Meshes[i];
+                BoundingBox boundingBox = mesh.BoundingBox;
 
                 if (boundingBox.Min.X < min.X)
                     min.X = boundingBox.Min.X;
@@ -51,39 +57,38 @@ namespace MapData
                     max.Y = boundingBox.Max.Y;
                 if (boundingBox.Max.Z > max.Z)
                     max.Z = boundingBox.Max.Z;
-
-                m_boundingBox = new BoundingBox(min, max);
             }
+
+            BoundingBox = new BoundingBox(min, max);
         }
 
-        private class Mesh
+        public class Mesh
         {
+            public Texture2D Texture { get; private set; }
+            public VFormat[] Vertices { get; private set; }
+            public BoundingBox BoundingBox { get; private set; }
+
             public Mesh(Texture2D texture, VFormat[] vertices)
             {
                 System.Diagnostics.Debug.Assert(texture != null);
                 System.Diagnostics.Debug.Assert(vertices.Length > 0);
 
-                m_texture = texture;
-                m_vertices = vertices;
+                Texture = texture;
+                Vertices = vertices;
 
                 CalculateBoundingBox();
             }
 
-            public BoundingBox GetBoundingBox()
-            {
-                return m_boundingBox;
-            }
-
             public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
             {
-                effect.Texture = m_texture;
+                effect.Texture = Texture;
 
                 for (int p = 0; p < effect.CurrentTechnique.Passes.Count; p++)
                 {
                     EffectPass pass = effect.CurrentTechnique.Passes[p];
                     pass.Apply();
 
-                    graphicsDevice.DrawUserPrimitives<VFormat>(PrimitiveType.TriangleList, m_vertices, 0, m_vertices.Length / 3);
+                    graphicsDevice.DrawUserPrimitives<VFormat>(PrimitiveType.TriangleList, Vertices, 0, Vertices.Length / 3);
                 }
             }
 
@@ -91,33 +96,41 @@ namespace MapData
             {
                 Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
                 Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-                for (int i = 0; i < m_vertices.Length; ++i)
+
+                for (int i = 0; i < Vertices.Length; ++i)
                 {
-                    if (m_vertices[i].Position.X < min.X)
-                        min.X = m_vertices[i].Position.X;
-                    if (m_vertices[i].Position.Y < min.Y)
-                        min.Y = m_vertices[i].Position.Y;
-                    if (m_vertices[i].Position.Z < min.Z)
-                        min.Z = m_vertices[i].Position.Z;
+                    if (Vertices[i].Position.X < min.X)
+                        min.X = Vertices[i].Position.X;
+                    if (Vertices[i].Position.Y < min.Y)
+                        min.Y = Vertices[i].Position.Y;
+                    if (Vertices[i].Position.Z < min.Z)
+                        min.Z = Vertices[i].Position.Z;
 
-                    if (m_vertices[i].Position.X > max.X)
-                        max.X = m_vertices[i].Position.X;
-                    if (m_vertices[i].Position.Y > max.Y)
-                        max.Y = m_vertices[i].Position.Y;
-                    if (m_vertices[i].Position.Z > max.Z)
-                        max.Z = m_vertices[i].Position.Z;
-
-                    m_boundingBox = new BoundingBox(min, max);
+                    if (Vertices[i].Position.X > max.X)
+                        max.X = Vertices[i].Position.X;
+                    if (Vertices[i].Position.Y > max.Y)
+                        max.Y = Vertices[i].Position.Y;
+                    if (Vertices[i].Position.Z > max.Z)
+                        max.Z = Vertices[i].Position.Z;
                 }
+
+                BoundingBox = new BoundingBox(min, max);
             }
 
-            private Texture2D m_texture = null;
-            private VFormat[] m_vertices = null;
-            BoundingBox m_boundingBox;
+
         }
 
-        Mesh[] m_meshes;
-        BoundingBox m_boundingBox;
+        public class ModelInst
+        {
+            public Model Model { get; private set; }
+            public Matrix WorldMatrix { get; private set; }
+
+            public ModelInst(Model model, Matrix worldMatrix)
+            {
+                Model = model;
+                WorldMatrix = worldMatrix;
+            }
+        }
 
         internal void Read(Map map, Microsoft.Xna.Framework.Content.ContentReader input)
         {
@@ -125,7 +138,7 @@ namespace MapData
 
             if (numMeshes > 100)
                 return;
-            m_meshes = new Mesh[numMeshes];
+            Meshes = new Mesh[numMeshes];
             for (int meshId = 0; meshId < numMeshes; ++meshId)
             {
                 int tilesetIdx = input.ReadInt32();
@@ -137,7 +150,19 @@ namespace MapData
                 }
 
                 Texture2D texture = map.Tilesets[tilesetIdx].DiffuseMap;
-                m_meshes[meshId] = new Mesh(texture, vertices);
+                Meshes[meshId] = new Mesh(texture, vertices);
+            }
+
+            int numModels = input.ReadInt32();
+            Models = new ModelInst[numModels];
+            for (int modelId = 0; modelId < numModels; ++modelId)
+            {
+                string modelName = input.ReadString();
+                Matrix worldMatrix = input.ReadObject<Matrix>();
+
+                Model model = ResourceManager.Instance.Get<Model>(modelName);
+
+                Models[modelId] = new ModelInst(model, worldMatrix);
             }
 
             RecalculateBoundingBox();

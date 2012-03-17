@@ -13,6 +13,9 @@ namespace Momo.Core
         ContentManager mContent;
         private Dictionary<Type, Dictionary<string, object>> mResources = new Dictionary<Type,Dictionary<string,object>>();
 
+        private static ResourceManager msInstance = null;
+        public static ResourceManager Instance { get { return msInstance; } }
+
         #endregion
 
 
@@ -20,6 +23,10 @@ namespace Momo.Core
 
         public ResourceManager(ContentManager content)
         {
+            if (msInstance != null)
+                throw new System.Exception("Attempt to instantiate Singleton twice!");
+            msInstance = this;
+
             mContent = content;
         }
 

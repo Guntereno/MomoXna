@@ -234,7 +234,7 @@ namespace Momo.Core.Pathfinding
 
             for (int i = 0; i < m_nodeCnt; ++i)
             {
-                nodeInfo[i] = new GeneratorNodeInfo(40);
+                nodeInfo[i] = new GeneratorNodeInfo(80);
             }
 
             // Check for clear paths 
