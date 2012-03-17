@@ -74,10 +74,6 @@ namespace MapData
                 PlayerSpawnPoints[i] = input.ReadVector2();
             }
 
-            // Read in the vectors describing the playable area
-            PlayAreaMin = input.ReadVector2();
-            PlayAreaMax = input.ReadVector2();
-
             // Read the spawn group information
             int numSpawnPoints = input.ReadInt32();
             SpawnPoints = new SpawnPointData[numSpawnPoints];
@@ -86,6 +82,10 @@ namespace MapData
                 Vector2 pos = input.ReadVector2();
                 SpawnPoints[spawnPointIdx] = new SpawnPointData(pos);
             }
+
+            // Read in the vectors describing the playable area
+            PlayAreaMin = input.ReadVector2();
+            PlayAreaMax = input.ReadVector2();
 
             // Read the patch information
             Patches = new Patch[LayerCount][];
@@ -102,96 +102,96 @@ namespace MapData
                 }
             }
 
-            // Read the pressure point information
-            int numPressurePlates = input.ReadInt32();
-            PressurePlates = new PressurePlateData[numPressurePlates];
-            for (int i = 0; i < numPressurePlates; ++i)
-            {
-                PressurePlateData.Type type = (PressurePlateData.Type)(input.ReadInt32());
-                string name = input.ReadString();
-                Vector2 position = input.ReadVector2();
-                float radius = input.ReadSingle();
-                string trigger = input.ReadString();
+            //// Read the pressure point information
+            //int numPressurePlates = input.ReadInt32();
+            //PressurePlates = new PressurePlateData[numPressurePlates];
+            //for (int i = 0; i < numPressurePlates; ++i)
+            //{
+            //    PressurePlateData.Type type = (PressurePlateData.Type)(input.ReadInt32());
+            //    string name = input.ReadString();
+            //    Vector2 position = input.ReadVector2();
+            //    float radius = input.ReadSingle();
+            //    string trigger = input.ReadString();
 
-                switch (type)
-                {
-                    case PressurePlateData.Type.Normal:
-                        {
-                            PressurePlates[i] = new PressurePlateData(name, position, radius, trigger);
-                        }
-                        break;
+            //    switch (type)
+            //    {
+            //        case PressurePlateData.Type.Normal:
+            //            {
+            //                PressurePlates[i] = new PressurePlateData(name, position, radius, trigger);
+            //            }
+            //            break;
 
-                    case PressurePlateData.Type.Interactive:
-                        {
-                            float interactTime = input.ReadSingle();
-                            PressurePlates[i] = new InteractivePressurePlateData(name, position, radius, trigger, interactTime);
-                        }
-                        break;
-                }
-            }
+            //        case PressurePlateData.Type.Interactive:
+            //            {
+            //                float interactTime = input.ReadSingle();
+            //                PressurePlates[i] = new InteractivePressurePlateData(name, position, radius, trigger, interactTime);
+            //            }
+            //            break;
+            //    }
+            //}
 
-            // Read the event information
-            int numTimers = input.ReadInt32();
-            TimerEvents = new TimerEventData[numTimers];
-            for (int timerIdx = 0; timerIdx < numTimers; ++timerIdx)
-            {
-                string name = input.ReadString();
-                string startTrigger = input.ReadString();
-                string endTrigger = input.ReadString();
+            //// Read the event information
+            //int numTimers = input.ReadInt32();
+            //TimerEvents = new TimerEventData[numTimers];
+            //for (int timerIdx = 0; timerIdx < numTimers; ++timerIdx)
+            //{
+            //    string name = input.ReadString();
+            //    string startTrigger = input.ReadString();
+            //    string endTrigger = input.ReadString();
 
-                float time = input.ReadSingle();
+            //    float time = input.ReadSingle();
 
-                if (startTrigger == "")
-                    startTrigger = null;
-                if (endTrigger == "")
-                    endTrigger = null;
+            //    if (startTrigger == "")
+            //        startTrigger = null;
+            //    if (endTrigger == "")
+            //        endTrigger = null;
 
-                TimerEvents[timerIdx] = new TimerEventData(name, startTrigger, endTrigger, time);
-            }
+            //    TimerEvents[timerIdx] = new TimerEventData(name, startTrigger, endTrigger, time);
+            //}
 
-            int numSpawns = input.ReadInt32();
-            SpawnEvents = new SpawnEventData[numSpawns];
-            for (int spawnIdx = 0; spawnIdx < numSpawns; ++spawnIdx)
-            {
-                string name = input.ReadString();
-                string startTrigger = input.ReadString();
-                string endTrigger = input.ReadString();
+            //int numSpawns = input.ReadInt32();
+            //SpawnEvents = new SpawnEventData[numSpawns];
+            //for (int spawnIdx = 0; spawnIdx < numSpawns; ++spawnIdx)
+            //{
+            //    string name = input.ReadString();
+            //    string startTrigger = input.ReadString();
+            //    string endTrigger = input.ReadString();
 
-                float delay = input.ReadSingle();
+            //    float delay = input.ReadSingle();
 
-                if (startTrigger == "")
-                    startTrigger = null;
-                if (endTrigger == "")
-                    endTrigger = null;
+            //    if (startTrigger == "")
+            //        startTrigger = null;
+            //    if (endTrigger == "")
+            //        endTrigger = null;
 
-                int enemyCount = input.ReadInt32();
-                EnemyData[] enemies = new EnemyData[enemyCount];
-                for (int i = 0; i < enemyCount; ++i)
-                {
-                    EnemyData.Species species = (EnemyData.Species)(input.ReadInt32());
-                    Weapon.Design weapon = (Weapon.Design)(input.ReadInt32());
-                    enemies[i] = new EnemyData(species, weapon);
-                }
+            //    int enemyCount = input.ReadInt32();
+            //    EnemyData[] enemies = new EnemyData[enemyCount];
+            //    for (int i = 0; i < enemyCount; ++i)
+            //    {
+            //        EnemyData.Species species = (EnemyData.Species)(input.ReadInt32());
+            //        Weapon.Design weapon = (Weapon.Design)(input.ReadInt32());
+            //        enemies[i] = new EnemyData(species, weapon);
+            //    }
 
-                SpawnEvents[spawnIdx] = new SpawnEventData(name, startTrigger, endTrigger, delay, enemies);
-            }
+            //    SpawnEvents[spawnIdx] = new SpawnEventData(name, startTrigger, endTrigger, delay, enemies);
+            //}
 
-            int numTriggerCounters = input.ReadInt32();
-            TriggerCounterEvents = new TriggerCounterEventData[numTriggerCounters];
-            for (int triggerCounterIdx = 0; triggerCounterIdx < numTriggerCounters; ++triggerCounterIdx)
-            {
-                string name = input.ReadString();
-                string startTrigger = input.ReadString();
-                string endTrigger = input.ReadString();
+            //int numTriggerCounters = input.ReadInt32();
+            //TriggerCounterEvents = new TriggerCounterEventData[numTriggerCounters];
+            //for (int triggerCounterIdx = 0; triggerCounterIdx < numTriggerCounters; ++triggerCounterIdx)
+            //{
+            //    string name = input.ReadString();
+            //    string startTrigger = input.ReadString();
+            //    string endTrigger = input.ReadString();
 
-                string countTrigger = input.ReadString();
-                int count = input.ReadInt32();
+            //    string countTrigger = input.ReadString();
+            //    int count = input.ReadInt32();
 
-                if (startTrigger == "")
-                    startTrigger = null;
+            //    if (startTrigger == "")
+            //        startTrigger = null;
 
-                TriggerCounterEvents[triggerCounterIdx] = new TriggerCounterEventData(name, startTrigger, endTrigger, countTrigger, count);
-            }
+            //    TriggerCounterEvents[triggerCounterIdx] = new TriggerCounterEventData(name, startTrigger, endTrigger, countTrigger, count);
+            //}
         }
     }
 

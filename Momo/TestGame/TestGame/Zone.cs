@@ -100,7 +100,6 @@ namespace TestGame
         public void Load()
         {
             mMap = TestGame.Instance().ResourceManager.Get<MapData.Map>("maps/test_arena2/test_arena2");
-            //m_map = TestGame.Instance().Content.Load<MapData.Map>("maps/tom_owes_me/tom_owes_me");
 
             mBin.Init(50, 50, mMap.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 6000, 1000, 1000);
 

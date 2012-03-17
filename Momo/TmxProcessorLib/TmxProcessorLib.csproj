@@ -52,15 +52,16 @@
   <ItemGroup>
     <Compile Include="Content\Enemy.cs" />
     <Compile Include="Content\Events.cs" />
-    <Compile Include="Content\Layer.cs" />
-    <Compile Include="Content\LightTemplate.cs" />
-    <Compile Include="Content\Object.cs" />
-    <Compile Include="Content\ObjectGroup.cs" />
-    <Compile Include="Content\Patch.cs" />
-    <Compile Include="Content\TileLayer.cs" />
+    <Compile Include="Content\Map.cs" />
     <Compile Include="Content\Tileset.cs" />
-    <Compile Include="Content\PropertySheet.cs" />
-    <Compile Include="Content\TmxData.cs" />
+    <Compile Include="Data\Layer.cs" />
+    <Compile Include="Data\Object.cs" />
+    <Compile Include="Data\ObjectGroup.cs" />
+    <Compile Include="Content\Patch.cs" />
+    <Compile Include="Data\TileLayer.cs" />
+    <Compile Include="Data\Tileset.cs" />
+    <Compile Include="Data\PropertySheet.cs" />
+    <Compile Include="Data\TmxData.cs" />
     <Compile Include="MapDataWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TmxImporter.cs" />

@@ -15,7 +15,7 @@ namespace TestGame.Systems
 {
     public class CameraController
     {
-        public OrthographicCameraNode Camera { get; set; }
+        public CameraNode Camera { get; set; }
         public Vector2 FollowPosition { get; set; }
 
         Vector3 mCameraVelocity = Vector3.Zero;
@@ -66,7 +66,7 @@ namespace TestGame.Systems
             mSpring.Update(frameTime.Dt);
 
             Vector2 springPos = mSpring.GetCurrentValue();
-            const float kCamHeight = 10.0f;
+            const float kCamHeight = 1500.0f;
             Camera.LocalTranslation = new Vector3(
                 (float)Math.Floor(springPos.X),
                 (float)Math.Floor(springPos.Y),

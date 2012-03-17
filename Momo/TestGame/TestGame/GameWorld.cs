@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define NO_SOUND
+
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -38,7 +40,7 @@ namespace TestGame
         //private float mElapsedTime = 0.0f;
 
 
-        private OrthographicCameraNode mCamera = new OrthographicCameraNode("Camera");
+        private PerspectiveCameraNode mCamera = new PerspectiveCameraNode("Camera");
         private CameraController mCameraController = null;
 
 
@@ -52,6 +54,8 @@ namespace TestGame
         private TextBatchPrinter mDebugTextPrinter = new TextBatchPrinter();
 
 
+        private Model m_testModel;
+
 #if !NO_SOUND
         private AudioEngine mAudioEngine = null;
         private WaveBank mWaveBank = null;
@@ -59,7 +63,7 @@ namespace TestGame
 #endif
 
 
-        public OrthographicCameraNode Camera                { get { return mCamera; } }
+        public PerspectiveCameraNode Camera                 { get { return mCamera; } }
         public CameraController CameraController            { get { return mCameraController; } }
 
         public DebugRenderer DebugRenderer                  { get { return mDebugRenderer; } }
@@ -99,11 +103,17 @@ namespace TestGame
 
             mCameraController = new CameraController();
 
+            /*
             mCamera.ViewWidth = TestGame.kBackBufferWidth;
             mCamera.ViewHeight = TestGame.kBackBufferHeight;
+            */
+
+            Camera.AspectRatio = (float)TestGame.kBackBufferWidth / (float)TestGame.kBackBufferHeight;
+
             mCamera.LocalTranslation = new Vector3(300.0f, 750.0f, 10.0f);
             mCameraController.Camera = mCamera;
 
+            m_testModel = TestGame.Instance().ResourceManager.Get<Model>("tiles/cityBlockWall");
 
 #if !NO_SOUND
             mAudioEngine = new AudioEngine("Content\\Audio\\audio.xgs");
@@ -168,6 +178,13 @@ namespace TestGame
         {
             mZone.Render();
 
+            Vector3 pos = new Vector3(mZone.Map.PlayerSpawnPoints[0].X, mZone.Map.PlayerSpawnPoints[0].Y, 0.0f);
+            Matrix testWorldMatrix;
+            Matrix.CreateRotationX((float)Math.PI * 0.5f, out testWorldMatrix);
+            testWorldMatrix *= Matrix.CreateScale(0.5f);
+            testWorldMatrix *= Matrix.CreateTranslation(pos);
+
+            m_testModel.Draw(testWorldMatrix, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             TextPrinter.Render(true, TestGame.Instance().GraphicsDevice);
             TextPrinter.ClearDrawList();

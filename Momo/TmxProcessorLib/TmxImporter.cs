@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 
-using TImport = TmxProcessorLib.Content.TmxData;
+using TImport = TmxProcessorLib.Data.TmxData;
 
 namespace TmxProcessorLib
 {

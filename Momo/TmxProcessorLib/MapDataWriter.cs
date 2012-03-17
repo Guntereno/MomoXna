@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
 
-using TWrite = TmxProcessorLib.Content.TmxData;
+using TWrite = TmxProcessorLib.Content.Map;
 
 namespace TmxProcessorLib
 {

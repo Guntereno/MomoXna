@@ -57,11 +57,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="audio\audio.xap">
-      <Name>audio</Name>
-      <Importer>XactImporter</Importer>
-      <Processor>XactProcessor</Processor>
-    </Compile>
     <Compile Include="fonts\Calibri_26_b_o3_0.png">
       <Name>Calibri_26_b_o3_0</Name>
       <Importer>TextureImporter</Importer>
@@ -72,12 +67,6 @@
       <Importer>FontImporter</Importer>
       <Processor>FontProcessor</Processor>
     </Compile>
-    <None Include="maps\1_living_quarters\1_living_quarters.tmx">
-      <Name>1_living_quarters</Name>
-      <Processor>TmxProcessor</Processor>
-      <Importer>TmxImporter</Importer>
-      <SubType>Designer</SubType>
-    </None>
     <Compile Include="fonts\Consolas_24_o2_0.png">
       <Name>Consolas_24_o2_0</Name>
       <Importer>TextureImporter</Importer>
@@ -88,20 +77,17 @@
       <Importer>TmxImporter</Importer>
       <Processor>TmxProcessor</Processor>
     </Compile>
-    <None Include="maps\tom_owes_me\tom_owes_me.tmx">
-      <Name>tom_owes_me</Name>
-      <Importer>TmxImporter</Importer>
-      <Processor>TmxProcessor</Processor>
-    </None>
     <Compile Include="tiles\cityBlockFloor.fbx">
       <Name>cityBlockFloor</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
     </Compile>
     <Compile Include="tiles\cityBlockWall.fbx">
       <Name>cityBlockWall</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -137,7 +123,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="maps\tilesets\" />
+    <Folder Include="audio\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="effects\text.fx">
@@ -154,54 +140,24 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="maps\test_arena\test_arena.tmx">
-      <Name>test_arena</Name>
-      <Importer>TmxImporter</Importer>
-      <Processor>TmxProcessor</Processor>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="audio\GUN_machine_1.wav">
-      <Name>GUN_machine_1</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="audio\GUN_machine_2.wav">
-      <Name>GUN_machine_2</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="audio\GUN_machine_3.wav">
-      <Name>GUN_machine_3</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="audio\GUN_machine_4.wav">
-      <Name>GUN_machine_4</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="audio\GUN_machine_5.wav">
-      <Name>GUN_machine_5</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="audio\GUN_single.wav">
-      <Name>GUN_single</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="audio\GUN_single2.wav">
-      <Name>GUN_single2</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="tiles\textures\cityBlock_d.png">
       <Name>cityBlock_d</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="maps\zone01\zone01.tmx">
+      <Name>zone01</Name>
+      <Importer>TmxImporter</Importer>
+      <Processor>TmxProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="maps\zoneTest\zoneTest.tmx">
+      <Name>zoneTest</Name>
+      <Importer>TmxImporter</Importer>
+      <Processor>TmxProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

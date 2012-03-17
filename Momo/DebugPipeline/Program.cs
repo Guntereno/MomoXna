@@ -86,8 +86,7 @@ namespace DebugPipeline
         ///               private const string ProjectToDebug = @"C:\XNA Samples\SkinnedModelExtensions\SkinningSample\Content\SkinningSampleContent.contentproj";
         /// </summary>
         /// 
-        /// Need to make this a relative path, but I'm not sure where it should be relative from :P
-        private static string RelaticeProjecToDebug = @"TestGame\TestGameContent\TestGameContent.contentproj";
+        private static string RelativeProjectToDebug = @"TestGame\TestGameContent\TestGameContent.contentproj";
         private static string ProjectToDebug = "";
 
         /// <summary>
@@ -97,7 +96,7 @@ namespace DebugPipeline
         ///       Example:
         ///               private const string SingleItem = @"dude.fbx";
         /// </summary>
-        //private const string SingleItem = @"maps/test_arena/test_arena.tmx";
+        //private const string SingleItem = @"maps/zone01/zone01.tmx";
         private const string SingleItem = @"";
 
         /// <summary>
@@ -127,7 +126,7 @@ namespace DebugPipeline
         [STAThread]
         static void Main()
         {
-            ProjectToDebug = System.IO.Path.GetFullPath(@"..\..\..\" + RelaticeProjecToDebug);
+            ProjectToDebug = System.IO.Path.GetFullPath(@"..\..\..\" + RelativeProjectToDebug);
 
 
             if (!File.Exists(ProjectToDebug))
