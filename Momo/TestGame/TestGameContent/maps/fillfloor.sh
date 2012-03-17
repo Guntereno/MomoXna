@@ -1,0 +1,1 @@
+./random_fill.py smash_tv/smash_tv.tmx Floor 77 78 79 80 93 94 95 96 109 110 111 112 125 126 127 128 

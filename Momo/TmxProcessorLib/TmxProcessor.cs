@@ -183,7 +183,7 @@ namespace TmxProcessorLib
                 {
                     for (int y = 0; y < input.Dimensions.Y; ++y)
                     {
-                        if (wallLayer.Data[x + (y * wallLayer.Dimensions.X)] != 0)
+                        if (wallLayer.Data[x + (y * wallLayer.Dimensions.X)].Index != 0)
                         {
                             if (x < min.X)
                                 min.X = x;
@@ -251,12 +251,12 @@ namespace TmxProcessorLib
                                 if (y == 0)
                                     top = false;
                                 else
-                                    top = (wallLayer.Data[x + ((y - 1) * wallLayer.Dimensions.X)] != 0);
+                                    top = (wallLayer.Data[x + ((y - 1) * wallLayer.Dimensions.X)].Index != 0);
 
                                 if (y == wallLayer.Dimensions.Y)
                                     bottom = false;
                                 else
-                                    bottom = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)] != 0);
+                                    bottom = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)].Index != 0);
 
                                 // If same, discard
                                 if (top != bottom)
@@ -287,12 +287,12 @@ namespace TmxProcessorLib
                                 if (x == 0)
                                     left = false;
                                 else
-                                    left = (wallLayer.Data[(x - 1) + (y * wallLayer.Dimensions.X)] != 0);
+                                    left = (wallLayer.Data[(x - 1) + (y * wallLayer.Dimensions.X)].Index != 0);
 
                                 if (x == wallLayer.Dimensions.X)
                                     right = false;
                                 else
-                                    right = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)] != 0);
+                                    right = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)].Index != 0);
 
                                 // If same, discard
                                 if (left != right)
@@ -493,16 +493,20 @@ namespace TmxProcessorLib
 
         private struct TileInfo
         {
-            public TileInfo(Tile tile, int x, int y)
+            public TileInfo(Tile tile, int x, int y, bool flipX, bool flipY)
             {
-                m_tile = tile;
-                m_x = x;
-                m_y = y;
+                mTile = tile;
+                mX = x;
+                mY = y;
+                mFlipX = flipX;
+                mFlipY = flipY;
             }
 
-            public Tile m_tile;
-            public int m_x;
-            public int m_y;
+            public Tile mTile;
+            public int mX;
+            public int mY;
+            public bool mFlipX;
+            public bool mFlipY;
         };
 
         private Content.Patch BuildPatch(ContentProcessorContext context, TInput input, TOutput output, TileLayer tileLayer, int xMin, int yMin, int patchSize)
@@ -518,7 +522,8 @@ namespace TmxProcessorLib
                 {
                     System.Diagnostics.Debug.Assert(y < input.Dimensions.Y);
 
-                    uint tileId = tileLayer.Data[x + (y * tileLayer.Dimensions.X)];
+                    TileLayer.TileEntry tileEntry = tileLayer.Data[x + (y * tileLayer.Dimensions.X)];
+                    uint tileId = tileEntry.Index;
                     if (tileId == 0)
                         continue;
 
@@ -528,7 +533,7 @@ namespace TmxProcessorLib
                     {
                         tileDict.Add(tile.Parent, new List<TileInfo>());
                     }
-                    tileDict[tile.Parent].Add(new TileInfo(tile, x, y));
+                    tileDict[tile.Parent].Add(new TileInfo(tile, x, y, tileEntry.FlipX, tileEntry.FlipY));
                 }
             }
 
@@ -551,8 +556,8 @@ namespace TmxProcessorLib
                         {
                             TileInfo tileInfo = tileList[i];
 
-                            float centerX = (tileInfo.m_x * input.TileDimensions.X) + (input.TileDimensions.X * 0.5f) + Offset.X;
-                            float centerY = (tileInfo.m_y * input.TileDimensions.Y) + (input.TileDimensions.Y * 0.5f) + Offset.X;
+                            float centerX = (tileInfo.mX * input.TileDimensions.X) + (input.TileDimensions.X * 0.5f) + Offset.X;
+                            float centerY = (tileInfo.mY * input.TileDimensions.Y) + (input.TileDimensions.Y * 0.5f) + Offset.X;
 
                             float randScaleY = 1.0f + (float)TmxProcessor.Random.NextDouble();
 
@@ -585,16 +590,30 @@ namespace TmxProcessorLib
                     {
                         TileInfo tileInfo = tileList[i];
 
-                        float left = (tileInfo.m_x * input.TileDimensions.X) + Offset.X;
-                        float right = ((tileInfo.m_x + 1) * input.TileDimensions.X) + Offset.X;
-                        float top = (tileInfo.m_y * input.TileDimensions.Y) + Offset.Y;
-                        float bottom = ((tileInfo.m_y + 1) * input.TileDimensions.Y) + Offset.Y;
+                        float left = (tileInfo.mX * input.TileDimensions.X) + Offset.X;
+                        float right = ((tileInfo.mX + 1) * input.TileDimensions.X) + Offset.X;
+                        float top = (tileInfo.mY * input.TileDimensions.Y) + Offset.Y;
+                        float bottom = ((tileInfo.mY + 1) * input.TileDimensions.Y) + Offset.Y;
 
                         const float kEpsilon = 0.0f; // used to prevent colour bleeding
-                        float texLeft = (((float)tileInfo.m_tile.Source.Left + kEpsilon) / (float)tileset.Width);
-                        float texRight = (((float)tileInfo.m_tile.Source.Right - kEpsilon) / (float)tileset.Width);
-                        float texTop = (((float)tileInfo.m_tile.Source.Top + kEpsilon) / (float)tileset.Height);
-                        float texBottom = (((float)tileInfo.m_tile.Source.Bottom - kEpsilon) / (float)tileset.Height);
+                        float texLeft = (((float)tileInfo.mTile.Source.Left + kEpsilon) / (float)tileset.Width);
+                        float texRight = (((float)tileInfo.mTile.Source.Right - kEpsilon) / (float)tileset.Width);
+                        float texTop = (((float)tileInfo.mTile.Source.Top + kEpsilon) / (float)tileset.Height);
+                        float texBottom = (((float)tileInfo.mTile.Source.Bottom - kEpsilon) / (float)tileset.Height);
+
+                        if (tileInfo.mFlipX)
+                        {
+                            float temp = texLeft;
+                            texLeft = texRight;
+                            texRight = temp;
+                        }
+
+                        if (tileInfo.mFlipY)
+                        {
+                            float temp = texTop;
+                            texTop = texBottom;
+                            texBottom = temp;
+                        }
 
                         vertList[currentVert].Position = new Vector3(left, top, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texTop);

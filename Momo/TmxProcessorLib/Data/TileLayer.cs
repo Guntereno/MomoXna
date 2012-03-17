@@ -9,7 +9,22 @@ namespace TmxProcessorLib.Data
 {
     public class TileLayer : Layer
     {
-        public uint[] Data { get; private set; }
+        public class TileEntry
+        {
+            public uint Index { get; private set; }
+            public bool FlipX { get; private set; }
+            public bool FlipY { get; private set; }
+
+            public TileEntry(uint index, bool flipX, bool flipY)
+            {
+                Index = index;
+                FlipX = flipX;
+                FlipY = flipY;
+            }
+
+        }
+
+        public TileEntry[] Data { get; private set; }
 
         private int m_index;
 
@@ -28,7 +43,7 @@ namespace TmxProcessorLib.Data
         {
             base.ImportXmlNode(layerNode, context);
 
-            Data = new uint[Dimensions.X * Dimensions.Y];
+            Data = new TileEntry[Dimensions.X * Dimensions.Y];
 
             System.Xml.XmlNode dataNode = layerNode.SelectSingleNode("data");
             if (dataNode == null)
@@ -51,11 +66,11 @@ namespace TmxProcessorLib.Data
                             uint data = uint.Parse(indices[i]);
 
                             uint index = data & 0x3FFFFFFF;
-                            Data[i] = index;
+    
+                            bool flipX = (data & 0x80000000) != 0;
+                            bool flipY = (data & 0x40000000) != 0;
 
-                            // These are currently ignored for now
-                            //bool flipX = (data & 0x80000000) != 0;
-                            //bool flipY = (data & 0x40000000) != 0;
+                            Data[i] = new TileEntry(index, flipX, flipY);
                         }
                     }
                     break;
