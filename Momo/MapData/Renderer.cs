@@ -73,7 +73,7 @@ namespace MapData
                     MapData.Patch patch = m_map.Patches[layerIdx][patchIdx];
                     if (m_viewFrustum.Intersects(patch.BoundingBox))
                     {
-                        patch.Render(viewMatrix, projMatrix, m_effect, graphicsDevice);
+                        patch.Draw(viewMatrix, projMatrix, m_effect, graphicsDevice);
                     }
                 }
             }

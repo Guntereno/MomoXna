@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MapData
 {
-    using VFormat = VertexPositionTexture;
+    using VFormat = VertexPositionNormalTexture;
     using Momo.Core;
 
     public class Patch
@@ -22,16 +22,16 @@ namespace MapData
         }
 
 
-        public void Render(Matrix view, Matrix projection, BasicEffect effect, GraphicsDevice graphicsDevice)
+        public void Draw(Matrix view, Matrix projection, BasicEffect effect, GraphicsDevice graphicsDevice)
         {
             for (int i=0; i < Meshes.Length; ++i)
             {
-                Meshes[i].Render(effect, graphicsDevice);
+                Meshes[i].Draw(effect, graphicsDevice);
             }
 
             for (int i = 0; i < Models.Length; ++i)
             {
-                Models[i].Model.Draw(Models[i].WorldMatrix, view, projection);
+                Models[i].Draw(view, projection);
             }
         }
 
@@ -79,9 +79,11 @@ namespace MapData
                 CalculateBoundingBox();
             }
 
-            public void Render(BasicEffect effect, GraphicsDevice graphicsDevice)
+            public void Draw(BasicEffect effect, GraphicsDevice graphicsDevice)
             {
                 effect.Texture = Texture;
+
+                effect.EnableDefaultLighting();
 
                 for (int p = 0; p < effect.CurrentTechnique.Passes.Count; p++)
                 {
@@ -129,6 +131,32 @@ namespace MapData
             {
                 Model = model;
                 WorldMatrix = worldMatrix;
+            }
+
+            public void Draw(Matrix view, Matrix projection)
+            {             
+                // Copy any parent transforms.
+                Matrix[] transforms = new Matrix[Model.Bones.Count];
+                Model.CopyAbsoluteBoneTransformsTo(transforms);
+
+                // Draw the model. A model can have multiple meshes, so loop.
+                foreach (ModelMesh mesh in Model.Meshes)
+                {
+                    // This is where the mesh orientation is set, as well 
+                    // as our camera and projection.
+                    foreach (BasicEffect effect in mesh.Effects)
+                    {
+                        effect.EnableDefaultLighting();
+                        effect.World = transforms[mesh.ParentBone.Index] * WorldMatrix;
+                        effect.View = view;
+                        effect.Projection = projection;
+                        effect.TextureEnabled = true;
+                        effect.PreferPerPixelLighting = false;
+                    }
+
+                    // Draw the mesh, using the effects set above.
+                    mesh.Draw();
+                }
             }
         }
 

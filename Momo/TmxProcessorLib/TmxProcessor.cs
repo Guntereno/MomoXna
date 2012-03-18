@@ -11,7 +11,7 @@ using TmxProcessorLib.Data;
 
 using TInput = TmxProcessorLib.Data.TmxData;
 using TOutput = TmxProcessorLib.Content.Map;
-using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionTexture;
+using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionNormalTexture;
 
 namespace TmxProcessorLib
 {
@@ -617,33 +617,33 @@ namespace TmxProcessorLib
 
                         vertList[currentVert].Position = new Vector3(left, top, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texTop);
-                        //vertList[currentVert].Color = Color.White;
+                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
                         ++currentVert;
 
                         vertList[currentVert].Position = new Vector3(right, top, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
-                        //vertList[currentVert].Color = Color.White;
+                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
                         ++currentVert;
 
                         vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
-                        //vertList[currentVert].Color = Color.White;
+                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
                         ++currentVert;
 
 
                         vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
-                        //vertList[currentVert].Color = Color.White;
+                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
                         ++currentVert;
 
                         vertList[currentVert].Position = new Vector3(right, top, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
-                        //vertList[currentVert].Color = Color.White;
+                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
                         ++currentVert;
 
                         vertList[currentVert].Position = new Vector3(right, bottom, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texRight, texBottom);
-                        //vertList[currentVert].Color = Color.White;
+                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
                         ++currentVert;
                     }
 

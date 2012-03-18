@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 using Microsoft.Xna.Framework;
 
-using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionTexture;
+using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionNormalTexture;
 
 namespace TmxProcessorLib.Content
 {
