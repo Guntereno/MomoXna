@@ -210,7 +210,7 @@ namespace TmxProcessorLib
         private void ProcessCollisionStrips(ContentProcessorContext context, TInput input, TOutput output)
         {
             ProcessTileCollisionStrips(context, input, output);
-            ProcessCollisionLayerCollisionStrips(context, input, output);
+            ProcessSceneObjectsCollisionStrips(context, input, output);
         }
 
         private void ProcessTileCollisionStrips(ContentProcessorContext context, TInput input, TOutput output)
@@ -414,15 +414,15 @@ namespace TmxProcessorLib
             }
         }
 
-        private void ProcessCollisionLayerCollisionStrips(ContentProcessorContext context, TInput input, TOutput output)
+        private void ProcessSceneObjectsCollisionStrips(ContentProcessorContext context, TInput input, TOutput output)
         {
             // Add the polygons from the Collision layer
-            ObjectGroup collisionLayer = input.ObjectGroups.Find(l => l.Name == "Collision");
-            if (collisionLayer != null)
+            ObjectGroup sceneObjectsLayer = input.ObjectGroups.Find(l => l.Name == "SceneObjects");
+            if (sceneObjectsLayer != null)
             {
-                foreach (string objName in collisionLayer.Objects.Keys)
+                foreach (string objName in sceneObjectsLayer.Objects.Keys)
                 {
-                    Data.Object obj = collisionLayer.Objects[objName];
+                    Data.Object obj = sceneObjectsLayer.Objects[objName];
                     if (obj.Polygon != null)
                     {
                         List<Vector2> strip = new List<Vector2>();
@@ -514,14 +514,18 @@ namespace TmxProcessorLib
                 foreach (string objName in sceneObjectsLayer.Objects.Keys)
                 {
                     Data.Object obj = sceneObjectsLayer.Objects[objName];
-                    string modelName = "sceneObjects/" + obj.Type;
 
-                    Vector3 pos = new Vector3(obj.Position + Offset, 0.0f);
+                    if (obj.Properties.Properties.ContainsKey("model"))
+                    {
+                        string modelName = "sceneObjects/" + obj.Properties.Properties["model"];
 
-                    Matrix worldMatrix = Matrix.Identity;
-                    worldMatrix *= Matrix.CreateTranslation(pos);
+                        Vector3 pos = new Vector3(obj.Position + Offset, 0.0f);
 
-                    output.SceneObjects.Add(new ModelInst(modelName, worldMatrix));
+                        Matrix worldMatrix = Matrix.Identity;
+                        worldMatrix *= Matrix.CreateTranslation(pos);
+
+                        output.SceneObjects.Add(new ModelInst(modelName, worldMatrix));
+                    }
                 }
             }
         }
