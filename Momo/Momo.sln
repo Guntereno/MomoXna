@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGame", "TestGame\TestGame\TestGame.csproj", "{9DB1C4B5-5B52-4C95-93EE-0280EA4C8805}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "TestGame\TestGame\Game.csproj", "{9DB1C4B5-5B52-4C95-93EE-0280EA4C8805}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGameContent", "TestGame\TestGameContent\TestGameContent.contentproj", "{2A4E3229-4237-4C0F-B923-5CAFA7789FA1}"
 EndProject

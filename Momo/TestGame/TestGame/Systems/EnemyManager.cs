@@ -10,12 +10,12 @@ using Momo.Core.Spatial;
 using Momo.Core;
 using Momo.Debug;
 
-using TestGame.Entities;
-using TestGame.Entities.AI;
+using Game.Entities;
+using Game.Entities.AI;
 
 
 
-namespace TestGame.Systems
+namespace Game.Systems
 {
     public class AiEntityManager
     {

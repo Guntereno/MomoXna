@@ -5,7 +5,7 @@ using System.Text;
 using MapData;
 using Momo.Core.Triggers;
 
-namespace TestGame.Events
+namespace Game.Events
 {
     class TriggerCounterEvent : Event, ITriggerListener
     {

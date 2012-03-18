@@ -8,13 +8,13 @@ using Momo.Core.Spatial;
 using Momo.Core.Triggers;
 using Momo.Debug;
 
-using TestGame.Ai.AiEntityStates;
-using TestGame.Weapons;
+using Game.Ai.AiEntityStates;
+using Game.Weapons;
 using Momo.Core.StateMachine;
 
 
 
-namespace TestGame.Entities
+namespace Game.Entities
 {
     public class AiEntity : LivingGameEntity, IWeaponUser, IStateMachineOwner
     {

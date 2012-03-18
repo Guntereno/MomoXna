@@ -14,11 +14,11 @@ using Momo.Core.Pathfinding;
 using Momo.Core.Primitive2D;
 using Momo.Core.Collision2D;
 
-using TestGame.Entities;
+using Game.Entities;
 
 
 
-namespace TestGame
+namespace Game
 {
     public class PathFindingHelpers
     {

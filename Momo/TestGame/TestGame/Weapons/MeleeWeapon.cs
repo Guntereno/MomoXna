@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Momo.Core;
 
-namespace TestGame.Weapons
+namespace Game.Weapons
 {
     public class MeleeWeapon : Weapon
     {

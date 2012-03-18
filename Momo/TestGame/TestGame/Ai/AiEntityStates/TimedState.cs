@@ -1,9 +1,9 @@
 ﻿using Momo.Core;
 using Momo.Core.StateMachine;
-using TestGame.Entities;
+using Game.Entities;
 using Microsoft.Xna.Framework;
 
-namespace TestGame.Ai.AiEntityStates
+namespace Game.Ai.AiEntityStates
 {
     public class TimedState : AiEntityState
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Momo.Core;
 using Microsoft.Xna.Framework;
-using TestGame.Entities;
+using Game.Entities;
 
-namespace TestGame.Weapons
+namespace Game.Weapons
 {
     class Minigun: Weapon
     {

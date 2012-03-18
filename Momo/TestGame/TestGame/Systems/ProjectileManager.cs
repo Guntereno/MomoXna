@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TestGame.Entities;
+using Game.Entities;
 using Momo.Core.ObjectPools;
 using Momo.Core;
 using Momo.Debug;
 using Microsoft.Xna.Framework;
 using Momo.Core.Spatial;
 
-namespace TestGame.Systems
+namespace Game.Systems
 {
     public class ProjectileManager
     {

@@ -18,16 +18,16 @@ using Momo.Core.Spatial;
 using Momo.Debug;
 using Momo.Fonts;
 
-using TestGame.Entities;
-using TestGame.Entities.AI;
-using TestGame.Systems;
+using Game.Entities;
+using Game.Entities.AI;
+using Game.Systems;
 
 using WorldManager;
 using Microsoft.Xna.Framework.Audio;
 
 
 
-namespace TestGame
+namespace Game
 {
     public class GameWorld : World
     {
@@ -87,15 +87,15 @@ namespace TestGame
 
         public override void Load()
         {
-            Effect textEffect = TestGame.Instance.Content.Load<Effect>("effects/text");
+            Effect textEffect = Game.Instance.Content.Load<Effect>("effects/text");
 
             // Debug
-            mDebugRenderer.Init(50000, 1000, TestGame.Instance.GraphicsDevice);
-            mDebugTextPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 500, 1000, 1);
-            mDebugFont = TestGame.Instance.Content.Load<Font>("fonts/Consolas_24_o2");
+            mDebugRenderer.Init(50000, 1000, Game.Instance.GraphicsDevice);
+            mDebugTextPrinter.Init(textEffect, new Vector2((float)Game.kBackBufferWidth, (float)Game.kBackBufferHeight), 500, 1000, 1);
+            mDebugFont = Game.Instance.Content.Load<Font>("fonts/Consolas_24_o2");
             mDebugTextStyle = new TextStyle(mDebugFont, TextSecondaryDrawTechnique.kDropshadow);
 
-            mTextPrinter.Init(textEffect, new Vector2((float)TestGame.kBackBufferWidth, (float)TestGame.kBackBufferHeight), 100, 1000, 1);
+            mTextPrinter.Init(textEffect, new Vector2((float)Game.kBackBufferWidth, (float)Game.kBackBufferHeight), 100, 1000, 1);
 
 
             mCameraController = new CameraController();
@@ -105,7 +105,7 @@ namespace TestGame
             mCamera.ViewHeight = TestGame.kBackBufferHeight;
             */
 
-            Camera.AspectRatio = (float)TestGame.kBackBufferWidth / (float)TestGame.kBackBufferHeight;
+            Camera.AspectRatio = (float)Game.kBackBufferWidth / (float)Game.kBackBufferHeight;
 
             mCamera.LocalTranslation = new Vector3(300.0f, 750.0f, 10.0f);
             mCameraController.Camera = mCamera;
@@ -134,7 +134,7 @@ namespace TestGame
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
             
-            Input.InputWrapper inputWrapper = TestGame.Instance.InputManager.GetInputWrapper(0);
+            Input.InputWrapper inputWrapper = Game.Instance.InputManager.GetInputWrapper(0);
 
 
             mZone.Update(dt);
@@ -173,7 +173,7 @@ namespace TestGame
         {
             mZone.Render();
 
-            TextPrinter.Render(true, TestGame.Instance.GraphicsDevice);
+            TextPrinter.Render(true, Game.Instance.GraphicsDevice);
             TextPrinter.ClearDrawList();
         }
 
@@ -191,11 +191,11 @@ namespace TestGame
 
             mCameraController.DebugRender(mDebugRenderer, mDebugTextPrinter, mDebugTextStyle);
 
-            DebugRenderer.Render(mCamera.ViewMatrix, mCamera.ProjectionMatrix, TestGame.Instance.GraphicsDevice);
+            DebugRenderer.Render(mCamera.ViewMatrix, mCamera.ProjectionMatrix, Game.Instance.GraphicsDevice);
             DebugRenderer.Clear();
 
             // Render any debug text objects that where added.
-            DebugTextPrinter.Render(true, TestGame.Instance.GraphicsDevice);
+            DebugTextPrinter.Render(true, Game.Instance.GraphicsDevice);
             DebugTextPrinter.ClearDrawList();
         }
 

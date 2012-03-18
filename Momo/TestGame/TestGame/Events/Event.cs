@@ -6,7 +6,7 @@ using Momo.Core.Triggers;
 using Momo.Core.ObjectPools;
 using Momo.Core;
 
-namespace TestGame.Events
+namespace Game.Events
 {
     public abstract class Event
     {

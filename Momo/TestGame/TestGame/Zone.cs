@@ -16,16 +16,16 @@ using Momo.Core.Spatial;
 using Momo.Debug;
 using Momo.Fonts;
 
-using TestGame.Entities;
-using TestGame.Entities.AI;
-using TestGame.Systems;
+using Game.Entities;
+using Game.Entities.AI;
+using Game.Systems;
 
 using WorldManager;
 using Microsoft.Xna.Framework.Audio;
 
 
 
-namespace TestGame
+namespace Game
 {
     public class Zone
     {
@@ -114,18 +114,18 @@ namespace TestGame
             mCorpseManager.Load();
 
 
-            mPlayerManager.AddPlayer(TestGame.Instance.InputManager.GetInputWrapper(0));
+            mPlayerManager.AddPlayer(Game.Instance.InputManager.GetInputWrapper(0));
 
 
             // TODO: Temp: Disconnects need to be handled in the InputManager
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.Two);
             if (gamePadState.IsConnected)
             {
-                mPlayerManager.AddPlayer(TestGame.Instance.InputManager.GetInputWrapper(1));
+                mPlayerManager.AddPlayer(Game.Instance.InputManager.GetInputWrapper(1));
             }
 
 
-            mMapRenderer.Init(mMap, TestGame.Instance.GraphicsDevice, 16);
+            mMapRenderer.Init(mMap, Game.Instance.GraphicsDevice, 16);
 
 
             float smallPathNodeRadius = 25.0f;
@@ -179,7 +179,7 @@ namespace TestGame
             // it about instead of just dt, so we can easily refactor.
             FrameTime frameTime = new FrameTime(dt);
             
-            Input.InputWrapper inputWrapper = TestGame.Instance.InputManager.GetInputWrapper(0);
+            Input.InputWrapper inputWrapper = Game.Instance.InputManager.GetInputWrapper(0);
 
             int updateIterationCnt = 1;
             KeyboardState keyboardState = Keyboard.GetState();
@@ -280,7 +280,7 @@ namespace TestGame
 
         public void Render()
         {
-            mMapRenderer.Render(World.Camera.ViewMatrix, World.Camera.ProjectionMatrix, TestGame.Instance.GraphicsDevice);
+            mMapRenderer.Render(World.Camera.ViewMatrix, World.Camera.ProjectionMatrix, Game.Instance.GraphicsDevice);
 
             mOsdManager.Render();
         }

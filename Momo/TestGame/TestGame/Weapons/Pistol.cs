@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Momo.Core;
-using TestGame.Entities;
+using Game.Entities;
 
-namespace TestGame.Weapons
+namespace Game.Weapons
 {
     public class Pistol : Weapon
     {

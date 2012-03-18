@@ -9,11 +9,11 @@ using Momo.Core.Collision2D;
 using Momo.Debug;
 using Momo.Maths;
 
-using TestGame.Entities.Gaits;
+using Game.Entities.Gaits;
 
 
 
-namespace TestGame.Entities
+namespace Game.Entities
 {
     public class GameEntity : DynamicEntity, INamed, IPoolItem
     {

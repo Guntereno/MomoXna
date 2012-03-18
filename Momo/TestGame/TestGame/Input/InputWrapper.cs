@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Momo.Core.ObjectPools;
 
-namespace TestGame.Input
+namespace Game.Input
 {
     public class InputWrapper
     {

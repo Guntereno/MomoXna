@@ -4,12 +4,12 @@ using Momo.Fonts;
 using Momo.Core;
 using Momo.Debug;
 
-using TestGame.Entities.Players;
+using Game.Entities.Players;
 
 
 
 
-namespace TestGame.Systems
+namespace Game.Systems
 {
     public class OsdManager
     {
@@ -27,7 +27,7 @@ namespace TestGame.Systems
         {
             mZone = zone;
 
-            Font font = TestGame.Instance.Content.Load<Font>("fonts/Calibri_26_b_o3");
+            Font font = Game.Instance.Content.Load<Font>("fonts/Calibri_26_b_o3");
             mTextStyle = new TextStyle(font, TextSecondaryDrawTechnique.kDropshadow);
 
 

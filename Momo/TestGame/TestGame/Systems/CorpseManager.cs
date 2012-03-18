@@ -1,9 +1,9 @@
 ﻿using Momo.Core.ObjectPools;
 using Momo.Core.Spatial;
-using TestGame.Entities;
+using Game.Entities;
 using Momo.Core;
 
-namespace TestGame.Systems
+namespace Game.Systems
 {
     public class CorpseManager
     {

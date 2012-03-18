@@ -5,10 +5,10 @@ using System.Text;
 
 using Momo.Core.ObjectPools;
 
-using TestGame.Weapons;
+using Game.Weapons;
 using Momo.Core;
 
-namespace TestGame.Systems
+namespace Game.Systems
 {
     public class WeaponManager
     {

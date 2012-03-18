@@ -7,11 +7,11 @@ using Momo.Core.Spatial;
 
 using Momo.Maths;
 
-using TestGame.Entities;
+using Game.Entities;
 
 
 
-namespace TestGame.Ai.AiEntityStates
+namespace Game.Ai.AiEntityStates
 {
     public class CivilianIdleState : TimedState
     {

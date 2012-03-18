@@ -1,5 +1,5 @@
-﻿using TestGame.Ai.AiEntityStates;
-using TestGame.Entities.Gaits;
+﻿using Game.Ai.AiEntityStates;
+using Game.Entities.Gaits;
 
 using Microsoft.Xna.Framework;
 
@@ -8,7 +8,7 @@ using Momo.Core.StateMachine;
 
 
 
-namespace TestGame.Entities.AI
+namespace Game.Entities.AI
 {
     public class Zombie : AiEntity
     {

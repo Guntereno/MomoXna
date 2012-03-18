@@ -1,9 +1,9 @@
 ﻿using Momo.Core;
-using TestGame.Entities;
+using Game.Entities;
 
 
 
-namespace TestGame.Weapons
+namespace Game.Weapons
 {
     public interface IWeaponUser
     {

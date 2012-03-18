@@ -8,7 +8,7 @@ using Momo.Core.StateMachine;
 
 
 
-namespace TestGame.Entities.Players
+namespace Game.Entities.Players
 {
     public partial class PlayerEntity
     {

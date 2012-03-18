@@ -10,7 +10,7 @@ using Momo.Maths;
 
 
 
-namespace TestGame.Entities
+namespace Game.Entities
 {
 
     public class LivingGameEntity : GameEntity

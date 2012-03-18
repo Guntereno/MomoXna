@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 
 
-namespace TestGame.Entities.Gaits
+namespace Game.Entities.Gaits
 {
     public class ZombieGait : Gait
     {

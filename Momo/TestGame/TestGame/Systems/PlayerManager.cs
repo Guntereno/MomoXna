@@ -5,12 +5,12 @@ using Momo.Core.ObjectPools;
 using Momo.Core.Spatial;
 using Momo.Debug;
 
-using TestGame.Entities.Players;
-using TestGame.Input;
+using Game.Entities.Players;
+using Game.Input;
 
 
 
-namespace TestGame.Systems
+namespace Game.Systems
 {
     public class PlayerManager
     {

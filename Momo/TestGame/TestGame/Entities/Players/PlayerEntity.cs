@@ -7,11 +7,11 @@ using Momo.Core.Collision2D;
 using Momo.Core.StateMachine;
 using Momo.Core.Spatial;
 
-using TestGame.Weapons;
+using Game.Weapons;
 
 
 
-namespace TestGame.Entities.Players
+namespace Game.Entities.Players
 {
     public partial class PlayerEntity : LivingGameEntity, IWeaponUser, IStateMachineOwner
     {

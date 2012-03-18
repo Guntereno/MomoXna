@@ -9,12 +9,12 @@ using Momo.Core.Collision2D;
 
 using Momo.Maths;
 
-using TestGame;
-using TestGame.Entities;
+using Game;
+using Game.Entities;
 
 
 
-namespace TestGame.Ai.AiEntityStates
+namespace Game.Ai.AiEntityStates
 {
     public class AiEntityStateHelpers
     {

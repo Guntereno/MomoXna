@@ -7,12 +7,12 @@ using Microsoft.Xna.Framework;
 
 using Momo.Core.StateMachine;
 
-using TestGame.Entities;
+using Game.Entities;
 
 
 
 
-namespace TestGame.Ai.AiEntityStates
+namespace Game.Ai.AiEntityStates
 {
     public abstract class AiEntityState : State
     {

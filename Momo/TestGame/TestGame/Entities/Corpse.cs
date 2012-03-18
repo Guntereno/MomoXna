@@ -1,7 +1,7 @@
 ﻿using Momo.Core;
 using Momo.Core.Spatial;
 
-namespace TestGame.Entities
+namespace Game.Entities
 {
     public class Corpse : GameEntity
     {

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Momo.Core.ObjectPools;
 
-namespace TestGame.Input
+namespace Game.Input
 {
     public class InputManager
     {

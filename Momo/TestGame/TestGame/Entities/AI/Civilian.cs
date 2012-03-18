@@ -1,11 +1,11 @@
-﻿using TestGame.Ai.AiEntityStates;
-using TestGame.Weapons;
+﻿using Game.Ai.AiEntityStates;
+using Game.Weapons;
 using Momo.Core.StateMachine;
 using Microsoft.Xna.Framework;
 
 
 
-namespace TestGame.Entities.AI
+namespace Game.Entities.AI
 {
     public class Civilian : AiEntity
     {

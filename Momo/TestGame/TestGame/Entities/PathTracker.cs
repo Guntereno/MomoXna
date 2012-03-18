@@ -9,7 +9,7 @@ using Momo.Debug;
 
 
 
-namespace TestGame.Entities
+namespace Game.Entities
 {
     public class PathTracker
     {

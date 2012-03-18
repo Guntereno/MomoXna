@@ -5,7 +5,7 @@ using System.Text;
 using Momo.Core.Triggers;
 using Momo.Core;
 
-namespace TestGame.Systems
+namespace Game.Systems
 {
     public class TriggerManager
     {

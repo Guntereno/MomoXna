@@ -2,7 +2,7 @@
 
 
 
-namespace TestGame.Entities
+namespace Game.Entities
 {
     class BinLayers
     {

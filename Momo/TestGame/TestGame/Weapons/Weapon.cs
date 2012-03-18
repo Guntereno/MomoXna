@@ -7,7 +7,7 @@ using Momo.Core.ObjectPools;
 using Microsoft.Xna.Framework;
 using Momo.Core.StateMachine;
 
-namespace TestGame.Weapons
+namespace Game.Weapons
 {
     public abstract class Weapon : IPoolItem, IStateMachineOwner
     {
