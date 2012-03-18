@@ -13,9 +13,7 @@ namespace TmxProcessorLib.Data
         public override void ImportXmlNode(System.Xml.XmlNode layerNode, ContentImporterContext context)
         {
             base.ImportXmlNode(layerNode, context);
-
-            context.Logger.LogMessage("OBJECTGROUP: {0}", Name);
-            
+          
             System.Xml.XmlNodeList objectNodes = layerNode.SelectNodes("object");
 
             Objects = new Dictionary<string, Object>();

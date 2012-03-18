@@ -26,18 +26,9 @@ namespace TmxProcessorLib.Data
 
         public TileEntry[] Data { get; private set; }
 
-        private int m_index;
-
-        public TileLayer(int index)
+        public TileLayer()
         {
-            m_index = index;
         }
-
-        public int GetIndex()
-        {
-            return m_index;
-        }
-
 
         public override void ImportXmlNode(System.Xml.XmlNode layerNode, ContentImporterContext context)
         {

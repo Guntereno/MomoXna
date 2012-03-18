@@ -62,14 +62,13 @@ namespace TmxProcessorLib
         {
             output.PlayerSpawns = new List<Vector2>();
 
-            foreach (String objGroupName in input.ObjectGroupsDict.Keys)
+            foreach (ObjectGroup objGroup in input.ObjectGroups)
             {
-                if (objGroupName == "Player")
+                if (objGroup.Name == "Player")
                 {
-                    ObjectGroup spawnGroup = input.ObjectGroupsDict[objGroupName];
-                    foreach (String spawnPointName in spawnGroup.Objects.Keys)
+                    foreach (String spawnPointName in objGroup.Objects.Keys)
                     {
-                        TmxProcessorLib.Data.Object spawnPoint = spawnGroup.Objects[spawnPointName];
+                        TmxProcessorLib.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
                         output.PlayerSpawns.Add(spawnPoint.Position + Offset);
                     }
                 }
@@ -80,14 +79,13 @@ namespace TmxProcessorLib
         {
             output.SpawnPoints = new List<Vector2>();
 
-            foreach (String objGroupName in input.ObjectGroupsDict.Keys)
+            foreach (ObjectGroup objGroup in input.ObjectGroups)
             {
-                if (objGroupName == "SpawnPoints")
+                if (objGroup.Name == "SpawnPoints")
                 {
-                    ObjectGroup spawnGroup = input.ObjectGroupsDict[objGroupName];
-                    foreach (String spawnPointName in spawnGroup.Objects.Keys)
+                    foreach (String spawnPointName in objGroup.Objects.Keys)
                     {
-                        TmxProcessorLib.Data.Object spawnPoint = spawnGroup.Objects[spawnPointName];
+                        TmxProcessorLib.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
                         output.SpawnPoints.Add(spawnPoint.Position + Offset);
                     }
                 }
@@ -99,21 +97,16 @@ namespace TmxProcessorLib
             output.Tiles = new Dictionary<uint, Tile>();
             output.Tilesets = new List<Content.Tileset>();
 
-            foreach (string tilesetName in input.TilesetsDict.Keys)
+            foreach (Tileset tilesetData in input.Tilesets)
             {
-                Tileset tilesetData = input.TilesetsDict[tilesetName];
                 Content.Tileset tilesetContent = new Content.Tileset();
 
-                tilesetContent.Name = tilesetName;
+                tilesetContent.Name = tilesetData.Name;
                 
                 // build the path using the TileSetDirectory relative to the Content root directory
                 string diffusePath = tilesetData.GetFileFullPath(tilesetData.DiffuseName);
 
                 tilesetContent.DiffuseName = diffusePath;
-
-                context.Logger.LogMessage("PARENT FILENAME: {0}", input.FileName);
-                context.Logger.LogMessage("TEXTURE NAME: {0}", tilesetData.DiffuseName);
-                context.Logger.LogMessage("PATH: {0}", diffusePath);
 
                 // build the asset as an external reference
                 OpaqueDataDictionary data = new OpaqueDataDictionary();
@@ -172,10 +165,9 @@ namespace TmxProcessorLib
 
         private void CalculatePlayableArea(ContentProcessorContext context, TInput input, TOutput output)
         {
-            if (input.TileLayersDict.ContainsKey("Walls"))
+            TileLayer wallLayer = input.TileLayers.Find( l => l.Name == "Walls");
+            if (wallLayer != null)
             {
-                TileLayer wallLayer = input.TileLayersDict["Walls"];
-
                 Point min = new Point(int.MaxValue, int.MaxValue);
                 Point max = new Point(int.MinValue, int.MinValue);
 
@@ -230,9 +222,9 @@ namespace TmxProcessorLib
 
         private void ProcessCollisionStrips(ContentProcessorContext context, TInput input, TOutput output)
         {
-            if (input.TileLayersDict.ContainsKey("Walls"))
+            TileLayer wallLayer = input.TileLayers.Find(l => l.Name == "Walls");
+            if (wallLayer != null)
             {
-                TileLayer wallLayer = input.TileLayersDict["Walls"];
                 List<Edge> edgeList = new List<Edge>();
 
                 // Iterate through each point
@@ -647,7 +639,7 @@ namespace TmxProcessorLib
                         ++currentVert;
                     }
 
-                    patch.Meshes.Add(new Content.Mesh(tileset.Index, vertList));
+                    patch.Meshes.Add(new Content.Mesh(input.Tilesets.IndexOf(tileset), vertList));
                 }
 
                 return patch;

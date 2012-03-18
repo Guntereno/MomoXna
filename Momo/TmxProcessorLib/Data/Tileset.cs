@@ -11,10 +11,9 @@ using Microsoft.Xna.Framework;
 
 namespace TmxProcessorLib.Data
 {
-    public class Tileset
+    public class Tileset: INamed
     {
         public TmxData Parent { get; private set; }
-        public int Index { get; private set; }
         public uint FirstGid { get; private set; }
         public string Name { get; private set; }
         public string DiffuseName { get; private set; }
@@ -23,10 +22,9 @@ namespace TmxProcessorLib.Data
 
         public Microsoft.Xna.Framework.Point TileDimensions { get; private set; }
 
-        public Tileset(TmxData parent, int index)
+        public Tileset(TmxData parent)
         {
             Parent = parent;
-            Index = index;
         }
 
         public void ImportXmlNode(System.Xml.XmlNode tilesetNode, ContentImporterContext context)

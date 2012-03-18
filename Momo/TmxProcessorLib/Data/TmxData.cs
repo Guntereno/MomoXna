@@ -32,11 +32,10 @@ namespace TmxProcessorLib.Data
 
         public String FileName { get; private set; }
 
-        public Dictionary<string, Tileset> TilesetsDict { get; private set; }
         public List<Tileset> Tilesets { get; private set; }
-        public Dictionary<string, TileLayer> TileLayersDict { get; private set; }
+        public List<Layer> Layers { get; private set; }
         public List<TileLayer> TileLayers { get; private set; }
-        public Dictionary<string, ObjectGroup> ObjectGroupsDict { get; private set; }
+        public List<ObjectGroup> ObjectGroups { get; private set; }
 
         public TmxData(string fileName)
         {
@@ -46,8 +45,57 @@ namespace TmxProcessorLib.Data
         // Function initialises the map data from the given XmlDocument
         public void ImportXmlDoc(System.Xml.XmlDocument xmlDoc, ContentImporterContext context)
         {
+            Properties = new PropertySheet();
+            Tilesets = new List<Tileset>();
+            Layers = new List<Layer>();
+            TileLayers = new List<TileLayer>();
+            ObjectGroups = new List<ObjectGroup>();
+
             System.Xml.XmlNode mapNode = xmlDoc.GetElementsByTagName("map").Item(0);
 
+            ParseMapNode(mapNode);
+
+            foreach (XmlNode childNode in mapNode.ChildNodes)
+            {
+                switch (childNode.Name)
+                {
+                    case "properties":
+                        {
+                            Properties.ImportXmlNode(childNode, context);
+                        }
+                        break;
+
+                    case "tileset":
+                        {
+                            Tileset tileset = new Tileset(this);
+                            tileset.ImportXmlNode(childNode, context);
+                            Tilesets.Add(tileset);
+                        }
+                        break;
+
+                    case "layer":
+                        {
+                            TileLayer tileLayer = new TileLayer();
+                            tileLayer.ImportXmlNode(childNode, context);
+                            Layers.Add(tileLayer);
+                            TileLayers.Add(tileLayer);
+                        }
+                        break;
+
+                    case "objectgroup":
+                        {
+                            ObjectGroup objectGroup = new ObjectGroup();
+                            objectGroup.ImportXmlNode(childNode, context);
+                            Layers.Add(objectGroup);
+                            ObjectGroups.Add(objectGroup);
+                        }
+                        break;
+                }
+            }
+        }
+
+        private void ParseMapNode(System.Xml.XmlNode mapNode)
+        {
             // Parse type
             string typeString = mapNode.Attributes["orientation"].Value;
             switch (typeString)
@@ -71,52 +119,6 @@ namespace TmxProcessorLib.Data
             tileDimensions.X = int.Parse(mapNode.Attributes["tilewidth"].Value);
             tileDimensions.Y = int.Parse(mapNode.Attributes["tileheight"].Value);
             TileDimensions = tileDimensions;
-
-            // Parse the map properties
-            Properties = new PropertySheet();
-            System.Xml.XmlNode propertiesNode = mapNode.SelectSingleNode("properties");
-            if (propertiesNode != null)
-            {
-                Properties.ImportXmlNode(propertiesNode, context);
-            }
-
-            // Parse the tilesets
-            System.Xml.XmlNodeList tilesetNodes = mapNode.SelectNodes("tileset");
-            TilesetsDict = new Dictionary<string, Tileset>();
-            Tilesets = new List<Tileset>();
-            int tileSetIndex = 0;
-            foreach (System.Xml.XmlNode tilesetNode in tilesetNodes)
-            {
-                Tileset tileset = new Tileset(this, tileSetIndex);
-                tileset.ImportXmlNode(tilesetNode, context);
-                TilesetsDict[tileset.Name] = tileset;
-                Tilesets.Add(tileset);
-                ++tileSetIndex;
-            }
-
-            // Parse the layers
-            System.Xml.XmlNodeList layerNodes = mapNode.SelectNodes("layer");
-            TileLayersDict = new Dictionary<string, TileLayer>();
-            TileLayers = new List<TileLayer>();
-            int tileLayerIndex = 0;
-            foreach (System.Xml.XmlNode layerNode in layerNodes)
-            {
-                TileLayer tileLayer = new TileLayer(tileLayerIndex);
-                tileLayer.ImportXmlNode(layerNode, context);
-                TileLayersDict[tileLayer.Name] = tileLayer;
-                TileLayers.Add(tileLayer);
-                ++tileLayerIndex;
-            }
-             
-            // Parse the object groups
-            System.Xml.XmlNodeList objectgroupNodes = mapNode.SelectNodes("objectgroup");
-            ObjectGroupsDict = new Dictionary<string, ObjectGroup>();
-            foreach (System.Xml.XmlNode objectGroupNode in objectgroupNodes)
-            {
-                ObjectGroup objectGroup = new ObjectGroup();
-                objectGroup.ImportXmlNode(objectGroupNode, context);
-                ObjectGroupsDict[objectGroup.Name] = objectGroup;
-            }
         }
 
     }

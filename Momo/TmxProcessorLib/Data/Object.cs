@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace TmxProcessorLib.Data
 {
-    public class Object
+    public class Object: INamed
     {
         public PropertySheet Properties { get; private set; }
         public string Name { get; set; }
@@ -28,8 +28,6 @@ namespace TmxProcessorLib.Data
             {
                 Name = objectNode.Attributes["name"].Value;
             }
-
-            context.Logger.LogMessage("OBJECT: {0}", Name);
 
             if (objectNode.Attributes["type"] != null)
             {
@@ -62,8 +60,6 @@ namespace TmxProcessorLib.Data
             {
                 Dimensions = Vector2.Zero;
             }
-
-            context.Logger.LogMessage("POSITION: {0}", Position);
 
             System.Xml.XmlNode propertiesNode = objectNode.SelectSingleNode("properties");
             if (propertiesNode != null)

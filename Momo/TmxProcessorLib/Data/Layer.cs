@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
 namespace TmxProcessorLib.Data
 {
-    public class Layer
+    public class Layer: INamed
     {
         public string Name { get; private set; }
         public Microsoft.Xna.Framework.Point Dimensions { get; private set; }

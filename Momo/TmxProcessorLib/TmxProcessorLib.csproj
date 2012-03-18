@@ -54,6 +54,7 @@
     <Compile Include="Content\Events.cs" />
     <Compile Include="Content\Map.cs" />
     <Compile Include="Content\Tileset.cs" />
+    <Compile Include="Data\INamed.cs" />
     <Compile Include="Data\Layer.cs" />
     <Compile Include="Data\Object.cs" />
     <Compile Include="Data\ObjectGroup.cs" />
