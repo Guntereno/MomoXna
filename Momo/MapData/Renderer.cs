@@ -78,6 +78,12 @@ namespace MapData
                 }
             }
 
+            for (int modelIdx = 0; modelIdx < m_map.ModelInstances.Length; ++modelIdx)
+            {
+                MapData.ModelInst modelInst = m_map.ModelInstances[modelIdx];
+                modelInst.Draw(viewMatrix, projMatrix);
+            }
+
             graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
             graphicsDevice.BlendState = BlendState.Opaque;

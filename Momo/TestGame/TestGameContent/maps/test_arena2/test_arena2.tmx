@@ -678,5 +678,8 @@
     <property name="trigger" value="exitTrigger"/>
    </properties>
   </object>
+  <object x="978" y="2950">
+   <polygon points="0,0 170,-2 78,150"/>
+  </object>
  </objectgroup>
 </map>

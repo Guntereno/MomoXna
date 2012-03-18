@@ -8,7 +8,7 @@ namespace TmxProcessorLib.Data
 {
     public class ObjectGroup : Layer
     {
-        public Dictionary<string, Object> Objects;
+        public Dictionary<string, Object> Objects { get; private set; }
 
         public override void ImportXmlNode(System.Xml.XmlNode layerNode, ContentImporterContext context)
         {

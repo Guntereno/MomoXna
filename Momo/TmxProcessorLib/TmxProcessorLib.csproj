@@ -53,12 +53,15 @@
     <Compile Include="Content\Enemy.cs" />
     <Compile Include="Content\Events.cs" />
     <Compile Include="Content\Map.cs" />
+    <Compile Include="Content\ModelInst.cs" />
+    <Compile Include="Content\Tile.cs" />
     <Compile Include="Content\Tileset.cs" />
     <Compile Include="Data\INamed.cs" />
     <Compile Include="Data\Layer.cs" />
     <Compile Include="Data\Object.cs" />
     <Compile Include="Data\ObjectGroup.cs" />
     <Compile Include="Content\Patch.cs" />
+    <Compile Include="Data\Polygon.cs" />
     <Compile Include="Data\TileLayer.cs" />
     <Compile Include="Data\Tileset.cs" />
     <Compile Include="Data\PropertySheet.cs" />

@@ -152,8 +152,11 @@
   <object name="PlayerSpawn3" type="PlayerSpawn" x="3009" y="3072"/>
  </objectgroup>
  <objectgroup name="Collision" width="64" height="64">
-  <object type="collision" x="2679" y="2728">
-   <polygon points="137,-40 273,38 239,199 54,199 23,39"/>
+  <object type="collision" x="2816" y="2816">
+   <polygon points="0,128 111,64 111,-64 0,-128 -110,-64 -110,64"/>
   </object>
+ </objectgroup>
+ <objectgroup name="SceneObjects" width="64" height="64">
+  <object name="Fountain" type="fountain" x="2816" y="2816"/>
  </objectgroup>
 </map>

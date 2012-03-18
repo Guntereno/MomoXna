@@ -41,6 +41,8 @@ namespace MapData
 
         public PressurePlateData[] PressurePlates { get; private set; }
 
+        public ModelInst[] ModelInstances { get; private set; }
+
         public void Read(ContentReader input)
         {
             LayerCount = input.ReadInt32();
@@ -100,6 +102,19 @@ namespace MapData
 
                     Patches[layerIdx][patchIdx] = patch;
                 }
+            }
+
+            // Read in the scene object instances
+            int numSceneObjects = input.ReadInt32();
+            ModelInstances = new ModelInst[numSceneObjects];
+            for (int sceneObjIdx = 0; sceneObjIdx < numSceneObjects; ++sceneObjIdx)
+            {
+                string modelName = input.ReadString();
+                Matrix worldMatrix = input.ReadObject<Matrix>();
+
+                Model model = ResourceManager.Instance.Get<Model>(modelName);
+
+                ModelInstances[sceneObjIdx] = new ModelInst(model, worldMatrix);
             }
 
             //// Read the pressure point information

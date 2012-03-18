@@ -91,6 +91,7 @@
     <Compile Include="EventData.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MapDataReader.cs" />
+    <Compile Include="ModelInst.cs" />
     <Compile Include="NamedData.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="Patch.cs" />

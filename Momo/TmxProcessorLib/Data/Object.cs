@@ -16,6 +16,7 @@ namespace TmxProcessorLib.Data
         public string Type { get; private set; }
         public Vector2 Position { get; private set; }
         public Vector2 Dimensions { get; private set; }
+        public Polygon Polygon { get; private set; }
 
         public Object()
         {
@@ -66,6 +67,13 @@ namespace TmxProcessorLib.Data
             {
                 Properties = new PropertySheet();
                 Properties.ImportXmlNode(propertiesNode, context);
+            }
+
+            System.Xml.XmlNode polygonNode = objectNode.SelectSingleNode("polygon");
+            if (polygonNode != null)
+            {
+                Polygon = new Polygon();
+                Polygon.ImportXmlNode(polygonNode, context);
             }
         }
 

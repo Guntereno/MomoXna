@@ -7,29 +7,15 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-using TmxProcessorLib.Data;
 
 using TInput = TmxProcessorLib.Data.TmxData;
 using TOutput = TmxProcessorLib.Content.Map;
 using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionNormalTexture;
+using TmxProcessorLib.Content;
+using TmxProcessorLib.Data;
 
 namespace TmxProcessorLib
 {
-
-    public class Tile
-    {
-        public Tile(uint id, Tileset parent, Rectangle source)
-        {
-            Id = id;
-            Parent = parent;
-            Source = source;
-        }
-
-        public uint Id { get; private set; }
-        public Rectangle Source { get; private set; }
-        public Tileset Parent { get; private set; }
-    }
-
     /// <summary>
     /// Processer creates a new Content.Map from the TmxData
     /// </summary>
@@ -54,6 +40,7 @@ namespace TmxProcessorLib
             ProcessSpawnPoints(context, input, output);
             BuildPatches(context, input, output);
             ProcessEvents(context, input, output);
+            ProcessSceneObjects(context, input, output);
 
             return output;
         }
@@ -97,7 +84,7 @@ namespace TmxProcessorLib
             output.Tiles = new Dictionary<uint, Tile>();
             output.Tilesets = new List<Content.Tileset>();
 
-            foreach (Tileset tilesetData in input.Tilesets)
+            foreach (Data.Tileset tilesetData in input.Tilesets)
             {
                 Content.Tileset tilesetContent = new Content.Tileset();
 
@@ -221,6 +208,12 @@ namespace TmxProcessorLib
         }
 
         private void ProcessCollisionStrips(ContentProcessorContext context, TInput input, TOutput output)
+        {
+            ProcessTileCollisionStrips(context, input, output);
+            ProcessCollisionLayerCollisionStrips(context, input, output);
+        }
+
+        private void ProcessTileCollisionStrips(ContentProcessorContext context, TInput input, TOutput output)
         {
             TileLayer wallLayer = input.TileLayers.Find(l => l.Name == "Walls");
             if (wallLayer != null)
@@ -406,17 +399,43 @@ namespace TmxProcessorLib
                     List<Vector2> strip = new List<Vector2>();
                     for (int i = 0; i < currentStrip.Count; ++i)
                     {
-                        strip.Add( new Vector2(
+                        strip.Add(new Vector2(
                             currentStrip[i].Point1.X * input.TileDimensions.X,
                             currentStrip[i].Point1.Y * input.TileDimensions.Y) + Offset);
                     }
 
                     // Add the last point
-                    strip.Add( new Vector2(
+                    strip.Add(new Vector2(
                         currentStrip[currentStrip.Count - 1].Point2.X * input.TileDimensions.X,
                         currentStrip[currentStrip.Count - 1].Point2.Y * input.TileDimensions.Y) + Offset);
 
                     output.CollisionBoundaries.Add(strip);
+                }
+            }
+        }
+
+        private void ProcessCollisionLayerCollisionStrips(ContentProcessorContext context, TInput input, TOutput output)
+        {
+            // Add the polygons from the Collision layer
+            ObjectGroup collisionLayer = input.ObjectGroups.Find(l => l.Name == "Collision");
+            if (collisionLayer != null)
+            {
+                foreach (string objName in collisionLayer.Objects.Keys)
+                {
+                    Data.Object obj = collisionLayer.Objects[objName];
+                    if (obj.Polygon != null)
+                    {
+                        List<Vector2> strip = new List<Vector2>();
+
+                        foreach (Vector2 point in obj.Polygon.Points)
+                        {
+                            strip.Add(point + obj.Position + Offset);
+                        }
+
+                        strip.Add(obj.Polygon.Points[0] + obj.Position + Offset);
+
+                        output.CollisionBoundaries.Add(strip);
+                    }
                 }
             }
         }
@@ -483,6 +502,30 @@ namespace TmxProcessorLib
             */
         }
 
+
+        private void ProcessSceneObjects(ContentProcessorContext context, TInput input, TOutput output)
+        {
+            output.SceneObjects = new List<Content.ModelInst>();
+
+            // Add the model instances from the SceneObjects layer
+            ObjectGroup sceneObjectsLayer = input.ObjectGroups.Find(l => l.Name == "SceneObjects");
+            if (sceneObjectsLayer != null)
+            {
+                foreach (string objName in sceneObjectsLayer.Objects.Keys)
+                {
+                    Data.Object obj = sceneObjectsLayer.Objects[objName];
+                    string modelName = "sceneObjects/" + obj.Type;
+
+                    Vector3 pos = new Vector3(obj.Position + Offset, 0.0f);
+
+                    Matrix worldMatrix = Matrix.Identity;
+                    worldMatrix *= Matrix.CreateTranslation(pos);
+
+                    output.SceneObjects.Add(new ModelInst(modelName, worldMatrix));
+                }
+            }
+        }
+
         private struct TileInfo
         {
             public TileInfo(Tile tile, int x, int y, bool flipX, bool flipY)
@@ -505,7 +548,7 @@ namespace TmxProcessorLib
         {
             // Create a dictionary of all neccessary tile info
             // indexed by the texture
-            Dictionary<Tileset, List<TileInfo>> tileDict = new Dictionary<Tileset, List<TileInfo>>();
+            Dictionary<Data.Tileset, List<TileInfo>> tileDict = new Dictionary<Data.Tileset, List<TileInfo>>();
             for (int x = xMin; x < (xMin + patchSize); ++x)
             {
                 System.Diagnostics.Debug.Assert(x < input.Dimensions.X);
@@ -534,7 +577,7 @@ namespace TmxProcessorLib
                 Content.Patch patch = new Content.Patch();
 
                 // Now iterate the dictionary, building a mesh for each texture
-                foreach (Tileset tileset in tileDict.Keys)
+                foreach (Data.Tileset tileset in tileDict.Keys)
                 {
                     List<TileInfo> tileList = tileDict[tileset];
 

@@ -25,6 +25,8 @@ namespace TmxProcessorLib.Content
 
         internal List<List<Patch>> Patches { get; set; }
 
+        internal List<ModelInst> SceneObjects { get; set; }
+
         //internal List<TimerEvent> TimerEvents { get; private set; }
         //internal List<SpawnEvent> SpawnEvents { get; private set; }
         //internal List<TriggerCounterEvent> TriggerCounterEvents { get; private set; }
@@ -84,6 +86,13 @@ namespace TmxProcessorLib.Content
                 {
                     patch.Write(output);
                 }
+            }
+
+            // Output the scene objects
+            output.Write(SceneObjects.Count);
+            foreach (ModelInst modelInst in SceneObjects)
+            {              
+                modelInst.Write(output);
             }
 
             /*

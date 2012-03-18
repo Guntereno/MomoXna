@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
 namespace TmxProcessorLib.Content
 {
-    class Tileset
+    public class Tileset
     {
         internal string Name { get; set; }
         internal string DiffuseName { get; set; }
