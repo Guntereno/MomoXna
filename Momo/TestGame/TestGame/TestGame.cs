@@ -58,7 +58,7 @@ namespace TestGame
 
             //if (GraphicsAdapter.Adapters.Count > 1)
             //{
-                graphics.IsFullScreen = true;
+            //    graphics.IsFullScreen = true;
             //}
         }
 

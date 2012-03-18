@@ -149,17 +149,19 @@ namespace TestGame
             CollisionHelpers.Init();
             PathFindingHelpers.Init(400.0f, 3, mBin);
 
+
+
             for (int i = 0; i < 0; ++i)
             {
-                float x = 1840.0f + ((float)mRandom.NextDouble() * 420.0f);
-                float y = 3880.0f + ((float)mRandom.NextDouble() * 700.0f);
+                float x = 1000.0f + 1984.0f + ((float)mRandom.NextDouble() * 128.0f);
+                float y = 1000.0f + 128.0f + ((float)mRandom.NextDouble() * 3584.0f);
                 mAiEntityManager.Create(typeof(Civilian), new Vector2(x, y));
             }
 
             for (int i = 0; i < 100; ++i)
             {
-                float x = 1840.0f + ((float)mRandom.NextDouble() * 250.0f);
-                float y = 4000.0f + ((float)mRandom.NextDouble() * 750.0f);
+                float x = 1000.0f + 1984.0f + ((float)mRandom.NextDouble() * 128.0f);
+                float y = 1000.0f + 128.0f + ((float)mRandom.NextDouble() * 3584.0f);
                 mAiEntityManager.Create(typeof(Zombie), new Vector2(x, y));
             }
         }
