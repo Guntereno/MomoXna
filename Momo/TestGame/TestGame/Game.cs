@@ -5,20 +5,20 @@ using Microsoft.Xna.Framework.Input;
 using Momo.Core;
 using Momo.Debug;
 
-using TestGame.Input;
+using Game.Input;
 using Momo.Fonts;
 
 
 
-namespace TestGame
+namespace Game
 {
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class TestGame : Microsoft.Xna.Framework.Game
+    public class Game : Microsoft.Xna.Framework.Game
     {
-        public static TestGame Instance { get { return msInstance; } }
-        private static TestGame msInstance = null;
+        public static Game Instance { get { return msInstance; } }
+        private static Game msInstance = null;
 
         public const int kBackBufferWidth = 1280;
         public const int kBackBufferHeight = 720;
@@ -38,7 +38,7 @@ namespace TestGame
 
         public InputManager InputManager { get; private set; }
 
-        public TestGame()
+        public Game()
         {
             if (msInstance != null)
                 throw new System.Exception("Attempt to instantiate Singleton twice!");
@@ -76,7 +76,7 @@ namespace TestGame
 
         protected override void Initialize()
         {
-            mProfiler.Init(10, TestGame.Instance.GraphicsDevice);
+            mProfiler.Init(10, Game.Instance.GraphicsDevice);
             mCpuUpdateProfileItemId = mProfiler.RegisterProfileItem("Update", new Color(1.0f, 0.0f, 0.0f, 0.5f));
             mCpuRenderProfileItemId = mProfiler.RegisterProfileItem("Render", new Color(0.5f, 0.0f, 0.0f, 0.5f));
             mCpuDebugRenderProfileItemId = mProfiler.RegisterProfileItem("DebugRender", new Color(1.0f, 0.0f, 0.0f, 0.5f));
