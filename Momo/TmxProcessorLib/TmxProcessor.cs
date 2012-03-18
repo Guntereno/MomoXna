@@ -432,7 +432,10 @@ namespace TmxProcessorLib
                             strip.Add(point + obj.Position + Offset);
                         }
 
-                        strip.Add(obj.Polygon.Points[0] + obj.Position + Offset);
+                        if (obj.Polygon.Closed)
+                        {
+                            strip.Add(obj.Polygon.Points[0] + obj.Position + Offset);
+                        }
 
                         output.CollisionBoundaries.Add(strip);
                     }
@@ -515,7 +518,7 @@ namespace TmxProcessorLib
                 {
                     Data.Object obj = sceneObjectsLayer.Objects[objName];
 
-                    if (obj.Properties.Properties.ContainsKey("model"))
+                    if ((obj.Properties.Properties != null) && (obj.Properties.Properties.ContainsKey("model")))
                     {
                         string modelName = "sceneObjects/" + obj.Properties.Properties["model"];
 

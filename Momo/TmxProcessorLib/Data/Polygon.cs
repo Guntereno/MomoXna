@@ -10,6 +10,7 @@ namespace TmxProcessorLib.Data
     public class Polygon
     {
         public List<Vector2> Points { get; private set; }
+        public Boolean Closed { get; private set; }
 
         public void ImportXmlNode(System.Xml.XmlNode polygonNode, ContentImporterContext context)
         {
@@ -31,6 +32,8 @@ namespace TmxProcessorLib.Data
                     Points.Add(curPoint);
                 }
             }
+
+            Closed = (polygonNode.Name == "polygon");
         }
     }
 }

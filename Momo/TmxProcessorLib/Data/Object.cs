@@ -69,7 +69,12 @@ namespace TmxProcessorLib.Data
                 Properties.ImportXmlNode(propertiesNode, context);
             }
 
-            System.Xml.XmlNode polygonNode = objectNode.SelectSingleNode("polygon");
+            System.Xml.XmlNode polygonNode;
+            polygonNode = objectNode.SelectSingleNode("polygon");
+            if (polygonNode == null)
+            {
+                polygonNode = objectNode.SelectSingleNode("polyline");
+            }
             if (polygonNode != null)
             {
                 Polygon = new Polygon();
