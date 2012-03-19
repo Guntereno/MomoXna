@@ -106,7 +106,7 @@ namespace Game.Weapons
         {
             #region Fields
 
-            BulletEntity.BulletParams m_bulletParams = new BulletEntity.BulletParams(20.0f, new Color(0.9f, 0.8f, 0.6f, 0.4f));
+            BulletEntity.BulletParams m_bulletParams = new BulletEntity.BulletParams(20.0f, new Color(0.3f, 0.2f, 0.1f, 0.4f));
 
             #endregion
 

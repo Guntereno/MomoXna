@@ -448,7 +448,7 @@ namespace TmxProcessorLib
             int numLayers = input.TileLayers.Count;
             output.Patches = new List<List<Content.Patch>>();
 
-            const int kPatchSize = 8;
+            const int kPatchSize = 4;
 
             for (int layerIdx = 0; layerIdx < numLayers; ++layerIdx)
             {
@@ -524,7 +524,15 @@ namespace TmxProcessorLib
 
                         Vector3 pos = new Vector3(obj.Position + Offset, 0.0f);
 
+                        float orientation = 0.0f;
+                        if (obj.Properties.Properties.ContainsKey("orientation"))
+                        {
+                            orientation = float.Parse(obj.Properties.Properties["orientation"]);
+                            orientation = MathHelper.ToRadians(orientation);
+                        }
+
                         Matrix worldMatrix = Matrix.Identity;
+                        worldMatrix *= Matrix.CreateRotationZ(orientation);
                         worldMatrix *= Matrix.CreateTranslation(pos);
 
                         output.SceneObjects.Add(new ModelInst(modelName, worldMatrix));
@@ -657,35 +665,37 @@ namespace TmxProcessorLib
                             texBottom = temp;
                         }
 
+                        Vector3 up = new Vector3(0.0f, 0.0f, 1.0f);
+
                         vertList[currentVert].Position = new Vector3(left, top, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texTop);
-                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
+                        vertList[currentVert].Normal = up;
                         ++currentVert;
 
                         vertList[currentVert].Position = new Vector3(right, top, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
-                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
+                        vertList[currentVert].Normal = up;
                         ++currentVert;
 
                         vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
-                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
+                        vertList[currentVert].Normal = up;
                         ++currentVert;
 
 
                         vertList[currentVert].Position = new Vector3(left, bottom, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texLeft, texBottom);
-                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
+                        vertList[currentVert].Normal = up;
                         ++currentVert;
 
                         vertList[currentVert].Position = new Vector3(right, top, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texRight, texTop);
-                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
+                        vertList[currentVert].Normal = up;
                         ++currentVert;
 
                         vertList[currentVert].Position = new Vector3(right, bottom, 0.0f);
                         vertList[currentVert].TextureCoordinate = new Vector2(texRight, texBottom);
-                        vertList[currentVert].Normal = new Vector3(0.0f, 0.0f, 1.0f);
+                        vertList[currentVert].Normal = up;
                         ++currentVert;
                     }
 

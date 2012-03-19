@@ -57,6 +57,7 @@ namespace MapData
             m_effect.World = modelMatrix;
             m_effect.View = viewMatrix;
             m_effect.Projection = projMatrix;
+            m_effect.PreferPerPixelLighting = true;
 
             // Create a view frustrum for culling
             m_viewFrustum.Matrix = modelMatrix * viewMatrix * projMatrix;

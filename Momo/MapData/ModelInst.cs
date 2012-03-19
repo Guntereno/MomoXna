@@ -36,7 +36,7 @@ namespace MapData
                     effect.View = view;
                     effect.Projection = projection;
                     effect.TextureEnabled = true;
-                    effect.PreferPerPixelLighting = false;
+                    effect.PreferPerPixelLighting = true;
                 }
 
                 // Draw the mesh, using the effects set above.
