@@ -17,7 +17,7 @@ namespace Momo.Core.GameEntities
         // --------------------------------------------------------------------
         // -- Private Static Members
         // --------------------------------------------------------------------
-        private static readonly float kContactDimensionPadding = 5.0f;
+        private static readonly float kContactDimensionPadding = 1.0f;
 
         private static readonly float kMaxVelocity = 500.0f;
         private static readonly float kMaxVelocitySq = kMaxVelocity * kMaxVelocity;

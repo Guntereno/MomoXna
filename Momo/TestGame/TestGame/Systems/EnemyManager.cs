@@ -19,7 +19,7 @@ namespace Game.Systems
 {
     public class AiEntityManager
     {
-        private const int kMaxEntities = 500;
+        private const int kMaxEntities = 1000;
 
         private Zone mZone;
 

@@ -15,7 +15,7 @@ namespace Game.Ai.AiEntityStates
         Vector2 mChasePosition;
         float mSearchTime;
 
-        const float kStateBaseSpeedMod = 6.0f;
+        const float kStateBaseSpeedMod = 10.0f;
 
         const float kSearchStopTime = 3.0f;
         const float kSearchCoolDownTime = 2.0f;

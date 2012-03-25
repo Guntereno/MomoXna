@@ -138,7 +138,7 @@ namespace Game
             PathRegion[] regions = new PathRegion[1];
             Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius, false);
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
-            regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 80, true, extrudeBoundariesSmallPath);
+            //regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 80, true, extrudeBoundariesSmallPath);
             regions[0].GenerateNodePaths(mBin, BinLayers.kBoundaryObstructionSmall);
             mPathIsland.SetRegions(regions);
 

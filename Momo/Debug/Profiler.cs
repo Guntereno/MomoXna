@@ -39,9 +39,9 @@ namespace Momo.Debug
         private int m_profileItemCapacity = 0;
         private float m_displayRangeMs = 16.6f;
 
-        private Vector2 m_displayTopLeft = new Vector2(-0.97f, -0.87f);
-        private Vector2 m_displayBottomRight = new Vector2(0.97f, -0.97f);
-        private Vector2 m_displayDimension = new Vector2(1.94f, -0.1f);
+        private Vector2 m_displayTopLeft = Vector2.Zero;
+        private Vector2 m_displayBottomRight = Vector2.Zero;
+        private Vector2 m_displayDimension = Vector2.Zero;
 
 
         // --------------------------------------------------------------------
@@ -112,6 +112,9 @@ namespace Momo.Debug
             m_effect.TextureEnabled = false;
             m_effect.LightingEnabled = false;
             m_effect.VertexColorEnabled = true;
+
+            DisplayTopLeft = new Vector2(-0.97f, -0.92f);
+            DisplayBottomRight = new Vector2(0.97f, -0.97f);
 
             m_inited = true;
         }

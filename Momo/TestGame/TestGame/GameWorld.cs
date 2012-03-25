@@ -35,10 +35,6 @@ namespace Game
 
         private TextBatchPrinter mTextPrinter = new TextBatchPrinter();
 
-        //private uint mUpdateTokenOffset = 0;
-
-        //private float mElapsedTime = 0.0f;
-
 
         private PerspectiveCameraNode mCamera = new PerspectiveCameraNode("Camera");
         private CameraController mCameraController = null;
