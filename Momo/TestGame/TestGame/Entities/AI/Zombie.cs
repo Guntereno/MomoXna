@@ -45,8 +45,11 @@ namespace Game.Entities.AI
 
             mStateChase.NextState = mStateWander;
 
-            Gait = new ZombieGait((float)Zone.Random.NextDouble() * 100.0f);
-
+            ZombieGait gait = new ZombieGait((float)Zone.Random.NextDouble() * 100.0f);
+            gait.SwayLeft = (float)Zone.Random.NextDouble() * 0.185f;
+            gait.SwayRight = (float)Zone.Random.NextDouble() * 0.185f;
+            Gait = gait;
+ 
             BaseSpeed = 10.0f + ((float)Zone.Random.NextDouble() * 5.0f);
 
             PrimaryDebugColor = new Color(1.0f, 0.0f, 0.0f, 0.3f);

@@ -28,6 +28,7 @@ namespace Game.Entities
         private CollidableGroupInfo mCollidableGroupInfo = new CollidableGroupInfo();
 
         private float mFacingAngle = 0.0f;
+        private float mFacingVisualOffsetAngle = 0.0f;
         private Vector2 mFacingDirection = Vector2.Zero;
 
         private Gait mGait = new Gait();
@@ -61,6 +62,12 @@ namespace Game.Entities
                 mFacingAngle = value;
                 mFacingDirection = new Vector2((float)Math.Sin(mFacingAngle), (float)Math.Cos(mFacingAngle));
             }
+        }
+
+        public float FacingVisualOffsetAngle
+        {
+            get { return mFacingVisualOffsetAngle; }
+            set { mFacingVisualOffsetAngle = value; }
         }
 
         public Vector2 FacingDirection
@@ -130,7 +137,10 @@ namespace Game.Entities
         public override void DebugRender(DebugRenderer debugRenderer)
         {
             debugRenderer.DrawCircle(GetPosition(), ContactRadiusInfo.Radius, mPrimaryDebugColour, mSecondaryDebugColour, true, 2.5f, 8);
-            debugRenderer.DrawLine(GetPosition(), GetPosition() + (mFacingDirection * mContactRadiusInfo.Radius * 1.5f), mSecondaryDebugColour);
+
+            float visualFacingAngle = mFacingAngle + mFacingVisualOffsetAngle;
+            Vector2 visualFacingDirection = new Vector2((float)Math.Sin(visualFacingAngle), (float)Math.Cos(visualFacingAngle));
+            debugRenderer.DrawLine(GetPosition(), GetPosition() + (visualFacingDirection * mContactRadiusInfo.Radius * 1.5f), mSecondaryDebugColour);
         }
 
 
@@ -146,8 +156,14 @@ namespace Game.Entities
 
             float relativeDirection = GetRelativeFacing(targetDirection);
 
-            mGait.WalkForward(this, relativeDirection * amount);
-            //SetPosition(GetPosition() + (FacingDirection * (relativeDirection * walkSpeed)));
+            if (amount < 2.0f)
+            {
+                mGait.WalkForward(this, relativeDirection * amount);
+            }
+            else
+            {
+                mGait.RunForward(this, relativeDirection * amount);
+            }
         }
 
         // Returns [0.0, 1.0] based on how close the facing is to the target. 1.0 = the same, 0.0 opposite.

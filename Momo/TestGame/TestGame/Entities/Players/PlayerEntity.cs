@@ -235,7 +235,7 @@ namespace Game.Entities.Players
 
         internal void UpdateMovement(ref FrameTime frameTime)
         {
-            const float kMaxSpeed = 225.0f;
+            const float kMaxSpeed = 150.0f;
 
             // If the player has a facing input, use it...
             if (mFacingInputVector.LengthSquared() > 0.0f)

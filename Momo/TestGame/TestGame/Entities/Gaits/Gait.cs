@@ -14,5 +14,9 @@ namespace Game.Entities.Gaits
             entity.IncrementPosition(entity.FacingDirection * amount);
         }
 
+        public virtual void RunForward(GameEntity entity, float amount)
+        {
+            entity.IncrementPosition(entity.FacingDirection * amount);
+        }
     }
 }
