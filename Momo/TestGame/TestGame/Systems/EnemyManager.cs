@@ -59,13 +59,23 @@ namespace Game.Systems
         }
 
 
-        public AiEntity Create(Type aiEntityType, Vector2 pos)
+        // Not added to bins.
+        public AiEntity Create(Type aiEntityType)
         {
             AiEntity createdEntity = null;
 
             createdEntity = mEntities.CreateItem(aiEntityType);
+
+            return createdEntity;
+        }
+
+
+        public AiEntity Create(Type aiEntityType, Vector2 pos)
+        {
+            AiEntity createdEntity = Create(aiEntityType);
+
             createdEntity.SetPosition(pos);
-            createdEntity.AddToBin(mZone.Bin);
+            createdEntity.AddToBin();
 
             return createdEntity;
         }

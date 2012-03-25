@@ -116,9 +116,9 @@ namespace Game.Entities
         }
 
 
-        public void AddToBin(Bin bin)
+        public void AddToBin()
         {
-            AddToBin(bin, GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, mBinLayer);
+            AddToBin(Zone.Bin, GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, mBinLayer);
         }
         
 

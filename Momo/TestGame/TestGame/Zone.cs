@@ -128,13 +128,14 @@ namespace Game
             mMapRenderer.Init(mMap, Game.Instance.GraphicsDevice, 16);
 
 
-            float smallPathNodeRadius = 25.0f;
+
             BuildCollisionBoundaries(0.0f, BinLayers.kBoundary, false, true);
             BuildCollisionBoundaries(5.0f, BinLayers.kBoundaryOcclusionSmall, true, false);
-            BuildCollisionBoundaries(12.0f, BinLayers.kBoundaryObstructionSmall, true, false);
+            BuildCollisionBoundaries(10.0f, BinLayers.kBoundaryObstructionSmall, true, false);
 
 
             // Path stuff
+            float smallPathNodeRadius = 25.0f;
             PathRegion[] regions = new PathRegion[1];
             Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius, false);
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
@@ -327,6 +328,89 @@ namespace Game
             //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[2], new Color(0.60f, 0.0f, 0.0f, 0.5f));
             //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
             //mBin.DebugRenderGrid(World.DebugRenderer, Color.Orange, Color.DarkRed);
+        }
+
+
+        // Returns true if the list was populated with the requested entities. You must call AddToBin() and SetPosition()
+        // when bringing the objects into the world.
+        // If you decide you dont want some of the entities, call DestroyItem().
+        public bool RequestEntities(Type entityType, int count, ref AiEntity[] outEntities)
+        {
+            const float kOffscreenDistance = 700.0f;
+            const float kOffscreenDistanceSqrd = kOffscreenDistance * kOffscreenDistance;
+            const int kTargetEntityCnt = 150;
+
+
+            // Work out how many spare entities we have.
+            int spareEntityCnt = kTargetEntityCnt - mAiEntityManager.Entities.ActiveItemListCount;
+            if (spareEntityCnt < 0)
+            {
+                spareEntityCnt = 0;
+            }
+
+            int requirdRecycleCnt = count - spareEntityCnt;
+            if (requirdRecycleCnt < 0)
+            {
+                requirdRecycleCnt = 0;
+            }
+
+            int recycledCnt = 0;
+            int returnEntityCnt = 0;
+
+
+            // Try and recycle the required amount.
+            if (requirdRecycleCnt > 0)
+            {
+                Vector3 cameraPos3 = World.Camera.Matrix.Translation;
+                Vector2 cameraPos = new Vector2(cameraPos3.X, cameraPos3.Y);
+
+                for (int i = 0; i < mAiEntityManager.Entities.ActiveItemListCount; ++i)
+                {
+                    AiEntity entity = mAiEntityManager.Entities[i];
+
+                    Vector2 dCameraEntityPos = cameraPos - entity.GetPosition();
+                    float dCameraEntityPosLenSqrd = dCameraEntityPos.LengthSquared();
+
+                    if (dCameraEntityPosLenSqrd < kOffscreenDistanceSqrd)
+                    {
+                        outEntities[recycledCnt] = entity;
+                        ++recycledCnt;
+
+                        if (recycledCnt == requirdRecycleCnt)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (recycledCnt == requirdRecycleCnt)
+            {
+                // Destroy the old ones
+                for (int i = 0; i < recycledCnt; ++i)
+                {
+                    outEntities[i].DestroyItem();
+                }
+
+                // Make some new ones
+                while (returnEntityCnt < count)
+                {
+                    outEntities[returnEntityCnt] = mAiEntityManager.Create(entityType);
+                    ++returnEntityCnt;
+                }
+
+                return true;
+            }
+            else
+            {
+                // Reset the attempted recycle list as we did not get enough.
+                for (int i = 0; i < recycledCnt; ++i)
+                {
+                    outEntities[i] = null;
+                }
+
+                return false;
+            }
         }
 
 
