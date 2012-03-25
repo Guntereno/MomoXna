@@ -4,13 +4,14 @@ namespace MapData
 {
     public class SpawnPointData
     {
-        private Vector2 m_position;
+        public Vector2 Position { get; private set; }
+        public float Orientation { get; private set; }
 
-        public SpawnPointData(Vector2 position)
+
+        public SpawnPointData(Vector2 position, float orientation)
         {
-            m_position = position;
+            Position = position;
+            Orientation = orientation;
         }
-
-        public Vector2 GetPosition() { return m_position; }
     }
 }

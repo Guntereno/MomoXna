@@ -64,8 +64,9 @@ namespace TmxProcessorLib
 
         private void ProcessSpawnPoints(ContentProcessorContext context, TInput input, TOutput output)
         {
-            output.SpawnPoints = new List<Vector2>();
+            output.SpawnPoints = new List<SpawnPoint>();
 
+            // Output objects from the SpawnPoints layer
             foreach (ObjectGroup objGroup in input.ObjectGroups)
             {
                 if (objGroup.Name == "SpawnPoints")
@@ -73,7 +74,51 @@ namespace TmxProcessorLib
                     foreach (String spawnPointName in objGroup.Objects.Keys)
                     {
                         TmxProcessorLib.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
-                        output.SpawnPoints.Add(spawnPoint.Position + Offset);
+                        output.SpawnPoints.Add(new SpawnPoint(spawnPoint.Position + Offset, spawnPoint.Orientation));
+                    }
+                }
+            }
+
+            // Output the spawnpoints from the ground tiles
+            TileLayer floorLayer = input.TileLayers.Find(l => l.Name == "Floor");
+            Data.Tileset spawnPointTileset = input.Tilesets.Find( t => t.Name == "spawnpoints" );
+            if(spawnPointTileset != null)
+            {
+                if (floorLayer != null)
+                {
+                    for (int x = 0; x < input.Dimensions.X; ++x)
+                    {
+                        for (int y = 0; y < input.Dimensions.Y; ++y)
+                        {
+                            int tileIndex = x + (y * floorLayer.Dimensions.X);
+                            uint tileId = floorLayer.Data[tileIndex].Index;
+
+                            if (tileId == 0)
+                                continue;
+
+                            Tile tile = output.Tiles[tileId];
+
+                            if (tile.Tileset == spawnPointTileset)
+                            {
+                                Vector2 position = new Vector2(((float)x + 0.5f) * spawnPointTileset.TileDimensions.X,
+                                                               ((float)y + 0.5f) * spawnPointTileset.TileDimensions.Y);
+
+                                float orientation = 0.0f;
+                                uint tileNum = tile.Id - spawnPointTileset.FirstGid;
+                                switch (tileNum)
+                                {
+                                    case 0: orientation = 0.0f; break;
+                                    case 1: orientation = 1.5f * (float)Math.PI; break;
+                                    case 2: orientation = 0.5f * (float)Math.PI; break;
+                                    case 3: orientation = (float)Math.PI; break;
+
+                                    default:
+                                        throw new PipelineException("Invalid spawnpoint index!");
+                                }
+
+                                output.SpawnPoints.Add(new SpawnPoint(position + Offset, orientation));
+                            }
+                        }
                     }
                 }
             }
@@ -524,15 +569,8 @@ namespace TmxProcessorLib
 
                         Vector3 pos = new Vector3(obj.Position + Offset, 0.0f);
 
-                        float orientation = 0.0f;
-                        if (obj.Properties.Properties.ContainsKey("orientation"))
-                        {
-                            orientation = float.Parse(obj.Properties.Properties["orientation"]);
-                            orientation = MathHelper.ToRadians(orientation);
-                        }
-
                         Matrix worldMatrix = Matrix.Identity;
-                        worldMatrix *= Matrix.CreateRotationZ(orientation);
+                        worldMatrix *= Matrix.CreateRotationZ(obj.Orientation);
                         worldMatrix *= Matrix.CreateTranslation(pos);
 
                         output.SceneObjects.Add(new ModelInst(modelName, worldMatrix));
@@ -579,11 +617,11 @@ namespace TmxProcessorLib
 
                     Tile tile = output.Tiles[tileId];
 
-                    if (!tileDict.ContainsKey(tile.Parent))
+                    if (!tileDict.ContainsKey(tile.Tileset))
                     {
-                        tileDict.Add(tile.Parent, new List<TileInfo>());
+                        tileDict.Add(tile.Tileset, new List<TileInfo>());
                     }
-                    tileDict[tile.Parent].Add(new TileInfo(tile, x, y, tileEntry.FlipX, tileEntry.FlipY));
+                    tileDict[tile.Tileset].Add(new TileInfo(tile, x, y, tileEntry.FlipX, tileEntry.FlipY));
                 }
             }
 

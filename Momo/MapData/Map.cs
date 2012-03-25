@@ -82,7 +82,8 @@ namespace MapData
             for (int spawnPointIdx = 0; spawnPointIdx < numSpawnPoints; ++spawnPointIdx)
             {
                 Vector2 pos = input.ReadVector2();
-                SpawnPoints[spawnPointIdx] = new SpawnPointData(pos);
+                float orientation = input.ReadSingle();
+                SpawnPoints[spawnPointIdx] = new SpawnPointData(pos, orientation);
             }
 
             // Read in the vectors describing the playable area

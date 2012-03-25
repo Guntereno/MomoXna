@@ -118,6 +118,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Ai\AiEntityStates\ZombieHerdState.cs" />
+    <Compile Include="Director\Director.cs" />
+    <Compile Include="Director\SpawnPoint.cs" />
     <Compile Include="Entities\AiEntity.cs" />
     <Compile Include="Entities\AI\Civilian.cs" />
     <Compile Include="Entities\BinLayers.cs" />

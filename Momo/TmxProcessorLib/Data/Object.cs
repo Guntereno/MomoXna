@@ -17,10 +17,12 @@ namespace TmxProcessorLib.Data
         public Vector2 Position { get; private set; }
         public Vector2 Dimensions { get; private set; }
         public Polygon Polygon { get; private set; }
+        public float Orientation { get; private set; }
 
         public Object()
         {
             Properties = new PropertySheet();
+            Orientation = 0.0f;
         }
 
         public void ImportXmlNode(System.Xml.XmlNode objectNode, ContentImporterContext context)
@@ -67,6 +69,12 @@ namespace TmxProcessorLib.Data
             {
                 Properties = new PropertySheet();
                 Properties.ImportXmlNode(propertiesNode, context);
+
+                if (Properties.Properties.ContainsKey("orientation"))
+                {
+                    Orientation = float.Parse(Properties.Properties["orientation"]);
+                    Orientation = MathHelper.ToRadians(Orientation);
+                }
             }
 
             System.Xml.XmlNode polygonNode;

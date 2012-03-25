@@ -72,11 +72,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="maps\test_arena2\test_arena2.tmx">
-      <Name>test_arena2</Name>
-      <Importer>TmxImporter</Importer>
-      <Processor>TmxProcessor</Processor>
-    </Compile>
     <Compile Include="tiles\cityBlockFloor.fbx">
       <Name>cityBlockFloor</Name>
       <Importer>FbxImporter</Importer>

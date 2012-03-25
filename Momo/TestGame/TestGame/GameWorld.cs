@@ -69,6 +69,7 @@ namespace Game
         public TextBatchPrinter DebugTextPrinter            { get { return mDebugTextPrinter; } }
         public TextBatchPrinter TextPrinter                 { get { return mTextPrinter; } }
 
+        public Director.Director Director                   { get; private set; }
 
 #if !NO_SOUND
         private AudioEngine AudioEngine                     { get { return mAudioEngine; } }
@@ -81,7 +82,7 @@ namespace Game
         // --------------------------------------------------------------------
         public GameWorld()
         {
-
+            Director = new Director.Director();
         }
 
 
@@ -117,8 +118,9 @@ namespace Game
 #endif
 
             mZone = new Zone(this);
-
             mZone.Load();
+
+            Director.LoadZone(mZone);
         }
 
 
@@ -186,13 +188,15 @@ namespace Game
 
         public override void DebugRender()
         {
-            mZone.DebugRender();
+            Director.DebugRender(mDebugRenderer);
 
+            mZone.DebugRender();
 
             mCameraController.DebugRender(mDebugRenderer, mDebugTextPrinter, mDebugTextStyle);
 
             DebugRenderer.Render(mCamera.ViewMatrix, mCamera.ProjectionMatrix, Game.Instance.GraphicsDevice);
             DebugRenderer.Clear();
+
 
             // Render any debug text objects that where added.
             DebugTextPrinter.Render(true, Game.Instance.GraphicsDevice);

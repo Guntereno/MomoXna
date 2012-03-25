@@ -54,6 +54,7 @@
     <Compile Include="Content\Events.cs" />
     <Compile Include="Content\Map.cs" />
     <Compile Include="Content\ModelInst.cs" />
+    <Compile Include="Content\SpawnPoint.cs" />
     <Compile Include="Content\Tile.cs" />
     <Compile Include="Content\Tileset.cs" />
     <Compile Include="Data\INamed.cs" />

@@ -11,12 +11,12 @@ namespace TmxProcessorLib.Content
         public Tile(uint id, Data.Tileset parent, Rectangle source)
         {
             Id = id;
-            Parent = parent;
+            Tileset = parent;
             Source = source;
         }
 
         public uint Id { get; private set; }
         public Rectangle Source { get; private set; }
-        public Data.Tileset Parent { get; private set; }
+        public Data.Tileset Tileset { get; private set; }
     }
 }

@@ -21,7 +21,7 @@ namespace TmxProcessorLib.Content
         internal Vector2 MinPlayableArea { get; set; }
         internal Vector2 MaxPlayableArea { get; set; }
 
-        internal List<Vector2> SpawnPoints { get; set; }
+        internal List<SpawnPoint> SpawnPoints { get; set; }
 
         internal List<List<Patch>> Patches { get; set; }
 
@@ -69,9 +69,9 @@ namespace TmxProcessorLib.Content
 
             // Output each spawn point
             output.Write(SpawnPoints.Count);
-            foreach (Vector2 spawnPoint in SpawnPoints)
+            foreach (SpawnPoint spawnPoint in SpawnPoints)
             {
-                output.Write(spawnPoint);
+                spawnPoint.Write(output);
             }
 
             // Output the play area definition

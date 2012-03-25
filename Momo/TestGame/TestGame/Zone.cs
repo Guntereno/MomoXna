@@ -138,7 +138,7 @@ namespace Game
             PathRegion[] regions = new PathRegion[1];
             Vector2[][] extrudeBoundariesSmallPath = ExtrudeCollisionBoundaries(smallPathNodeRadius, false);
             regions[0] = new PathRegion(new Vector2(75.0f, 75.0f), new Vector2(2000.0f, 2000.0f));
-            regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 60, true, extrudeBoundariesSmallPath);
+            regions[0].GenerateNodesFromBoundaries(smallPathNodeRadius, 80, true, extrudeBoundariesSmallPath);
             regions[0].GenerateNodePaths(mBin, BinLayers.kBoundaryObstructionSmall);
             mPathIsland.SetRegions(regions);
 
@@ -306,8 +306,8 @@ namespace Game
 
             mOsdManager.DebugRender(World.DebugRenderer);
 
-            //m_pathIsland.DebugRender(m_debugRenderer);
-            //m_pathRouteManager.DebugRender(m_debugRenderer, m_debugTextPrinter, m_debugTextStyle);
+            //m_pathIsland.DebugRender(World.DebugRenderer);
+            //m_pathRouteManager.DebugRender(World.DebugRenderer, m_debugTextPrinter, m_debugTextStyle);
 
             //for (int i = 0; i < m_pathIsland.GetRegions()[0].GetNodeCount(); ++i)
             //{
@@ -321,15 +321,12 @@ namespace Game
             //}
 
 
-            //m_bin.DebugRender(m_debugRenderer, 5, BinLayers.kPathNodes);
-            //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[0], new Color(0.20f, 0.0f, 0.0f, 0.5f));
-            //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[1], new Color(0.40f, 0.0f, 0.0f, 0.5f));
-            //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[2], new Color(0.60f, 0.0f, 0.0f, 0.5f));
-            //m_bin.DebugRender(m_debugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
-            //m_bin.DebugRenderGrid(m_debugRenderer, Color.Orange, Color.DarkRed);
-
-
-            //m_spawnGroupManager.DebugRender(m_debugRenderer);
+            //mBin.DebugRender(World.DebugRenderer, 5, BinLayers.kPathNodes);
+            //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[0], new Color(0.20f, 0.0f, 0.0f, 0.5f));
+            //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[1], new Color(0.40f, 0.0f, 0.0f, 0.5f));
+            //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[2], new Color(0.60f, 0.0f, 0.0f, 0.5f));
+            //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
+            //mBin.DebugRenderGrid(World.DebugRenderer, Color.Orange, Color.DarkRed);
         }
 
 
