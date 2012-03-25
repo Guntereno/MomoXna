@@ -51,46 +51,16 @@ namespace Game.Ai.AiEntityStates
 
 
 
+            float kEntityRepelRadius = AiEntity.ContactRadiusInfo.Radius * 3.5f;
+            float kEntityRepelStr = 2.0f;
+            float kBoundaryRepelRadius = AiEntity.ContactRadiusInfo.Radius * 2.5f;
+            float kBoundaryRepelStr = 4.0f;
 
 
-            const float kNeighbourCheckRadius = 750.0f;
-            const float kNeighbourDesireRadius = 200.0f;
-            const float kNeighbourDesireRadiusSqrd = kNeighbourDesireRadius * kNeighbourDesireRadius;
+            Vector2 boundaryRepelForce = ZombieStateHelper.CalculateBoundaryRepelForce(AiEntity, kBoundaryRepelStr, kBoundaryRepelRadius, updateToken, 0, 5);
+            Vector2 entityRepelForce = ZombieStateHelper.CalculateEnemyRepelForce(AiEntity, kEntityRepelStr, kEntityRepelRadius, updateToken, 1, 7);
 
 
-            Vector2 boundaryRepelForce = Vector2.Zero;
-            Vector2 entityRepelForce = Vector2.Zero;
-
-
-            float kEntityRepelRadius = AiEntity.ContactRadiusInfo.Radius * 3.0f;
-            float kEntityRepelStr = 1.5f;
-            float kBoundaryRepelRadius = AiEntity.ContactRadiusInfo.Radius * 2.0f;
-            float kBoundaryRepelStr = 1.5f;
-            float kEntitySightRadius = 800.0f;
-            float kEntityHearRadius = 250.0f;
-
-
-            // Boundary repel
-            if (updateToken % 20 == 0)
-            {
-                boundaryRepelForce = AiEntityStateHelpers.GetForceFromSurroundingBoundaries(kBoundaryRepelRadius, kBoundaryRepelRadius * kBoundaryRepelRadius, AiEntity, BinLayers.kBoundary);
-                boundaryRepelForce *= kBoundaryRepelStr;
-            }
-            // Entity repel
-            if ((updateToken + 1) % 5 == 0)
-            {
-                entityRepelForce = -AiEntityStateHelpers.GetForceFromSurroundingEntities(kEntityRepelRadius, kEntityRepelRadius * kEntityRepelRadius, AiEntity, BinLayers.kEnemyEntities);
-                entityRepelForce *= kEntityRepelStr;
-            }
-
-            if ((updateToken + 2) % 120 == 0)
-            {
-                Vector2 averageNeighbourPosition = AiEntityStateHelpers.GetAveragePositionFromSurroundingEntities(kNeighbourCheckRadius, kNeighbourCheckRadius * kNeighbourCheckRadius, AiEntity, BinLayers.kEnemyEntities);
-                if ((averageNeighbourPosition - AiEntity.GetPosition()).LengthSquared() > kNeighbourDesireRadiusSqrd)
-                {
-                    AiEntity.StateMachine.CurrentState = HerdState;
-                }
-            }
 
             // Wander
             if ((updateToken + 3) % 2 == 0)
@@ -103,14 +73,9 @@ namespace Game.Ai.AiEntityStates
             }
 
             // ---- Search for nearest entity to chase ----
-            if ((updateToken + 4) % 5 == 0)
+            if (ZombieStateHelper.CheckForFriendly(AiEntity, updateToken) != null)
             {
-                GameEntity closestEntity = null;
-                Vector2 closetDPosition = Vector2.Zero;
-                if (AiEntityStateHelpers.GetEntities(kEntitySightRadius, kEntityHearRadius, 0.5f, AiEntity, BinLayers.kFriendyList, BinLayers.kBoundaryOcclusionSmall, ref closestEntity, ref closetDPosition))
-                {
-                    AiEntity.StateMachine.CurrentState = ChaseState;
-                }
+                AiEntity.StateMachine.CurrentState = ChaseState;
             }
 
 
@@ -118,13 +83,7 @@ namespace Game.Ai.AiEntityStates
             walkDirection += boundaryRepelForce;
             walkDirection += AiEntity.FacingDirection;
 
-            float walkDirectionLenSqrd = walkDirection.LengthSquared();
-            if (walkDirectionLenSqrd > 0.0f)
-            {
-                float walkDirectionLen = (float)System.Math.Sqrt(walkDirectionLenSqrd);
-                Vector2 walkDirectionNorm = walkDirection / walkDirectionLen;
-                AiEntity.TurnTowardsAndWalk(walkDirectionNorm, 0.05f, AiEntity.Speed * frameTime.Dt);
-            }
+            ZombieStateHelper.TurnTowardsAndWalk(AiEntity, walkDirection, 0.05f, frameTime.Dt);
         }
     }
 }

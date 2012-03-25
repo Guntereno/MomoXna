@@ -13,10 +13,10 @@ namespace Momo.Core.Collision2D
         // --------------------------------------------------------------------
         // -- Constants
         // --------------------------------------------------------------------
-        private const float kPenetrationEpsilon = 0.0015f;                // Ignore contacts with a peneration smaller than.
+        private const float kPenetrationEpsilon = 0.0015f;              // Ignore contacts with a peneration smaller than.
         private const float kSeperatingVelocityEpsilon = -0.02f;        // Ignore contacts with a seperating velocity larger than.
 
-        private const int kVelocityResolveContactMultiplier = 2;       // What factor of the number of contacts do we resolve
+        private const int kVelocityResolveContactMultiplier = 2;        // What factor of the number of contacts do we resolve
                                                                         // the velocities.
         private const int kPenetrationResolveContactMulitplier = 3;     // What factor of the number of contacts do we resolve
                                                                         // the penerations.

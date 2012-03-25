@@ -14,8 +14,12 @@ namespace Game.Ai.AiEntityStates
 {
     public class ZombieHerdState : TimedState
     {
-        public State IdleState { get; set; }
+        public State WanderState { get; set; }
         public State ChaseState { get; set; }
+
+        private const int kHerdListCapacity = 5;
+        private GameEntity[] mHerdList = new GameEntity[kHerdListCapacity];
+        private int mHerdListCount = 0;
 
 
         public ZombieHerdState(AiEntity entity) :
@@ -47,61 +51,42 @@ namespace Game.Ai.AiEntityStates
             Random random = world.Random;
 
 
-            RadiusInfo velocityAlignmentRadius = new RadiusInfo(200.0f);
-            float velocityAlignmentStr = 1.0f;
-            float averagePositionStr = 0.1f;
+            float velocityAlignmentStr = 0.1f;
+            float averagePositionStr = 0.5f;
 
-            float kEntityRepelRadius = AiEntity.ContactRadiusInfo.Radius * 3.0f;
-            float kEntityRepelStr = 5.0f;
-            float kBoundaryRepelRadius = AiEntity.ContactRadiusInfo.Radius * 2.0f;
-            float kBoundaryRepelStr = 1.0f;
-            float kEntitySightRadius = 800.0f;
-            float kEntityHearRadius = 250.0f;
+            float kEntityRepelRadius = AiEntity.ContactRadiusInfo.Radius * 2.5f;
+            float kEntityRepelStr = 2.0f;
+            float kBoundaryRepelRadius = AiEntity.ContactRadiusInfo.Radius * 2.5f;
+            float kBoundaryRepelStr = 4.0f;
 
 
             Vector2 forceAveragePosition = Vector2.Zero;
             Vector2 forceAverageVelocity = Vector2.Zero;
-            Vector2 boundaryRepelForce = Vector2.Zero;
-            Vector2 entityRepelForce = Vector2.Zero;
 
+
+            ZombieStateHelper.UpdateViewList(AiEntity, 200.0f, 0.65f, ref mHerdList, ref mHerdListCount, kHerdListCapacity, updateToken, 0, 20);
 
 
             if (updateToken % 10 == 0)
             {
-                BinQueryResults binItems = AiEntityStateHelpers.GetBinItems(velocityAlignmentRadius.Radius, AiEntity.GetPosition(), AiEntity.Zone.Bin, BinLayers.kEnemyEntities);
-
                 Vector2 averageVelocity = Vector2.Zero;
                 Vector2 averagePosition = Vector2.Zero;
                 int averageVelocityCount = 0;
                 int averagePositionCount = 0;
 
-                for (int i = 0; i < binItems.BinItemCount; ++i)
+                for (int i = 0; i < mHerdListCount; ++i)
                 {
-                    AiEntity entity = (AiEntity)binItems.BinItemQueryResults[i];
+                    GameEntity entity = mHerdList[i];
 
-                    if (entity != AiEntity)
-                    {
-                        Vector2 dPosition = entity.GetPosition() - AiEntity.GetPosition();
-                        float dPositionLenSqrd = dPosition.LengthSquared();
+                    //float dPositionLen = (float)System.Math.Sqrt(dPositionLenSqrd);
+                    //float w = 1.0f - (dPositionLen / velocityAlignmentRadius.Radius);
 
-                        if (dPositionLenSqrd < velocityAlignmentRadius.RadiusSq)
-                        {
-                            float facingAlignment = Vector2.Dot(AiEntity.FacingDirection, entity.FacingDirection);
+                    //averageVelocity += (entity.FacingDirection * w);
+                    averageVelocity += entity.FacingDirection;
+                    ++averageVelocityCount;
 
-                            if (facingAlignment > 0.4f)
-                            {
-                                //float dPositionLen = (float)System.Math.Sqrt(dPositionLenSqrd);
-                                //float w = 1.0f - (dPositionLen / velocityAlignmentRadius.Radius);
-
-                                //averageVelocity += (entity.FacingDirection * w);
-                                averageVelocity += entity.FacingDirection;
-                                ++averageVelocityCount;
-                            }
-
-                            averagePosition += entity.GetPosition();
-                            ++averagePositionCount;
-                        }
-                    }
+                    averagePosition += entity.GetPosition();
+                    ++averagePositionCount;
                 }
 
 
@@ -119,27 +104,22 @@ namespace Game.Ai.AiEntityStates
                     forceAverageVelocity.Normalize();
                 }
 
-                entityRepelForce = -AiEntityStateHelpers.GetForceFromSurroundingEntities(kEntityRepelRadius, kEntityRepelRadius * kEntityRepelRadius, AiEntity, BinLayers.kEnemyEntities);
-                entityRepelForce *= kEntityRepelStr;
+                if (mHerdListCount == 0)
+                {
+                    AiEntity.StateMachine.CurrentState = WanderState;
+                }
             }
 
 
 
-            if ((updateToken + 1) % 5 == 0)
-            {
-                boundaryRepelForce = AiEntityStateHelpers.GetForceFromSurroundingBoundaries(kBoundaryRepelRadius, kBoundaryRepelRadius * kBoundaryRepelRadius, AiEntity, BinLayers.kBoundary);
-                boundaryRepelForce *= kBoundaryRepelStr;
-            }
+            Vector2 boundaryRepelForce = ZombieStateHelper.CalculateBoundaryRepelForce(AiEntity, kBoundaryRepelStr, kBoundaryRepelRadius, updateToken, 1, 5);
+            Vector2 entityRepelForce = ZombieStateHelper.CalculateEnemyRepelForce(AiEntity, kEntityRepelStr, kEntityRepelRadius, updateToken, 2, 7);
+
 
             // ---- Search for nearest entity to chase ----
-            if ((updateToken + 2) % 5 == 0)
+            if (ZombieStateHelper.CheckForFriendly(AiEntity, updateToken) != null)
             {
-                GameEntity closestEntity = null;
-                Vector2 closetDPosition = Vector2.Zero;
-                if (AiEntityStateHelpers.GetEntities(kEntitySightRadius, kEntityHearRadius, 0.5f, AiEntity, BinLayers.kFriendyList, BinLayers.kBoundaryOcclusionSmall, ref closestEntity, ref closetDPosition))
-                {
-                    AiEntity.StateMachine.CurrentState = ChaseState;
-                }
+                AiEntity.StateMachine.CurrentState = ChaseState;
             }
 
 
@@ -149,15 +129,9 @@ namespace Game.Ai.AiEntityStates
             walkDirection += forceAveragePosition * averagePositionStr;
             walkDirection += entityRepelForce;
             walkDirection += boundaryRepelForce;
-            walkDirection += AiEntity.FacingDirection * 0.5f;
+            walkDirection += AiEntity.FacingDirection * 0.25f;
 
-            float walkDirectionLenSqrd = walkDirection.LengthSquared();
-            if (walkDirectionLenSqrd > 0.0f)
-            {
-                float walkDirectionLen = (float)System.Math.Sqrt(walkDirectionLenSqrd);
-                Vector2 walkDirectionNorm = walkDirection / walkDirectionLen;
-                AiEntity.TurnTowardsAndWalk(walkDirectionNorm, 0.05f, AiEntity.Speed * frameTime.Dt);
-            }
+            ZombieStateHelper.TurnTowardsAndWalk(AiEntity, walkDirection, 0.05f, frameTime.Dt);
         }
     }
 }

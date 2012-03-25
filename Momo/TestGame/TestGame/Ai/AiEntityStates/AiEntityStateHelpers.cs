@@ -105,7 +105,8 @@ namespace Game.Ai.AiEntityStates
         }
 
 
-        public static bool GetEntities(float sighthRadius, float hearRadius, float viewDot, AiEntity entity, int [] entityLayer, int viewLayer, ref GameEntity outClosestEntity, ref Vector2 outDPostion)
+        public static bool GetClosestEntityInRange( float sighthRadius, float hearRadius, float viewDot, AiEntity entity, int [] entityLayer, int viewLayer,
+                                                    ref GameEntity outClosestEntity, ref Vector2 outDPostion)
         {
             //
             // Make list of entities in range, and within view dot. Then work closest backwards to do a line of sight check.
@@ -165,6 +166,57 @@ namespace Game.Ai.AiEntityStates
             }
 
             return false;
+        }
+
+
+        public static void GetEntitiesInRange(  float sighthRadius, float viewDot, AiEntity entity, int[] entityLayer, int viewLayer,
+                                                ref GameEntity[] outViewList, ref int outViewListCount, int viewListCapacity )
+        {
+            float sightRadiusSqrd = sighthRadius * sighthRadius;
+
+            int viewListCnt = 0;
+
+            Bin bin = entity.Zone.Bin;
+            BinRegionUniform entityRegion = new BinRegionUniform();
+            bin.GetBinRegionFromCentre(entity.GetPosition(), sighthRadius, ref entityRegion);
+
+            // Entities
+            msQueryResults1.StartQuery();
+            for (int i = 0; i < entityLayer.Length; ++i)
+            {
+                bin.Query(ref entityRegion, entityLayer[i], msQueryResults1);
+            }
+            msQueryResults1.EndQuery();
+
+
+            for (int i = 0; i < msQueryResults1.BinItemCount; ++i)
+            {
+                if(viewListCnt >= viewListCapacity)
+                {
+                    break;
+                }
+
+                GameEntity checkEntity = (GameEntity)msQueryResults1.BinItemQueryResults[i];
+
+                if (checkEntity != entity)
+                {
+                    Vector2 dPosition = checkEntity.GetPosition() - entity.GetPosition();
+                    float distSqrd = dPosition.LengthSquared();
+                    float dist = (float)Math.Sqrt(distSqrd);
+                    Vector2 dPositionNorm = dPosition / dist;
+
+                    if(Vector2.Dot(dPositionNorm, entity.FacingDirection) > viewDot)
+                    {
+                        if (IsClearLineOfSightBoundary(entity.GetPosition(), dPosition, bin, viewLayer, msQueryResults2, msBinRegionSelection))
+                        {
+                            outViewList[viewListCnt] = checkEntity;
+                            ++viewListCnt;
+                        }
+                    }
+                }
+            }
+
+            outViewListCount = viewListCnt;
         }
 
 

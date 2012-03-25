@@ -112,6 +112,7 @@
     <Compile Include="Ai\AiEntityStates\CivilianFleeState.cs" />
     <Compile Include="Ai\AiEntityStates\CivilianIdleState.cs" />
     <Compile Include="Ai\AiEntityStates\CivilianWanderState.cs" />
+    <Compile Include="Ai\AiEntityStates\ZombieStateHelper.cs" />
     <Compile Include="Ai\AiEntityStates\ZombieChaseState.cs" />
     <Compile Include="Ai\AiEntityStates\ZombieWanderState.cs" />
     <Compile Include="Ai\AiEntityStates\TimedState.cs">

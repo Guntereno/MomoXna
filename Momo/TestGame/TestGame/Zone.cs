@@ -159,7 +159,7 @@ namespace Game
                 mAiEntityManager.Create(typeof(Civilian), new Vector2(x, y));
             }
 
-            for (int i = 0; i < 100; ++i)
+            for (int i = 0; i < 200; ++i)
             {
                 float x = 1000.0f + 1984.0f + ((float)mRandom.NextDouble() * 128.0f);
                 float y = 1000.0f + 192.0f + ((float)mRandom.NextDouble() * 3520.0f);

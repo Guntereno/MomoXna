@@ -79,7 +79,7 @@ namespace Game.Entities.Players
         public PlayerEntity(Zone zone) : base(zone)
         {
             ContactRadiusInfo = new RadiusInfo(12.0f);
-            Mass = ContactRadiusInfo.Radius * 2.0f;
+            Mass = ContactRadiusInfo.Radius * 3.0f;
 
             CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.Players);
             CollidableGroupInfo.CollidesWithGroups = new Flags((int)EntityGroups.AllEntities);

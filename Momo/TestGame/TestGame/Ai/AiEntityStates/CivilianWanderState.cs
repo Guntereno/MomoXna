@@ -60,7 +60,7 @@ namespace Game.Ai.AiEntityStates
             {
                 GameEntity closestEntity = null;
                 Vector2 closetDPosition = Vector2.Zero;
-                if (AiEntityStateHelpers.GetEntities(kEntitySightRadius, kEntityHearRadius, kEntityViewDot, AiEntity, BinLayers.kEnemyList, BinLayers.kBoundaryOcclusionSmall, ref closestEntity, ref closetDPosition))
+                if (AiEntityStateHelpers.GetClosestEntityInRange(kEntitySightRadius, kEntityHearRadius, kEntityViewDot, AiEntity, BinLayers.kEnemyList, BinLayers.kBoundaryOcclusionSmall, ref closestEntity, ref closetDPosition))
                 {
                     AiEntity.StateMachine.CurrentState = FleeState;
                 }

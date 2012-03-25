@@ -26,11 +26,11 @@ namespace Game.Entities.AI
 
             mStateWander = new ZombieWanderState(this);
             mStateWander.MinimumTimeInState = 1.0f;
-            mStateWander.MaximumTimeInState = 5.0f;
+            mStateWander.MaximumTimeInState = 3.0f;
 
             mStateHerd = new ZombieHerdState(this);
-            mStateHerd.MinimumTimeInState = 8.0f;
-            mStateHerd.MaximumTimeInState = 20.0f;
+            mStateHerd.MinimumTimeInState = 6.0f;
+            mStateHerd.MaximumTimeInState = 10.0f;
 
             mStateChase = new ZombieChaseState(this);
             mStateChase.TimeInState = float.MaxValue;
@@ -40,6 +40,7 @@ namespace Game.Entities.AI
             mStateWander.NextState = mStateHerd;
 
             mStateHerd.ChaseState = mStateChase;
+            mStateHerd.WanderState = mStateWander;
             mStateHerd.NextState = mStateWander;
 
             mStateChase.NextState = mStateWander;
