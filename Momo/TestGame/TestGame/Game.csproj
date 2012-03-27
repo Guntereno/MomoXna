@@ -123,7 +123,7 @@
     <Compile Include="Director\SpawnPoint.cs" />
     <Compile Include="Entities\AiEntity.cs" />
     <Compile Include="Entities\AI\Civilian.cs" />
-    <Compile Include="Entities\BinLayers.cs" />
+    <Compile Include="BinLayers.cs" />
     <Compile Include="Entities\BulletEntity.cs" />
     <Compile Include="CollisionHelpers.cs" />
     <Compile Include="Entities\AI\Zombie.cs" />

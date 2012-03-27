@@ -253,7 +253,7 @@ namespace Momo.Core.Pathfinding
                     bin.GetBinRegionFromLine(node1.m_position, dNodePos, ref tempBinRegionSelection);
 
                     // Boundaries
-                    BinQueryResults queryResults = bin.GetShaderQueryResults();
+                    BinQueryResults queryResults = bin.GetSharedQueryResults();
                     queryResults.StartQuery();
                     bin.Query(ref tempBinRegionSelection, boundaryLayer, queryResults);
                     queryResults.EndQuery();

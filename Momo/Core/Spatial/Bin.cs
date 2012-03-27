@@ -41,6 +41,29 @@ namespace Momo.Core.Spatial
         private BinQueryLocalityResults m_sharedQueryLocalityResults = null;
 
 
+
+        public int BinCountX
+        {
+            get { return m_binCountX; }
+        }
+
+        public int BinCountY
+        {
+            get { return m_binCountY; }
+        }
+
+        public int BinCount
+        {
+            get { return m_binCount; }
+        }
+
+        public Vector2 BinDimension
+        {
+            get { return m_binDimension; }
+        }
+
+
+
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
@@ -112,13 +135,13 @@ namespace Momo.Core.Spatial
         }
 
 
-        public BinQueryResults GetShaderQueryResults()
+        public BinQueryResults GetSharedQueryResults()
         {
             return m_sharedQueryResults;
         }
 
 
-        public BinQueryLocalityResults GetShaderQueryLocalityResults()
+        public BinQueryLocalityResults GetSharedQueryLocalityResults()
         {
             return m_sharedQueryLocalityResults;
         }

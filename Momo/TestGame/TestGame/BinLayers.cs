@@ -2,7 +2,7 @@
 
 
 
-namespace Game.Entities
+namespace Game
 {
     class BinLayers
     {
@@ -13,9 +13,10 @@ namespace Game.Entities
         public const int kBullet = 4;
         public const int kPathNodes = 5;
         public const int kBoundary = 6;
+        public const int kPlayerHeatMap = 7;
 
-        public const int kBoundaryOcclusionSmall = 7;
-        public const int kBoundaryObstructionSmall = 8;
+        public const int kBoundaryOcclusionSmall = 8;
+        public const int kBoundaryObstructionSmall = 9;
 
         public const int kLayerCount = kBoundaryObstructionSmall + 1;
 

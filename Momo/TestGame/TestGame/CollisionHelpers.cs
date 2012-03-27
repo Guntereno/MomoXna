@@ -46,7 +46,7 @@ namespace Game
                 entity.GetBinRegion(ref entityRegion);
 
                 // Entities
-                BinQueryResults queryResults = bin.GetShaderQueryResults();
+                BinQueryResults queryResults = bin.GetSharedQueryResults();
                 queryResults.StartQuery();
                 bin.Query(ref entityRegion, entityLayer, queryResults);
                 queryResults.EndQuery();
@@ -97,7 +97,7 @@ namespace Game
                 entity.GetBinRegion(ref entityRegion);
 
                 // Boundaries
-                BinQueryResults queryResults = bin.GetShaderQueryResults();
+                BinQueryResults queryResults = bin.GetSharedQueryResults();
                 queryResults.StartQuery();
                 bin.Query(ref entityRegion, boundaryLayer, queryResults);
                 queryResults.EndQuery();
@@ -162,7 +162,7 @@ namespace Game
 
 
                 // Boundaries
-                BinQueryResults queryResults = bin.GetShaderQueryResults();
+                BinQueryResults queryResults = bin.GetSharedQueryResults();
                 queryResults.StartQuery();
                 bin.Query(ref bulletRegion, boundaryLayer, queryResults);
                 queryResults.EndQuery();
@@ -199,7 +199,7 @@ namespace Game
                 {
                     int entityLayer = entityLayers[j];
 
-                    queryResults = bin.GetShaderQueryResults();
+                    queryResults = bin.GetSharedQueryResults();
                     queryResults.StartQuery();
                     bin.Query(ref bulletRegion, entityLayer, queryResults);
                     queryResults.EndQuery();
@@ -252,7 +252,7 @@ namespace Game
             bin.GetBinRegionFromLine(position, dPos, ref ms_tempBinRegionSelection);
 
             // Boundaries
-            BinQueryResults queryResults = bin.GetShaderQueryResults();
+            BinQueryResults queryResults = bin.GetSharedQueryResults();
             queryResults.StartQuery();
             bin.Query(ref ms_tempBinRegionSelection, boundaryLayer, queryResults);
             queryResults.EndQuery();

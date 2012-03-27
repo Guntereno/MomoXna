@@ -49,6 +49,10 @@ namespace Game
         private TextStyle mDebugTextStyle = null;
         private TextBatchPrinter mDebugTextPrinter = new TextBatchPrinter();
 
+        // Start away from 0, as many time stamps get initialised to 0. This means the calculations
+        // conclude 1000 units of time have past upon the first frame.
+        private ulong mCurrentTimeStamp = 1000;
+
 #if !NO_SOUND
         private AudioEngine mAudioEngine = null;
         private WaveBank mWaveBank = null;
@@ -64,6 +68,8 @@ namespace Game
         public TextStyle DebugTextStyle                     { get { return mDebugTextStyle; } }
         public TextBatchPrinter DebugTextPrinter            { get { return mDebugTextPrinter; } }
         public TextBatchPrinter TextPrinter                 { get { return mTextPrinter; } }
+
+        public ulong CurrentTimeStamp                       { get { return mCurrentTimeStamp; } }
 
         public Director.Director Director                   { get; private set; }
 
@@ -143,6 +149,8 @@ namespace Game
 #if !NO_SOUND
             mAudioEngine.Update();
 #endif
+
+            ++mCurrentTimeStamp;
         }
 
 

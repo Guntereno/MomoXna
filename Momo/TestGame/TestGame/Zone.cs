@@ -32,6 +32,7 @@ namespace Game
         private GameWorld mWorld = null;
 
         private Bin mBin = new Bin();
+        private BinTimeStamps mBinPlayerHeatMap = new BinTimeStamps();
         private ContactList mContactList = new ContactList(4000);
         private ContactResolver mContactResolver = new ContactResolver();
 
@@ -102,6 +103,7 @@ namespace Game
             mMap = ResourceManager.Instance.Get<MapData.Map>("maps/zone01/zone01");
 
             mBin.Init(50, 50, mMap.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 6000, 1000, 1000);
+            mBinPlayerHeatMap.Init(mBin);
 
 
             // ----------------------------------------------------------------
@@ -149,7 +151,6 @@ namespace Game
 
             CollisionHelpers.Init();
             PathFindingHelpers.Init(400.0f, 3, mBin);
-
 
 
             for (int i = 0; i < 0; ++i)
@@ -231,6 +232,12 @@ namespace Game
                 mCorpseManager.PostUpdate();
             }
 
+
+            BinRegionUniform binRegion = new BinRegionUniform();
+            mPlayerManager.Players[0].GetBinRegion(ref binRegion);
+
+            BinRegionUniform heatRegion = new BinRegionUniform( new BinLocation(binRegion.MinLocation.X - 1, binRegion.MinLocation.Y - 1), new BinLocation(binRegion.MinLocation.X + 1, binRegion.MinLocation.Y + 1));
+            mBinPlayerHeatMap.UpdateHeatMap(ref heatRegion, World.CurrentTimeStamp);
 
             // Move the camera follow position
             // Update camera after collision resolution so its go the actual rendered player position.
@@ -328,6 +335,8 @@ namespace Game
             //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[2], new Color(0.60f, 0.0f, 0.0f, 0.5f));
             //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
             //mBin.DebugRenderGrid(World.DebugRenderer, Color.Orange, Color.DarkRed);
+
+            mBinPlayerHeatMap.DebugRender(World.DebugRenderer, World.CurrentTimeStamp, 500);
         }
 
 

@@ -140,6 +140,7 @@
     <Compile Include="Spatial\BinQueryResults.cs" />
     <Compile Include="Spatial\BinRegionSelection.cs" />
     <Compile Include="Spatial\BinRegionUniform.cs" />
+    <Compile Include="Spatial\BinTimeStamps.cs" />
     <Compile Include="StateMachine\IStateMachineOwner.cs" />
     <Compile Include="StateMachine\State.cs" />
     <Compile Include="StateMachine\StateMachine.cs" />

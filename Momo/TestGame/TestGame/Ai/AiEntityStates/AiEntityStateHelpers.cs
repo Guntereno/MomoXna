@@ -229,7 +229,7 @@ namespace Game.Ai.AiEntityStates
             bin.GetBinRegionFromCentre(entity.GetPosition(), radius, ref entityRegion);
 
             // Entities
-            BinQueryResults queryResults = bin.GetShaderQueryResults();
+            BinQueryResults queryResults = bin.GetSharedQueryResults();
             queryResults.StartQuery();
             bin.Query(ref entityRegion, entityLayer, queryResults);
             queryResults.EndQuery();
@@ -273,7 +273,7 @@ namespace Game.Ai.AiEntityStates
             bin.GetBinRegionFromCentre(position, radius, ref region);
 
             // Entities
-            BinQueryResults queryResults = bin.GetShaderQueryResults();
+            BinQueryResults queryResults = bin.GetSharedQueryResults();
             queryResults.StartQuery();
             bin.Query(ref region, binLayer, queryResults);
             queryResults.EndQuery();

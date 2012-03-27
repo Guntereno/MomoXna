@@ -38,6 +38,8 @@ namespace Game
 
         public InputManager InputManager { get; private set; }
 
+
+
         public Game()
         {
             if (msInstance != null)

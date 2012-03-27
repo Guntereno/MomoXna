@@ -122,7 +122,7 @@ namespace Game
 
             for (int i = 0; i < m_maxCircularSearchRegions; ++i)
             {
-                BinQueryLocalityResults queryResults = bin.GetShaderQueryLocalityResults();
+                BinQueryLocalityResults queryResults = bin.GetSharedQueryLocalityResults();
                 queryResults.SetLocalityInfo(pos);
                 queryResults.StartQuery();
                 bin.Query(ref ms_circularSearchRegions[i], posBinIndex, nodeBinLayer, queryResults);
