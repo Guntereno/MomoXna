@@ -74,7 +74,14 @@ namespace TmxProcessorLib
                     foreach (String spawnPointName in objGroup.Objects.Keys)
                     {
                         TmxProcessorLib.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
-                        output.SpawnPoints.Add(new SpawnPoint(spawnPoint.Position + Offset, spawnPoint.Orientation));
+
+                        float orientation = spawnPoint.Orientation;
+                        if((spawnPoint.Properties.Properties == null) || (!spawnPoint.Properties.Properties.ContainsKey("orientation")))
+                        {
+                            orientation = (float)(Random.NextDouble() * Math.PI * 2.0f);
+                        }
+
+                        output.SpawnPoints.Add(new SpawnPoint(spawnPoint.Position + Offset, orientation));
                     }
                 }
             }

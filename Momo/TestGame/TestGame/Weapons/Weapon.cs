@@ -96,7 +96,7 @@ namespace Game.Weapons
             mTriggerState = triggerState;
 
             // This should probably be a weapon parameter
-            const float kWeaponLength = 20.0f;
+            const float kWeaponLength = 5.0f;
             mBarrelPos = pos + (mDirection * kWeaponLength);
 
             StateMachine.Update(ref frameTime, 0);
