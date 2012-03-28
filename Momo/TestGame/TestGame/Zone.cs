@@ -101,7 +101,7 @@ namespace Game
         {
             mMap = ResourceManager.Instance.Get<MapData.Map>("maps/zone01/zone01");
 
-            mBin.Init(50, 50, mMap.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 6000, 1000, 1000);
+            mBin.Init(50, 50, mMap.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 8000, 1000, 1000);
             mBinPlayerHeatMap.Init(mBin);
 
 
@@ -164,6 +164,14 @@ namespace Game
                 float x = 1000.0f + 1984.0f + ((float)mRandom.NextDouble() * 128.0f);
                 float y = 1000.0f + 192.0f + ((float)mRandom.NextDouble() * 3520.0f);
                 mAiEntityManager.Create(typeof(Zombie), new Vector2(x, y));
+            }
+
+            // Add the ambient spawn objects to the bin
+            const float kSpawnPointRadius = 16.0f;
+            for (int i = 0; i < Map.AmbientSpawnPoints.Length; ++i)
+            {
+                MapData.SpawnPointData spawnPoint = Map.AmbientSpawnPoints[i];
+                Bin.AddBinItem(spawnPoint, spawnPoint.Position, kSpawnPointRadius, BinLayers.kAmbientSpawnPoints);
             }
         }
 
