@@ -32,6 +32,7 @@ namespace MapData
         public Vector2 PlayAreaMax { get; private set; }
 
         public SpawnPointData[] SpawnPoints { get; private set; }
+        public SpawnPointData[] AmbientSpawnPoints { get; private set; }
 
         public MapData.Patch[][] Patches { get; private set; }
 
@@ -76,7 +77,7 @@ namespace MapData
                 PlayerSpawnPoints[i] = input.ReadVector2();
             }
 
-            // Read the spawn group information
+            // Read the event spawn points information
             int numSpawnPoints = input.ReadInt32();
             SpawnPoints = new SpawnPointData[numSpawnPoints];
             for (int spawnPointIdx = 0; spawnPointIdx < numSpawnPoints; ++spawnPointIdx)
@@ -84,6 +85,15 @@ namespace MapData
                 Vector2 pos = input.ReadVector2();
                 float orientation = input.ReadSingle();
                 SpawnPoints[spawnPointIdx] = new SpawnPointData(pos, orientation);
+            }
+
+            int numAmbientSpawnPoints = input.ReadInt32();
+            AmbientSpawnPoints = new SpawnPointData[numAmbientSpawnPoints];
+            for (int spawnPointIdx = 0; spawnPointIdx < numAmbientSpawnPoints; ++spawnPointIdx)
+            {
+                Vector2 pos = input.ReadVector2();
+                float orientation = input.ReadSingle();
+                AmbientSpawnPoints[spawnPointIdx] = new SpawnPointData(pos, orientation);
             }
 
             // Read in the vectors describing the playable area

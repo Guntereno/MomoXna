@@ -24,7 +24,6 @@ using WorldManager;
 using Microsoft.Xna.Framework.Audio;
 
 
-
 namespace Game
 {
     public class Zone
@@ -335,6 +334,23 @@ namespace Game
             //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[2], new Color(0.60f, 0.0f, 0.0f, 0.5f));
             //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
             //mBin.DebugRenderGrid(World.DebugRenderer, Color.Orange, Color.DarkRed);
+
+            Color spawnPointEdge = new Color(0.0f, 1.0f, 0.0f, 0.7f);
+            Color spawnPointFill = spawnPointEdge;
+            spawnPointEdge.A = 76;
+
+            for (int i = 0; i < Map.AmbientSpawnPoints.Length; ++i)
+            {
+                MapData.SpawnPointData spawnPoint = Map.AmbientSpawnPoints[i];
+
+                Vector2 pos = spawnPoint.Position;
+                double orient = (double)spawnPoint.Orientation;
+                const float kDirLen = 24.0f;
+                Vector2 dir = new Vector2(-(float)Math.Sin(orient), -(float)Math.Cos(orient));
+
+                World.DebugRenderer.DrawCircle(pos, 16.0f, spawnPointEdge, spawnPointFill, true, 0.01f, 6);
+                World.DebugRenderer.DrawLine(pos, pos + (dir * kDirLen), spawnPointEdge);
+            }
 
             mBinPlayerHeatMap.DebugRender(World.DebugRenderer, World.CurrentTimeStamp, 500);
         }

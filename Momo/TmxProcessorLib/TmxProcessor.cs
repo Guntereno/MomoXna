@@ -65,11 +65,27 @@ namespace TmxProcessorLib
         private void ProcessSpawnPoints(ContentProcessorContext context, TInput input, TOutput output)
         {
             output.SpawnPoints = new List<SpawnPoint>();
+            output.AmbientSpawnPoints = new List<SpawnPoint>();
 
             // Output objects from the SpawnPoints layer
             foreach (ObjectGroup objGroup in input.ObjectGroups)
             {
-                if (objGroup.Name == "SpawnPoints")
+                List<SpawnPoint> spawnPointList = null;
+                switch(objGroup.Name)
+                {
+                    case "SpawnPoints":
+                        spawnPointList = output.SpawnPoints;
+                        break;
+
+                    case "AmbientSpawnPoints":
+                        spawnPointList = output.AmbientSpawnPoints;
+                        break;
+
+                    default:
+                        continue;
+                }
+
+                if (spawnPointList != null)
                 {
                     foreach (String spawnPointName in objGroup.Objects.Keys)
                     {
@@ -81,7 +97,7 @@ namespace TmxProcessorLib
                             orientation = (float)(Random.NextDouble() * Math.PI * 2.0f);
                         }
 
-                        output.SpawnPoints.Add(new SpawnPoint(spawnPoint.Position + Offset, orientation));
+                        spawnPointList.Add(new SpawnPoint(spawnPoint.Position + Offset, orientation));
                     }
                 }
             }
