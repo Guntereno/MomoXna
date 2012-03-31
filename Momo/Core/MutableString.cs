@@ -22,6 +22,12 @@ namespace Momo.Core
             m_string = new char[maxLength];
         }
 
+        public MutableString(string str)
+        {
+            m_string = new char[str.Length + 1];
+            Set(str);
+        }
+
 
         public int GetLength()
         {
@@ -128,28 +134,28 @@ namespace Momo.Core
 
         public void Append(int value)
         {
-            Append(value, 0);
+            Append(value, 0, '0');
         }
 
 
         public void Append(int value, int padSize)
         {
+            Append(value, padSize, '0');
+        }
+
+
+        public void Append(int value, int padSize, char padChar)
+        {
             if (value < 0)
             {
                 Append('-');
                 uint uintValue = uint.MaxValue - ((uint)value) + 1; //< This is to deal with Int32.MinValue
-                Append(uintValue, padSize);
+                Append(uintValue, padSize, padChar);
             }
             else
             {
-                Append((uint)value, padSize);
+                Append((uint)value, padSize, padChar);
             }
-        }
-
-
-        public void Append(uint value)
-        {
-            Append(value, 0);
         }
 
 
@@ -161,7 +167,19 @@ namespace Momo.Core
         }
 
 
+        public void Append(uint value)
+        {
+            Append(value, 0);
+        }
+
+
         public void Append(uint value, int padSize)
+        {
+            Append(value, padSize, '0');
+        }
+
+
+        public void Append(uint value, int padSize, char padChar)
         {
             // Calculate length of integer when written out
             int length = 0;
@@ -174,10 +192,15 @@ namespace Momo.Core
             }
             while (lengthCalc > 0);
 
-            if (padSize > length)
-                length = padSize;
 
-            m_length = (m_length + length);
+
+            int padChars = padSize - length;
+
+            if (padSize > length)
+                m_length = (m_length + padSize);
+            else
+                m_length = (m_length + length);
+
             int strpos = m_length;
 
             // We're writing backwards, one character at a time.
@@ -192,10 +215,23 @@ namespace Momo.Core
                 value /= 10;
                 length--;
             }
+
+            while (padChars > 0)
+            {
+                strpos--;
+                m_string[strpos] = padChar;
+                padChars--;
+            }
         }
 
-        
+
         public void Append(float value, int decimalPlaces)
+        {
+            Append(value, decimalPlaces, '0');
+        }
+
+
+        public void Append(float value, int decimalPlaces, char padChar)
         {
             if (decimalPlaces == 0)
             {
@@ -226,7 +262,7 @@ namespace Momo.Core
                 remainder += 0.5f;
 
                 // All done, print that as an int!
-                Append((uint)remainder, decimalPlaces);
+                Append((uint)remainder, decimalPlaces, padChar);
             }
         }
 

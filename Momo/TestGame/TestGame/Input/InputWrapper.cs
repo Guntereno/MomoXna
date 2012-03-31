@@ -113,8 +113,7 @@ namespace Game.Input
                 return;
 
             // Update the sticks
-            Vector2 padVector;
-            padVector = currentGamePadState.ThumbSticks.Left;
+            Vector2 padVector = currentGamePadState.ThumbSticks.Left;
             UpdateStick(ref m_leftStick, ref padVector);
             padVector = currentGamePadState.ThumbSticks.Right;
             UpdateStick(ref m_rightStick, ref padVector);
@@ -180,26 +179,53 @@ namespace Game.Input
         {
             bool leftKeyDown = currentKeyboardState.IsKeyDown(leftKey);
             bool rightKeyDown = currentKeyboardState.IsKeyDown(rightKey);
-            if (leftKeyDown && !rightKeyDown)
-            {
-                resultVector.X = -1.0f;
-            }
-            else if (rightKeyDown && !leftKeyDown)
-            {
-                resultVector.X = 1.0f;
-            }
-
-
             bool upKeyDown = currentKeyboardState.IsKeyDown(upKey);
             bool downKeyDown = currentKeyboardState.IsKeyDown(downKey);
-            if (upKeyDown && !downKeyDown)
+
+
+            if (leftKeyDown || rightKeyDown || upKeyDown || downKeyDown)
             {
-                resultVector.Y = -1.0f;
+                if (leftKeyDown )
+                {
+                    resultVector.X = -1.0f;
+                }
+                else if (rightKeyDown)
+                {
+                    resultVector.X = 1.0f;
+                }
+
+                if (upKeyDown)
+                {
+                    resultVector.Y = -1.0f;
+                }
+                else if (downKeyDown)
+                {
+                    resultVector.Y = 1.0f;
+                }
+
+                resultVector = CreateCircularVector(resultVector);
             }
-            else if (downKeyDown && !upKeyDown)
+        }
+
+
+        private static Vector2 CreateCircularVector(Vector2 squareVector)
+        {
+            Vector2 circularVector = Vector2.Zero;
+            if (squareVector.LengthSquared() > 0.0f)
             {
-                resultVector.Y = 1.0f;
+                float scale = 0.0f;
+                if (Math.Abs(squareVector.X) > Math.Abs(squareVector.Y))
+                    scale = 1.0f / squareVector.X;
+                else
+                    scale = 1.0f / squareVector.Y;
+
+                Vector2 hyp = squareVector * scale;
+                float hypLen = hyp.Length();
+
+                circularVector = squareVector / hypLen;
             }
+
+            return circularVector;
         }
 
         private static void UpdateTriggerKeys(ref float result, ref KeyboardState currentKeyboardState, Keys key)

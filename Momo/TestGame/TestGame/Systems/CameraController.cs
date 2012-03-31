@@ -91,7 +91,7 @@ namespace Game.Systems
             mDebugString.Append(")");
             mDebugString.EndAppend();
 
-            debugTextBatchPrinter.AddToDrawList(mDebugString.GetCharacterArray(), Color.White, Color.Black, new Vector2(0.0f, 0.0f), debugTextStyle);
+            debugTextBatchPrinter.AddToDrawList(mDebugString.GetCharacterArray(), Color.White, Color.Black, new Vector2(1150.0f, 690.0f), debugTextStyle);
         }
 
         private void UpdateFollow()

@@ -15,11 +15,14 @@ namespace Game.Ai.AiEntityStates
     public class ZombieHerdState : TimedState
     {
         public State WanderState { get; set; }
-        public State ChaseState { get; set; }
+        public ZombieChaseState ChaseState { get; set; }
 
         private const int kHerdListCapacity = 5;
         private GameEntity[] mHerdList = new GameEntity[kHerdListCapacity];
         private int mHerdListCount = 0;
+
+
+        const float kStateBaseSpeedMod = 5.0f;
 
 
         public ZombieHerdState(AiEntity entity) :
@@ -39,7 +42,7 @@ namespace Game.Ai.AiEntityStates
         {
             base.OnEnter();
 
-            AiEntity.Speed = AiEntity.BaseSpeed;
+            AiEntity.Speed = AiEntity.BaseSpeed * kStateBaseSpeedMod;
         }
 
 
@@ -117,9 +120,11 @@ namespace Game.Ai.AiEntityStates
 
 
             // ---- Search for nearest entity to chase ----
-            if (ZombieStateHelper.CheckForFriendly(AiEntity, updateToken) != null)
+            GameEntity closestFriendly = ZombieStateHelper.CheckForFriendly(AiEntity, updateToken);
+            if (closestFriendly != null)
             {
                 AiEntity.StateMachine.CurrentState = ChaseState;
+                ChaseState.ChasePosition = closestFriendly.GetPosition();
             }
 
 

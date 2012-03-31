@@ -72,7 +72,7 @@ namespace Game.Entities
 
             FacingAngle = (float)random.NextDouble() * ((float)Math.PI * 2.0f);
 
-            ContactRadiusInfo = new RadiusInfo(11.0f);
+            ContactRadiusInfo = new RadiusInfo(10.5f + ((float)random.NextDouble() * 1.0f));
             Mass = ContactRadiusInfo.Radius * 2.0f;
 
             CollidableGroupInfo.GroupMembership = new Flags((int)EntityGroups.Enemies);

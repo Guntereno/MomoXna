@@ -150,23 +150,31 @@ namespace Game.Entities
             return 0.5f + (dotFacingDirecion * 0.5f);
         }
 
+
         public void TurnTowardsAndWalk(Vector2 targetDirection, float turnSpeed, float amount)
         {
             TurnTowards(targetDirection, turnSpeed);
 
-            float relativeDirection = GetRelativeFacing(targetDirection);
+            float speedMod = 0.2f;
+            float dotDirections = Vector2.Dot(mFacingDirection, targetDirection);
 
-            if (amount < 2.0f)
+            if (dotDirections > 0.65f)
             {
-                mGait.WalkForward(this, relativeDirection * amount);
+                speedMod += ((dotDirections - 0.65f) / 0.35f) * 0.8f;
+            }
+
+            float actualAmount = amount * speedMod;
+            if (actualAmount < 2.0f)
+            {
+                mGait.WalkForward(this, actualAmount);
             }
             else
             {
-                mGait.RunForward(this, relativeDirection * amount);
+                mGait.RunForward(this, actualAmount);
             }
         }
 
-        // Returns [0.0, 1.0] based on how close the facing is to the target. 1.0 = the same, 0.0 opposite.
+
         public void TurnTowards(Vector2 targetDirection, float turnSpeed)
         {
             Vector2 normalToFacing = Maths2D.Perpendicular(mFacingDirection);

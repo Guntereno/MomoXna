@@ -48,9 +48,9 @@ namespace Game.Entities.Gaits
             {
                 mStep += amount * kWalkBobSpeed * 0.5f;
             }
-            actualAmount = 0.10f + ((actualAmount + 1.0f) * amount * 0.90f);
+            actualAmount = (0.10f * amount) + ((actualAmount + 1.0f) * 0.5f * (amount * 0.90f));
 
-            entity.IncrementPosition(entity.FacingDirection * actualAmount);
+            MoveForward(entity, actualAmount);
 
             entity.FacingVisualOffsetAngle *= 0.75f;
         }
@@ -69,8 +69,7 @@ namespace Game.Entities.Gaits
             }
             actualAmount = 1.5f + ((actualAmount + 1.0f) * amount * 0.50f);
 
-            entity.IncrementPosition(entity.FacingDirection * actualAmount);
-
+            MoveForward(entity, actualAmount);
 
             float swayAngle = (float)Math.Sin(mSway);
 

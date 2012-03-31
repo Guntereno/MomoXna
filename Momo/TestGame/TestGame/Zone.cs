@@ -40,7 +40,7 @@ namespace Game
 
         private List<BoundaryEntity> mBoundaries = new List<BoundaryEntity>(2000);
 
-        private Random mRandom = new Random();
+        private Random mRandom = new Random(1);
 
 
         private PlayerManager mPlayerManager = null;
@@ -57,8 +57,6 @@ namespace Game
 
         private uint mUpdateTokenOffset = 0;
 
-        private float mElapsedTime = 0.0f;
-
 
         public GameWorld World                              { get { return mWorld; } }
         public Bin Bin                                      { get { return mBin; } }
@@ -74,9 +72,6 @@ namespace Game
         public Random Random                                { get { return mRandom; } }
 
         public MapData.Map Map                              { get { return mMap; } }
-
-        public float ElapsedTime                            { get { return mElapsedTime; } }
-
 
 
         // --------------------------------------------------------------------
@@ -199,8 +194,6 @@ namespace Game
 
             for (int i = 0; i < updateIterationCnt; ++i)
             {
-                mElapsedTime += frameTime.Dt;
-
                 ++mUpdateTokenOffset;
 
 
@@ -343,22 +336,22 @@ namespace Game
             //mBin.DebugRender(World.DebugRenderer, PathFindingHelpers.ms_circularSearchRegions[3], new Color(0.80f, 0.0f, 0.0f, 0.5f));
             //mBin.DebugRenderGrid(World.DebugRenderer, Color.Orange, Color.DarkRed);
 
-            //Color spawnPointEdge = new Color(0.0f, 1.0f, 0.0f, 0.7f);
-            //Color spawnPointFill = spawnPointEdge;
-            //spawnPointEdge.A = 76;
+            Color spawnPointEdge = new Color(0.0f, 1.0f, 0.0f, 0.7f);
+            Color spawnPointFill = spawnPointEdge;
+            spawnPointEdge.A = 76;
 
-            //for (int i = 0; i < Map.AmbientSpawnPoints.Length; ++i)
-            //{
-            //    MapData.SpawnPointData spawnPoint = Map.AmbientSpawnPoints[i];
+            for (int i = 0; i < Map.AmbientSpawnPoints.Length; ++i)
+            {
+                MapData.SpawnPointData spawnPoint = Map.AmbientSpawnPoints[i];
 
-            //    Vector2 pos = spawnPoint.Position;
-            //    double orient = (double)spawnPoint.Orientation;
-            //    const float kDirLen = 24.0f;
-            //    Vector2 dir = new Vector2(-(float)Math.Sin(orient), -(float)Math.Cos(orient));
+                Vector2 pos = spawnPoint.Position;
+                double orient = (double)spawnPoint.Orientation;
+                const float kDirLen = 24.0f;
+                Vector2 dir = new Vector2(-(float)Math.Sin(orient), -(float)Math.Cos(orient));
 
-            //    World.DebugRenderer.DrawCircle(pos, 16.0f, spawnPointEdge, spawnPointFill, true, 0.01f, 6);
-            //    World.DebugRenderer.DrawLine(pos, pos + (dir * kDirLen), spawnPointEdge);
-            //}
+                World.DebugRenderer.DrawCircle(pos, 16.0f, spawnPointEdge, spawnPointFill, true, 0.01f, 6);
+                World.DebugRenderer.DrawLine(pos, pos + (dir * kDirLen), spawnPointEdge);
+            }
 
             //mBinPlayerHeatMap.DebugRender(World.DebugRenderer, World.CurrentTimeStamp, 500);
         }

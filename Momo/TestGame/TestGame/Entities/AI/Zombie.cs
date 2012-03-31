@@ -13,9 +13,10 @@ namespace Game.Entities.AI
     public class Zombie : AiEntity
     {
         #region State Machine
-        private ZombieHerdState mStateHerd = null;
         private ZombieWanderState mStateWander = null;
+        private ZombieHerdState mStateHerd = null;
         private ZombieChaseState mStateChase = null;
+        private ZombieAttackState mStateAttack = null;
         #endregion
 
 
@@ -35,6 +36,9 @@ namespace Game.Entities.AI
             mStateChase = new ZombieChaseState(this);
             mStateChase.TimeInState = float.MaxValue;
 
+            mStateAttack = new ZombieAttackState(this);
+            mStateAttack.TimeInState = float.MaxValue;
+
             mStateWander.HerdState = mStateHerd;
             mStateWander.ChaseState = mStateChase;
             mStateWander.NextState = mStateHerd;
@@ -43,14 +47,18 @@ namespace Game.Entities.AI
             mStateHerd.WanderState = mStateWander;
             mStateHerd.NextState = mStateWander;
 
-            mStateChase.NextState = mStateWander;
+            mStateChase.WanderState = mStateWander;
+            mStateChase.AttackState = mStateAttack;
+
+            mStateAttack.ChaseState = mStateChase;
+
 
             ZombieGait gait = new ZombieGait((float)Zone.Random.NextDouble() * 100.0f);
             gait.SwayLeft = (float)Zone.Random.NextDouble() * 0.185f;
             gait.SwayRight = (float)Zone.Random.NextDouble() * 0.185f;
             Gait = gait;
  
-            BaseSpeed = 10.0f + ((float)Zone.Random.NextDouble() * 5.0f);
+            BaseSpeed = 9.5f + ((float)Zone.Random.NextDouble() * 3.0f);
 
             PrimaryDebugColor = new Color(1.0f, 0.0f, 0.0f, 0.3f);
             SecondaryDebugColor = PrimaryDebugColor;

@@ -21,6 +21,7 @@ using Momo.Fonts;
 using Game.Entities;
 using Game.Entities.AI;
 using Game.Systems;
+using Game.Time;
 
 using WorldManager;
 using Microsoft.Xna.Framework.Audio;
@@ -49,6 +50,8 @@ namespace Game
         private TextStyle mDebugTextStyle = null;
         private TextBatchPrinter mDebugTextPrinter = new TextBatchPrinter();
 
+        private TimeSystem mTimeSystem = new TimeSystem(5, 30);
+
         // Start away from 0, as many time stamps get initialised to 0. This means the calculations
         // conclude 1000 units of time have past upon the first frame.
         private ulong mCurrentTimeStamp = 1000;
@@ -68,6 +71,8 @@ namespace Game
         public TextStyle DebugTextStyle                     { get { return mDebugTextStyle; } }
         public TextBatchPrinter DebugTextPrinter            { get { return mDebugTextPrinter; } }
         public TextBatchPrinter TextPrinter                 { get { return mTextPrinter; } }
+
+        public TimeSystem TimeSystem                        { get { return mTimeSystem; } }
 
         public ulong CurrentTimeStamp                       { get { return mCurrentTimeStamp; } }
 
@@ -118,6 +123,13 @@ namespace Game
             mWaveBank = new WaveBank(mAudioEngine, "Content\\Audio\\Wave Bank.xwb");
             mSoundBank = new SoundBank(mAudioEngine, "Content\\Audio\\Sound Bank.xsb");
 #endif
+            mTimeSystem.CreateTimeLayer(60, '0', null, null, null);    // Minutes
+            mTimeSystem.CreateTimeLayer(24, '0', null, null, ":");    // Hours
+            mTimeSystem.CreateTimeLayer(365, null, "Day ", "    ");   // Days
+            mTimeSystem.SecondsPerSmallestUnit = 0.2f;
+            mTimeSystem.SetTimeLayer(30, 0);
+            mTimeSystem.SetTimeLayer(12, 1);
+
 
             mZone = new Zone(this);
             mZone.Load();
@@ -149,6 +161,8 @@ namespace Game
 #if !NO_SOUND
             mAudioEngine.Update();
 #endif
+
+            mTimeSystem.Update(dt);
 
             ++mCurrentTimeStamp;
         }

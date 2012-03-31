@@ -18,6 +18,7 @@ namespace Game.Systems
         private Zone mZone = null;
 
         private TextStyle mTextStyle = null;
+        private TextObject mTime = null;
         private TextObject[] mWeaponInfo = new TextObject[kMaxPlayers];
         private MutableString[] mWeaponString = new MutableString[kMaxPlayers];
 
@@ -31,12 +32,15 @@ namespace Game.Systems
             mTextStyle = new TextStyle(font, TextSecondaryDrawTechnique.kDropshadow);
 
 
+            mTime = new TextObject(mTextStyle, 1000, 50, 1);
+            mTime.Position = new Vector2(20.0f, 10.0f);
+
             Vector2[] osdPositions = 
             {
-                new Vector2(25.0f, 25.0f),
-                new Vector2(25.0f, 125.0f),
-                new Vector2(25.0f, 225.0f),
-                new Vector2(25.0f, 325.0f)
+                new Vector2(20.0f, 60.0f),
+                new Vector2(20.0f, 160.0f),
+                new Vector2(20.0f, 260.0f),
+                new Vector2(20.0f, 360.0f)
             };
 
             for (int i = 0; i < kMaxPlayers; ++i)
@@ -51,6 +55,9 @@ namespace Game.Systems
 
         public void Update(ref FrameTime frameTime)
         {
+            mTime.SetText(mZone.World.TimeSystem.CurrentTimeLabel.GetCharacterArray());
+
+
             for (int i = 0; i < mZone.PlayerManager.Players.ActiveItemListCount; ++i)
             {
                 PlayerEntity player = mZone.PlayerManager.Players[i];
@@ -76,6 +83,8 @@ namespace Game.Systems
 
         public void Render()
         {
+            mZone.World.TextPrinter.AddToDrawList(mTime);
+
             for (int i = 0; i < kMaxPlayers; ++i)
             {
                 mZone.World.TextPrinter.AddToDrawList(mWeaponInfo[i]);

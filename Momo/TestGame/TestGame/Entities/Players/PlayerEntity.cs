@@ -228,6 +228,8 @@ namespace Game.Entities.Players
             }
 
             mMovementInputVector = mInput.GetLeftStick();
+            float len = mMovementInputVector.Length();
+
             mFacingInputVector = mInput.GetRightStick();
             mTriggerState = mInput.GetRightTrigger();
         }
@@ -235,7 +237,7 @@ namespace Game.Entities.Players
 
         internal void UpdateMovement(ref FrameTime frameTime)
         {
-            const float kMaxSpeed = 150.0f;
+            const float kMaxSpeed = 130.0f;
 
             // If the player has a facing input, use it...
             if (mFacingInputVector.LengthSquared() > 0.0f)

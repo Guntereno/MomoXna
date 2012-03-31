@@ -112,6 +112,7 @@
     <Compile Include="Ai\AiEntityStates\CivilianFleeState.cs" />
     <Compile Include="Ai\AiEntityStates\CivilianIdleState.cs" />
     <Compile Include="Ai\AiEntityStates\CivilianWanderState.cs" />
+    <Compile Include="Ai\AiEntityStates\ZombieAttackState.cs" />
     <Compile Include="Ai\AiEntityStates\ZombieStateHelper.cs" />
     <Compile Include="Ai\AiEntityStates\ZombieChaseState.cs" />
     <Compile Include="Ai\AiEntityStates\ZombieWanderState.cs" />
@@ -154,6 +155,8 @@
     <Compile Include="Systems\TriggerManager.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Systems\ProjectileManager.cs" />
+    <Compile Include="Time\TimeStamp.cs" />
+    <Compile Include="Time\TimeSystem.cs" />
     <Compile Include="Weapons\IWeaponUser.cs" />
     <Compile Include="Weapons\MeleeWeapon.cs" />
     <Compile Include="Weapons\Minigun.cs" />

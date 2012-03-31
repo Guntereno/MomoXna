@@ -63,6 +63,7 @@ namespace Game.Ai.AiEntityStates
         }
 
 
+
         public static Vector2 CalculateBoundaryRepelForce(AiEntity entity, float forceStr, float radius, uint updateToken, uint updateOffset, uint updateFreq)
         {
             Vector2 force = Vector2.Zero;
