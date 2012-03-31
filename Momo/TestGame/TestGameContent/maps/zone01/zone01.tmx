@@ -161,8 +161,13 @@
    </properties>
    <polygon points="0,128 111,64 111,-64 0,-128 -110,-64 -110,64"/>
   </object>
+  <object x="3009" y="2625">
+   <properties>
+    <property name="model" value="zombie"/>
+   </properties>
+  </object>
  </objectgroup>
- <objectgroup name="AmbientSpawnPoints" width="64" height="64">
+ <objectgroup name="AmbientSpawnPoints" width="64" height="64" visible="0">
   <object x="288" y="308"/>
   <object x="372" y="232"/>
   <object x="400" y="368"/>

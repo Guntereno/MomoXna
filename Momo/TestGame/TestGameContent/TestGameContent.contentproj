@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="audio\" />
+    <Folder Include="characters\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="effects\text.fx">
@@ -165,6 +166,13 @@
   <ItemGroup>
     <Compile Include="sceneObjects\building01.fbx">
       <Name>building01</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="sceneObjects\zombie.fbx">
+      <Name>zombie</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
