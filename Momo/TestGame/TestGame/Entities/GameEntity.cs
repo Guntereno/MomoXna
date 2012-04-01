@@ -6,6 +6,8 @@ using Momo.Core;
 using Momo.Core.GameEntities;
 using Momo.Core.ObjectPools;
 using Momo.Core.Collision2D;
+using Momo.Core.Spatial;
+
 using Momo.Debug;
 using Momo.Maths;
 
@@ -217,7 +219,11 @@ namespace Game.Entities
 
         public void DestroyItem()
         {
-            mZone.Bin.RemoveBinItem(this, mBinLayer);
+            if (GetBinRegion().MinLocation != BinLocation.kInvalidBinLocation)
+            {
+                mZone.Bin.RemoveBinItem(this, mBinLayer);
+            }
+
             mDestroyed = true;
         }
 

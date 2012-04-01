@@ -24,5 +24,6 @@ namespace Game
 
         public static int[] kEnemyList = new int[] { kEnemyEntities };
         public static int[] kFriendyList = new int[] { kPlayerEntity, kCivilianEntities  };
+        public static int[] kEntityList = new int[] { kEnemyEntities, kPlayerEntity, kCivilianEntities };
     }
 }

@@ -67,7 +67,7 @@ namespace Game.Entities.Gaits
             {
                 mStep += amount * kRunBobSpeed * 0.2f;
             }
-            actualAmount = 1.5f + ((actualAmount + 1.0f) * amount * 0.50f);
+            actualAmount = (0.50f * amount) + ((actualAmount + 1.0f) * 0.5f * (amount * 0.50f));
 
             MoveForward(entity, actualAmount);
 

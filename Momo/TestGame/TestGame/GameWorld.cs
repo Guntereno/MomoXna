@@ -53,8 +53,8 @@ namespace Game
         private TimeSystem mTimeSystem = new TimeSystem(5, 30);
 
         // Start away from 0, as many time stamps get initialised to 0. This means the calculations
-        // conclude 1000 units of time have past upon the first frame.
-        private ulong mCurrentTimeStamp = 1000;
+        // conclude 10000 units of time have past upon the first frame.
+        private ulong mCurrentTimeStamp = 10000;
 
 #if !NO_SOUND
         private AudioEngine mAudioEngine = null;
@@ -90,6 +90,7 @@ namespace Game
         public GameWorld()
         {
             Director = new Director.Director();
+            Director.Init();
         }
 
 
@@ -152,8 +153,8 @@ namespace Game
             
             Input.InputWrapper inputWrapper = Game.Instance.InputManager.GetInputWrapper(0);
 
-
-            mZone.Update(dt);
+            Director.Update(ref frameTime);
+            mZone.Update(ref frameTime);
 
 
             mCameraController.Update(ref frameTime, ref inputWrapper);

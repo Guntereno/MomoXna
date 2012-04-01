@@ -55,6 +55,11 @@ namespace Momo.Core.Spatial
         }
 
 
+        public ulong Query(int binIndex)
+        {
+            return m_timeStampList[binIndex];
+        }
+
 
         public void DebugRender(DebugRenderer debugRenderer, ulong currentTimeStamp, ulong maxHeatTime)
         {

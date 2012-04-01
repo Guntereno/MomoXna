@@ -60,6 +60,7 @@ namespace Game
 
         public GameWorld World                              { get { return mWorld; } }
         public Bin Bin                                      { get { return mBin; } }
+        public BinTimeStamps BinPlayerHeatMap               { get { return mBinPlayerHeatMap; } }
 
         public PlayerManager PlayerManager                  { get { return mPlayerManager; } }
         public WeaponManager WeaponManager                  { get { return mWeaponManager; } }
@@ -126,8 +127,8 @@ namespace Game
 
 
             BuildCollisionBoundaries(0.0f, BinLayers.kBoundary, false, true);
-            BuildCollisionBoundaries(5.0f, BinLayers.kBoundaryOcclusionSmall, true, false);
-            BuildCollisionBoundaries(10.0f, BinLayers.kBoundaryObstructionSmall, true, false);
+            BuildCollisionBoundaries(10.0f, BinLayers.kBoundaryOcclusionSmall, true, false);
+            BuildCollisionBoundaries(11.0f, BinLayers.kBoundaryObstructionSmall, true, false);
 
 
             // Path stuff
@@ -154,7 +155,7 @@ namespace Game
                 mAiEntityManager.Create(typeof(Civilian), new Vector2(x, y));
             }
 
-            for (int i = 0; i < 200; ++i)
+            for (int i = 0; i < 0; ++i)
             {
                 float x = 1000.0f + 1984.0f + ((float)mRandom.NextDouble() * 128.0f);
                 float y = 1000.0f + 192.0f + ((float)mRandom.NextDouble() * 3520.0f);
@@ -177,19 +178,15 @@ namespace Game
         }
 
 
-        public void Update(float dt)
+        public void Update(ref FrameTime frameTime)
         {
-            // More time related numbers will eventually be added to the FrameTime structure. Its worth passing
-            // it about instead of just dt, so we can easily refactor.
-            FrameTime frameTime = new FrameTime(dt);
-            
             Input.InputWrapper inputWrapper = Game.Instance.InputManager.GetInputWrapper(0);
 
             int updateIterationCnt = 1;
             KeyboardState keyboardState = Keyboard.GetState();
             if (keyboardState.IsKeyDown(Keys.Space))
             {
-                updateIterationCnt = 15;
+                updateIterationCnt = 10;
             }
 
             for (int i = 0; i < updateIterationCnt; ++i)
@@ -236,7 +233,7 @@ namespace Game
             BinRegionUniform binRegion = new BinRegionUniform();
             mPlayerManager.Players[0].GetBinRegion(ref binRegion);
 
-            BinRegionUniform heatRegion = new BinRegionUniform( new BinLocation(binRegion.MinLocation.X - 1, binRegion.MinLocation.Y - 1), new BinLocation(binRegion.MinLocation.X + 1, binRegion.MinLocation.Y + 1));
+            BinRegionUniform heatRegion = new BinRegionUniform( new BinLocation(binRegion.MinLocation.X - 4, binRegion.MinLocation.Y - 3), new BinLocation(binRegion.MinLocation.X + 4, binRegion.MinLocation.Y + 3));
             mBinPlayerHeatMap.UpdateHeatMap(ref heatRegion, World.CurrentTimeStamp);
 
             // Move the camera follow position
@@ -362,7 +359,7 @@ namespace Game
         // If you decide you dont want some of the entities, call DestroyItem().
         public bool RequestEntities(Type entityType, int count, ref AiEntity[] outEntities)
         {
-            const float kOffscreenDistance = 700.0f;
+            const float kOffscreenDistance = 800.0f;
             const float kOffscreenDistanceSqrd = kOffscreenDistance * kOffscreenDistance;
             const int kTargetEntityCnt = 150;
 
@@ -397,7 +394,7 @@ namespace Game
                     Vector2 dCameraEntityPos = cameraPos - entity.GetPosition();
                     float dCameraEntityPosLenSqrd = dCameraEntityPos.LengthSquared();
 
-                    if (dCameraEntityPosLenSqrd < kOffscreenDistanceSqrd)
+                    if (dCameraEntityPosLenSqrd > kOffscreenDistanceSqrd)
                     {
                         outEntities[recycledCnt] = entity;
                         ++recycledCnt;
@@ -438,6 +435,7 @@ namespace Game
                 return false;
             }
         }
+
 
 
         private Vector2[][] BuildCollisionBoundaries(float extrudeAmount, int binLayer, bool roundedCorners, bool addToList)

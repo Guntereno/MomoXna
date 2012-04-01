@@ -25,6 +25,12 @@ namespace Momo.Core.Spatial
         }
 
 
+        public BinRegionUniform GetBinRegion()
+        {
+            return mRegion;
+        }
+
+
         public void SetBinRegion(BinRegionUniform region)
         {
             mRegion = region;

@@ -99,8 +99,12 @@ namespace Game.Systems
             for (int i = 0; i < aiEntities.ActiveItemListCount; ++i)
             {
                 AiEntity aiEntity = aiEntities[i];
-                aiEntity.Update(ref frameTime, token);
-                aiEntity.UpdateBinEntry();
+
+                if (!aiEntity.IsDestroyed())
+                {
+                    aiEntity.Update(ref frameTime, token);
+                    aiEntity.UpdateBinEntry();
+                }
                 ++token;
             }
         }

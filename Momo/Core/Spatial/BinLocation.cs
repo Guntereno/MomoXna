@@ -17,11 +17,13 @@ namespace Momo.Core.Spatial
         public int X
         {
             get { return m_x; }
+            set { m_x = value; }
         }
 
         public int Y
         {
             get { return m_y; }
+            set { m_y = value; }
         }
 
 
@@ -35,6 +37,19 @@ namespace Momo.Core.Spatial
         public void Invalidate()
         {
             this = kInvalidBinLocation;
+        }
+
+
+
+        public static bool operator ==(BinLocation left, BinLocation right)
+        {
+            return (left.m_x == right.m_x) && (left.m_y == right.m_y);
+        }
+
+
+        public static bool operator !=(BinLocation left, BinLocation right)
+        {
+            return (left.m_x != right.m_x) || (left.m_y != right.m_y);
         }
 
 

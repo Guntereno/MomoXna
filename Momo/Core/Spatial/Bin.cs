@@ -587,6 +587,20 @@ namespace Momo.Core.Spatial
         }
 
 
+        public void GetBinLocation(int index, ref BinLocation outBinLocation)
+        {
+            outBinLocation.m_x = index % m_binCountX;
+            outBinLocation.m_y = index / m_binCountX;
+        }
+
+
+        public void GetBinLocation(BinIndex index, ref BinLocation outBinLocation)
+        {
+            outBinLocation.m_x = index.m_index % m_binCountX;
+            outBinLocation.m_y = index.m_index / m_binCountX;
+        }
+
+
         public Vector2 GetBinLocation(Vector2 position)
         {
             return position * m_invBinDimension;
@@ -601,6 +615,21 @@ namespace Momo.Core.Spatial
 
         public Vector2 GetCentrePositionOfBin(BinLocation location)
         {
+            return GeTopLeftPositionOfBin(location) + m_halfBinDimension;
+        }
+
+
+        public Vector2 GetCentrePositionOfBin(int index)
+        {
+            BinLocation location = new BinLocation();
+            GetBinLocation(index, ref location);
+            return GeTopLeftPositionOfBin(location) + m_halfBinDimension;
+        }
+
+        public Vector2 GetCentrePositionOfBin(BinIndex index)
+        {
+            BinLocation location = new BinLocation();
+            GetBinLocation(index, ref location);
             return GeTopLeftPositionOfBin(location) + m_halfBinDimension;
         }
 

@@ -58,16 +58,16 @@ namespace Game.Entities.AI
             gait.SwayRight = (float)Zone.Random.NextDouble() * 0.185f;
             Gait = gait;
  
-            BaseSpeed = 9.5f + ((float)Zone.Random.NextDouble() * 3.0f);
-
-            PrimaryDebugColor = new Color(1.0f, 0.0f, 0.0f, 0.3f);
-            SecondaryDebugColor = PrimaryDebugColor;
+            BaseSpeed = 10.5f + ((float)Zone.Random.NextDouble() * 2.0f);
         }
 
 
         public override void ResetItem()
         {
             base.ResetItem();
+
+            PrimaryDebugColor = new Color(1.0f, 0.0f, 0.0f, 0.3f);
+            SecondaryDebugColor = PrimaryDebugColor;
 
             StateMachine.CurrentState = mStateHerd;
         }

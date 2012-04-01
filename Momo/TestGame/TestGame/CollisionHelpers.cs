@@ -29,6 +29,43 @@ namespace Game
 
         }
 
+        
+        public static bool CheckForContacts(Vector2 centre, float radius, Bin bin, int[] entityLayers)
+        {
+            BinRegionUniform binRegion = new BinRegionUniform();
+            IntersectInfo2D intersectInfo = new IntersectInfo2D();
+
+            bin.GetBinRegionFromCentre(centre, radius, ref binRegion);
+
+            BinQueryResults queryResults = bin.GetSharedQueryResults();
+
+            for (int i = 0; i < entityLayers.Length; ++i)
+            {
+                queryResults.StartQuery();
+                bin.Query(ref binRegion, entityLayers[i], queryResults);
+                queryResults.EndQuery();
+
+                for (int j = 0; j < queryResults.BinItemCount; ++j)
+                {
+                    GameEntity checkEntity = (GameEntity)queryResults.BinItemQueryResults[j];
+
+
+                    bool contact = Maths2D.DoesIntersect(   centre,
+                                                            radius,
+                                                            checkEntity.GetPosition(),
+                                                            checkEntity.ContactRadiusInfo.Radius,
+                                                            ref intersectInfo);
+
+                    if (contact)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
 
         public static void GenerateEntityContacts(GameEntity[] entities, int entityCount, float sizeMod, Bin bin, int entityLayer, ContactList contactList)
         {
@@ -43,36 +80,39 @@ namespace Game
             {
                 GameEntity entity = entities[i];
 
-                entity.GetBinRegion(ref entityRegion);
-
-                // Entities
-                BinQueryResults queryResults = bin.GetSharedQueryResults();
-                queryResults.StartQuery();
-                bin.Query(ref entityRegion, entityLayer, queryResults);
-                queryResults.EndQuery();
-
-
-                for (int j = 0; j < queryResults.BinItemCount; ++j)
+                if (!entity.IsDestroyed())
                 {
-                    GameEntity checkEntity = (GameEntity)queryResults.BinItemQueryResults[j];
+                    entity.GetBinRegion(ref entityRegion);
 
-                    if (entity != checkEntity)
+                    // Entities
+                    BinQueryResults queryResults = bin.GetSharedQueryResults();
+                    queryResults.StartQuery();
+                    bin.Query(ref entityRegion, entityLayer, queryResults);
+                    queryResults.EndQuery();
+
+
+                    for (int j = 0; j < queryResults.BinItemCount; ++j)
                     {
-                        bool contact = Maths2D.DoesIntersect(   entity.GetPosition(),
-                                                                ( entity.ContactRadiusInfo.Radius * sizeMod ) + contactDimensionPadding,
-                                                                checkEntity.GetPosition(),
-                                                                checkEntity.ContactRadiusInfo.Radius + contactDimensionPadding,
-                                                                ref intersectInfo);
+                        GameEntity checkEntity = (GameEntity)queryResults.BinItemQueryResults[j];
 
-                        if (contact)
+                        if (entity != checkEntity)
                         {
-                            Contact existingContact = contactList.GetContact(checkEntity, entity);
+                            bool contact = Maths2D.DoesIntersect(entity.GetPosition(),
+                                                                    (entity.ContactRadiusInfo.Radius * sizeMod) + contactDimensionPadding,
+                                                                    checkEntity.GetPosition(),
+                                                                    checkEntity.ContactRadiusInfo.Radius + contactDimensionPadding,
+                                                                    ref intersectInfo);
 
-                            if (existingContact == null)
+                            if (contact)
                             {
-                                Vector2 contactNormal = intersectInfo.PositionDifference / intersectInfo.PositionDistance;
-                                float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - doubleContactDimensionPadding;
-                                contactList.AddContact(entity, checkEntity, contactNormal, contactOverlap, 1.0f, 0.9f);
+                                Contact existingContact = contactList.GetContact(checkEntity, entity);
+
+                                if (existingContact == null)
+                                {
+                                    Vector2 contactNormal = intersectInfo.PositionDifference / intersectInfo.PositionDistance;
+                                    float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - doubleContactDimensionPadding;
+                                    contactList.AddContact(entity, checkEntity, contactNormal, contactOverlap, 1.0f, 0.9f);
+                                }
                             }
                         }
                     }
@@ -94,40 +134,43 @@ namespace Game
             {
                 GameEntity entity = entities[i];
 
-                entity.GetBinRegion(ref entityRegion);
-
-                // Boundaries
-                BinQueryResults queryResults = bin.GetSharedQueryResults();
-                queryResults.StartQuery();
-                bin.Query(ref entityRegion, boundaryLayer, queryResults);
-                queryResults.EndQuery();
-
-
-                for (int j = 0; j < queryResults.BinItemCount; ++j)
+                if (!entity.IsDestroyed())
                 {
-                    BoundaryEntity checkBoundary = (BoundaryEntity)queryResults.BinItemQueryResults[j];
-                    checkBoundary.GetBinRegion(ref boundaryRegion);
+                    entity.GetBinRegion(ref entityRegion);
+
+                    // Boundaries
+                    BinQueryResults queryResults = bin.GetSharedQueryResults();
+                    queryResults.StartQuery();
+                    bin.Query(ref entityRegion, boundaryLayer, queryResults);
+                    queryResults.EndQuery();
 
 
-                    float paddedRadius = entity.ContactRadiusInfo.Radius + contactDimensionPadding;
-                    float paddedRadiusSq = paddedRadius * paddedRadius;
-
-                    LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
-                    bool contact = Maths2D.DoesIntersect(   entity.GetPosition(),
-                                                            paddedRadius,
-                                                            paddedRadiusSq,
-                                                            linePrimitive2D.Point,
-                                                            linePrimitive2D.Point + linePrimitive2D.Difference,
-                                                            linePrimitive2D.Difference,
-                                                            linePrimitive2D.LengthSq,
-                                                            ref intersectInfo);
-
-
-                    if (contact)
+                    for (int j = 0; j < queryResults.BinItemCount; ++j)
                     {
-                        Vector2 contactNormal = -(intersectInfo.PositionDifference / intersectInfo.PositionDistance);
-                        float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - contactDimensionPadding;
-                        contactList.AddContact(entity, null, contactNormal, contactOverlap, 1.0f, 0.4f);
+                        BoundaryEntity checkBoundary = (BoundaryEntity)queryResults.BinItemQueryResults[j];
+                        checkBoundary.GetBinRegion(ref boundaryRegion);
+
+
+                        float paddedRadius = entity.ContactRadiusInfo.Radius + contactDimensionPadding;
+                        float paddedRadiusSq = paddedRadius * paddedRadius;
+
+                        LinePrimitive2D linePrimitive2D = checkBoundary.CollisionPrimitive;
+                        bool contact = Maths2D.DoesIntersect(entity.GetPosition(),
+                                                                paddedRadius,
+                                                                paddedRadiusSq,
+                                                                linePrimitive2D.Point,
+                                                                linePrimitive2D.Point + linePrimitive2D.Difference,
+                                                                linePrimitive2D.Difference,
+                                                                linePrimitive2D.LengthSq,
+                                                                ref intersectInfo);
+
+
+                        if (contact)
+                        {
+                            Vector2 contactNormal = -(intersectInfo.PositionDifference / intersectInfo.PositionDistance);
+                            float contactOverlap = (intersectInfo.ResolveDistance - intersectInfo.PositionDistance) - contactDimensionPadding;
+                            contactList.AddContact(entity, null, contactNormal, contactOverlap, 1.0f, 0.4f);
+                        }
                     }
                 }
             }

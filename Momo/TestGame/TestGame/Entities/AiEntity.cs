@@ -130,11 +130,10 @@ namespace Game.Entities
 
         public void UpdateBinEntry()
         {
-            BinRegionUniform prevBinRegion = new BinRegionUniform();
-            BinRegionUniform curBinRegion = new BinRegionUniform();
             Bin bin = Zone.Bin;
+            BinRegionUniform curBinRegion = new BinRegionUniform();
+            BinRegionUniform prevBinRegion = GetBinRegion();
 
-            GetBinRegion(ref prevBinRegion);
             bin.GetBinRegionFromCentre(GetPosition(), ContactRadiusInfo.Radius + ContactDimensionPadding, ref curBinRegion);
 
             bin.UpdateBinItem(this, ref prevBinRegion, ref curBinRegion, mBinLayer);

@@ -66,7 +66,7 @@ namespace Game.Systems
             mSpring.Update(frameTime.Dt);
 
             Vector2 springPos = mSpring.GetCurrentValue();
-            const float kCamHeight = 500.0f;
+            const float kCamHeight = 700.0f;
             Camera.LocalTranslation = new Vector3(
                 (float)Math.Floor(springPos.X),
                 (float)Math.Floor(springPos.Y),

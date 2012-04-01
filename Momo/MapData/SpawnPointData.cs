@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Momo.Core.Spatial;
 
+
+
 namespace MapData
 {
     public class SpawnPointData: BinItem

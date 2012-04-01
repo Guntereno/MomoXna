@@ -11,6 +11,19 @@ namespace Momo.Core.Spatial
         internal int m_binCnt;
 
 
+
+        public BinIndex[] BinIndices
+        {
+            get { return m_binIndices; }
+        }
+
+        public int BinCount
+        {
+            get { return m_binCnt; }
+        }
+
+
+
         public BinRegionSelection(int capacity)
         {
             m_binIndices = new BinIndex[capacity];
