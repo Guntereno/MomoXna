@@ -588,7 +588,7 @@ namespace TmxProcessorLib
 
                     if ((obj.Properties.Properties != null) && (obj.Properties.Properties.ContainsKey("model")))
                     {
-                        string modelName = "sceneObjects/" + obj.Properties.Properties["model"];
+                        string modelName = "models/" + obj.Properties.Properties["model"];
 
                         Vector3 pos = new Vector3(obj.Position + Offset, 0.0f);
 

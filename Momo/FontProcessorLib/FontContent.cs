@@ -27,6 +27,7 @@ namespace FontProcessorLib
 
         public struct Page
         {
+            //public ExternalReference<TextureContent> m_texture;
             public string m_textureAssetName;
             public string m_textureFileName;
         }

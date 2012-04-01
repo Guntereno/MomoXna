@@ -63,5 +63,23 @@ namespace Momo.Core.Spatial
         {
             return new BinLocation(left.m_x - right.m_x, left.m_y - right.m_y);
         }
+
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            BinLocation binLocation = (BinLocation)obj;
+
+            return this == binLocation;
+        }
+
     }
 }

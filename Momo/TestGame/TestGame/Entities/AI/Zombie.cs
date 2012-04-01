@@ -3,6 +3,8 @@ using Game.Entities.Gaits;
 
 using Microsoft.Xna.Framework;
 
+
+using Momo.Core.Models;
 using Momo.Core.StateMachine;
 
 
@@ -18,6 +20,17 @@ namespace Game.Entities.AI
         private ZombieChaseState mStateChase = null;
         private ZombieAttackState mStateAttack = null;
         #endregion
+
+
+        private InstancedModel mInstancedModel = null;
+
+
+        public InstancedModel InstanceModel
+        {
+            get { return mInstancedModel; }
+            set { mInstancedModel = value; }
+        }
+
 
 
         public Zombie(Zone zone)
@@ -59,6 +72,19 @@ namespace Game.Entities.AI
             Gait = gait;
  
             BaseSpeed = 10.5f + ((float)Zone.Random.NextDouble() * 2.0f);
+        }
+
+
+        public override void Render()
+        {
+            if (mInstancedModel != null)
+            {
+                Matrix worldMatrix = Matrix.CreateRotationZ(-FacingAngle);
+                worldMatrix *= Matrix.CreateScale(ContactRadiusInfo.Radius);
+                worldMatrix.Translation = GetPosition3(0.0f);
+                mInstancedModel.RenderInstance(worldMatrix);
+            }
+            
         }
 
 

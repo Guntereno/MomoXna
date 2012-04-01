@@ -40,6 +40,12 @@ namespace Momo.Core.GameEntities
         }
 
 
+        public Vector3 GetPosition3(float z)
+        {
+            return new Vector3(m_position, z);
+        }
+
+
         public virtual void Update(ref FrameTime frameTime, uint updateToken)
         {
 
@@ -47,6 +53,12 @@ namespace Momo.Core.GameEntities
 
 
         public virtual void PostUpdate()
+        {
+
+        }
+
+
+        public virtual void Render()
         {
 
         }

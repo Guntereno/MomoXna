@@ -34,7 +34,7 @@ namespace Game
 
 
             private float mAmbientSpawnTimer = 0.0f;
-            private float mAmbientSpawnFrequency = 10.0f;
+            private float mAmbientSpawnFrequency = 1.0f;
             private int mAmbientSpawnAmount = 10;
             private ulong mDoNotSpawnTickCnt = 3000;
 

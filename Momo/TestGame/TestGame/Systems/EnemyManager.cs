@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 using Momo.Core.ObjectPools;
 using Momo.Core.Spatial;
 using Momo.Core;
+using Momo.Core.Models;
 using Momo.Debug;
 
 using Game.Entities;
@@ -21,16 +23,19 @@ namespace Game.Systems
     {
         private const int kMaxEntities = 1000;
 
-        private Zone mZone;
+        private Zone mZone = null;
 
         private Pool<AiEntity> mEntities = new Pool<AiEntity>(kMaxEntities, 2, 2, false);
 
-        private int mKillCounter = 0;
+        private InstancedModel mZombieInstancedModel = null;
+
+
+        //private int mKillCounter = 0;
 
 
 
         public Pool<AiEntity> Entities      { get { return mEntities; } }
-        public int KillCount                { get { return mKillCounter; } }
+        //public int KillCount                { get { return mKillCounter; } }
 
 
 
@@ -40,21 +45,35 @@ namespace Game.Systems
 
             mEntities.RegisterPoolObjectType(typeof(Civilian), kMaxEntities);
             mEntities.RegisterPoolObjectType(typeof(Zombie), kMaxEntities);
+
+
+            Model zombieModel = Game.Instance.Content.Load<Model>("models/zombie");
+            Effect instancedEffect = Game.Instance.Content.Load<Effect>("effects/instancedModel");
+            Texture zombieTexture = Game.Instance.Content.Load<Texture>("textures/atlas");
+            instancedEffect.Parameters["diffuseTex"].SetValue(zombieTexture);
+
+            mZombieInstancedModel = new InstancedModel();
+            mZombieInstancedModel.Init(kMaxEntities, zombieModel, instancedEffect, Game.Instance.GraphicsDevice);
         }
 
 
-        public void IncrementKillCount()
-        {
-            ++mKillCounter;
-        }
+        //public void IncrementKillCount()
+        //{
+        //    ++mKillCounter;
+        //}
 
 
         public void Load()
         {
             for (int i = 0; i < kMaxEntities; ++i)
             {
-                mEntities.AddItem(new Civilian(mZone), false);
-                mEntities.AddItem(new Zombie(mZone), false);
+                Zombie zombie = new Zombie(mZone);
+                zombie.InstanceModel = mZombieInstancedModel;
+
+                Civilian civilian = new Civilian(mZone);
+
+                mEntities.AddItem(zombie, false);
+                mEntities.AddItem(civilian, false);
             }
         }
 
@@ -93,6 +112,26 @@ namespace Game.Systems
         }
 
 
+        public void Render(Matrix viewProjMatrix, GraphicsDevice graphicsDevice)
+        {
+            for (int i = 0; i < mEntities.ActiveItemListCount; ++i)
+            {
+                mEntities[i].Render();
+            }
+
+            mZombieInstancedModel.Render(viewProjMatrix, graphicsDevice);
+        }
+
+
+        public void DebugRender(DebugRenderer debugRenderer)
+        {
+            //for (int i = 0; i < mEntities.ActiveItemListCount; ++i)
+            //{
+            //    mEntities[i].DebugRender(debugRenderer);
+            //}
+        }
+
+
         private void UpdateEntityPool(Pool<AiEntity> aiEntities, ref FrameTime frameTime, uint updateToken)
         {
             uint token = updateToken;
@@ -110,12 +149,5 @@ namespace Game.Systems
         }
 
 
-        public void DebugRender(DebugRenderer debugRenderer)
-        {
-            for (int i = 0; i < mEntities.ActiveItemListCount; ++i)
-            {
-                mEntities[i].DebugRender(debugRenderer);
-            }
-        }
     }
 }

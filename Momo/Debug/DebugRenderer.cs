@@ -16,16 +16,16 @@ namespace Momo.Debug
         // --------------------------------------------------------------------
         // -- Private Members
         // --------------------------------------------------------------------
-        private BasicEffect m_effect = null;
-        private bool m_inited = false;
+        private BasicEffect mEffect = null;
+        private bool mInited = false;
 
-        private int m_triVertexCnt = 0;
-        private int m_triVertexCapacity = 0;
-        private VertexPositionColor[] m_triVertices;
+        private int mTriVertexCnt = 0;
+        private int mTriVertexCapacity = 0;
+        private VertexPositionColor[] mTriVertices = null;
 
-        private int m_lineVertexCnt = 0;
-        private int m_lineVertexCapacity = 0;
-        private VertexPositionColor[] m_lineVertices;
+        private int mLineVertexCnt = 0;
+        private int mLineVertexCapacity = 0;
+        private VertexPositionColor[] mLineVertices = null;
 
 
         // --------------------------------------------------------------------
@@ -33,44 +33,40 @@ namespace Momo.Debug
         // --------------------------------------------------------------------
         public void Init(int triCapacity, int lineCapacity, GraphicsDevice graphicsDevice)
         {
-            System.Diagnostics.Debug.Assert(!m_inited, "Already inited. Call DeInit first.");
+            System.Diagnostics.Debug.Assert(!mInited, "Already inited. Call DeInit first.");
 
-            m_effect = new BasicEffect(graphicsDevice);
-            m_effect.World = Matrix.Identity;
-            m_effect.TextureEnabled = false;
-            m_effect.LightingEnabled = false;
-            m_effect.VertexColorEnabled = true;
+            mEffect = new BasicEffect(graphicsDevice);
+            mEffect.World = Matrix.Identity;
+            mEffect.TextureEnabled = false;
+            mEffect.LightingEnabled = false;
+            mEffect.VertexColorEnabled = true;
 
             CreateBuffers(triCapacity, lineCapacity);
 
-            m_inited = true;
+            mInited = true;
         }
 
 
         public void DeInit()
         {
-            System.Diagnostics.Debug.Assert(m_inited, "Init first.");
+            System.Diagnostics.Debug.Assert(mInited, "Init first.");
 
             FlushBuffers();
 
-            m_effect.Dispose();
-            m_effect = null;
+            mEffect.Dispose();
+            mEffect = null;
 
-            m_inited = false;
+            mInited = false;
         }
 
 
         public void Clear()
         {
-            m_triVertexCnt = 0;
-            m_lineVertexCnt = 0;
+            mTriVertexCnt = 0;
+            mLineVertexCnt = 0;
         }
 
 
-
-        // --------------------------------------------------------------------
-        // -- Convenience Methods
-        // --------------------------------------------------------------------
         public void DrawFilledCircle(Vector2 centre, float radius, Color fillColour)
         {
             DrawCircle(centre, radius, fillColour, Color.Black, true, 0.0f, kDefaultCircleSegments);
@@ -100,10 +96,12 @@ namespace Momo.Debug
             DrawRect(minCorner, maxCorner, Color.Black, edgeColour, false, 1.0f);
         }
 
+
         public void DrawFilledRect(Vector2 minCorner, Vector2 maxCorner, Color colour)
         {
             DrawRect(minCorner, maxCorner, colour, Color.Black, true, 0.0f);
         }
+
 
         public void DrawFilledLine(Vector2 startPoint, Vector2 endPoint, Color colour, float width)
         {
@@ -219,17 +217,17 @@ namespace Momo.Debug
 
         public void DrawFilledTriangle(Vector3 p1, Vector3 p2, Vector3 p3, Color colour)
         {
-            if (m_triVertexCnt >= m_triVertexCapacity - 3)
+            if (mTriVertexCnt >= mTriVertexCapacity - 3)
                 return;
 
-            m_triVertices[m_triVertexCnt].Position = p1;
-            m_triVertices[m_triVertexCnt++].Color = colour;
+            mTriVertices[mTriVertexCnt].Position = p1;
+            mTriVertices[mTriVertexCnt++].Color = colour;
 
-            m_triVertices[m_triVertexCnt].Position = p2;
-            m_triVertices[m_triVertexCnt++].Color = colour;
+            mTriVertices[mTriVertexCnt].Position = p2;
+            mTriVertices[mTriVertexCnt++].Color = colour;
 
-            m_triVertices[m_triVertexCnt].Position = p3;
-            m_triVertices[m_triVertexCnt++].Color = colour;
+            mTriVertices[mTriVertexCnt].Position = p3;
+            mTriVertices[mTriVertexCnt++].Color = colour;
         }
 
 
@@ -241,14 +239,14 @@ namespace Momo.Debug
 
         public void DrawLine(Vector3 startPoint, Vector3 endPoint, Color colour)
         {
-            if (m_lineVertexCnt >= m_lineVertexCapacity - 2)
+            if (mLineVertexCnt >= mLineVertexCapacity - 2)
                 return;
 
-            m_lineVertices[m_lineVertexCnt].Position = startPoint;
-            m_lineVertices[m_lineVertexCnt++].Color = colour;
+            mLineVertices[mLineVertexCnt].Position = startPoint;
+            mLineVertices[mLineVertexCnt++].Color = colour;
 
-            m_lineVertices[m_lineVertexCnt].Position = endPoint;
-            m_lineVertices[m_lineVertexCnt++].Color = colour;
+            mLineVertices[mLineVertexCnt].Position = endPoint;
+            mLineVertices[mLineVertexCnt++].Color = colour;
         }
 
 
@@ -473,31 +471,31 @@ namespace Momo.Debug
 
         public void Render(Matrix viewMatrix, Matrix projMatrix, GraphicsDevice graphicsDevice)
         {
-            if (m_triVertexCnt == 0 && m_lineVertexCnt == 0)
+            if (mTriVertexCnt == 0 && mLineVertexCnt == 0)
                 return;
 
 
-            m_effect.View = viewMatrix;
-            m_effect.Projection = projMatrix;
+            mEffect.View = viewMatrix;
+            mEffect.Projection = projMatrix;
 
             graphicsDevice.BlendState = BlendState.NonPremultiplied;
             graphicsDevice.DepthStencilState = DepthStencilState.None;
             graphicsDevice.RasterizerState = RasterizerState.CullNone;
 
 
-            for (int p = 0; p < m_effect.CurrentTechnique.Passes.Count; p++)
+            for (int p = 0; p < mEffect.CurrentTechnique.Passes.Count; p++)
             {
-                EffectPass pass = m_effect.CurrentTechnique.Passes[p];
+                EffectPass pass = mEffect.CurrentTechnique.Passes[p];
                 pass.Apply();
 
-                if (m_triVertexCnt > 0)
+                if (mTriVertexCnt > 0)
                 {
-                    graphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, m_triVertices, 0, m_triVertexCnt / 3);
+                    graphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, mTriVertices, 0, mTriVertexCnt / 3);
                 }
 
-                if (m_lineVertexCnt > 0)
+                if (mLineVertexCnt > 0)
                 {
-                    graphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineList, m_lineVertices, 0, m_lineVertexCnt / 2);
+                    graphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineList, mLineVertices, 0, mLineVertexCnt / 2);
                 }
             }
 
@@ -513,8 +511,8 @@ namespace Momo.Debug
         // --------------------------------------------------------------------
         private void FlushBuffers()
         {
-            m_triVertices = null;
-            m_lineVertices = null;
+            mTriVertices = null;
+            mLineVertices = null;
         }
 
 
@@ -522,13 +520,13 @@ namespace Momo.Debug
         {
             FlushBuffers();
 
-            m_triVertexCnt = 0;
-            m_triVertexCapacity = triCapacity * 3;
-            m_triVertices = new VertexPositionColor[m_triVertexCapacity];
+            mTriVertexCnt = 0;
+            mTriVertexCapacity = triCapacity * 3;
+            mTriVertices = new VertexPositionColor[mTriVertexCapacity];
 
-            m_lineVertexCnt = 0;
-            m_lineVertexCapacity = lineCapacity * 3;
-            m_lineVertices = new VertexPositionColor[m_lineVertexCapacity];
+            mLineVertexCnt = 0;
+            mLineVertexCapacity = lineCapacity * 3;
+            mLineVertices = new VertexPositionColor[mLineVertexCapacity];
         }
     }
 }

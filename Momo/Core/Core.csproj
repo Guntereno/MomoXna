@@ -106,6 +106,8 @@
     <Compile Include="GameEntities\StaticGameEntity.cs" />
     <Compile Include="Hashing.cs" />
     <Compile Include="MassInfo.cs" />
+    <Compile Include="Models\InstanceData.cs" />
+    <Compile Include="Models\InstancedModel.cs" />
     <Compile Include="MutableString.cs" />
     <Compile Include="INamed.cs" />
     <Compile Include="Nodes\Cameras\CameraNode.cs" />

@@ -206,6 +206,7 @@ namespace Game.Entities
 
         public virtual void OnCollisionEvent(ref BulletEntity bullet)
         {
+
         }
 
 
