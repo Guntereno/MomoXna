@@ -663,7 +663,7 @@ namespace TmxProcessorLib
                         string modelName = "tiles/cityBlockWall";
 
 
-                        for (int i = 0; i < tileList.Count; ++i)
+                        for (int i = 0; i    < tileList.Count; ++i)
                         {
                             TileInfo tileInfo = tileList[i];
 
@@ -673,17 +673,16 @@ namespace TmxProcessorLib
                             float randScaleY = 1.0f + (float)TmxProcessor.Random.NextDouble();
 
                             int rotCount = TmxProcessor.Random.Next(3);
-                            float randScaleZ = ((float)Math.PI * 0.5f) * rotCount;
+                            float randRot = ((float)Math.PI * 0.5f) * rotCount;
 
-
-                            const float kGlobalScale = 0.35f;
+                            const float kGlobalScale = 1.0f;// 0.35f;
 
                             Vector3 pos = new Vector3(centerX, centerY, 0.0f);
 
                             Matrix worldMatrix = Matrix.Identity;
 
                             worldMatrix *= Matrix.CreateScale(kGlobalScale, kGlobalScale * randScaleY, kGlobalScale);
-                            worldMatrix *= Matrix.CreateRotationY(randScaleZ);
+                            worldMatrix *= Matrix.CreateRotationY(randRot);
                             worldMatrix *= Matrix.CreateRotationX((float)Math.PI * 0.5f);
                             worldMatrix *= Matrix.CreateTranslation(pos);
 
