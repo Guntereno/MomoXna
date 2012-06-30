@@ -1,22 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Xml;
-using System.Diagnostics;
-using System.IO;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-
+using Momo.Core;
+using Momo.Core.Models;
 
 namespace MapData
 {
-    using VFormat = VertexPositionTexture;
-    using Momo.Core;
+
 
     public class Map
     {

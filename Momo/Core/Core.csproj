@@ -108,6 +108,7 @@
     <Compile Include="MassInfo.cs" />
     <Compile Include="Models\InstanceData.cs" />
     <Compile Include="Models\InstancedModel.cs" />
+    <Compile Include="Models\ModelInst.cs" />
     <Compile Include="MutableString.cs" />
     <Compile Include="INamed.cs" />
     <Compile Include="Nodes\Cameras\CameraNode.cs" />

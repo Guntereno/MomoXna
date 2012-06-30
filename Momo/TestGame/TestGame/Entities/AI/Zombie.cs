@@ -1,11 +1,10 @@
 ﻿using Game.Ai.AiEntityStates;
 using Game.Entities.Gaits;
-
 using Microsoft.Xna.Framework;
-
-
+using Microsoft.Xna.Framework.Graphics;
 using Momo.Core.Models;
 using Momo.Core.StateMachine;
+using Momo.Core.Nodes.Cameras;
 
 
 
@@ -75,7 +74,7 @@ namespace Game.Entities.AI
         }
 
 
-        public override void Render()
+        public override void Render(CameraNode camera, GraphicsDevice graphicsDevice)
         {
             if (mInstancedModel != null)
             {

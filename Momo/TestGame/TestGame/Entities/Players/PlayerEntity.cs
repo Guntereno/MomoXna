@@ -8,7 +8,9 @@ using Momo.Core.StateMachine;
 using Momo.Core.Spatial;
 
 using Game.Weapons;
-
+using Microsoft.Xna.Framework.Graphics;
+using Momo.Core.Models;
+using Momo.Core.Nodes.Cameras;
 
 
 namespace Game.Entities.Players
@@ -68,6 +70,7 @@ namespace Game.Entities.Players
             set { mInput = value; }
         }
 
+        public ModelInst Model { get; set; }
 
         #endregion
 
@@ -127,6 +130,17 @@ namespace Game.Entities.Players
             Health = kPlayerHealth;
         }
 
+        public override void Render(CameraNode camera, GraphicsDevice graphicsDevice)
+        {
+            if (Model != null)
+            {
+                Matrix worldMatrix = Matrix.CreateRotationZ(-FacingAngle);
+                worldMatrix.Translation = GetPosition3(0.0f);
+                Model.WorldMatrix = worldMatrix;
+                Model.Draw(camera.ViewMatrix, camera.ProjectionMatrix);
+            }
+
+        }
 
         public override void Update(ref FrameTime frameTime, uint updateToken)
         {

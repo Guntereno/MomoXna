@@ -285,8 +285,9 @@ namespace Game
 
         public void Render()
         {
-            mMapRenderer.Render(World.Camera.ViewMatrix, World.Camera.ProjectionMatrix, Game.Instance.GraphicsDevice);
-            mAiEntityManager.Render(World.Camera.ViewProjectionMatrix, Game.Instance.GraphicsDevice);
+            mMapRenderer.Render(World.Camera, Game.Instance.GraphicsDevice);
+            mAiEntityManager.Render(World.Camera, Game.Instance.GraphicsDevice);
+            mPlayerManager.Render(World.Camera, Game.Instance.GraphicsDevice);
 
             mOsdManager.Render();
         }

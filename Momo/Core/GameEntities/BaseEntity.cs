@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Microsoft.Xna.Framework;
-
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Momo.Core.Nodes.Cameras;
 using Momo.Core.Spatial;
 using Momo.Debug;
 
@@ -58,7 +55,7 @@ namespace Momo.Core.GameEntities
         }
 
 
-        public virtual void Render()
+        public virtual void Render(CameraNode camera, GraphicsDevice graphicsDevice)
         {
 
         }

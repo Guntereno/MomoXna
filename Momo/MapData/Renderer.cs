@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Momo.Core.Models;
+using Momo.Core.Nodes.Cameras;
 
 namespace MapData
 {
-    using VFormat = VertexPositionTexture;
 
     public class Renderer
     {
@@ -47,8 +44,11 @@ namespace MapData
             m_samplerState.MipMapLevelOfDetailBias = 0;
         }
 
-        public void Render(Matrix viewMatrix, Matrix projMatrix, GraphicsDevice graphicsDevice)
+        public void Render(CameraNode camera, GraphicsDevice graphicsDevice)
         {
+            Matrix viewMatrix = camera.ViewMatrix;
+            Matrix projMatrix = camera.ProjectionMatrix;
+
             if (!m_inited)
                 return;
 
@@ -81,7 +81,7 @@ namespace MapData
 
             for (int modelIdx = 0; modelIdx < m_map.ModelInstances.Length; ++modelIdx)
             {
-                MapData.ModelInst modelInst = m_map.ModelInstances[modelIdx];
+                ModelInst modelInst = m_map.ModelInstances[modelIdx];
                 modelInst.Draw(viewMatrix, projMatrix);
             }
 

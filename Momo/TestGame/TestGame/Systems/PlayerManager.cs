@@ -1,12 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-
-using Momo.Core;
-using Momo.Core.ObjectPools;
-using Momo.Core.Spatial;
-using Momo.Debug;
-
-using Game.Entities.Players;
+﻿using Game.Entities.Players;
 using Game.Input;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Momo.Core;
+using Momo.Core.Nodes.Cameras;
+using Momo.Core.ObjectPools;
+using Momo.Debug;
 
 
 
@@ -22,6 +21,7 @@ namespace Game.Systems
 
         private Vector2 mAveragePosition = new Vector2();
 
+        private Model mPlayerModel = null;
 
         public Pool<PlayerEntity> Players       { get { return mPlayers; } }
         public Vector2 AveragePlayerPosition    { get { return mAveragePosition; } }
@@ -37,7 +37,7 @@ namespace Game.Systems
 
         public void Load()
         {
-
+            mPlayerModel = ResourceManager.Instance.Get<Model>("models/link");
         }
 
         public PlayerEntity AddPlayer(InputWrapper input)
@@ -52,6 +52,7 @@ namespace Game.Systems
 
 
             PlayerEntity player = new PlayerEntity(mZone);
+            player.Model = new Momo.Core.Models.ModelInst(mPlayerModel, Matrix.Identity);
 
             player.InputWrapper = input;
 
@@ -98,6 +99,14 @@ namespace Game.Systems
             }
 
             mAveragePosition /= (float)playerCount;
+        }
+
+        public void Render(CameraNode camera, GraphicsDevice graphicsDevice)
+        {
+            for (int i = 0; i < mPlayers.ActiveItemListCount; ++i)
+            {
+                mPlayers[i].Render(camera, graphicsDevice);
+            }
         }
 
         public void DebugRender(DebugRenderer debugRenderer)

@@ -14,6 +14,7 @@ using Momo.Debug;
 
 using Game.Entities;
 using Game.Entities.AI;
+using Momo.Core.Nodes.Cameras;
 
 
 
@@ -112,14 +113,14 @@ namespace Game.Systems
         }
 
 
-        public void Render(Matrix viewProjMatrix, GraphicsDevice graphicsDevice)
+        public void Render(CameraNode camera, GraphicsDevice graphicsDevice)
         {
             for (int i = 0; i < mEntities.ActiveItemListCount; ++i)
             {
-                mEntities[i].Render();
+                mEntities[i].Render(camera, graphicsDevice);
             }
 
-            mZombieInstancedModel.Render(viewProjMatrix, graphicsDevice);
+            mZombieInstancedModel.Render(camera.ViewProjectionMatrix, graphicsDevice);
         }
 
 
