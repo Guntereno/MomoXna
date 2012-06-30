@@ -13,6 +13,8 @@ using TOutput = TmxProcessorLib.Content.Map;
 using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionNormalTexture;
 using TmxProcessorLib.Content;
 using TmxProcessorLib.Data;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace TmxProcessorLib
 {
@@ -24,6 +26,39 @@ namespace TmxProcessorLib
     {
         public Vector2 Offset = new Vector2(1000.0f, 1000.0f);
         public static Random Random { get; private set; }
+
+        private struct Edge
+        {
+            public Point Point1 { get { return m_point1; } set { m_point1 = value; } }
+            public Point Point2 { get { return m_point2; } set { m_point2 = value; } }
+
+            public Edge(Point point1, Point point2)
+            {
+                m_point1 = point1;
+                m_point2 = point2;
+            }
+
+            Point m_point1;
+            Point m_point2;
+        }
+
+        private struct TileInfo
+        {
+            public TileInfo(Tile tile, int x, int y, bool flipX, bool flipY)
+            {
+                mTile = tile;
+                mX = x;
+                mY = y;
+                mFlipX = flipX;
+                mFlipY = flipY;
+            }
+
+            public Tile mTile;
+            public int mX;
+            public int mY;
+            public bool mFlipX;
+            public bool mFlipY;
+        };
 
         public override TOutput Process(TInput input, ContentProcessorContext context)
         {
@@ -41,6 +76,7 @@ namespace TmxProcessorLib
             BuildPatches(context, input, output);
             ProcessEvents(context, input, output);
             ProcessSceneObjects(context, input, output);
+            //ProcessBuildings(context, input, output);
 
             return output;
         }
@@ -260,21 +296,6 @@ namespace TmxProcessorLib
             }
         }
 
-        private struct Edge
-        {
-            public Point Point1 { get { return m_point1; } set { m_point1 = value; } }
-            public Point Point2 { get { return m_point2; } set { m_point2 = value; } }
-
-            public Edge(Point point1, Point point2)
-            {
-                m_point1 = point1;
-                m_point2 = point2;
-            }
-
-            Point m_point1;
-            Point m_point2;
-        }
-
         private void ProcessCollisionStrips(ContentProcessorContext context, TInput input, TOutput output)
         {
             ProcessTileCollisionStrips(context, input, output);
@@ -286,179 +307,8 @@ namespace TmxProcessorLib
             TileLayer wallLayer = input.TileLayers.Find(l => l.Name == "Walls");
             if (wallLayer != null)
             {
-                List<Edge> edgeList = new List<Edge>();
-
-                // Iterate through each point
-                for (int x = 0; x <= input.Dimensions.X; ++x)
-                {
-                    for (int y = 0; y <= input.Dimensions.Y; ++y)
-                    {
-                        // Handle Horizontal
-                        {
-                            // Can't handle the last column
-                            if (x < wallLayer.Dimensions.X)
-                            {
-                                bool top, bottom;
-
-                                // Compare sides (treat edges as collision)
-                                if (y == 0)
-                                    top = false;
-                                else
-                                    top = (wallLayer.Data[x + ((y - 1) * wallLayer.Dimensions.X)].Index != 0);
-
-                                if (y == wallLayer.Dimensions.Y)
-                                    bottom = false;
-                                else
-                                    bottom = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)].Index != 0);
-
-                                // If same, discard
-                                if (top != bottom)
-                                {
-                                    Point leftPoint = new Point(x, y);
-                                    Point rightPoint = new Point(x + 1, y);
-
-                                    if (top)
-                                    {
-                                        edgeList.Add(new Edge(rightPoint, leftPoint));
-                                    }
-                                    else
-                                    {
-                                        edgeList.Add(new Edge(leftPoint, rightPoint));
-                                    }
-                                }
-                            }
-                        }
-
-                        // Handle Vertical
-                        {
-                            // Can't handle the last row
-                            if (y < wallLayer.Dimensions.Y)
-                            {
-                                bool left, right;
-
-                                // Compare sides (treat edges as collision)
-                                if (x == 0)
-                                    left = false;
-                                else
-                                    left = (wallLayer.Data[(x - 1) + (y * wallLayer.Dimensions.X)].Index != 0);
-
-                                if (x == wallLayer.Dimensions.X)
-                                    right = false;
-                                else
-                                    right = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)].Index != 0);
-
-                                // If same, discard
-                                if (left != right)
-                                {
-                                    Point topPoint = new Point(x, y);
-                                    Point bottomPoint = new Point(x, y + 1);
-                                    if (left)
-                                    {
-                                        edgeList.Add(new Edge(topPoint, bottomPoint));
-                                    }
-                                    else
-                                    {
-                                        edgeList.Add(new Edge(bottomPoint, topPoint));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Now connect the edges
-                List<List<Edge>> edgeLoops = new List<List<Edge>>();
-                {
-                    List<Edge> currentLoop = new List<Edge>();
-                    {
-                        Edge currentEdge = edgeList[0];
-                        currentLoop.Add(currentEdge);
-                        edgeList.Remove(currentEdge);
-
-                        do
-                        {
-                            bool found = false;
-                            for (int i = 0; i < edgeList.Count; ++i)
-                            {
-                                if (edgeList[i].Point1 == currentEdge.Point2)
-                                {
-                                    currentEdge = edgeList[i];
-                                    found = true;
-                                    break;
-                                }
-                            }
-
-                            // If there's no edge matching we must've completed a loop
-                            if (!found)
-                            {
-                                // Add the first node again to complete the loop
-                                edgeLoops.Add(currentLoop);
-                                currentLoop = new List<Edge>();
-
-                                // If there's nothing left on the list then we're done
-                                if (edgeList.Count == 0)
-                                {
-                                    break;
-                                }
-
-                                // Use the first edge
-                                currentEdge = edgeList[0];
-                            }
-
-                            currentLoop.Add(currentEdge);
-                            edgeList.Remove(currentEdge);
-                        }
-                        while (true); // Exited from within loop
-                    }
-                }
-
-                // Now optimise the list
-                for (int stripIdx = 0; stripIdx < edgeLoops.Count; ++stripIdx)
-                {
-                    List<Edge> currentStrip = edgeLoops[stripIdx];
-                    List<Edge> optimised = new List<Edge>();
-
-                    int currentIndex = 0;
-                    Edge newEdge = currentStrip[currentIndex];
-                    Point delta = new Point(
-                        currentStrip[currentIndex].Point2.X - currentStrip[currentIndex].Point1.X,
-                        currentStrip[currentIndex].Point2.Y - currentStrip[currentIndex].Point1.Y);
-
-                    while (currentIndex < currentStrip.Count)
-                    {
-                        Edge currentEdge;
-                        Point currentDelta;
-                        do
-                        {
-                            currentIndex++;
-
-                            if (currentIndex == currentStrip.Count)
-                            {
-                                optimised.Add(newEdge);
-                                break;
-                            }
-
-                            currentEdge = currentStrip[currentIndex];
-                            currentDelta = new Point(
-                                currentEdge.Point2.X - currentEdge.Point1.X,
-                                currentEdge.Point2.Y - currentEdge.Point1.Y);
-
-                            if (delta == currentDelta)
-                            {
-                                newEdge.Point2 = currentEdge.Point2;
-                            }
-                            else
-                            {
-                                delta = currentDelta;
-                                optimised.Add(newEdge);
-                                newEdge = currentEdge;
-                            }
-                        }
-                        while (true);
-                    }
-
-                    edgeLoops[stripIdx] = optimised;
-                }
+                List<List<Edge>> edgeLoops = BuildEdgeLoopList(input, wallLayer);
+                OptimiseEdgeLoopList(edgeLoops);
 
                 output.CollisionBoundaries = new List<List<Vector2>>();
 
@@ -479,6 +329,189 @@ namespace TmxProcessorLib
 
                     output.CollisionBoundaries.Add(strip);
                 }
+            }
+        }
+
+        private static List<List<Edge>> BuildEdgeLoopList(TInput input, TileLayer wallLayer)
+        {
+            List<List<Edge>> edgeLoops;
+            List<Edge> edgeList;
+            edgeList = new List<Edge>();
+
+            // Iterate through each point
+            for (int x = 0; x <= input.Dimensions.X; ++x)
+            {
+                for (int y = 0; y <= input.Dimensions.Y; ++y)
+                {
+                    // Handle Horizontal
+                    {
+                        // Can't handle the last column
+                        if (x < wallLayer.Dimensions.X)
+                        {
+                            bool top, bottom;
+
+                            // Compare sides (treat edges as collision)
+                            if (y == 0)
+                                top = false;
+                            else
+                                top = (wallLayer.Data[x + ((y - 1) * wallLayer.Dimensions.X)].Index != 0);
+
+                            if (y == wallLayer.Dimensions.Y)
+                                bottom = false;
+                            else
+                                bottom = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)].Index != 0);
+
+                            // If same, discard
+                            if (top != bottom)
+                            {
+                                Point leftPoint = new Point(x, y);
+                                Point rightPoint = new Point(x + 1, y);
+
+                                if (top)
+                                {
+                                    edgeList.Add(new Edge(rightPoint, leftPoint));
+                                }
+                                else
+                                {
+                                    edgeList.Add(new Edge(leftPoint, rightPoint));
+                                }
+                            }
+                        }
+                    }
+
+                    // Handle Vertical
+                    {
+                        // Can't handle the last row
+                        if (y < wallLayer.Dimensions.Y)
+                        {
+                            bool left, right;
+
+                            // Compare sides (treat edges as collision)
+                            if (x == 0)
+                                left = false;
+                            else
+                                left = (wallLayer.Data[(x - 1) + (y * wallLayer.Dimensions.X)].Index != 0);
+
+                            if (x == wallLayer.Dimensions.X)
+                                right = false;
+                            else
+                                right = (wallLayer.Data[x + (y * wallLayer.Dimensions.X)].Index != 0);
+
+                            // If same, discard
+                            if (left != right)
+                            {
+                                Point topPoint = new Point(x, y);
+                                Point bottomPoint = new Point(x, y + 1);
+                                if (left)
+                                {
+                                    edgeList.Add(new Edge(topPoint, bottomPoint));
+                                }
+                                else
+                                {
+                                    edgeList.Add(new Edge(bottomPoint, topPoint));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Now connect the edges
+            edgeLoops = new List<List<Edge>>();
+            {
+                List<Edge> currentLoop = new List<Edge>();
+                {
+                    Edge currentEdge = edgeList[0];
+                    currentLoop.Add(currentEdge);
+                    edgeList.Remove(currentEdge);
+
+                    do
+                    {
+                        bool found = false;
+                        for (int i = 0; i < edgeList.Count; ++i)
+                        {
+                            if (edgeList[i].Point1 == currentEdge.Point2)
+                            {
+                                currentEdge = edgeList[i];
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        // If there's no edge matching we must've completed a loop
+                        if (!found)
+                        {
+                            // Add the first node again to complete the loop
+                            edgeLoops.Add(currentLoop);
+                            currentLoop = new List<Edge>();
+
+                            // If there's nothing left on the list then we're done
+                            if (edgeList.Count == 0)
+                            {
+                                break;
+                            }
+
+                            // Use the first edge
+                            currentEdge = edgeList[0];
+                        }
+
+                        currentLoop.Add(currentEdge);
+                        edgeList.Remove(currentEdge);
+                    }
+                    while (true); // Exited from within loop
+                }
+            }
+            return edgeLoops;
+        }
+
+        private static void OptimiseEdgeLoopList(List<List<Edge>> edgeLoops)
+        {
+            // Now optimise the list
+            for (int stripIdx = 0; stripIdx < edgeLoops.Count; ++stripIdx)
+            {
+                List<Edge> currentStrip = edgeLoops[stripIdx];
+                List<Edge> optimised = new List<Edge>();
+
+                int currentIndex = 0;
+                Edge newEdge = currentStrip[currentIndex];
+                Point delta = new Point(
+                    currentStrip[currentIndex].Point2.X - currentStrip[currentIndex].Point1.X,
+                    currentStrip[currentIndex].Point2.Y - currentStrip[currentIndex].Point1.Y);
+
+                while (currentIndex < currentStrip.Count)
+                {
+                    Edge currentEdge;
+                    Point currentDelta;
+                    do
+                    {
+                        currentIndex++;
+
+                        if (currentIndex == currentStrip.Count)
+                        {
+                            optimised.Add(newEdge);
+                            break;
+                        }
+
+                        currentEdge = currentStrip[currentIndex];
+                        currentDelta = new Point(
+                            currentEdge.Point2.X - currentEdge.Point1.X,
+                            currentEdge.Point2.Y - currentEdge.Point1.Y);
+
+                        if (delta == currentDelta)
+                        {
+                            newEdge.Point2 = currentEdge.Point2;
+                        }
+                        else
+                        {
+                            delta = currentDelta;
+                            optimised.Add(newEdge);
+                            newEdge = currentEdge;
+                        }
+                    }
+                    while (true);
+                }
+
+                edgeLoops[stripIdx] = optimised;
             }
         }
 
@@ -602,23 +635,161 @@ namespace TmxProcessorLib
             }
         }
 
-        private struct TileInfo
+        public enum BuildingType
         {
-            public TileInfo(Tile tile, int x, int y, bool flipX, bool flipY)
+            corner,
+            edge
+        }
+
+        class BuildingInfo
+        {
+            public BuildingInfo(string name, int width, int height)
             {
-                mTile = tile;
-                mX = x;
-                mY = y;
-                mFlipX = flipX;
-                mFlipY = flipY;
+                Name = name;
+                Width = width;
+                Height = height;
             }
 
-            public Tile mTile;
-            public int mX;
-            public int mY;
-            public bool mFlipX;
-            public bool mFlipY;
-        };
+            public BuildingType Type { get; set; }
+            public string Name { get; set; }
+            public int Width { get; set; }
+            public int Height { get; set; }
+        }
+
+        private void ProcessBuildings(ContentProcessorContext context, TInput input, TOutput output)
+        {
+            TileLayer wallLayer = input.TileLayers.Find(l => l.Name == "Walls");
+            if (wallLayer != null)
+            {
+                // Build a list of the valid buildings
+                List<BuildingInfo> corners = new List<BuildingInfo>();
+                List<BuildingInfo> edges = new List<BuildingInfo>();
+                CreateBuildingInfoList(context, input, corners, edges);
+
+                // Create a list of edge loops
+                List<List<Edge>> edgeLoops = BuildEdgeLoopList(input, wallLayer);
+                bool[,] tileStates = new bool[input.Dimensions.X, input.Dimensions.Y];
+
+                // Build a list of all the corners
+                for (int stripIdx = 0; stripIdx < edgeLoops.Count; ++stripIdx)
+                {
+                    List<Edge> currentStrip = edgeLoops[stripIdx];
+                    List<Edge> optimised = new List<Edge>();
+
+                    int currentIndex = 0;
+                    Edge newEdge = currentStrip[currentIndex];
+                    //Point delta = new Point(
+                    //    currentStrip[currentIndex].Point2.X - currentStrip[currentIndex].Point1.X,
+                    //    currentStrip[currentIndex].Point2.Y - currentStrip[currentIndex].Point1.Y);
+                    Vector2 pos1 = new Vector2( newEdge.Point1.X * input.TileDimensions.X,
+                                                newEdge.Point1.Y * input.TileDimensions.Y );
+                    Vector2 pos2 = new Vector2( newEdge.Point2.X * input.TileDimensions.X,
+                                                newEdge.Point2.Y * input.TileDimensions.Y );
+                    Vector2 delta1 = pos2 - pos1;
+
+
+                    while (currentIndex < currentStrip.Count)
+                    {
+                        Edge currentEdge;
+                        //Point currentDelta;
+                        Vector2 delta2;
+                        do
+                        {
+                            currentIndex++;
+
+                            if (currentIndex >= currentStrip.Count)
+                            {
+                                break;
+                            }
+
+                            currentEdge = currentStrip[currentIndex];
+
+                            Vector2 pos3 = new Vector2( currentEdge.Point2.X * input.TileDimensions.X,
+                                                        currentEdge.Point2.Y * input.TileDimensions.Y );
+
+                            //currentDelta = new Point(
+                            //    currentEdge.Point2.X - currentEdge.Point1.X,
+                            //    currentEdge.Point2.Y - currentEdge.Point1.Y);
+
+                            delta2 = pos3 - pos2;
+
+                            Vector2 delta1Norm = delta1;
+                            delta1Norm.Normalize();
+                            Vector2 delta2Norm = delta2;
+                            delta2Norm.Normalize();
+
+                            float dotProduct = Vector2.Dot(delta1Norm, delta2Norm);
+                            double theta = Math.Acos(dotProduct);
+
+                            //if (delta1 != delta2)
+                            if (theta != 0.0)
+                            {
+                                int index = TmxProcessor.Random.Next(corners.Count);
+                                BuildingInfo corner = corners[index];
+
+                                // Add the building for the corner
+                                string modelName = "buildings/" + corner.Name;
+
+                                Matrix worldMatrix = Matrix.Identity;
+                                //worldMatrix *= Matrix.CreateRotationZ(obj.Orientation);
+                                worldMatrix *= Matrix.CreateTranslation(new Vector3(pos2 + Offset, 0.0f));
+
+                                output.SceneObjects.Add(new ModelInst(modelName, worldMatrix));
+
+                                delta1 = delta2;
+                                newEdge = currentEdge;
+
+                                pos1 = new Vector2( newEdge.Point1.X * input.TileDimensions.X,
+                                                    newEdge.Point1.Y * input.TileDimensions.Y);
+                                pos2 = new Vector2( newEdge.Point2.X * input.TileDimensions.X,
+                                                    newEdge.Point2.Y * input.TileDimensions.Y);
+                            }
+                        }
+                        while (true);
+                    }
+
+                    edgeLoops[stripIdx] = optimised;
+                }
+            }
+        }
+
+        private static void CreateBuildingInfoList(ContentProcessorContext context, TInput input, List<BuildingInfo> corners, List<BuildingInfo> edges)
+        {
+            string buildingsPath = Path.GetFullPath(Path.Combine(input.FileName.Remove(input.FileName.LastIndexOf('\\')), "..\\..\\buildings"));
+            Regex buildingPattern = new Regex("(([a-zA-Z]+)([0-9]+)x([0-9]+)_([0-9]+)).fbx$");
+            foreach (string fileName in Directory.GetFiles(buildingsPath))
+            {
+                Match match = buildingPattern.Match(Path.GetFileName(fileName));
+                if (match.Success)
+                {
+                    BuildingType type;
+                    try
+                    {
+                        type = (BuildingType)Enum.Parse(typeof(BuildingType), match.Groups[2].Value);
+                    }
+                    catch (System.ArgumentException)
+                    {
+                        context.Logger.LogWarning("", null, "Invalid building type" + match.Groups[2].Value + " found in file " + match.Groups[0].Value + "!");
+                        continue;
+                    }
+
+                    int width = int.Parse(match.Groups[3].Value);
+                    int height = int.Parse(match.Groups[4].Value);
+
+                    switch (type)
+                    {
+                        case BuildingType.corner:
+                            corners.Add(new BuildingInfo(match.Groups[1].Value, width, height));
+                            break;
+                        case BuildingType.edge:
+                            edges.Add(new BuildingInfo(match.Groups[1].Value, width, height));
+                            break;
+                    }
+                }
+            }
+        }
+
+
 
         private Content.Patch BuildPatch(ContentProcessorContext context, TInput input, TOutput output, TileLayer tileLayer, int xMin, int yMin, int patchSize)
         {
@@ -663,7 +834,7 @@ namespace TmxProcessorLib
                         string modelName = "tiles/cityBlockWall";
 
 
-                        for (int i = 0; i    < tileList.Count; ++i)
+                        for (int i = 0; i < tileList.Count; ++i)
                         {
                             TileInfo tileInfo = tileList[i];
 
@@ -689,7 +860,6 @@ namespace TmxProcessorLib
                             patch.Models.Add(new Content.ModelInst(modelName, worldMatrix));
                         }
                     }
-
 
                     // Add the ground info
                     int numVerts = tileList.Count * 6;

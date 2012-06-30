@@ -1,0 +1,1 @@
+ montage zombie0*.png -geometry 128x128 atlas.png

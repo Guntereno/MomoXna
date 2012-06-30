@@ -1,0 +1,1 @@
+Warning: None triangle mesh: corner1x1_01 (file: 'D:\dev\XNA\MomoRepo\Momo\TestGame\TestGameContent\buildings\corner1x1_01.fbx') [ (line 0)]
