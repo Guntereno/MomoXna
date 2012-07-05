@@ -20,7 +20,7 @@ namespace MomoMapProcessorLib
     /// This should be part of a Content Pipeline Extension Library project.
     /// </summary>
     [ContentTypeWriter]
-    public class MapDataWriter : ContentTypeWriter<TWrite>
+    public class MomoMapDataWriter : ContentTypeWriter<TWrite>
     {
         protected override void Write(ContentWriter output, TWrite data)
         {
@@ -29,7 +29,7 @@ namespace MomoMapProcessorLib
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            return "MapData.MapDataReader, MapData";
+            return "MapData.MomoMapDataReader, MapData";
         }
     }
 }

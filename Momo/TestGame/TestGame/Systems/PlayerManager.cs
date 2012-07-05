@@ -59,7 +59,7 @@ namespace Game.Systems
             player.PlayerColour = debugColours[mPlayers.ActiveItemListCount];
 
             // Spawn at a spawn point
-            MapData.Map map = mZone.Map;
+            MapData.MomoMap map = mZone.Map;
             //int playerSpawnIndex = m_world.Random.Next(map.PlayerSpawnPoints.Length);
             int playerSpawnIndex = mPlayers.ActiveItemListCount;
             player.SetPosition(map.PlayerSpawnPoints[playerSpawnIndex]);

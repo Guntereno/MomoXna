@@ -35,7 +35,7 @@ namespace Game
         private ContactList mContactList = new ContactList(4000);
         private ContactResolver mContactResolver = new ContactResolver();
 
-        private MapData.Map mMap = null;
+        private MapData.MomoMap mMap = null;
         private MapData.Renderer mMapRenderer = new MapData.Renderer();
 
         private List<BoundaryEntity> mBoundaries = new List<BoundaryEntity>(2000);
@@ -72,8 +72,10 @@ namespace Game
 
         public Random Random                                { get { return mRandom; } }
 
-        public MapData.Map Map                              { get { return mMap; } }
-
+        public MapData.MomoMap Map                          { get { return mMap; } }
+        
+        public MapData.Map IsoMap                           { get; private set; }
+        public MapData.Renderer IsoMapRenderer              { get; private set; }
 
         // --------------------------------------------------------------------
         // -- Public Methods
@@ -95,7 +97,9 @@ namespace Game
 
         public void Load()
         {
-            mMap = ResourceManager.Instance.Get<MapData.Map>("maps/zone01/zone01");
+            mMap = ResourceManager.Instance.Get<MapData.MomoMap>("maps/zone01/zone01");
+
+            IsoMap = ResourceManager.Instance.Get<MapData.Map>("maps/isoTest/isoTest");
 
             mBin.Init(50, 50, mMap.PlayAreaMax + new Vector2(1000.0f, 1000.0f), BinLayers.kLayerCount, 8000, 1000, 1000);
             mBinPlayerHeatMap.Init(mBin);
@@ -122,9 +126,10 @@ namespace Game
             }
 
 
-            mMapRenderer.Init(mMap, Game.Instance.GraphicsDevice, 16);
+            mMapRenderer.Init(mMap, Game.Instance.GraphicsDevice);
 
-
+            IsoMapRenderer = new MapData.Renderer();
+            IsoMapRenderer.Init(IsoMap, Game.Instance.GraphicsDevice);
 
             BuildCollisionBoundaries(0.0f, BinLayers.kBoundary, false, true);
             BuildCollisionBoundaries(10.0f, BinLayers.kBoundaryOcclusionSmall, true, false);
@@ -285,9 +290,11 @@ namespace Game
 
         public void Render()
         {
-            mMapRenderer.Render(World.Camera, Game.Instance.GraphicsDevice);
+            //mMapRenderer.Render(World.Camera, Game.Instance.GraphicsDevice);
             mAiEntityManager.Render(World.Camera, Game.Instance.GraphicsDevice);
             mPlayerManager.Render(World.Camera, Game.Instance.GraphicsDevice);
+
+            IsoMapRenderer.Render(World.Camera, Game.Instance.GraphicsDevice);
 
             mOsdManager.Render();
         }

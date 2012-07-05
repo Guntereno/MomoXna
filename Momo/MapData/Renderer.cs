@@ -24,7 +24,7 @@ namespace MapData
         // --------------------------------------------------------------------
         // -- Public Methods
         // --------------------------------------------------------------------
-        public void Init(MapData.Map map, GraphicsDevice graphicsDevice, int patchSize)
+        public void Init(MapData.Map map, GraphicsDevice graphicsDevice)
         {
             m_map = map;
             m_inited = true;
@@ -46,6 +46,18 @@ namespace MapData
 
         public void Render(CameraNode camera, GraphicsDevice graphicsDevice)
         {
+            InitRender(camera, graphicsDevice);
+
+            RenderPatches(camera, graphicsDevice);
+
+            RenderModels(camera);
+
+            EndRender(graphicsDevice);
+        }
+
+
+        protected void InitRender(CameraNode camera, GraphicsDevice graphicsDevice)
+        {
             Matrix viewMatrix = camera.ViewMatrix;
             Matrix projMatrix = camera.ProjectionMatrix;
 
@@ -66,6 +78,18 @@ namespace MapData
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
             graphicsDevice.RasterizerState = RasterizerState.CullNone;
             graphicsDevice.SamplerStates[0] = m_samplerState;
+        }
+
+        private static void EndRender(GraphicsDevice graphicsDevice)
+        {
+            graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            graphicsDevice.DepthStencilState = DepthStencilState.Default;
+            graphicsDevice.BlendState = BlendState.Opaque;
+            graphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+        }
+
+        private void RenderPatches(CameraNode camera, GraphicsDevice graphicsDevice)
+        {
 
             for (int layerIdx = 0; layerIdx < m_map.LayerCount; ++layerIdx)
             {
@@ -74,22 +98,21 @@ namespace MapData
                     MapData.Patch patch = m_map.Patches[layerIdx][patchIdx];
                     if (m_viewFrustum.Intersects(patch.BoundingBox))
                     {
-                        patch.Draw(viewMatrix, projMatrix, m_effect, graphicsDevice);
+                        patch.Draw(camera.ViewMatrix, camera.ProjectionMatrix, m_effect, graphicsDevice);
                     }
                 }
             }
+        }
 
+
+        private void RenderModels(CameraNode camera)
+        {
             for (int modelIdx = 0; modelIdx < m_map.ModelInstances.Length; ++modelIdx)
             {
                 ModelInst modelInst = m_map.ModelInstances[modelIdx];
-                modelInst.Draw(viewMatrix, projMatrix);
+                modelInst.Draw(camera.ViewMatrix, camera.ProjectionMatrix);
             }
-
-            graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-            graphicsDevice.DepthStencilState = DepthStencilState.Default;
-            graphicsDevice.BlendState = BlendState.Opaque;
-            graphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
         }
-
     }
+
 }

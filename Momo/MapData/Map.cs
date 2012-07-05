@@ -7,31 +7,13 @@ using Momo.Core.Models;
 
 namespace MapData
 {
-
-
     public class Map
     {
-        public int LayerCount { get; private set; }
+        public int LayerCount { get; protected set; }
 
-        public Tileset[] Tilesets { get; private set; }
+        public Tileset[] Tilesets { get; protected set; }
 
-        public Vector2[][] CollisionBoundaries { get; set; }
-
-        public Vector2[] PlayerSpawnPoints { get; private set; }
-
-        public Vector2 PlayAreaMin { get; private set; }
-        public Vector2 PlayAreaMax { get; private set; }
-
-        public SpawnPointData[] SpawnPoints { get; private set; }
-        public SpawnPointData[] AmbientSpawnPoints { get; private set; }
-
-        public MapData.Patch[][] Patches { get; private set; }
-
-        public TimerEventData[] TimerEvents { get; private set; }
-        public SpawnEventData[] SpawnEvents { get; private set; }
-        public TriggerCounterEventData[] TriggerCounterEvents { get; private set; }
-
-        public PressurePlateData[] PressurePlates { get; private set; }
+        public MapData.Patch[][] Patches { get; protected set; }
 
         public ModelInst[] ModelInstances { get; private set; }
 
@@ -46,6 +28,59 @@ namespace MapData
                 Tilesets[i] = new Tileset();
                 Tilesets[i].Read(this, input);
             }
+
+            // Read the patch information
+            Patches = new Patch[LayerCount][];
+            for (int layerIdx = 0; layerIdx < LayerCount; ++layerIdx)
+            {
+                int numPatches = input.ReadInt32();
+                Patches[layerIdx] = new Patch[numPatches];
+                for (int patchIdx = 0; patchIdx < numPatches; ++patchIdx)
+                {
+                    Patch patch = new Patch();
+                    patch.Read(this, input);
+
+                    Patches[layerIdx][patchIdx] = patch;
+                }
+            }
+
+            // Read in the scene object instances
+            int numSceneObjects = input.ReadInt32();
+            ModelInstances = new ModelInst[numSceneObjects];
+            for (int sceneObjIdx = 0; sceneObjIdx < numSceneObjects; ++sceneObjIdx)
+            {
+                string modelName = input.ReadString();
+                Matrix worldMatrix = input.ReadObject<Matrix>();
+
+                Model model = ResourceManager.Instance.Get<Model>(modelName);
+
+                ModelInstances[sceneObjIdx] = new ModelInst(model, worldMatrix);
+            }
+
+        }
+    }
+
+    public class MomoMap: Map
+    {
+        public Vector2[][] CollisionBoundaries { get; set; }
+
+        public Vector2[] PlayerSpawnPoints { get; private set; }
+
+        public Vector2 PlayAreaMin { get; private set; }
+        public Vector2 PlayAreaMax { get; private set; }
+
+        public SpawnPointData[] SpawnPoints { get; private set; }
+        public SpawnPointData[] AmbientSpawnPoints { get; private set; }
+
+        public TimerEventData[] TimerEvents { get; private set; }
+        public SpawnEventData[] SpawnEvents { get; private set; }
+        public TriggerCounterEventData[] TriggerCounterEvents { get; private set; }
+
+        public PressurePlateData[] PressurePlates { get; private set; }
+
+        public void Read(ContentReader input)
+        {
+            base.Read(input);
 
             // Read in the collision data
             int numStrips = input.ReadInt32();
@@ -90,34 +125,6 @@ namespace MapData
             // Read in the vectors describing the playable area
             PlayAreaMin = input.ReadVector2();
             PlayAreaMax = input.ReadVector2();
-
-            // Read the patch information
-            Patches = new Patch[LayerCount][];
-            for (int layerIdx = 0; layerIdx < LayerCount; ++layerIdx)
-            {
-                int numPatches = input.ReadInt32();
-                Patches[layerIdx] = new Patch[numPatches];
-                for (int patchIdx = 0; patchIdx < numPatches; ++patchIdx)
-                {
-                    Patch patch = new Patch();
-                    patch.Read(this, input);
-
-                    Patches[layerIdx][patchIdx] = patch;
-                }
-            }
-
-            // Read in the scene object instances
-            int numSceneObjects = input.ReadInt32();
-            ModelInstances = new ModelInst[numSceneObjects];
-            for (int sceneObjIdx = 0; sceneObjIdx < numSceneObjects; ++sceneObjIdx)
-            {
-                string modelName = input.ReadString();
-                Matrix worldMatrix = input.ReadObject<Matrix>();
-
-                Model model = ResourceManager.Instance.Get<Model>(modelName);
-
-                ModelInstances[sceneObjIdx] = new ModelInst(model, worldMatrix);
-            }
 
             //// Read the pressure point information
             //int numPressurePlates = input.ReadInt32();

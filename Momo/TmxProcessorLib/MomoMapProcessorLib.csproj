@@ -58,9 +58,9 @@
     <Compile Include="Content\Tile.cs" />
     <Compile Include="Content\Tileset.cs" />
     <Compile Include="Content\Patch.cs" />
-    <Compile Include="MapDataWriter.cs" />
+    <Compile Include="MomoMapDataWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TmxProcessor.cs" />
+    <Compile Include="MomoMapProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MapData\MapData.csproj">

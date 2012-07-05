@@ -42,6 +42,23 @@ namespace MomoMapProcessorLib.Content
                 tileset.Write(output);
             }
 
+            // Output the patch objects
+            foreach (List<Patch> patchLayer in Patches)
+            {
+                output.Write(patchLayer.Count);
+                foreach (Patch patch in patchLayer)
+                {
+                    patch.Write(output);
+                }
+            }
+
+            // Output the scene objects
+            output.Write(SceneObjects.Count);
+            foreach (ModelInst modelInst in SceneObjects)
+            {
+                modelInst.Write(output);
+            }
+
             // Output the collision boundaries
             if (CollisionBoundaries != null)
             {
@@ -85,23 +102,6 @@ namespace MomoMapProcessorLib.Content
             // Output the play area definition
             output.Write(MinPlayableArea);
             output.Write(MaxPlayableArea);
-
-            // Output the patch objects
-            foreach (List<Patch> patchLayer in Patches)
-            {
-                output.Write(patchLayer.Count);
-                foreach (Patch patch in patchLayer)
-                {
-                    patch.Write(output);
-                }
-            }
-
-            // Output the scene objects
-            output.Write(SceneObjects.Count);
-            foreach (ModelInst modelInst in SceneObjects)
-            {              
-                modelInst.Write(output);
-            }
 
             /*
                         // Output the pressure plates

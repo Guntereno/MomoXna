@@ -254,8 +254,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="maps\isometricTest\test.tmx">
-      <Name>test</Name>
+    <Compile Include="maps\isoTest\isoTest.tmx">
+      <Name>isoTest</Name>
       <Importer>TmxImporter</Importer>
       <Processor>IsoMapProcessor</Processor>
     </Compile>

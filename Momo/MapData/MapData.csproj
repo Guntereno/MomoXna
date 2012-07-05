@@ -85,12 +85,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapDataReader.cs" />
     <Compile Include="Enemy.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EventData.cs" />
     <Compile Include="Map.cs" />
-    <Compile Include="MapDataReader.cs" />
+    <Compile Include="MomoMapDataReader.cs" />
     <Compile Include="NamedData.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="Patch.cs" />

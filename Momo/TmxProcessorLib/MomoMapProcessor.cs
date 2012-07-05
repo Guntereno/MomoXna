@@ -1,28 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
+using System.IO;
+using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-
-using TInput = MomoMap.Data.TmxData;
-using TOutput = MomoMap.Content.Map;
+using MomoMapProcessorLib.Content;
+using TmxImporterLib.Data;
+using TInput = TmxImporterLib.Data.TmxData;
+using TOutput = MomoMapProcessorLib.Content.Map;
 using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionNormalTexture;
-using MomoMap.Content;
-using MomoMap.Data;
-using System.IO;
-using System.Text.RegularExpressions;
 
-namespace MomoMap
+
+namespace MomoMapProcessorLib
 {
     /// <summary>
     /// Processer creates a new Content.Map from the TmxData
     /// </summary>
-    [ContentProcessor(DisplayName = "MomoMap.TmxProcessor")]
-    public class TmxProcessor : ContentProcessor<TInput, TOutput>
+    [ContentProcessor(DisplayName = "MomoMap.MomoMapProcessor")]
+    public class MomoMapProcessor : ContentProcessor<TInput, TOutput>
     {
         public Vector2 Offset = new Vector2(1000.0f, 1000.0f);
         public static Random Random { get; private set; }
@@ -62,7 +59,7 @@ namespace MomoMap
 
         public override TOutput Process(TInput input, ContentProcessorContext context)
         {
-            MomoMap.Content.Map output = new MomoMap.Content.Map();
+            MomoMapProcessorLib.Content.Map output = new MomoMapProcessorLib.Content.Map();
 
             Random = new Random();
 
@@ -91,7 +88,7 @@ namespace MomoMap
                 {
                     foreach (String spawnPointName in objGroup.Objects.Keys)
                     {
-                        MomoMap.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
+                        TmxImporterLib.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
                         output.PlayerSpawns.Add(spawnPoint.Position + Offset);
                     }
                 }
@@ -125,7 +122,7 @@ namespace MomoMap
                 {
                     foreach (String spawnPointName in objGroup.Objects.Keys)
                     {
-                        MomoMap.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
+                        TmxImporterLib.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
 
                         float orientation = spawnPoint.Orientation;
                         if((spawnPoint.Properties.Properties == null) || (!spawnPoint.Properties.Properties.ContainsKey("orientation")))
@@ -140,7 +137,7 @@ namespace MomoMap
 
             // Output the spawnpoints from the ground tiles
             TileLayer floorLayer = input.TileLayers.Find(l => l.Name == "Floor");
-            Data.Tileset spawnPointTileset = input.Tilesets.Find( t => t.Name == "spawnpoints" );
+            TmxImporterLib.Data.Tileset spawnPointTileset = input.Tilesets.Find(t => t.Name == "spawnpoints");
             if(spawnPointTileset != null)
             {
                 if (floorLayer != null)
@@ -188,7 +185,7 @@ namespace MomoMap
             output.Tiles = new Dictionary<uint, Tile>();
             output.Tilesets = new List<Content.Tileset>();
 
-            foreach (Data.Tileset tilesetData in input.Tilesets)
+            foreach (TmxImporterLib.Data.Tileset tilesetData in input.Tilesets)
             {
                 Content.Tileset tilesetContent = new Content.Tileset();
 
@@ -523,7 +520,7 @@ namespace MomoMap
             {
                 foreach (string objName in sceneObjectsLayer.Objects.Keys)
                 {
-                    Data.Object obj = sceneObjectsLayer.Objects[objName];
+                    TmxImporterLib.Data.Object obj = sceneObjectsLayer.Objects[objName];
                     if (obj.Polygon != null)
                     {
                         List<Vector2> strip = new List<Vector2>();
@@ -617,7 +614,7 @@ namespace MomoMap
             {
                 foreach (string objName in sceneObjectsLayer.Objects.Keys)
                 {
-                    Data.Object obj = sceneObjectsLayer.Objects[objName];
+                    TmxImporterLib.Data.Object obj = sceneObjectsLayer.Objects[objName];
 
                     if ((obj.Properties.Properties != null) && (obj.Properties.Properties.ContainsKey("model")))
                     {
@@ -724,7 +721,7 @@ namespace MomoMap
                             //if (delta1 != delta2)
                             if (theta != 0.0)
                             {
-                                int index = TmxProcessor.Random.Next(corners.Count);
+                                int index = MomoMapProcessor.Random.Next(corners.Count);
                                 BuildingInfo corner = corners[index];
 
                                 // Add the building for the corner
@@ -795,7 +792,7 @@ namespace MomoMap
         {
             // Create a dictionary of all neccessary tile info
             // indexed by the texture
-            Dictionary<Data.Tileset, List<TileInfo>> tileDict = new Dictionary<Data.Tileset, List<TileInfo>>();
+            Dictionary<TmxImporterLib.Data.Tileset, List<TileInfo>> tileDict = new Dictionary<TmxImporterLib.Data.Tileset, List<TileInfo>>();
             for (int x = xMin; x < (xMin + patchSize); ++x)
             {
                 System.Diagnostics.Debug.Assert(x < input.Dimensions.X);
@@ -824,7 +821,7 @@ namespace MomoMap
                 Content.Patch patch = new Content.Patch();
 
                 // Now iterate the dictionary, building a mesh for each texture
-                foreach (Data.Tileset tileset in tileDict.Keys)
+                foreach (TmxImporterLib.Data.Tileset tileset in tileDict.Keys)
                 {
                     List<TileInfo> tileList = tileDict[tileset];
 
@@ -841,9 +838,9 @@ namespace MomoMap
                             float centerX = (tileInfo.mX * input.TileDimensions.X) + (input.TileDimensions.X * 0.5f) + Offset.X;
                             float centerY = (tileInfo.mY * input.TileDimensions.Y) + (input.TileDimensions.Y * 0.5f) + Offset.X;
 
-                            float randScaleY = 1.0f + (float)TmxProcessor.Random.NextDouble();
+                            float randScaleY = 1.0f + (float)MomoMapProcessor.Random.NextDouble();
 
-                            int rotCount = TmxProcessor.Random.Next(3);
+                            int rotCount = MomoMapProcessor.Random.Next(3);
                             float randRot = ((float)Math.PI * 0.5f) * rotCount;
 
                             const float kGlobalScale = 1.0f;// 0.35f;
