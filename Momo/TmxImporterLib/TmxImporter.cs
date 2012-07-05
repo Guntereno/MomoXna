@@ -14,7 +14,7 @@ namespace TmxProcessorLib
     /// <summary>
     /// Importer simply loads the xml from a tmx file into a TmxXml class
     /// </summary>
-    [ContentImporter(".tmx", DisplayName = "Tiled Map File", DefaultProcessor = "TmxProcessor")]
+    [ContentImporter(".tmx", DisplayName = "Tiled Map File")]
     public class TmxImporter : ContentImporter<TImport>
     {
         public override TImport Import(string filename, ContentImporterContext context)

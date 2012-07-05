@@ -96,6 +96,10 @@
       <Project>{6867B53F-C496-4083-9117-3070D9A6DD9C}</Project>
       <Name>FontProcessorLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TmxImporterLib\TmxImporterLib.csproj">
+      <Project>{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}</Project>
+      <Name>TmxImporterLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\TmxProcessorLib\TmxProcessorLib.csproj">
       <Project>{34F93E51-C959-4F9C-A8C3-0584ED9C27D5}</Project>
       <Name>TmxProcessorLib</Name>
@@ -243,6 +247,13 @@
       <Name>link</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="maps\isometricTest\test.tmx">
+      <Name>test</Name>
+      <Importer>TmxImporter</Importer>
+      <Processor>TmxProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

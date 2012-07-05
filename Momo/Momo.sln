@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fonts", "Fonts\Fonts.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maths", "Maths\Maths.csproj", "{5E15C6DB-4C37-4B3F-8D66-05DB0EDD8104}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxImporterLib", "TmxImporterLib\TmxImporterLib.csproj", "{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -129,6 +131,18 @@ Global
 		{5E15C6DB-4C37-4B3F-8D66-05DB0EDD8104}.Release|x86.ActiveCfg = Release|x86
 		{5E15C6DB-4C37-4B3F-8D66-05DB0EDD8104}.Release|x86.Build.0 = Release|x86
 		{5E15C6DB-4C37-4B3F-8D66-05DB0EDD8104}.Release|Xbox 360.ActiveCfg = Release|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Debug|x86.ActiveCfg = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Debug|x86.Build.0 = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Debug|Xbox 360.ActiveCfg = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Debug|Xbox 360.Build.0 = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.DebugPipeline|x86.ActiveCfg = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.DebugPipeline|x86.Build.0 = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.DebugPipeline|Xbox 360.ActiveCfg = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.DebugPipeline|Xbox 360.Build.0 = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Release|x86.ActiveCfg = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Release|x86.Build.0 = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Release|Xbox 360.ActiveCfg = Debug|x86
+		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Release|Xbox 360.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

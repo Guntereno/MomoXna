@@ -19,6 +19,7 @@ namespace TmxProcessorLib.Data
         public string DiffuseName { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
+        public Vector2 TileOffset { get; private set; }
 
         public Microsoft.Xna.Framework.Point TileDimensions { get; private set; }
 
@@ -52,6 +53,20 @@ namespace TmxProcessorLib.Data
             if (imageNode.Attributes["source"] == null)
                 throw new PipelineException("No 'source' attribute found in tileset {0}'s image node", Name);
             DiffuseName = imageNode.Attributes["source"].Value;
+
+            // tileOffset isn't a required node
+            System.Xml.XmlNode offsetNode = tilesetNode["tileoffset"];
+            if (offsetNode != null)
+            {
+                if (offsetNode.Attributes["x"] == null)
+                    throw new PipelineException("No 'x' attribute found in tileset {0}'s offset node", Name);
+                if (offsetNode.Attributes["y"] == null)
+                    throw new PipelineException("No 'y' attribute found in tileset {0}'s offset node", Name);
+
+                Vector2 offset = new Vector2();
+                offset.X = (float)int.Parse(offsetNode.Attributes["x"].Value);
+                offset.Y = (float)int.Parse(offsetNode.Attributes["y"].Value);
+            }
 
             // load the image so we can compute the individual tile source rectangles
             using (System.Drawing.Image image = System.Drawing.Image.FromFile(GetFileFullPath(DiffuseName)))

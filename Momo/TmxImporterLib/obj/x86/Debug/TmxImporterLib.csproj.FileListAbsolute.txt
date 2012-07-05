@@ -1,0 +1,5 @@
+D:\dev\XNA\MomoRepo\Momo\TmxImporterLib\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\dev\XNA\MomoRepo\Momo\TmxImporterLib\bin\x86\Debug\TmxImporterLib.dll
+D:\dev\XNA\MomoRepo\Momo\TmxImporterLib\bin\x86\Debug\TmxImporterLib.pdb
+D:\dev\XNA\MomoRepo\Momo\TmxImporterLib\obj\x86\Debug\TmxImporterLib.dll
+D:\dev\XNA\MomoRepo\Momo\TmxImporterLib\obj\x86\Debug\TmxImporterLib.pdb

@@ -104,6 +104,10 @@ namespace TmxProcessorLib.Data
                     Type = TypeId.Orthogonal;
                     break;
 
+                case "isometric":
+                    Type = TypeId.Orthogonal;
+                    break;
+
                 default:
                     throw new PipelineException("Unsupported orientation type `{0}`", typeString);
             }
