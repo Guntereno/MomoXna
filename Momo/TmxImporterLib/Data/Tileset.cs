@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 using Microsoft.Xna.Framework;
 
-namespace MomoMap.Data
+namespace TmxImporterLib.Data
 {
     public class Tileset: INamed
     {

@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using System.Diagnostics;
 
-namespace MomoMap.Data
+namespace TmxImporterLib.Data
 {
     public class PropertySheet
     {

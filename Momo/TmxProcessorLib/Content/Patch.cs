@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionNormalTexture;
 
-namespace MomoMap.Content
+namespace MomoMapProcessorLib.Content
 {
     internal class Mesh
     {

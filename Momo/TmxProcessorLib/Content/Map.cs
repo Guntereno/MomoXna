@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
-namespace MomoMap.Content
+namespace MomoMapProcessorLib.Content
 {
     public class Map
     {

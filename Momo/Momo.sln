@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maths", "Maths\Maths.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxImporterLib", "TmxImporterLib\TmxImporterLib.csproj", "{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IsoMapProcessorLib", "IsoMapProcessorLib\IsoMapProcessorLib.csproj", "{8C790DFC-590B-40ED-B217-F7374FE102D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -143,6 +145,18 @@ Global
 		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Release|x86.Build.0 = Debug|x86
 		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Release|Xbox 360.ActiveCfg = Debug|x86
 		{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}.Release|Xbox 360.Build.0 = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.Debug|x86.ActiveCfg = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.Debug|x86.Build.0 = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.Debug|Xbox 360.ActiveCfg = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.Debug|Xbox 360.Build.0 = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.DebugPipeline|x86.ActiveCfg = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.DebugPipeline|x86.Build.0 = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.DebugPipeline|Xbox 360.ActiveCfg = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.DebugPipeline|Xbox 360.Build.0 = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.Release|x86.ActiveCfg = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.Release|x86.Build.0 = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.Release|Xbox 360.ActiveCfg = Debug|x86
+		{8C790DFC-590B-40ED-B217-F7374FE102D1}.Release|Xbox 360.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework;
 
 
-namespace MomoMap.Data
+namespace TmxImporterLib.Data
 {
     public class Object: INamed
     {

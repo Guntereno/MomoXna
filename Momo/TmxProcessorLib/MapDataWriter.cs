@@ -9,9 +9,9 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
 
-using TWrite = MomoMap.Content.Map;
+using TWrite = MomoMapProcessorLib.Content.Map;
 
-namespace MomoMap
+namespace MomoMapProcessorLib
 {
     /// <summary>
     /// This class will be instantiated by the XNA Framework Content Pipeline

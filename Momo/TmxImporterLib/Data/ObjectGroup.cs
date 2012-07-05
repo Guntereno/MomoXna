@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Content.Pipeline;
 
-namespace MomoMap.Data
+namespace TmxImporterLib.Data
 {
     public class ObjectGroup : Layer
     {

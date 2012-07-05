@@ -96,6 +96,10 @@
       <Project>{6867B53F-C496-4083-9117-3070D9A6DD9C}</Project>
       <Name>FontProcessorLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\IsoMapProcessorLib\IsoMapProcessorLib.csproj">
+      <Project>{8C790DFC-590B-40ED-B217-F7374FE102D1}</Project>
+      <Name>IsoMapProcessorLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\TmxImporterLib\TmxImporterLib.csproj">
       <Project>{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}</Project>
       <Name>TmxImporterLib</Name>
@@ -155,14 +159,14 @@
     <Compile Include="maps\zone01\zone01.tmx">
       <Name>zone01</Name>
       <Importer>TmxImporter</Importer>
-      <Processor>TmxProcessor</Processor>
+      <Processor>MomoMapProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="maps\zoneTest\zoneTest.tmx">
       <Name>zoneTest</Name>
       <Importer>TmxImporter</Importer>
-      <Processor>TmxProcessor</Processor>
+      <Processor>MomoMapProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -253,7 +257,7 @@
     <Compile Include="maps\isometricTest\test.tmx">
       <Name>test</Name>
       <Importer>TmxImporter</Importer>
-      <Processor>TmxProcessor</Processor>
+      <Processor>IsoMapProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

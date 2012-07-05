@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 
-namespace MomoMap.Data
+namespace TmxImporterLib.Data
 {
     public class Polygon
     {
