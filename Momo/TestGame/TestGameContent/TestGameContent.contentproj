@@ -100,9 +100,9 @@
       <Project>{D74361AE-A5BF-4AE8-8897-927F0D7FF2C2}</Project>
       <Name>TmxImporterLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TmxProcessorLib\TmxProcessorLib.csproj">
+    <ProjectReference Include="..\..\TmxProcessorLib\MomoMapProcessorLib.csproj">
       <Project>{34F93E51-C959-4F9C-A8C3-0584ED9C27D5}</Project>
-      <Name>TmxProcessorLib</Name>
+      <Name>MomoMapProcessorLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

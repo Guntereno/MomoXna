@@ -8,20 +8,20 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
-using TInput = TmxProcessorLib.Data.TmxData;
-using TOutput = TmxProcessorLib.Content.Map;
+using TInput = MomoMap.Data.TmxData;
+using TOutput = MomoMap.Content.Map;
 using VFormat = Microsoft.Xna.Framework.Graphics.VertexPositionNormalTexture;
-using TmxProcessorLib.Content;
-using TmxProcessorLib.Data;
+using MomoMap.Content;
+using MomoMap.Data;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace TmxProcessorLib
+namespace MomoMap
 {
     /// <summary>
     /// Processer creates a new Content.Map from the TmxData
     /// </summary>
-    [ContentProcessor(DisplayName = "TmxProcessorLib.TmxProcessor")]
+    [ContentProcessor(DisplayName = "MomoMap.TmxProcessor")]
     public class TmxProcessor : ContentProcessor<TInput, TOutput>
     {
         public Vector2 Offset = new Vector2(1000.0f, 1000.0f);
@@ -62,7 +62,7 @@ namespace TmxProcessorLib
 
         public override TOutput Process(TInput input, ContentProcessorContext context)
         {
-            TmxProcessorLib.Content.Map output = new TmxProcessorLib.Content.Map();
+            MomoMap.Content.Map output = new MomoMap.Content.Map();
 
             Random = new Random();
 
@@ -91,7 +91,7 @@ namespace TmxProcessorLib
                 {
                     foreach (String spawnPointName in objGroup.Objects.Keys)
                     {
-                        TmxProcessorLib.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
+                        MomoMap.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
                         output.PlayerSpawns.Add(spawnPoint.Position + Offset);
                     }
                 }
@@ -125,7 +125,7 @@ namespace TmxProcessorLib
                 {
                     foreach (String spawnPointName in objGroup.Objects.Keys)
                     {
-                        TmxProcessorLib.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
+                        MomoMap.Data.Object spawnPoint = objGroup.Objects[spawnPointName];
 
                         float orientation = spawnPoint.Orientation;
                         if((spawnPoint.Properties.Properties == null) || (!spawnPoint.Properties.Properties.ContainsKey("orientation")))

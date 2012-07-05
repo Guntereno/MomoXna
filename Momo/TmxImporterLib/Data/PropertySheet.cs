@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using System.Diagnostics;
 
-namespace TmxProcessorLib.Data
+namespace MomoMap.Data
 {
     public class PropertySheet
     {

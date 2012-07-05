@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldManager", "WorldManage
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debug", "Debug\Debug.csproj", "{347E5A57-7F1B-49A5-A637-D49BE71F6F1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxProcessorLib", "TmxProcessorLib\TmxProcessorLib.csproj", "{34F93E51-C959-4F9C-A8C3-0584ED9C27D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MomoMapProcessorLib", "TmxProcessorLib\MomoMapProcessorLib.csproj", "{34F93E51-C959-4F9C-A8C3-0584ED9C27D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugPipeline", "DebugPipeline\DebugPipeline.csproj", "{20369F44-C11C-43E3-9407-BD1B9C355531}"
 EndProject

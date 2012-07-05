@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
-namespace TmxProcessorLib.Content
+namespace MomoMap.Content
 {
     internal class ModelInst
     {

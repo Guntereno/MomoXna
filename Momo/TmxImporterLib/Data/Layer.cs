@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
-namespace TmxProcessorLib.Data
+namespace MomoMap.Data
 {
     public class Layer: INamed
     {

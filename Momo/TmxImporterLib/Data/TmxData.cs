@@ -7,7 +7,7 @@ using System.IO;
 using System.Xml;
 
 
-namespace TmxProcessorLib.Data
+namespace MomoMap.Data
 {
     public class TmxData
     {

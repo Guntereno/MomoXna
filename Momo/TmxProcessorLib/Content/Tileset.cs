@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
-namespace TmxProcessorLib.Content
+namespace MomoMap.Content
 {
     public class Tileset
     {

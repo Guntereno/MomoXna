@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 
-using TImport = TmxProcessorLib.Data.TmxData;
+using TImport = MomoMap.Data.TmxData;
 
-namespace TmxProcessorLib
+namespace MomoMap
 {
     /// <summary>
     /// Importer simply loads the xml from a tmx file into a TmxXml class

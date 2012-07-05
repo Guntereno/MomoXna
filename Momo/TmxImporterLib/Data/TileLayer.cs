@@ -2,7 +2,7 @@
 using System.Xml;
 using Microsoft.Xna.Framework.Content.Pipeline;
 
-namespace TmxProcessorLib.Data
+namespace MomoMap.Data
 {
     public class TileLayer : Layer
     {

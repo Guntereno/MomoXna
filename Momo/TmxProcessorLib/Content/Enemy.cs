@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TmxProcessorLib.Content
+namespace MomoMap.Content
 {
     class Enemy
     {

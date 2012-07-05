@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace TmxProcessorLib.Content
+namespace MomoMap.Content
 {
     public class Tile
     {
