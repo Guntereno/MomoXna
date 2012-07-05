@@ -10,6 +10,8 @@ using Momo.Fonts;
 using Momo.Debug;
 
 
+// The DebugFly behaviour is incomplete so it's currently removed from the cycle order (see Update())
+
 
 namespace Game.Systems
 {
@@ -18,20 +20,24 @@ namespace Game.Systems
         public CameraNode Camera { get; set; }
         public Vector2 FollowPosition { get; set; }
 
-        Vector3 mCameraVelocity = Vector3.Zero;
+        private Vector3 mCameraVelocity = Vector3.Zero;
 
-        Momo.Maths.CriticallyDampenedSpring mSpring = new Momo.Maths.CriticallyDampenedSpring();
+        private Vector3 mDebugEuler = Vector3.Zero;
+
+        private Momo.Maths.CriticallyDampenedSpring mSpring = new Momo.Maths.CriticallyDampenedSpring();
 
         private enum Behaviour
         {
-            Debug,
-            Follow
+            Follow,
+            DebugPan,
+            DebugFly
         }
-        Behaviour mBehaviour = Behaviour.Debug;
+        private Behaviour mBehaviour = Behaviour.Follow;
 
-        const int kDebugStringLength = 64;
+        private const int kDebugStringLength = 64;
         protected MutableString mDebugString = new MutableString(kDebugStringLength);
 
+        private Vector3 mDebugYawPitchRoll;
 
         public CameraController()
         {
@@ -43,38 +49,93 @@ namespace Game.Systems
             if (Camera == null)
                 return;
 
-            if (input.IsButtonDown(Buttons.LeftStick))
+            // DebugFly behaviour currently doesn't work, so I've removed it here
+            Behaviour[] nextBehaviours = { Behaviour.DebugPan, /*Behaviour.DebugFly*/ Behaviour.Follow, Behaviour.Follow };
+            if (input.IsButtonPressed(Buttons.LeftStick))
             {
-                mBehaviour = Behaviour.Debug;
-            }
-            else
-            {
-                mBehaviour = Behaviour.Follow;
+                mBehaviour = nextBehaviours[(int)mBehaviour];
+                InitBehaviour();
             }
 
             switch (mBehaviour)
             {
-                case Behaviour.Debug:
+                case Behaviour.DebugPan:
                     UpdateDebug(ref input);
+                    UpdateTopDown(frameTime);
                     break;
 
                 case Behaviour.Follow:
                     UpdateFollow();
+                    UpdateTopDown(frameTime);
+                    break;
+
+                case Behaviour.DebugFly:
+                    UpdateDebugFly(frameTime, ref input);
                     break;
             }
+        }
 
+        private void InitBehaviour()
+        {
+            switch (mBehaviour)
+            {
+                case Behaviour.DebugPan:
+                case Behaviour.Follow:
+                    // Nothing
+                    break;
+
+                case Behaviour.DebugFly:
+                    mDebugYawPitchRoll = new Vector3(0.0f, 0.0f, 0.0f);
+                    break;
+            }
+        }
+
+        private void UpdateDebugFly(FrameTime frameTime, ref Input.InputWrapper input)
+        {
+            // Update orientation
+            const float kMaxRot = 3.0f;
+            const float kExtreme = (float)(Math.PI * 0.5) - float.Epsilon;
+            mDebugYawPitchRoll.X += -input.GetRightStick().Y * frameTime.Dt * kMaxRot;
+            mDebugYawPitchRoll.Y += -input.GetRightStick().X * frameTime.Dt * kMaxRot;
+            mDebugYawPitchRoll.X = MathHelper.Clamp(mDebugYawPitchRoll.X, -kExtreme, kExtreme);
+           // mDebugYawPitchRoll.Y = MathHelper.Clamp(mDebugYawPitchRoll.Y, -kExtreme, kExtreme);
+
+            Matrix yawMatrix = Matrix.CreateFromAxisAngle(Vector3.Up, mDebugYawPitchRoll.Y);
+            Matrix pitchMatrix = Matrix.CreateFromAxisAngle(Vector3.Right, mDebugYawPitchRoll.X);
+
+            Matrix curOrientation = yawMatrix * pitchMatrix;
+
+            // Transform the axis vectors
+            Vector3 forward = Vector3.Transform(Vector3.Forward, curOrientation);
+            Vector3 right = Vector3.Transform(Vector3.Right, curOrientation);
+            Vector3 up = Vector3.Transform(Vector3.Up, curOrientation);
+
+            // Create translation
+            const float kMaxMove = 600.0f;
+            Vector3 posDelta =  (forward * -input.GetLeftStick().Y * frameTime.Dt * kMaxMove) +
+                                (right * input.GetLeftStick().X * frameTime.Dt * kMaxMove);
+
+            Vector3 curPosition = Camera.LocalTranslation + posDelta;
+
+            Camera.Matrix = curOrientation;
+            Camera.LocalTranslation = curPosition;
+        }
+
+        static float mDebugRotVal = 0.0f;
+
+        private void UpdateTopDown(FrameTime frameTime)
+        {
             mSpring.Update(frameTime.Dt);
 
             Vector2 springPos = mSpring.GetCurrentValue();
             const float kCamHeight = 700.0f;
             Camera.LocalTranslation = new Vector3(
-                (float)Math.Floor(springPos.X),
-                (float)Math.Floor(springPos.Y),
+                springPos.X,
+                springPos.Y,
                 kCamHeight);
 
             Matrix cameraMatrix = Matrix.Identity;
             // Lets rotate the camera 180 in the z so that the map world renders nicely.
-            cameraMatrix.Right = new Vector3(1.0f, 0.0f, 0.0f);
             cameraMatrix.Up = new Vector3(0.0f, -1.0f, 0.0f);
             cameraMatrix.Translation = Camera.LocalTranslation;
 
@@ -83,15 +144,14 @@ namespace Game.Systems
 
         public void DebugRender(DebugRenderer debugRenderer, TextBatchPrinter debugTextBatchPrinter, TextStyle debugTextStyle)
         {
-            Vector2 curPos = mSpring.GetCurrentValue();
-
             mDebugString.Clear();
             mDebugString.Append("(");
-            mDebugString.Append(curPos, 0);
-            mDebugString.Append(")");
+            mDebugString.Append(Camera.Matrix.Translation.ToString());
+            mDebugString.Append(") ");
+            mDebugString.Append(mBehaviour.ToString());
             mDebugString.EndAppend();
 
-            debugTextBatchPrinter.AddToDrawList(mDebugString.GetCharacterArray(), Color.White, Color.Black, new Vector2(1150.0f, 690.0f), debugTextStyle);
+            debugTextBatchPrinter.AddToDrawList(mDebugString.GetCharacterArray(), Color.White, Color.Black, new Vector2(16.0f, 670.0f), debugTextStyle);
         }
 
         private void UpdateFollow()

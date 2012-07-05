@@ -5,12 +5,12 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
-namespace MapData
+namespace Momo.Core.Models
 {
     public class ModelInst
     {
-        public Model Model { get; private set; }
-        public Matrix WorldMatrix { get; private set; }
+        public Model Model { get; set; }
+        public Matrix WorldMatrix { get; set; }
 
         public ModelInst(Model model, Matrix worldMatrix)
         {
